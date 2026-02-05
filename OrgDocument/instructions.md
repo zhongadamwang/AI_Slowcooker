@@ -9,8 +9,8 @@ orgDocument/
 ├── LICENSE                     # MIT license
 ├── instruction.md                   # This file
 ├── projects/                   # Root folder for projects
-│   ├── 01 - project               # Folder for project 1
-│   │   ├── requirements/       # Folder for project 1 requirements files
+│   ├── NN - [project name]               # Folder for project NN
+│   │   ├── requirements/       # Folder for project NN requirements files
 │   │   └── artifacts/          # Folder for the artifacts generated during the analysis. There can be sub-folders folders (e.g., `Analysis`, `Requirement`, `Sample Data`, `UI Mockup`) are for storing supporting materials and references.
 │   └── projects.md             # Projects Id and name mapping
 ├── orgModel/                   # Folder for modeling documents
