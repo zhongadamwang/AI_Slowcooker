@@ -1,0 +1,27 @@
+# Project Registry
+
+This document tracks all active and completed projects in the organization.
+
+## Active Projects
+
+| ID | Project Name | Description | Status | Start Date |
+|----|--------------|-------------|---------|------------|
+| 01 | Building Skills | Build the skills needed for evolutionary development process | Initial Setup | 2026-02-07 |
+
+## Completed Projects
+
+| ID | Project Name | Description | Completion Date |
+|----|--------------|-------------|-----------------|
+| (none yet) | | | |
+
+## Project Status Definitions
+
+- **Initial Setup**: Project structure created, requirements gathering in progress
+- **Requirements**: Gathering and documenting project requirements
+- **Analysis**: Analysis and design phase
+- **Development**: Implementation phase
+- **Testing**: Quality assurance and testing
+- **Deployment**: Deployment and rollout
+- **Completed**: Project successfully completed
+- **On Hold**: Project temporarily suspended
+- **Cancelled**: Project cancelled
