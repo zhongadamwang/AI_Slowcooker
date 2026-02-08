@@ -28,7 +28,7 @@ This project builds the foundation for AI-assisted software development where th
 
 ## Quick Links
 - [Project Plan](project-plan-mvp.md) - Detailed MVP planning
-- [Task Tracking](artifacts/task-tracking-mvp.md) - Current progress
+- [Task Tracking](tasks/task-tracking-mvp.md) - Current progress
 - [Main Project Doc](main.md) - Complete project overview
 
 ---
