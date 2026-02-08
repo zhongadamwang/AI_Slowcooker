@@ -13,11 +13,27 @@ This project's goal is to build the skills needed for evolutionary development p
 
 ## Key Documents
 - [Initial Requirements](requirements/initial-requirements.md) - Project scope and high-level requirements
+- [MVP Project Plan](project-plan-mvp.md) - Detailed MVP planning with PERT analysis
 - [Analysis artifacts (artifacts/Analysis/)](artifacts/Analysis/) - Technical analysis documents
 - [Skill Development Process Model](../../orgModel/01%20-%20Skill%20Development%20Process/main.md) - Process modeling for skill development
 
+## MVP Scope
+**Core Objective**: Establish the foundational AI Agent Skills system that can analyze requirements and produce iterative outputs.
+
+### MVP Deliverables
+1. **Single Working AI Agent Skill**: Requirements analysis skill that can process user input
+2. **Basic Feedback Loop**: Request → AI Analysis → Output → Human Review → Refinement cycle
+3. **Document Management Pipeline**: Two-document system (raw requirements + model translation)
+4. **Self-Validation Process**: AI skill that can test and improve its own outputs
+
+### MVP Success Criteria
+- Agent can process a simple requirement and generate structured analysis
+- Human can provide feedback that improves subsequent iterations
+- System maintains document traceability between requirements and model elements
+- Process is documented and repeatable
+
 ## Status
-- **Phase**: Initial Setup
+- **Phase**: MVP Definition
 - **Last Updated**: February 7, 2026
-- **Next Milestone**: Skills Framework Definition
-- **Project Type**: Internal
+- **Next Milestone**: First Working AI Agent Skill
+- **Project Type**: Meta-Development (Building the development process itself)
