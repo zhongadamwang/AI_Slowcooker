@@ -11,7 +11,9 @@ Transforms requirements documents (PDF/DOCX/Markdown/Email) into structured, ato
 ## Core Function
 
 **Input**: Raw files + project_id
-**Output**: JSON with chunked requirements, each tagged and traceable to source
+**Output**: JSON format saved to structured folders for downstream processing
+**Output Destination**: `outputs/projects/{project_id}/requirements.json` for traditional scripts, direct return for Copilot integration
+**Directory Structure**: Auto-created project folders with requirements, processing logs, and glossary files
 
 ## Usage
 
@@ -27,8 +29,16 @@ Example prompt:
 **Traditional Script Approach:**
 ```python
 from requirements_ingest import RequirementsIngestor
+
 ingestor = RequirementsIngestor()
-result = ingestor.process_files(files=["requirements.pdf"], project_id="PRJ-001")
+result = ingestor.process_files(["requirements.pdf"], "MY-PROJECT")
+# Creates: outputs/projects/MY-PROJECT/requirements.json
+```
+
+**Command Line:**
+```bash
+python requirements_ingest.py PROJECT-001 requirements.pdf specs.docx
+# Saves to: outputs/projects/PROJECT-001/
 ```
 
 ## Output Schema
@@ -78,7 +88,7 @@ Return structured JSON following the schema.
 ```
 Analyze requirements document using requirements-ingest methodology:
 
-1. EXTRACT: Break into atomic requirements (max 200 tokens each)
+1. EXTRACT: Break into atomic requirements (max 400-600 tokens each, optimized for modern LLMs)
 2. CLASSIFY: Tag as functional|nonfunctional|constraint|assumption|out-of-scope  
 3. TRACE: Preserve source location (section, page, paragraph)
 4. SCORE: Confidence 0.0-1.0 based on clarity
@@ -109,7 +119,10 @@ Multiple tags allowed. Explain reasoning for complex cases.
 
 ## Processing Rules
 
-1. **Chunk Size**: Max 200 tokens per requirement  
-2. **Atomic**: One verifiable requirement per chunk
+1. **Chunk Size**: Max 400-600 tokens per requirement (optimized for modern LLMs like Claude/GPT-4)
+2. **Atomic**: One verifiable requirement per chunk (priority over token limits)
 3. **Traceability**: Preserve source file + location hint
 4. **Confidence**: 0.0-1.0 based on clarity and context
+5. **Output Format**: JSON saved to structured folders for downstream processing
+6. **File Organization**: Auto-created project directories with requirements.json, processing_log.json, and glossary.json
+7. **Versioning**: Previous outputs backed up to versions/ subfolder

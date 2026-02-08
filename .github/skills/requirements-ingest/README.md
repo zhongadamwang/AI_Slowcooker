@@ -4,7 +4,7 @@ A comprehensive skill for normalizing requirements from multiple file formats in
 
 ## Quick Start
 
-1. **GitHub Copilot Integration (Recommended - No API Keys!):**
+1. **GitHub Copilot Integration (Recommended - No Setup!):**
    ```
    @workspace Use requirements-ingest skill to process this document:
    [PASTE REQUIREMENTS HERE]
@@ -13,12 +13,28 @@ A comprehensive skill for normalizing requirements from multiple file formats in
    Return structured JSON with atomic requirements and classifications.
    ```
 
-3. **Traditional Script (Batch Processing):**
+2. **Traditional Script with File Output:**
+   ```bash
+   # Install dependencies
+   pip install -r requirements.txt
+   
+   # Process files (saves to outputs/projects/MY-PROJECT/)
+   python src/requirements_ingest.py MY-PROJECT requirements.pdf specs.docx
+   
+   # Custom output directory
+   python src/requirements_ingest.py MY-PROJECT specs.md --output-dir /custom/path
+   
+   # Console output only (legacy mode)
+   python src/requirements_ingest.py MY-PROJECT specs.md --no-save
+   ```
+
+3. **Python Integration:**
    ```python
    from src.requirements_ingest import RequirementsIngestor
    
    ingestor = RequirementsIngestor()
-   result = ingestor.process_files(["specs.pdf"], "MY-PROJECT")
+   result = ingestor.process_files([\"requirements.pdf\"], \"MY-PROJECT\")
+   # Creates: outputs/projects/MY-PROJECT/requirements.json
    ```
 
 ## Features
@@ -30,14 +46,21 @@ A comprehensive skill for normalizing requirements from multiple file formats in
 - **Integrated Workflow**: Works seamlessly within VS Code
 - **Cost Effective**: No additional API costs beyond Copilot subscription
 
-### 📝 Traditional Script Processing  
-- **Multi-format Support**: PDF, DOCX, Markdown, Email, Plain Text
-- **Atomic Chunking**: Breaks requirements into verifiable units (<200 tokens)
+### � File Output Structure
+- **Primary Output**: `outputs/projects/{project_id}/requirements.json`
+- **Processing Log**: Audit trail with metadata and statistics
+- **Glossary**: Enhanced domain term extraction with context
+- **Versioning**: Automatic backup of previous outputs
+- **Source Mapping**: Track original file references and integrity
+- **Atomic Chunking**: Breaks requirements into verifiable units (400-600 tokens, optimized for modern LLMs)
 - **Rule-based Classification**: Tags as functional/nonfunctional/constraint/assumption/out-of-scope
 - **Traceability**: Preserves source file and location references
 - **Batch Processing**: High-volume processing for consistent formats
+- **JSON Output**: Suitable for downstream processing and tool integration
 
 ## Output Format
+
+JSON structure suitable for downstream processing:
 
 ```json
 {
@@ -95,8 +118,27 @@ python test_skill.py
 
 ### Test with Sample Data
 ```bash
-# Traditional processing with provided samples
+# Traditional processing with provided samples (saves to outputs/)
 python src/requirements_ingest.py SAMPLE-001 test_data/*.md test_data/*.txt
+
+# Check outputs
+ls outputs/projects/SAMPLE-001/
+# Shows: requirements.json, processing_log.json, glossary.json
+```
+
+### For Downstream Skills
+```python
+# Standard way to access requirements from another skill
+import json
+
+def load_requirements(project_id: str):
+    \"\"\"Load processed requirements for downstream use\"\"\"
+    with open(f\"outputs/projects/{project_id}/requirements.json\") as f:
+        return json.load(f)
+
+requirements = load_requirements(\"MY-PROJECT\")
+# Access: requirements[\"requirements\"], requirements[\"glossary_suspects\"]
+```
 
 # Copilot integration (paste content into Copilot Chat)
 # See examples/copilot_integration.md for detailed examples

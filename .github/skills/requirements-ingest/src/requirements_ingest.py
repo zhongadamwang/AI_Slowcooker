@@ -1,11 +1,15 @@
 """
 Requirements Ingest System
 Normalizes requirements from multiple file formats into structured chunks.
+Outputs to structured folder system for downstream processing.
 """
 
 import json
 import re
-from typing import List, Dict, Any, Tuple
+import os
+import hashlib
+from datetime import datetime
+from typing import List, Dict, Any, Tuple, Optional
 from pathlib import Path
 from dataclasses import dataclass
 import uuid
@@ -42,7 +46,9 @@ class RequirementChunk:
 class RequirementsIngestor:
     """Main class for requirements ingestion and processing"""
     
-    def __init__(self):
+    def __init__(self, output_base_dir: str = "./outputs"):
+        """Initialize with configurable output directory"""
+        self.output_base_dir = Path(output_base_dir)
         self.classification_keywords = {
             'functional': [
                 'shall', 'must', 'will', 'should', 'function', 'feature', 
@@ -66,15 +72,45 @@ class RequirementsIngestor:
             ]
         }
     
-    def process_files(self, files: List[str], project_id: str) -> Dict[str, Any]:
+    def process_files(self, files: List[str], project_id: str, save_to_file: bool = True) -> Dict[str, Any]:
         """Main entry point for processing multiple files"""
+        start_time = datetime.now()
         all_requirements = []
         all_glossary_terms = []
+        processing_log = {
+            "project_id": project_id,
+            "processing_session": {
+                "timestamp": start_time.isoformat(),
+                "version": "1.0",
+                "tool_version": "requirements-ingest-v2.1",
+                "user": os.environ.get("USERNAME", "unknown"),
+                "method": "traditional_script"
+            },
+            "input_files": [],
+            "processing_stats": {},
+            "errors": [],
+            "warnings": []
+        }
         
         for file_path in files:
+            file_info = {
+                "file_path": file_path,
+                "file_size": 0,
+                "file_hash": "",
+                "processed_successfully": False,
+                "requirements_extracted": 0
+            }
+            
             try:
+                # Get file info
+                if os.path.exists(file_path):
+                    file_info["file_size"] = os.path.getsize(file_path)
+                    file_info["file_hash"] = self._calculate_file_hash(file_path)
+                
                 chunks = self._process_single_file(file_path)
                 all_requirements.extend(chunks)
+                file_info["processed_successfully"] = True
+                file_info["requirements_extracted"] = len(chunks)
                 
                 # Extract glossary candidates
                 text_content = ' '.join([chunk.text for chunk in chunks])
@@ -92,15 +128,57 @@ class RequirementsIngestor:
                     confidence=0.1
                 )
                 all_requirements.append(error_chunk)
+                processing_log["errors"].append(f"Failed to process {file_path}: {str(e)}")
+                file_info["requirements_extracted"] = 1  # Error chunk
+            
+            processing_log["input_files"].append(file_info)
         
         # Remove duplicate glossary terms and filter
         unique_glossary = list(set(all_glossary_terms))
         
-        return {
-            "project_id": project_id,
-            "requirements": [self._chunk_to_dict(chunk) for chunk in all_requirements],
-            "glossary_suspects": unique_glossary
+        # Calculate processing stats
+        end_time = datetime.now()
+        processing_time = (end_time - start_time).total_seconds()
+        total_confidence = sum(chunk.confidence for chunk in all_requirements)
+        avg_confidence = total_confidence / len(all_requirements) if all_requirements else 0
+        
+        # Add warnings for low confidence requirements
+        for chunk in all_requirements:
+            if chunk.confidence < 0.5:
+                processing_log["warnings"].append(f"Low confidence requirement {chunk.id} ({chunk.confidence:.2f})")
+        
+        processing_log["processing_stats"] = {
+            "total_files": len(files),
+            "successful_files": sum(1 for f in processing_log["input_files"] if f["processed_successfully"]),
+            "failed_files": len(processing_log["errors"]),
+            "total_requirements": len(all_requirements),
+            "avg_confidence": round(avg_confidence, 2),
+            "processing_time_seconds": round(processing_time, 2)
         }
+        
+        # Prepare main output
+        requirements_output = {
+            "project_id": project_id,
+            "generated_at": end_time.isoformat(),
+            "version": "1.0",
+            "total_requirements": len(all_requirements),
+            "requirements": [self._chunk_to_dict(chunk) for chunk in all_requirements],
+            "glossary_suspects": unique_glossary,
+            "processing_summary": processing_log["processing_stats"]
+        }
+        
+        # Prepare glossary output
+        glossary_output = self._create_glossary_output(project_id, unique_glossary, all_requirements)
+        
+        # Save to files if requested
+        if save_to_file:
+            output_paths = self._save_outputs(project_id, requirements_output, processing_log, glossary_output)
+            print(f"✅ Requirements processed and saved to: {output_paths['base_dir']}")
+            print(f"   📋 Requirements: {output_paths['requirements']}")
+            print(f"   📊 Processing Log: {output_paths['log']}")
+            print(f"   📚 Glossary: {output_paths['glossary']}")
+            
+        return requirements_output
     
     def _process_single_file(self, file_path: str) -> List[RequirementChunk]:
         """Process a single file and extract requirements"""
@@ -220,10 +298,10 @@ class RequirementsIngestor:
             sentence_count += 1
             test_chunk = current_chunk + " " + sentence if current_chunk else sentence
             
-            # Check if chunk is getting too long (≈200 tokens ≈ 150 words)
+            # Check if chunk is getting too long (≈400-600 tokens ≈ 300-450 words, optimized for modern LLMs)
             word_count = len(test_chunk.split())
             
-            if word_count > 150 and current_chunk:
+            if word_count > 300 and current_chunk:
                 # Save current chunk and start new one
                 if self._is_requirement_candidate(current_chunk):
                     chunk = self._create_chunk(
@@ -344,23 +422,177 @@ class RequirementsIngestor:
             "tags": chunk.tags,
             "confidence": round(chunk.confidence, 2)
         }
+    
+    def _calculate_file_hash(self, file_path: str) -> str:
+        """Calculate SHA256 hash of file"""
+        try:
+            with open(file_path, 'rb') as f:
+                return hashlib.sha256(f.read()).hexdigest()[:16]  # First 16 chars
+        except:
+            return "unknown"
+    
+    def _create_project_directory(self, project_id: str) -> Path:
+        """Create and return project directory path"""
+        project_dir = self.output_base_dir / "projects" / project_id
+        project_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create subdirectories
+        (project_dir / "source_files").mkdir(exist_ok=True)
+        (project_dir / "versions").mkdir(exist_ok=True)
+        
+        return project_dir
+    
+    def _save_outputs(self, project_id: str, requirements: Dict, log: Dict, glossary: Dict) -> Dict[str, str]:
+        """Save all outputs to structured folders"""
+        project_dir = self._create_project_directory(project_id)
+        
+        # Define file paths
+        requirements_file = project_dir / "requirements.json"
+        log_file = project_dir / "processing_log.json"
+        glossary_file = project_dir / "glossary.json"
+        
+        # Handle versioning - backup existing files
+        if requirements_file.exists():
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+            version_file = project_dir / "versions" / f"v1_{timestamp}.json"
+            requirements_file.rename(version_file)
+        
+        # Save files
+        with open(requirements_file, 'w', encoding='utf-8') as f:
+            json.dump(requirements, f, indent=2, ensure_ascii=False)
+        
+        with open(log_file, 'w', encoding='utf-8') as f:
+            json.dump(log, f, indent=2, ensure_ascii=False)
+            
+        with open(glossary_file, 'w', encoding='utf-8') as f:
+            json.dump(glossary, f, indent=2, ensure_ascii=False)
+        
+        # Create source file mapping
+        self._create_source_mapping(project_dir, log["input_files"])
+        
+        return {
+            "base_dir": str(project_dir),
+            "requirements": str(requirements_file),
+            "log": str(log_file),
+            "glossary": str(glossary_file)
+        }
+    
+    def _create_source_mapping(self, project_dir: Path, input_files: List[Dict]) -> None:
+        """Create source file mapping and optionally copy files"""
+        mapping = {
+            "created_at": datetime.now().isoformat(),
+            "source_files": []
+        }
+        
+        for file_info in input_files:
+            file_mapping = {
+                "original_path": file_info["file_path"],
+                "file_name": Path(file_info["file_path"]).name,
+                "file_size": file_info["file_size"],
+                "file_hash": file_info["file_hash"],
+                "processed_successfully": file_info["processed_successfully"],
+                "requirements_extracted": file_info["requirements_extracted"]
+            }
+            mapping["source_files"].append(file_mapping)
+        
+        mapping_file = project_dir / "source_files" / "file_mapping.json"
+        with open(mapping_file, 'w', encoding='utf-8') as f:
+            json.dump(mapping, f, indent=2, ensure_ascii=False)
+    
+    def _create_glossary_output(self, project_id: str, terms: List[str], requirements: List[RequirementChunk]) -> Dict:
+        """Create enhanced glossary output"""
+        glossary_data = {
+            "project_id": project_id,
+            "extracted_terms": [],
+            "suggested_definitions": []
+        }
+        
+        # Count term frequencies and find contexts
+        term_info = {}
+        for term in terms:
+            contexts = []
+            frequency = 0
+            
+            for chunk in requirements:
+                if term.lower() in chunk.text.lower():
+                    frequency += 1
+                    # Extract sentence containing the term
+                    sentences = chunk.text.split('.')
+                    for sentence in sentences:
+                        if term.lower() in sentence.lower():
+                            contexts.append(sentence.strip())
+                            break
+            
+            if frequency > 0:
+                term_info[term] = {
+                    "term": term,
+                    "frequency": frequency,
+                    "contexts": list(set(contexts))[:3],  # Max 3 unique contexts
+                    "confidence": min(0.95, 0.5 + (frequency * 0.1))  # Higher freq = higher confidence
+                }
+        
+        # Sort by frequency and add to output
+        sorted_terms = sorted(term_info.values(), key=lambda x: x["frequency"], reverse=True)
+        glossary_data["extracted_terms"] = sorted_terms[:20]  # Top 20 terms
+        
+        # Generate suggested definitions for high-frequency terms
+        for term_data in sorted_terms[:10]:  # Top 10 get suggested definitions
+            if term_data["frequency"] >= 3:
+                # Find requirements that mention this term
+                sources = []
+                for chunk in requirements:
+                    if term_data["term"].lower() in chunk.text.lower():
+                        sources.append(chunk.id)
+                
+                suggestion = {
+                    "term": term_data["term"],
+                    "suggested_definition": f"Domain term appearing {term_data['frequency']} times across requirements",
+                    "sources": sources[:5]  # Max 5 source references
+                }
+                glossary_data["suggested_definitions"].append(suggestion)
+        
+        return glossary_data
 
 
 def main():
-    """CLI interface for requirements ingestion"""
+    """CLI interface for requirements ingestion with file output"""
     import sys
+    import argparse
     
-    if len(sys.argv) < 3:
-        print("Usage: python requirements_ingest.py <project_id> <file1> [file2] ...")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Requirements Ingest - Extract and normalize requirements",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Save to files (default)
+  python requirements_ingest.py PROJECT-001 requirements.pdf specs.docx
+  
+  # Output to console only 
+  python requirements_ingest.py PROJECT-001 requirements.pdf --no-save
+  
+  # Custom output directory
+  python requirements_ingest.py PROJECT-001 requirements.pdf --output-dir /path/to/outputs
+        """
+    )
     
-    project_id = sys.argv[1]
-    files = sys.argv[2:]
+    parser.add_argument("project_id", help="Project identifier for organizing outputs")
+    parser.add_argument("files", nargs="+", help="Input files to process (PDF, DOCX, MD, TXT, EML)")
+    parser.add_argument("--no-save", action="store_true", help="Output to console only (don't save files)")
+    parser.add_argument("--output-dir", default="./outputs", help="Base output directory (default: ./outputs)")
+    parser.add_argument("--console-output", action="store_true", help="Also print JSON to console")
     
-    ingestor = RequirementsIngestor()
-    result = ingestor.process_files(files, project_id)
+    args = parser.parse_args()
     
-    print(json.dumps(result, indent=2))
+    # Create ingestor with custom output directory
+    ingestor = RequirementsIngestor(output_base_dir=args.output_dir)
+    
+    # Process files
+    save_to_file = not args.no_save
+    result = ingestor.process_files(args.files, args.project_id, save_to_file=save_to_file)
+    
+    # Console output for backward compatibility or when explicitly requested
+    if args.no_save or args.console_output:
+        print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
