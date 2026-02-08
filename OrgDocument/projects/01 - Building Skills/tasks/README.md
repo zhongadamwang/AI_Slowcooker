@@ -19,7 +19,6 @@ This folder contains individual task files formatted as GitHub issues to enable 
 ## Task Overview
 
 ### Phase 1: Foundation & Core Skills
-- **T1**: Skill Framework Setup (1.1 days) - Foundation for all skills
 - **T2**: Requirements.Ingest Skill (2.0 days) - Process markdown requirements
 - **T3**: Goals.Extract Skill (1.1 days) - Extract business goals and success criteria  
 - **T4**: Process.W5H Skill (1.1 days) - Who, What, When, Where, Why, How analysis
@@ -39,7 +38,9 @@ This folder contains individual task files formatted as GitHub issues to enable 
 - **T14**: Plan.BuildSchedule Skill (2.0 days) - Generate project schedule with critical path
 - **T15**: Integration & Testing (3.2 days) - End-to-end integration and VS Code testing
 
-**Total Estimated Effort**: 24.3 days (~5 weeks)
+**Total Estimated Effort**: 23.2 days (~4.5 weeks)
+
+**Note**: Using skill-creator skills framework - no custom framework setup required
 
 ## File Format
 Each task file follows this structure:
@@ -48,6 +49,8 @@ Each task file follows this structure:
 - **Acceptance Criteria**: Measurable completion criteria
 - **Tasks**: Detailed task breakdown with checkboxes
 - **Dependencies**: References to other tasks/issues
+
+**Framework Note**: This project uses the existing skill-creator skills framework designed for GitHub Copilot users in VS Code, leveraging the GitHub Agent Skills Standard.
 - **Comments**: Section for GitHub issue comments (populated on export)
 
 ## Task Status Management

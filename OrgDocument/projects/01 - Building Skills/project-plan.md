@@ -2,22 +2,22 @@
 
 ## Project Charter
 
-**Project Name**: AI Agent Task Planning Skills for VS Code
+**Project Name**: AI Agent Task Planning Skills for GitHub Copilot in VS Code
 **Project Manager**: Self-Organizing AI System
-**Duration**: 3 Phases (Simplified scope for skill development)
-**Type**: VS Code Skills Development Project
-**Technology Stack**: Skills for Claude Code / VS Code integration
+**Duration**: 3 Phases (Simplified scope using skill-creator framework)
+**Type**: GitHub Agent Skills Development Project
+**Technology Stack**: GitHub Agent Skills Standard, skill-creator framework, VS Code integration
 
 ### Project Vision
-Build 13 modular AI skills that can be used within VS Code/Claude Code to automate requirement analysis, system design, scoping, task derivation, and planning. All skills work with markdown input and produce markdown output for seamless integration with developer workflows.
+Build 12 modular AI skills that can be used within GitHub Copilot in VS Code to automate requirement analysis, system design, scoping, task derivation, and planning. All skills work with markdown input and produce markdown output for seamless integration with developer workflows using the GitHub Agent Skills Standard.
 
 ## MVP Work Breakdown Structure (WBS)
 
 ### Phase 1: Foundation & Core Skills (Current)
 - [x] Requirements analysis completed
 - [x] MVP scope defined
-- [x] AI Agent skill architecture designed (13 skills)
-- [ ] Skill framework templates created
+- [x] AI Agent skill architecture designed (12 skills)
+- [x] Using skill-creator skills framework
 - [ ] Core skills: Requirements.Ingest, Goals.Extract, Process.W5H
 - [ ] Basic markdown processing and output generation
 
@@ -39,10 +39,9 @@ Build 13 modular AI skills that can be used within VS Code/Claude Code to automa
 
 ```mermaid
 graph TD
-    Start([Project Start]) --> T1[Skill Framework Setup]
-    T1 --> T2[Requirements.Ingest Skill]
-    T1 --> T3[Goals.Extract Skill]
-    T1 --> T4[Process.W5H Skill]
+    Start([Project Start]) --> T2[Requirements.Ingest Skill]
+    Start --> T3[Goals.Extract Skill]
+    Start --> T4[Process.W5H Skill]
     T2 --> T5[Domain.ExtractConcepts]
     T3 --> T5
     T4 --> T5
@@ -63,7 +62,6 @@ graph TD
 
 | Task | Description | Optimistic | Most Likely | Pessimistic | Expected |
 |------|-------------|------------|-------------|-------------|----------|
-| T1 | Skill Framework Setup | 0.5 days | 1 day | 2 days | 1.1 days |
 | T2 | Requirements.Ingest (Markdown) | 1 day | 2 days | 3 days | 2.0 days |
 | T3 | Goals.Extract | 0.5 days | 1 day | 2 days | 1.1 days |
 | T4 | Process.W5H | 0.5 days | 1 day | 2 days | 1.1 days |
@@ -79,11 +77,11 @@ graph TD
 | T14 | Plan.BuildSchedule (Markdown) | 1 day | 2 days | 3 days | 2.0 days |
 | T15 | Integration & Testing | 2 days | 3 days | 5 days | 3.2 days |
 
-**Critical Path**: T1 → T2 → T5 → T6 → T7 → T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15 = 24.3 days
-**Total Project Duration**: ~5 weeks with buffer
+**Critical Path**: T2 → T5 → T6 → T7 → T8 → T9 → T10 → T11 → T12 → T13 → T14 → T15 = 23.2 days
+**Total Project Duration**: ~4.5 weeks with buffer
 
 ### Phase Distribution
-- **Phase 1** (Foundation & Core): 5.3 days (~1 week)
+- **Phase 1** (Foundation & Core): 4.2 days (~1 week)
 - **Phase 2** (Domain & Process): 10.6 days (~2 weeks)  
 - **Phase 3** (Planning & Integration): 8.4 days (~2 weeks)
 
@@ -147,22 +145,23 @@ graph TD
 ## Implementation Notes
 
 ### Skills Development Approach
-- **Format**: AI skills designed for VS Code/Claude Code integration
+- **Format**: AI skills designed for GitHub Copilot integration in VS Code
+- **Framework**: Using skill-creator skills following GitHub Agent Skills Standard
 - **Input/Output**: Markdown files only - no complex parsing needed
 - **Architecture**: Independent skills that can work standalone or in sequence
-- **Integration**: Skills work within existing VS Code project structure
+- **Integration**: Skills work within existing VS Code and GitHub Copilot workflow
 
 ### Key Design Decisions
 1. **Markdown-First**: All inputs and outputs use markdown format for easy editing and version control
 2. **Skill Independence**: Each skill can be invoked individually without dependencies
 3. **Template-Driven**: Consistent markdown templates for all skill outputs
-4. **VS Code Native**: Leverage VS Code's existing markdown and file management capabilities
+5. **GitHub Copilot Native**: Leverage GitHub Agent Skills Standard for seamless integration
 5. **Developer-Friendly**: Skills enhance existing development workflow without disruption
 
 ## Next Actions
 
 ### Immediate (Week 1)
-1. **Skill Framework**: Define markdown input/output templates for all 13 skills
+1. **Core Skills**: Implement Requirements.Ingest, Goals.Extract, Process.W5H using skill-creator framework
 2. **Core Skills**: Implement Requirements.Ingest, Goals.Extract, Process.W5H
 3. **VS Code Testing**: Test skill integration within VS Code environment
 4. **Template Validation**: Ensure consistent markdown formatting across skills
@@ -182,10 +181,10 @@ graph TD
 ## Dependencies & Prerequisites
 
 ### Technical Setup Required
-- VS Code with markdown editing capabilities
-- Claude Code or equivalent AI integration for VS Code
+- VS Code with GitHub Copilot integration
+- GitHub Agent Skills Standard framework
+- skill-creator skills already available
 - Sample markdown requirements documents for testing
-- Access to LLM for skill prompt execution
 
 ### Project Information Needed
 1. **Sample Requirements**: Markdown format requirements documents
