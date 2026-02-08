@@ -2,7 +2,7 @@
 
 **Last Updated**: February 8, 2026  
 **Current Phase**: Phase 1 - Foundation & Core Skills  
-**Project Focus**: Building 13 modular AI skills for VS Code integration
+**Project Focus**: Building 12 modular AI skills for GitHub Copilot in VS Code
 
 ## Phase 1: Foundation & Core Skills (In Progress)
 
@@ -10,40 +10,31 @@
 - [x] **Requirements Analysis** (Feb 7, 2026)
 - [x] **MVP Scope Definition** (Feb 7, 2026)  
 - [x] **Project Plan Creation** (Feb 7, 2026)
-- [x] **AI Agent skill architecture designed** (13 skills defined)
+- [x] **AI Agent skill architecture designed** (12 skills defined)
+- [x] **Skill Framework Decision** (Feb 8, 2026) - Using skill-creator framework
 
 ### In Progress
-- [ ] **Skill Framework Setup** 
+- [ ] **Requirements.Ingest Skill** 
   - **Owner**: Development Team
   - **Due**: February 10, 2026
-  - **Effort**: 1.1 days (estimated)
-  - **Description**: Create consistent markdown templates and skill foundation
-  - **Acceptance Criteria**: 
-    - Skill template structure defined
-    - Markdown input/output format standardized
-    - VS Code integration framework ready
+  - **Effort**: 2.0 days (estimated)
+  - **Description**: Process requirements from markdown input into structured format using skill-creator framework
+  - **Status**: Ready to start (no dependencies)
 
 ### Ready to Start
-- [ ] **Requirements.Ingest Skill**
-  - **Owner**: Development Team
-  - **Due**: February 12, 2026
-  - **Effort**: 2.0 days (estimated)
-  - **Description**: Process requirements from markdown input into structured format
-  - **Dependencies**: Skill framework setup
-
 - [ ] **Goals.Extract Skill**
   - **Owner**: Development Team  
-  - **Due**: February 13, 2026
+  - **Due**: February 11, 2026
   - **Effort**: 1.1 days (estimated)
   - **Description**: Extract business goals and success criteria from requirements
-  - **Dependencies**: Requirements.Ingest skill
+  - **Dependencies**: Can run in parallel with Requirements.Ingest
 
 - [ ] **Process.W5H Skill**
   - **Owner**: Development Team
-  - **Due**: February 14, 2026  
+  - **Due**: February 12, 2026  
   - **Effort**: 1.1 days (estimated)
   - **Description**: Analyze requirements using Who, What, When, Where, Why, How framework
-  - **Dependencies**: Requirements.Ingest skill
+  - **Dependencies**: Can run in parallel with other Phase 1 skills
 
 ## Phase 2: Domain & Process Skills (Upcoming)
 
@@ -111,17 +102,19 @@
   
 ## Current Progress & Metrics
 
-**Phase 1 Progress**: 4/7 tasks complete (57%)  
-**Overall MVP Progress**: 4/19 tasks complete (21%)  
-**Estimated Completion**: ~5.5 weeks from start (Expanded scope)
+**Phase 1 Progress**: 5/8 tasks complete (63%)  
+**Overall MVP Progress**: 5/15 tasks complete (33%)  
+**Estimated Completion**: ~4.5 weeks from start (Reduced scope using skill-creator framework)
 
 ## Key Decisions Made
-1. **14 Modular Skills Approach**: Focus on building independent, composable AI skills for VS Code (expanded from 13)
-2. **Markdown-First Workflow**: All skills consume and produce markdown for seamless editor integration  
-3. **Phase-Based Development**: Build foundation skills first, then domain analysis, then planning skills
-4. **Change Management Integration**: Added automated change tracking as core skill capability
-5. **VS Code Integration**: Design specifically for VS Code/Claude Code environment from start
-6. **Mermaid Diagrams**: Use Mermaid for embedded diagrams to maintain markdown workflow
+1. **12 Modular Skills Approach**: Focus on building independent, composable AI skills for GitHub Copilot
+2. **skill-creator Framework**: Use existing skill-creator framework instead of custom development
+3. **GitHub Agent Skills Standard**: Leverage GitHub's Agent Skills Standard for VS Code integration
+4. **Markdown-First Workflow**: All skills consume and produce markdown for seamless editor integration  
+5. **Phase-Based Development**: Build foundation skills first, then domain analysis, then planning skills
+6. **Change Management Integration**: Added automated change tracking as core skill capability
+7. **GitHub Copilot Integration**: Design specifically for GitHub Copilot in VS Code environment
+8. **Mermaid Diagrams**: Use Mermaid for embedded diagrams to maintain markdown workflow
 
 ## Issues & Blockers
 *None currently identified*
@@ -136,14 +129,16 @@
 - [ ] **Domain Analysis**: Entity extraction and alignment produces structured markdown
 - [ ] **Diagram Generation**: Mermaid sequence diagrams embedded in markdown
 - [ ] **Task Planning**: Task DAG and PERT estimates generated in markdown format
-- [ ] **VS Code Integration**: All skills work seamlessly within VS Code/Claude Code
+- [ ] **GitHub Copilot Integration**: All skills work seamlessly within GitHub Copilot in VS Code
 
 ## Next Review Dates
-- **February 10, 2026**: After skills framework setup completion
-- **February 15, 2026**: After Phase 1 skills completion  
+- **February 10, 2026**: After Requirements.Ingest skill completion
+- **February 13, 2026**: After Phase 1 skills completion  
 - **Weekly Reviews**: Every Monday during active development phases
 
 ## Notes
+- **T1 Removed**: Custom skill framework setup task removed - using skill-creator framework instead
 - Tasks moved to individual GitHub issue format files in `/tasks` folder  
 - Task tracking document relocated from `/artifacts` to `/tasks` for consistency
-- Alignment established with project-plan.md for 13 AI skills development approach
+- Alignment established with project-plan.md for 12 AI skills development approach
+- GitHub Agent Skills Standard adopted for VS Code integration
