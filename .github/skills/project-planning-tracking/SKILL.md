@@ -50,7 +50,7 @@ Provides structured approach to project planning, milestone tracking, and progre
 
 #### PERT Diagram Template
 
-Store as `project-pert.md` in project root:
+Store as `project-plan.md` in project root:
 
 ```markdown
 # [Project Name] - PERT Analysis
@@ -892,3 +892,95 @@ Slack Calculations:
 - D: ES=6.2 (forecast), EF=6.2+4=10.2 (forecast)
 
 **Schedule Impact**: Project now forecast to complete on Day 10.2 instead of Day 14 (3.8 days ahead)
+
+---
+
+## GitHub-Integrated Task Management
+
+### Modern Task Management Approach
+
+For projects requiring team collaboration and external feedback, implement task management using GitHub Issues format that enables seamless integration with GitHub's issue tracking system:
+
+#### Task Management Structure
+```
+projects/[NN] - [Project Name]/
+├── tasks/                    # Individual task files in GitHub issue format
+│   ├── T##-task-name.md     # Task files aligned with project plan numbering  
+│   ├── task-tracking.md # Overall task progress tracking
+│   └── README.md            # Task management workflow documentation
+└── project-plan.md      # Main project plan with PERT analysis
+```
+
+#### Task File Template (GitHub Issue Format)
+```markdown
+# Issue: T## - [Task Name]
+**State:** [open|ready|in-progress|review|closed]  
+**Labels:** [feature,core-skill,phase1]  
+**Assignees:** [team member]  
+**Milestone:** [Phase X - Phase Name]  
+**Priority:** [High|Medium|Low]
+**Issue Number:** #T##
+**Estimated Effort:** [X.X days] (from PERT analysis)
+
+## Description
+[Clear description aligned with project plan WBS]
+
+## Acceptance Criteria
+- [ ] [Specific measurable outcome]
+- [ ] [Technical requirement]
+- [ ] [Documentation requirement]
+
+## Tasks
+- [ ] [Detailed implementation sub-task]
+- [ ] [Testing sub-task]
+- [ ] [Documentation sub-task]
+
+## Dependencies
+- T##: [Prerequisite task name from critical path]
+
+## Comments
+<!-- Team feedback and discussion appear here when exported from GitHub -->
+```
+
+#### Task Tracking Dashboard (task-tracking.md)
+Provides real-time view of project progress aligned with PERT analysis:
+
+```markdown
+# [Project Name] - Task Tracking
+
+**Current Phase**: [Phase X - Phase Name]  
+**Project Focus**: [Brief description from project charter]
+
+## Phase 1: [Phase Name] (Current Status)
+
+### Completed ✅
+- [x] **T1 - [Task Name]** ([Completion Date])
+- [x] **T2 - [Task Name]** ([Completion Date])
+
+### In Progress 🔄
+- [ ] **T3 - [Current Task]** 
+  - **Owner**: [Team Member]
+  - **Due**: [Date from PERT schedule]
+  - **Effort**: [X.X days] (from PERT estimate)
+  - **Dependencies**: [Critical path dependencies]
+
+### Ready to Start 📋
+- [ ] **T4 - [Next Task]**
+  - **Effort**: [X.X days] (PERT estimate)
+  - **Dependencies**: T3 completion
+
+## Progress Metrics
+**Phase Progress**: [X]/[Total] tasks complete ([%])  
+**Overall Project Progress**: [X]/[Total] tasks complete ([%])  
+**Critical Path Status**: [On track/Behind/Ahead]
+**Estimated Completion**: [Date] ([On track/X days behind/ahead])
+
+## GitHub Integration Benefits
+1. **Team Collaboration**: Distributed teams can provide feedback via GitHub comments
+2. **Issue Tracking**: Full GitHub Issues functionality (labels, milestones, assignments)  
+3. **Traceability**: Maintain links between tasks, requirements, and project plan
+4. **Version Control**: Task evolution tracked through GitHub history
+5. **Automation**: GitHub Actions can automate progress reporting and notifications
+```
+
+This approach combines traditional project management rigor (PERT analysis, critical path) with modern collaborative development practices (GitHub Issues, distributed feedback).

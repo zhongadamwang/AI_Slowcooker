@@ -26,13 +26,19 @@ Creates and manages standardized project documentation structures using establis
 
 ```
 orgDocument/projects/[NN] - [project name]/
-├── requirements/           # Project requirements files
 ├── artifacts/             # Analysis outputs and supporting materials
 │   ├── Analysis/         # Analysis documents
 │   ├── Requirements/     # Detailed requirement specifications  
 │   ├── Sample Data/      # Test data and examples
 │   └── UI Mockups/       # Design mockups and wireframes
-└── main.md               # Project overview and navigation
+├── tasks/                # Individual task files in GitHub issue format
+│   ├── T##-task-name.md  # Task files aligned with project plan numbering
+│   ├── task-tracking.md  # Overall task progress tracking
+│   └── README.md         # Task management workflow documentation
+├── main.md               # Project overview and navigation
+├── project-plan.md   # Detailed project plan with PERT analysis
+├── README.md             # Project documentation guide
+└── [other planning docs] # Additional project documents as needed
 ```
 
 ### 2. Update Project Registry
@@ -66,17 +72,22 @@ orgDocument/orgModel/[NN] - [Process Name]/
 [Brief project description and objectives]
 
 ## Structure
-- `requirements/` - Project requirements and specifications
 - `artifacts/` - Supporting materials and analysis outputs
   - `Analysis/` - Technical analysis documents
-  - `Requirements/` - Detailed requirement specifications
-  - `Sample Data/` - Test data and examples  
+  - `Requirements/` - Requirements and specifications  
+  - `Sample Data/` - Test data and examples
   - `UI Mockups/` - Design mockups and wireframes
+- `tasks/` - Individual task files in GitHub issue format
+  - Task files can be imported to GitHub Issues for team collaboration
+  - Feedback added as issue comments in GitHub
+  - Issues can be exported from GitHub to update project documents
 
 ## Key Documents
-- [Link to primary requirements document]
-- [Link to analysis artifacts]
-- [Link to related process models]
+- [Project Plan](project-plan.md) - Detailed MVP planning with PERT analysis
+- [Tasks Folder](tasks/) - Individual task files in GitHub issue format for team collaboration
+- [Analysis artifacts (artifacts/Analysis/)](artifacts/Analysis/) - Technical analysis documents
+- [Requirements artifacts (artifacts/Requirements/)](artifacts/Requirements/) - Project requirements and specifications
+- [Related Process Model](../../orgModel/[NN]%20-%20[Process%20Name]/main.md) - Linked organizational process
 
 ## Status
 - **Phase**: [Current project phase]
@@ -113,10 +124,12 @@ See [test-case-list.md](test-case-list.md) for verification test cases.
 **Parameters**: project_number, project_name, description, project_type
 **Actions**:
 1. Create numbered project folder
-2. Generate standard subfolder structure  
-3. Create template main.md file
-4. Update projects.md registry
-5. Initialize artifact subfolders
+2. Generate standard subfolder structure (artifacts/, tasks/)
+3. Create template main.md and README.md files
+4. Initialize project-plan.md with PERT analysis template
+5. Update projects.md registry
+6. Initialize artifact subfolders
+7. Create tasks/ folder with README.md and task tracking template
 
 ### Initialize Process Model
 **Parameters**: process_number, process_name, scope_description  

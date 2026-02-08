@@ -140,4 +140,4 @@
 ## Notes
 - Tasks moved to individual GitHub issue format files in `/tasks` folder  
 - Task tracking document relocated from `/artifacts` to `/tasks` for consistency
-- Alignment established with project-plan-mvp.md for 13 AI skills development approach
+- Alignment established with project-plan.md for 13 AI skills development approach

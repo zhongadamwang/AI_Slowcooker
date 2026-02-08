@@ -334,3 +334,97 @@ Future Milestones:
 4. **Consistency**: Standard formats and terminology
 5. **Completeness**: All required sections populated
 6. **Relevance**: Content tailored to audience needs
+
+---
+
+## GitHub-Integrated Status Reporting
+
+### Modern Data Sources
+
+For projects using GitHub-integrated task management structure:
+
+#### Primary Data Sources
+- `tasks/task-tracking.md` → Current progress metrics
+- `tasks/T##-task-name.md` → Individual task status
+- `project-plan.md` → PERT analysis and critical path  
+- `tasks/README.md` → Task management workflow status
+- GitHub Issues API → Real-time collaboration data
+
+#### Enhanced Status Report Template
+
+```markdown
+# Project Status Report - [Project Name]
+**Period**: [Start Date] - [End Date]
+**Report Date**: [Date]
+**Project Manager**: [Name]
+
+## Executive Summary
+- **Overall Status**: [🟢 On Track | 🟡 At Risk | 🔴 Behind]
+- **Phase**: [Current phase from project plan]
+- **Critical Path Status**: [From PERT analysis]
+- **GitHub Integration**: [Active/Synced/Issues tracking]
+
+## Progress Metrics
+### Task Completion (from task-tracking.md)
+- **Phase 1**: [X]/[Total] tasks complete ([X]%)
+- **Overall Project**: [X]/[Total] tasks complete ([X]%)
+- **Critical Path**: [On schedule/X days behind/ahead]
+
+### Team Collaboration (from GitHub Issues)
+- **Active Issues**: [Count] 
+- **Comments This Period**: [Count]
+- **External Feedback**: [Quality/volume assessment]
+
+## Phase Status
+### Phase 1: [Phase Name] 
+**Status**: [In Progress/Complete]
+**Key Accomplishments**:
+- [Completed task from T## files]
+- [Another accomplishment]
+
+**Active Work**:
+- T##: [Task name] - [Owner] - [Status] - [Due date]
+
+**Upcoming** (Next Period):
+- T##: [Next task] - [Dependencies] - [Start date]
+
+## Integration Health
+### GitHub Sync Status
+- **Last Sync**: [Date/time]
+- **Sync Issues**: [None/Description if any]
+- **Team Participation**: [Active contributors count]
+
+### Documentation Alignment
+- **Project Plan**: [Aligned/Needs update]
+- **Task Dependencies**: [Validated/Review needed]
+- **Requirements Traceability**: [Current/Outdated]
+
+## Risks & Issues
+| ID | Issue | Impact | GitHub Issue | Owner | Target Resolution |
+|----|-------|---------|---------------|-------|-------------------|
+| R1 | [Description] | [High/Med/Low] | [#Issue] | [Name] | [Date] |
+
+## Next Period Focus
+### Critical Path Tasks
+- T##: [Task name] - [Critical dependency]
+
+### GitHub Activities  
+- [Expected issue comments/reviews]
+- [Planned task imports/exports]
+
+### Stakeholder Actions Required
+- [Decision needed]
+- [Approval required]
+```
+
+#### Automated Reporting Capabilities
+
+When using GitHub integration:
+
+1. **Task Progress**: Automatically calculated from T##-task-name.md file states
+2. **Team Activity**: GitHub API provides collaboration metrics
+3. **Dependency Tracking**: PERT analysis combined with GitHub issue linking
+4. **Historical Trends**: GitHub commit history shows documentation evolution
+5. **External Feedback**: Issue comments provide stakeholder input metrics
+
+This approach enables both traditional project reporting and modern distributed team collaboration tracking.

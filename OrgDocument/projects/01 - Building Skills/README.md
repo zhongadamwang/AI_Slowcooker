@@ -27,8 +27,8 @@ This project builds the foundation for AI-assisted software development where th
 - **Timeline**: 3-week MVP delivery target
 
 ## Quick Links
-- [Project Plan](project-plan-mvp.md) - Detailed MVP planning
-- [Task Tracking](tasks/task-tracking-mvp.md) - Current progress
+- [Project Plan](project-plan.md) - Detailed MVP planning
+- [Task Tracking](tasks/task-tracking.md) - Current progress
 - [Main Project Doc](main.md) - Complete project overview
 
 ---
