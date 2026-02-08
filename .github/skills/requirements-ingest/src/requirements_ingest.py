@@ -172,9 +172,10 @@ class RequirementsIngestor:
         
         # Save to files if requested
         if save_to_file:
-            output_paths = self._save_outputs(project_id, requirements_output, processing_log, glossary_output)
+            output_paths = self._save_outputs(project_id, requirements_output, processing_log, glossary_output, files)
             print(f"✅ Requirements processed and saved to: {output_paths['base_dir']}")
-            print(f"   📋 Requirements: {output_paths['requirements']}")
+            print(f"   📋 Requirements (JSON): {output_paths['requirements_json']}")
+            print(f"   📄 Requirements (MD): {output_paths['requirements_md']}")
             print(f"   📊 Processing Log: {output_paths['log']}")
             print(f"   📚 Glossary: {output_paths['glossary']}")
             
@@ -432,34 +433,47 @@ class RequirementsIngestor:
             return "unknown"
     
     def _create_project_directory(self, project_id: str) -> Path:
-        """Create and return project directory path"""
-        project_dir = self.output_base_dir / "projects" / project_id
-        project_dir.mkdir(parents=True, exist_ok=True)
+        """Create and return project directory path with Analysis subfolder"""
+        # Create Analysis subfolder to align with organizational structure
+        analysis_dir = self.output_base_dir / "projects" / project_id / "Analysis"
+        analysis_dir.mkdir(parents=True, exist_ok=True)
         
-        # Create subdirectories
-        (project_dir / "source_files").mkdir(exist_ok=True)
-        (project_dir / "versions").mkdir(exist_ok=True)
+        # Create subdirectories within Analysis
+        (analysis_dir / "source_files").mkdir(exist_ok=True)
+        (analysis_dir / "versions").mkdir(exist_ok=True)
         
-        return project_dir
+        return analysis_dir
     
-    def _save_outputs(self, project_id: str, requirements: Dict, log: Dict, glossary: Dict) -> Dict[str, str]:
-        """Save all outputs to structured folders"""
-        project_dir = self._create_project_directory(project_id)
+    def _save_outputs(self, project_id: str, requirements: Dict, log: Dict, glossary: Dict, source_files: List[str]) -> Dict[str, str]:
+        """Save all outputs to structured folders with dual format (JSON + Markdown)"""
+        analysis_dir = self._create_project_directory(project_id)
         
-        # Define file paths
-        requirements_file = project_dir / "requirements.json"
-        log_file = project_dir / "processing_log.json"
-        glossary_file = project_dir / "glossary.json"
+        # Define file paths within Analysis folder
+        requirements_json_file = analysis_dir / "requirements.json"
+        requirements_md_file = analysis_dir / "requirements.md"  # NEW: Markdown output
+        log_file = analysis_dir / "processing_log.json"
+        glossary_file = analysis_dir / "glossary.json"
         
         # Handle versioning - backup existing files
-        if requirements_file.exists():
+        if requirements_json_file.exists():
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
-            version_file = project_dir / "versions" / f"v1_{timestamp}.json"
-            requirements_file.rename(version_file)
+            version_json_file = analysis_dir / "versions" / f"v1_{timestamp}.json"
+            requirements_json_file.rename(version_json_file)
         
-        # Save files
-        with open(requirements_file, 'w', encoding='utf-8') as f:
+        if requirements_md_file.exists():
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+            version_md_file = analysis_dir / "versions" / f"v1_{timestamp}.md"
+            requirements_md_file.rename(version_md_file)
+        
+        # Generate Markdown output matching original specification
+        markdown_content = self._generate_markdown_output(requirements, source_files)
+        
+        # Save files (JSON + Markdown)
+        with open(requirements_json_file, 'w', encoding='utf-8') as f:
             json.dump(requirements, f, indent=2, ensure_ascii=False)
+        
+        with open(requirements_md_file, 'w', encoding='utf-8') as f:  # NEW: Markdown file
+            f.write(markdown_content)
         
         with open(log_file, 'w', encoding='utf-8') as f:
             json.dump(log, f, indent=2, ensure_ascii=False)
@@ -468,16 +482,17 @@ class RequirementsIngestor:
             json.dump(glossary, f, indent=2, ensure_ascii=False)
         
         # Create source file mapping
-        self._create_source_mapping(project_dir, log["input_files"])
+        self._create_source_mapping(analysis_dir, log["input_files"])
         
         return {
-            "base_dir": str(project_dir),
-            "requirements": str(requirements_file),
+            "base_dir": str(analysis_dir),
+            "requirements_json": str(requirements_json_file),
+            "requirements_md": str(requirements_md_file),  # NEW: Markdown output path
             "log": str(log_file),
             "glossary": str(glossary_file)
         }
     
-    def _create_source_mapping(self, project_dir: Path, input_files: List[Dict]) -> None:
+    def _create_source_mapping(self, analysis_dir: Path, input_files: List[Dict]) -> None:
         """Create source file mapping and optionally copy files"""
         mapping = {
             "created_at": datetime.now().isoformat(),
@@ -495,7 +510,7 @@ class RequirementsIngestor:
             }
             mapping["source_files"].append(file_mapping)
         
-        mapping_file = project_dir / "source_files" / "file_mapping.json"
+        mapping_file = analysis_dir / "source_files" / "file_mapping.json"
         with open(mapping_file, 'w', encoding='utf-8') as f:
             json.dump(mapping, f, indent=2, ensure_ascii=False)
     
@@ -552,6 +567,78 @@ class RequirementsIngestor:
                 glossary_data["suggested_definitions"].append(suggestion)
         
         return glossary_data
+    
+    def _generate_markdown_output(self, requirements_output: Dict, source_files: List[str]) -> str:
+        """Generate Markdown output matching original specification"""
+        project_id = requirements_output["project_id"]
+        requirements = requirements_output["requirements"]
+        glossary_suspects = requirements_output["glossary_suspects"]
+        
+        # Start with header
+        markdown_lines = [
+            "# Requirements Analysis Report",
+            "",
+            f"**Project**: {project_id}",
+            f"**Source**: {', '.join([Path(f).name for f in source_files])}",
+            f"**Generated**: {requirements_output.get('generated_at', 'Unknown')}",
+            f"**Total Requirements**: {requirements_output.get('total_requirements', len(requirements))}",
+            "",
+            "## Requirements",
+            "",
+            "| ID | Section | Text | Tags | Confidence |",
+            "|----|---------|------|------|-----------|"
+        ]
+        
+        # Add each requirement as table row
+        for req in requirements:
+            # Clean text for table (remove newlines, limit length)
+            clean_text = req["text"].replace("\n", " ").replace("|", "\\|")
+            if len(clean_text) > 80:
+                clean_text = clean_text[:77] + "..."
+            
+            # Map location_hint to section
+            section = req.get("location_hint", "Unknown").replace("|", "\\|")
+            
+            # Format tags
+            tags = ", ".join(req["tags"])
+            
+            # Map numeric confidence to text
+            confidence = req["confidence"]
+            if confidence >= 0.8:
+                conf_text = "high"
+            elif confidence >= 0.6:
+                conf_text = "medium"
+            else:
+                conf_text = "low"
+            
+            markdown_lines.append(
+                f"| {req['id']} | {section} | {clean_text} | {tags} | {conf_text} |"
+            )
+        
+        # Add glossary section
+        if glossary_suspects:
+            markdown_lines.extend([
+                "",
+                "## Glossary Suspects",
+                ""
+            ])
+            for term in sorted(glossary_suspects):
+                markdown_lines.append(f"- {term}")
+        
+        # Add processing summary if available
+        if "processing_summary" in requirements_output:
+            summary = requirements_output["processing_summary"]
+            markdown_lines.extend([
+                "",
+                "## Processing Summary",
+                "",
+                f"- **Files processed**: {summary.get('total_files', 'Unknown')}",
+                f"- **Requirements extracted**: {summary.get('total_requirements', 'Unknown')}",
+                f"- **Average confidence**: {summary.get('avg_confidence', 'Unknown')}",
+                f"- **Processing time**: {summary.get('processing_time_seconds', 'Unknown')}s"
+            ])
+        
+        return "\n".join(markdown_lines)
 
 
 def main():

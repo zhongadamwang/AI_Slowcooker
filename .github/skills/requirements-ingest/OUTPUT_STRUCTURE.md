@@ -5,17 +5,21 @@
 ```
 outputs/
 ├── projects/                           # Project-based organization
-│   ├── {project_id}/                   # Individual project folder
-│   │   ├── requirements.json           # 🎯 Main output for downstream skills
-│   │   ├── processing_log.json         # Processing metadata & audit trail
-│   │   ├── glossary.json              # Extracted domain terms
-│   │   ├── source_files/              # Source file references & copies
-│   │   │   ├── file_mapping.json      # Source file tracking
-│   │   │   └── originals/             # Optional: source file copies
-│   │   └── versions/                  # Version history (optional)
-│   │       ├── v1_2026-02-08_14-30.json
-│   │       └── v2_2026-02-08_15-45.json
+│   ├── {project_id}/                   # Individual project folder  
+│   │   └── Analysis/                   # 🎯 Analysis artifacts (aligned with org structure)
+│   │       ├── requirements.md        # PRIMARY: Markdown output for downstream skills
+│   │       ├── requirements.json      # SECONDARY: JSON output for machine processing
+│   │       ├── processing_log.json    # Processing metadata & audit trail
+│   │       ├── glossary.json         # Extracted domain terms
+│   │       ├── source_files/         # Source file references & copies
+│   │       │   ├── file_mapping.json # Source file tracking
+│   │       │   └── originals/        # Optional: source file copies
+│   │       └── versions/             # Version history (both .md and .json)
+│   │           ├── v1_2026-02-08_14-30.md
+│   │           ├── v1_2026-02-08_14-30.json 
+│   │           └── v2_2026-02-08_15-45.md
 │   └── another_project_id/
+│       └── Analysis/
 ├── templates/                         # Standard templates
 │   ├── requirements_schema.json      # JSON schema validation
 │   └── processing_template.json      # Processing log template
@@ -24,9 +28,39 @@ outputs/
 
 ## File Specifications
 
-### 1. `requirements.json` - Primary Output
-**Purpose**: Main file for downstream skill consumption
-**Schema**: Standard requirements format
+### 1. `requirements.md` - Primary Output (Markdown)
+**Purpose**: Main file for downstream skill consumption (follows original AI Agent Skillpack specification)
+**Format**: Markdown table with structured requirements  
+```markdown
+# Requirements Analysis Report
+
+**Project**: PROJECT-001
+**Source**: requirements.pdf
+**Generated**: 2026-02-08T14:30:00Z
+**Total Requirements**: 5
+
+## Requirements
+
+| ID | Section | Text | Tags | Confidence |
+|----|---------|------|------|-----------|
+| R-001 | Authentication | System shall authenticate users within 3 seconds | functional, performance | high |
+| R-002 | Performance | API response times should not exceed 200ms | nonfunctional | high |
+
+## Glossary Suspects
+- OAuth2
+- API
+- PCI DSS
+
+## Processing Summary
+- **Files processed**: 3
+- **Requirements extracted**: 5
+- **Average confidence**: 0.87
+- **Processing time**: 2.5s
+```
+
+### 2. `requirements.json` - Secondary Output (JSON)
+**Purpose**: Machine processing and internal analysis
+**Schema**: Structured JSON with detailed metadata
 ```json
 {
   "project_id": "PROJECT-001",
@@ -130,28 +164,36 @@ outputs/
 
 ## Downstream Integration Guidelines
 
-### For Skills Consuming Output
-1. **Standard Path**: `outputs/projects/{project_id}/requirements.json`
-2. **Validation**: Use JSON schema in `templates/requirements_schema.json`
-3. **Error Handling**: Check `processing_log.json` for warnings/errors
-4. **Glossary Access**: `glossary.json` for domain terms
+### For Skills Consuming Output (Priority Order)
+1. **Primary Path (Recommended)**: `outputs/projects/{project_id}/Analysis/requirements.md` - Markdown format matching original specification
+2. **Secondary Path**: `outputs/projects/{project_id}/Analysis/requirements.json` - JSON for machine processing
+3. **Metadata Access**: `outputs/projects/{project_id}/Analysis/processing_log.json` for warnings/errors and audit trail
+4. **Glossary Access**: `outputs/projects/{project_id}/Analysis/glossary.json` for domain terms
 
 ### File Access Patterns
 ```python
-# Standard downstream access pattern
-def load_requirements(project_id: str):
+# RECOMMENDED: Load Markdown output (follows original specification)
+def load_requirements_markdown(project_id: str) -> str:
+    \"\"\"Primary method for downstream skills\"\"\"
     base_path = f"outputs/projects/{project_id}"
     
-    # Primary requirements
-    requirements_file = f"{base_path}/requirements.json"
+    with open(f"{base_path}/requirements.md", 'r') as f:
+        return f.read()
+
+# ALTERNATIVE: Load JSON output (for machine processing)
+def load_requirements_json(project_id: str) -> dict:
+    \"\"\"Secondary method for machine processing\"\"\"
+    base_path = f"outputs/projects/{project_id}"
     
-    # Optional: Check processing status
-    log_file = f"{base_path}/processing_log.json"
+    with open(f"{base_path}/requirements.json") as f:
+        return json.load(f)
+
+# OPTIONAL: Check processing status
+def check_processing_log(project_id: str) -> dict:
+    base_path = f"outputs/projects/{project_id}"
     
-    # Optional: Access glossary
-    glossary_file = f"{base_path}/glossary.json"
-    
-    return load_json(requirements_file)
+    with open(f"{base_path}/processing_log.json") as f:
+        return json.load(f)
 ```
 
 ## Directory Management

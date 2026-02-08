@@ -74,15 +74,21 @@ def demo_file_output():
         result = ingestor.process_files([sample_file], project_id, save_to_file=True)
         
         # Show what was created
-        project_dir = Path(demo_output_dir) / "projects" / project_id
+        analysis_dir = Path(demo_output_dir) / "projects" / project_id / "Analysis"
         
         print(f"\n✅ Files created:")
-        for file_path in project_dir.rglob("*.json"):
+        for file_path in analysis_dir.rglob("*.json"):
             file_size = file_path.stat().st_size
-            print(f"   📄 {file_path.relative_to(demo_output_dir)} ({file_size} bytes)")
+            relative_path = file_path.relative_to(Path(demo_output_dir))
+            print(f"   📄 {relative_path} ({file_size} bytes)")
+        
+        for file_path in analysis_dir.rglob("*.md"):
+            file_size = file_path.stat().st_size
+            relative_path = file_path.relative_to(Path(demo_output_dir))
+            print(f"   📄 {relative_path} ({file_size} bytes)")
         
         # Show sample of main output
-        requirements_file = project_dir / "requirements.json"
+        requirements_file = analysis_dir / "requirements.json"
         if requirements_file.exists():
             with open(requirements_file, 'r') as f:
                 data = json.load(f)
@@ -105,8 +111,9 @@ def demo_file_output():
         
         # Show folder structure
         print(f"\n📂 Created folder structure:")
-        for root, dirs, files in os.walk(project_dir):
-            level = root.replace(str(project_dir), '').count(os.sep)
+        base_project_dir = Path(demo_output_dir) / "projects" / project_id
+        for root, dirs, files in os.walk(base_project_dir):
+            level = root.replace(str(base_project_dir), '').count(os.sep)
             indent = ' ' * 2 * level
             folder_name = os.path.basename(root) if level > 0 else project_id
             print(f"{indent}{folder_name}/")
@@ -116,11 +123,12 @@ def demo_file_output():
                 print(f"{subindent}{file}")
         
         print(f"\n🎯 **For Downstream Skills:**")
-        print(f"   Load requirements from: {requirements_file}")
-        print(f"   Standard access pattern:")
+        print(f"   Primary format (Markdown): {analysis_dir / 'requirements.md'}")
+        print(f"   Secondary format (JSON): {requirements_file}")
+        print(f"   Standard access pattern (Markdown):")
         print(f"   ```python")
-        print(f"   with open('{requirements_file}') as f:")
-        print(f"       requirements = json.load(f)")
+        print(f"   with open('{analysis_dir / 'requirements.md'}') as f:")
+        print(f"       markdown_content = f.read()  # Use for downstream skills")
         print(f"   ```")
         
         return True
@@ -143,10 +151,12 @@ def main():
     if success:
         print(f"\n🎉 Demo completed successfully!")
         print(f"\n💡 Next Steps:")
-        print(f"   1. Check the created files in demo_outputs/")
-        print(f"   2. Use 'requirements.json' with downstream skills")
-        print(f"   3. Review 'processing_log.json' for audit trail")
-        print(f"   4. Use 'glossary.json' for domain modeling")
+        print(f"   1. Check the created files in demo_outputs/projects/*/Analysis/")
+        print(f"   2. Use 'requirements.md' for downstream skills (primary)")
+        print(f"   3. Use 'requirements.json' for machine processing (secondary)")
+        print(f"   4. Review 'processing_log.json' for audit trail")
+        print(f"   5. Use 'glossary.json' for domain modeling")
+        print(f"   6. Note: Analysis folder aligns with organizational structure")
     else:
         print(f"\n❌ Demo failed - check error messages above")
 

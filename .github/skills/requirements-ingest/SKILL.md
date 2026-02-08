@@ -11,9 +11,12 @@ Transforms requirements documents (PDF/DOCX/Markdown/Email) into structured, ato
 ## Core Function
 
 **Input**: Raw files + project_id
-**Output**: JSON format saved to structured folders for downstream processing
-**Output Destination**: `outputs/projects/{project_id}/requirements.json` for traditional scripts, direct return for Copilot integration
-**Directory Structure**: Auto-created project folders with requirements, processing logs, and glossary files
+**Primary Output**: Markdown format matching original specification (for downstream skills)
+**Secondary Output**: JSON format saved to structured folders (for machine processing)
+**Output Destination**: 
+- Markdown: `outputs/projects/{project_id}/Analysis/requirements.md` (primary for downstream)
+- JSON: `outputs/projects/{project_id}/Analysis/requirements.json` (machine processing)
+**Directory Structure**: Auto-created project folders with Analysis subfolder containing dual-format requirements, processing logs, and glossary files
 
 ## Usage
 
@@ -32,33 +35,62 @@ from requirements_ingest import RequirementsIngestor
 
 ingestor = RequirementsIngestor()
 result = ingestor.process_files(["requirements.pdf"], "MY-PROJECT")
-# Creates: outputs/projects/MY-PROJECT/requirements.json
+# Creates: 
+#   outputs/projects/MY-PROJECT/requirements.md (primary)
+#   outputs/projects/MY-PROJECT/requirements.json (secondary)
 ```
 
 **Command Line:**
 ```bash
 python requirements_ingest.py PROJECT-001 requirements.pdf specs.docx
 # Saves to: outputs/projects/PROJECT-001/
+#   📄 requirements.md (Markdown - for downstream skills)
+#   📋 requirements.json (JSON - for machine processing)
 ```
 
 ## Output Schema
 
-ALWAYS return exactly this JSON structure:
+**Primary Format (Markdown)** - Following Original Specification:
+
+```markdown
+# Requirements Analysis Report
+
+**Project**: PROJECT-001
+**Source**: requirements.pdf
+**Generated**: 2026-02-08T14:30:00Z
+**Total Requirements**: 5
+
+## Requirements
+
+| ID | Section | Text | Tags | Confidence |
+|----|---------|------|---------|------------|
+| R-001 | Authentication | System shall authenticate users within 3 seconds | functional, performance | high |
+| R-002 | Performance | API response times should not exceed 200ms | nonfunctional | high |
+
+## Glossary Suspects
+- OAuth2
+- API
+- PCI DSS
+```
+
+**Secondary Format (JSON)** - For Machine Processing:
 
 ```json
 {
-  "project_id": "string",
+  "project_id": "PROJECT-001",
+  "generated_at": "2026-02-08T14:30:00Z",
+  "total_requirements": 5,
   "requirements": [
     {
       "id": "R-001",
       "source_file": "requirements.pdf",
       "location_hint": "page 3, para 2",
-      "text": "The system shall authenticate users within 2 seconds",
+      "text": "System shall authenticate users within 3 seconds",
       "tags": ["functional", "performance"],
       "confidence": 0.95
     }
   ],
-  "glossary_suspects": ["authentication", "API", "dashboard"]
+  "glossary_suspects": ["OAuth2", "API", "PCI DSS"]
 }
 ```
 
@@ -123,6 +155,7 @@ Multiple tags allowed. Explain reasoning for complex cases.
 2. **Atomic**: One verifiable requirement per chunk (priority over token limits)
 3. **Traceability**: Preserve source file + location hint
 4. **Confidence**: 0.0-1.0 based on clarity and context
-5. **Output Format**: JSON saved to structured folders for downstream processing
-6. **File Organization**: Auto-created project directories with requirements.json, processing_log.json, and glossary.json
+5. **Dual Output**: Markdown (primary for downstream) + JSON (machine processing)
+6. **File Organization**: Auto-created project directories with requirements.md, requirements.json, processing_log.json, and glossary.json
 7. **Versioning**: Previous outputs backed up to versions/ subfolder
+8. **Downstream Integration**: Use requirements.md for compatibility with original specification

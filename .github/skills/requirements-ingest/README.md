@@ -46,12 +46,14 @@ A comprehensive skill for normalizing requirements from multiple file formats in
 - **Integrated Workflow**: Works seamlessly within VS Code
 - **Cost Effective**: No additional API costs beyond Copilot subscription
 
-### � File Output Structure
-- **Primary Output**: `outputs/projects/{project_id}/requirements.json`
-- **Processing Log**: Audit trail with metadata and statistics
+### 📁 Dual Format Output
+- **Primary Output**: `outputs/projects/{project_id}/Analysis/requirements.md` (Markdown for downstream skills)
+- **Secondary Output**: `outputs/projects/{project_id}/Analysis/requirements.json` (JSON for machine processing)
+- **Processing Log**: Audit trail with metadata and statistics within Analysis folder
 - **Glossary**: Enhanced domain term extraction with context
 - **Versioning**: Automatic backup of previous outputs
 - **Source Mapping**: Track original file references and integrity
+- **Organizational Alignment**: Analysis folder structure matches project organizational model
 - **Atomic Chunking**: Breaks requirements into verifiable units (400-600 tokens, optimized for modern LLMs)
 - **Rule-based Classification**: Tags as functional/nonfunctional/constraint/assumption/out-of-scope
 - **Traceability**: Preserves source file and location references
@@ -60,7 +62,30 @@ A comprehensive skill for normalizing requirements from multiple file formats in
 
 ## Output Format
 
-JSON structure suitable for downstream processing:
+**Primary Format (Markdown)** - Following original specification for downstream skills:
+
+```markdown
+# Requirements Analysis Report
+
+**Project**: PROJECT-001
+**Source**: requirements.pdf
+**Generated**: 2026-02-08T14:30:00Z
+**Total Requirements**: 5
+
+## Requirements
+
+| ID | Section | Text | Tags | Confidence |
+|----|---------|------|------|------------|
+| R-001 | Authentication | System shall authenticate users within 3 seconds | functional, performance | high |
+| R-002 | Performance | API response times should not exceed 200ms | nonfunctional | high |
+
+## Glossary Suspects
+- OAuth2
+- API
+- PCI DSS
+```
+
+**Secondary Format (JSON)** - For machine processing:
 
 ```json
 {
@@ -118,26 +143,34 @@ python test_skill.py
 
 ### Test with Sample Data
 ```bash
-# Traditional processing with provided samples (saves to outputs/)
+# Traditional processing with provided samples (creates dual output in Analysis folder)
 python src/requirements_ingest.py SAMPLE-001 test_data/*.md test_data/*.txt
 
 # Check outputs
-ls outputs/projects/SAMPLE-001/
-# Shows: requirements.json, processing_log.json, glossary.json
+ls outputs/projects/SAMPLE-001/Analysis/
+# Shows: requirements.md, requirements.json, processing_log.json, glossary.json
 ```
 
 ### For Downstream Skills
 ```python
-# Standard way to access requirements from another skill
-import json
+# Standard way to access requirements from another skill (Markdown primary)
+def load_requirements_markdown(project_id: str) -> str:
+    """Load processed requirements in Markdown format (recommended for downstream skills)"""
+    with open(f"outputs/projects/{project_id}/Analysis/requirements.md") as f:
+        return f.read()
 
-def load_requirements(project_id: str):
-    \"\"\"Load processed requirements for downstream use\"\"\"
-    with open(f\"outputs/projects/{project_id}/requirements.json\") as f:
+# Alternative: JSON access for machine processing
+def load_requirements_json(project_id: str) -> dict:
+    """Load processed requirements in JSON format (for machine processing)"""
+    with open(f"outputs/projects/{project_id}/Analysis/requirements.json") as f:
         return json.load(f)
 
-requirements = load_requirements(\"MY-PROJECT\")
-# Access: requirements[\"requirements\"], requirements[\"glossary_suspects\"]
+# Usage examples
+markdown_content = load_requirements_markdown("MY-PROJECT")
+# Process Markdown table for downstream analysis
+
+json_data = load_requirements_json("MY-PROJECT")
+# Access: json_data["requirements"], json_data["glossary_suspects"]
 ```
 
 # Copilot integration (paste content into Copilot Chat)
