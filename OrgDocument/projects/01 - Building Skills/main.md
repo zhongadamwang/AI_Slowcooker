@@ -4,17 +4,18 @@
 This project's goal is to build the skills needed for evolutionary development process. This is an internal project focused on developing organizational capabilities and methodologies to support adaptive software development practices.
 
 ## Structure
-- `requirements/` - Project requirements and specifications
 - `artifacts/` - Supporting materials and analysis outputs
+  - `Requirements/` - Project requirements and specifications
   - `Analysis/` - Technical analysis documents
   - `Requirements/` - Detailed requirement specifications
   - `Sample Data/` - Test data and examples
   - `UI Mockups/` - Design mockups and wireframes
 
 ## Key Documents
-- [Initial Requirements](requirements/initial-requirements.md) - Project scope and high-level requirements
+- [Initial Requirements](artifacts/Requirements/initial-requirements.md) - Project scope and high-level requirements
 - [MVP Project Plan](project-plan-mvp.md) - Detailed MVP planning with PERT analysis
 - [Analysis artifacts (artifacts/Analysis/)](artifacts/Analysis/) - Technical analysis documents
+- [Requirements Process Description](artifacts/Requirements/requirements-process-description.md) - Development process transcript
 - [Skill Development Process Model](../../orgModel/01%20-%20Skill%20Development%20Process/main.md) - Process modeling for skill development
 
 ## MVP Scope
