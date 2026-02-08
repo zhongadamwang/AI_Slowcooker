@@ -69,6 +69,11 @@
   - **Description**: Generate Mermaid collaboration diagrams embedded in markdown
   - **Dependencies**: Domain analysis skills
 
+- [ ] **Change Management Skill (T16)**
+  - **Effort**: 2.5 days (estimated)  
+  - **Description**: Process AI conversations to identify and document requirement changes with automated referencing
+  - **Dependencies**: Requirements.Ingest skill, Phase 1 completion
+
 - [ ] **Process.ScopeMin Skill**
   - **Effort**: 1.1 days (estimated)  
   - **Description**: Identify minimum viable scope for requirements
@@ -107,15 +112,16 @@
 ## Current Progress & Metrics
 
 **Phase 1 Progress**: 4/7 tasks complete (57%)  
-**Overall MVP Progress**: 4/18 tasks complete (22%)  
-**Estimated Completion**: ~5 weeks from start (On track)
+**Overall MVP Progress**: 4/19 tasks complete (21%)  
+**Estimated Completion**: ~5.5 weeks from start (Expanded scope)
 
 ## Key Decisions Made
-1. **13 Modular Skills Approach**: Focus on building independent, composable AI skills for VS Code
+1. **14 Modular Skills Approach**: Focus on building independent, composable AI skills for VS Code (expanded from 13)
 2. **Markdown-First Workflow**: All skills consume and produce markdown for seamless editor integration  
 3. **Phase-Based Development**: Build foundation skills first, then domain analysis, then planning skills
-4. **VS Code Integration**: Design specifically for VS Code/Claude Code environment from start
-5. **Mermaid Diagrams**: Use Mermaid for embedded diagrams to maintain markdown workflow
+4. **Change Management Integration**: Added automated change tracking as core skill capability
+5. **VS Code Integration**: Design specifically for VS Code/Claude Code environment from start
+6. **Mermaid Diagrams**: Use Mermaid for embedded diagrams to maintain markdown workflow
 
 ## Issues & Blockers
 *None currently identified*

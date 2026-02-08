@@ -9,7 +9,7 @@ This project's goal is to build the skills needed for evolutionary development p
 - `artifacts/` - Supporting materials and analysis outputs
   - `Requirements/` - Project requirements and specifications
   - `Analysis/` - Technical analysis documents
-  - `Requirements/` - Detailed requirement specifications
+  - `Changes/` - Requirements change requests and tracking
   - `Sample Data/` - Test data and examples
   - `UI Mockups/` - Design mockups and wireframes
 - `tasks/` - Individual task files in GitHub issue format
@@ -21,6 +21,7 @@ This project's goal is to build the skills needed for evolutionary development p
 - [Initial Requirements](artifacts/Requirements/initial-requirements.md) - Project scope and high-level requirements
 - [MVP Project Plan](project-plan.md) - Detailed MVP planning with PERT analysis
 - [Tasks Folder](tasks/) - Individual task files in GitHub issue format for team collaboration
+- [Changes Management](artifacts/Changes/) - Requirements change tracking and documentation  
 - [Analysis artifacts (artifacts/Analysis/)](artifacts/Analysis/) - Technical analysis documents
 - [Requirements Process Description](artifacts/Requirements/requirements-process-description.md) - Development process transcript
 - [Skill Development Process Model](../../orgModel/01%20-%20Skill%20Development%20Process/main.md) - Process modeling for skill development

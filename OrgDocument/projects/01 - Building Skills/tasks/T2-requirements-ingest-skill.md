@@ -29,5 +29,9 @@ Implement the Requirements.Ingest skill that processes requirements from markdow
 ## Dependencies
 - T1: Skill Framework Setup
 
+## Related Changes
+<!-- Reference any relevant requirement changes that impact this task -->
+- [PROC-CHG-001](../artifacts/Changes/2026-02-08-PROC-CHG-001-implement-change-management-system.md) - Implementation of change tracking affects how this skill should handle requirement traceability
+
 ## Comments
 <!-- Team feedback and discussion will appear here when exported from GitHub -->
