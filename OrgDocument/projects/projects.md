@@ -1,6 +1,13 @@
+<!-- Identifier: project list -->
+
 # Project Registry
 
 This document tracks all active and completed projects in the organization.
+
+## Project Mapping
+Format: Project Identifier, Project Description, Project folder path mapping, Related OrgModel Process
+
+- PRJ-01, Building Skills - Build the skills needed for evolutionary development process, projects/01 - Building Skills, orgModel/01 - Skill Development Process
 
 ## Active Projects
 

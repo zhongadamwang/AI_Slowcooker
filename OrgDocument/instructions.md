@@ -7,11 +7,12 @@ This workspace organizes documents using a hierarchical folder structure to desc
 ```
 orgDocument/
 ├── LICENSE                     # MIT license
-├── instruction.md                   # This file
+├── instructions.md                   # This file
 ├── projects/                   # Root folder for projects
 │   ├── NN - [project name]               # Folder for project NN
 │   │   ├── requirements/       # Folder for project NN requirements files
-│   │   └── artifacts/          # Folder for the artifacts generated during the analysis. There can be sub-folders folders (e.g., `Analysis`, `Requirement`, `Sample Data`, `UI Mockup`) are for storing supporting materials and references.
+│   │   ├── artifacts/          # Folder for the artifacts generated during the analysis. There can be sub-folders folders (e.g., `Analysis`, `Requirement`, `Sample Data`, `UI Mockup`) are for storing supporting materials and references.
+│   │   └── tasks/             # Individual task files in GitHub issue format for team collaboration
 │   └── projects.md             # Projects Id and name mapping
 ├── orgModel/                   # Folder for modeling documents
 │   ├── NN - Process Name/           # Sub Process folder for sub-process "NN - Process Name" definined in collaboration.md of root orgModel folder
@@ -38,6 +39,7 @@ during the analysis
 - `projects/`: Root folder for all projects. Each project has its own numbered folder containing requirements and artifacts.
 - `projects.md`: Lists project identifiers and names, mapping them to their respective folders.
 - `artifacts/`: Contains supporting materials and references generated during analysis, organized into subfolders as needed (e.g., Analysis, Requirements, Sample Data, UI Mockups). These subfolders help keep related documents together for easy access. The naming of these subfolders should reflect their content clearly. There is no strict requirement to number these artifact subfolders and filenames.
+- `tasks/`: Contains individual task files formatted as GitHub issues to enable seamless integration with GitHub's issue tracking system. Task files follow T##-task-name.md naming convention and include clear acceptance criteria, dependencies, and effort estimates.
 - `orgModel/`: It is the root folder that contains modeling documents for processes, including main documentation, process diagrams, collaboration diagrams, domain models, and vocabulary mappings.
 - `main.md`: Provides an overview of the folder's purpose and links to related documents or subfolders.
 - `process.md`: Contains Mermaid Activity Diagrams describing workflows or business logic.  
@@ -75,11 +77,13 @@ during the analysis
   - `T`: Test cases list document (`test-case-list.md`)
   - `PRJ`: Project documents (projects folder)
   - `ART`: Artifact documents (within projects/artifacts subfolders)
+  - `TASK`: Individual task files (within projects/tasks subfolders, uses T##-task-name.md format)
 - Segment Source: Use the numeric prefixes from ancestor folders, in order from root to leaf. Always use decimal with leading zeros (e.g., `01`, `02`, `10`), never hexadecimal (avoid `0a`).
 
 ### Projects Integration Rules
 - Project identifiers follow format: `PRJ-NN` where NN matches the project folder number
 - Artifact files use: `ART-NN-[subfolder-type]` (e.g., `ART-01-Analysis`, `ART-01-Requirements`)
+- Task files use: `T##-task-name.md` format aligned with project plan task numbering
 - Project documents link to orgModel processes using cross-references
 - projects.md format: `PRJ-NN, Project Description, Folder Path, Related OrgModel Process`
 
@@ -111,6 +115,9 @@ during the analysis
 - Individual test case:
   - File: [orgModel/04 - Cementing Service Request/09 - Prepare Material/test-cases/tc-04-09-001.md](orgModel/04%20-%20Cementing%20Service%20Request/09%20-%20Prepare%20Material/test-cases/tc-04-09-001.md)
   - Identifier: `tc-04-09-001`
+- Project task files:
+  - File: [projects/01 - Building Skills/tasks/T1-skill-framework-setup.md](projects/01%20-%20Building%20Skills/tasks/T1-skill-framework-setup.md)
+  - Format: T##-task-name.md (aligned with project plan task numbering)
 
 ### Special Cases
 - Root overview files (no numbered folder):
