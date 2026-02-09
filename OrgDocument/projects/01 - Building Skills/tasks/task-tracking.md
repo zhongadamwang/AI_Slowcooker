@@ -18,13 +18,12 @@
   - **Description**: Process requirements from markdown input into structured format with dual output (Markdown + JSON) and Analysis folder structure
   - **Status**: ✅ Completed with enhancements - aligned to source requirements
 
-### In Progress
-- [ ] **Goals.Extract Skill**
+- [x] **Goals.Extract Skill** (Feb 8, 2026)
   - **Owner**: Development Team  
   - **Due**: February 11, 2026
   - **Effort**: 1.1 days (estimated)
-  - **Description**: Extract business goals and success criteria from requirements
-  - **Status**: Ready to start - can consume Requirements.Ingest outputs
+  - **Description**: Extract business goals and success criteria from requirements using rule-based pattern matching and outcome focus
+  - **Status**: ✅ Completed - outcome-focused extraction with traceability to Analysis folder structure
 
 ### Ready to Start
 - [ ] **Process.W5H Skill**

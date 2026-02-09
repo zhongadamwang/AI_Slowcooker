@@ -18,7 +18,9 @@ Build 12 modular AI skills that can be used within GitHub Copilot in VS Code to 
 - [x] MVP scope defined
 - [x] AI Agent skill architecture designed (12 skills)
 - [x] Using skill-creator skills framework
-- [ ] Core skills: Requirements.Ingest, Goals.Extract, Process.W5H
+- [x] Requirements.Ingest Skill completed (Feb 8, 2026)
+- [x] Goals.Extract Skill completed (Feb 8, 2026)
+- [ ] Process.W5H Skill
 - [ ] Basic markdown processing and output generation
 
 ### Phase 2: Domain & Process Skills
@@ -60,10 +62,10 @@ graph TD
 
 ### Task Estimates (Skills Development)
 
-| Task | Description | Optimistic | Most Likely | Pessimistic | Expected |
-|------|-------------|------------|-------------|-------------|----------|
-| T2 | Requirements.Ingest (Markdown) | 1 day | 2 days | 3 days | 2.0 days |
-| T3 | Goals.Extract | 0.5 days | 1 day | 2 days | 1.1 days |
+| Task | Description | Optimistic | Most Likely | Pessimistic | Expected | Status |
+|------|-------------|------------|-------------|-------------|----------|---------|
+| T2 | Requirements.Ingest (Markdown) | 1 day | 2 days | 3 days | 2.0 days | ✅ Completed |
+| T3 | Goals.Extract | 0.5 days | 1 day | 2 days | 1.1 days | ✅ Completed |
 | T4 | Process.W5H | 0.5 days | 1 day | 2 days | 1.1 days |
 | T5 | Domain.ExtractConcepts | 1 day | 2 days | 3 days | 2.0 days |
 | T6 | Domain.AlignEntities | 1 day | 2 days | 4 days | 2.2 days |
