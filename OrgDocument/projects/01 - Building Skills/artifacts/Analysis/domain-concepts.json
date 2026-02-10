@@ -1,0 +1,884 @@
+{
+  "project_id": "01-Building-Skills",
+  "extraction_metadata": {
+    "generated_at": "2026-02-10T00:00:00Z",
+    "source_files": ["requirements.json", "w5h-analysis.json", "goals.json"],
+    "total_concepts": 28,
+    "total_entities": 15,
+    "confidence_score": 0.91
+  },
+  "domain_entities": [
+    {
+      "id": "ENT-001",
+      "name": "DeveloperTeamMember",
+      "description": "Internal software developer who learns and applies evolutionary development skills",
+      "attributes": [
+        {
+          "name": "team_member_id",
+          "type": "identifier",
+          "description": "Unique team member identifier"
+        },
+        {
+          "name": "skill_level",
+          "type": "enumeration",
+          "description": "Current proficiency in evolutionary development",
+          "values": ["beginner", "intermediate", "advanced"]
+        },
+        {
+          "name": "role",
+          "type": "enumeration",
+          "description": "Team role and responsibilities",
+          "values": ["developer", "team_lead", "architect"]
+        },
+        {
+          "name": "assessment_status",
+          "type": "enumeration",
+          "description": "Status of skill assessment completion",
+          "values": ["not_started", "in_progress", "completed"]
+        }
+      ],
+      "domain_area": "Team Management",
+      "source_refs": ["R-002:Skill Framework Development", "R-017:Assessment and Measurement"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-002",
+      "name": "ProjectOwner",
+      "description": "Primary decision maker and change approver for the project",
+      "attributes": [
+        {
+          "name": "owner_id",
+          "type": "identifier",
+          "description": "Unique project owner identifier"
+        },
+        {
+          "name": "authority_level",
+          "type": "string",
+          "description": "Decision making authority scope"
+        },
+        {
+          "name": "approval_rights",
+          "type": "array",
+          "description": "Types of changes that can be approved"
+        }
+      ],
+      "domain_area": "Project Governance",
+      "source_refs": ["W5H:Primary Stakeholders"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-003",
+      "name": "AIAgentSkill",
+      "description": "Individual AI capability that can be invoked through VS Code/Claude Code",
+      "attributes": [
+        {
+          "name": "skill_id",
+          "type": "identifier",
+          "description": "Unique skill identifier"
+        },
+        {
+          "name": "skill_name",
+          "type": "string",
+          "description": "Human-readable skill name"
+        },
+        {
+          "name": "input_format",
+          "type": "enumeration",
+          "description": "Expected input data format",
+          "values": ["markdown", "json", "requirements_document"]
+        },
+        {
+          "name": "output_format",
+          "type": "enumeration",
+          "description": "Generated output data format",
+          "values": ["markdown", "json", "diagram"]
+        },
+        {
+          "name": "skill_category",
+          "type": "enumeration",
+          "description": "Functional category of the skill",
+          "values": ["requirements_processing", "domain_analysis", "planning", "change_management"]
+        },
+        {
+          "name": "implementation_status",
+          "type": "enumeration",
+          "description": "Current development and deployment status",
+          "values": ["not_started", "in_development", "testing", "deployed"]
+        }
+      ],
+      "domain_area": "AI Skills System",
+      "source_refs": ["R-019:High-Level Architecture", "R-023:Requirements.Ingest"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-004",
+      "name": "Requirement",
+      "description": "Individual atomic requirement extracted from source documents",
+      "attributes": [
+        {
+          "name": "requirement_id",
+          "type": "identifier",
+          "description": "Unique requirement identifier (R-XXX format)"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Requirement description text"
+        },
+        {
+          "name": "source_file",
+          "type": "string",
+          "description": "Original source document filename"
+        },
+        {
+          "name": "location_hint",
+          "type": "string",
+          "description": "Location within source document"
+        },
+        {
+          "name": "tags",
+          "type": "array",
+          "description": "Classification tags (functional, constraint, etc.)"
+        },
+        {
+          "name": "confidence",
+          "type": "decimal",
+          "description": "Extraction confidence score (0.0-1.0)"
+        }
+      ],
+      "domain_area": "Requirements Management",
+      "source_refs": ["R-023:Requirements.Ingest"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-005",
+      "name": "ChangeRequest",
+      "description": "Documented modification to requirements, scope, or processes",
+      "attributes": [
+        {
+          "name": "change_id",
+          "type": "identifier",
+          "description": "Unique change identifier (TYPE-CHG-XXX format)"
+        },
+        {
+          "name": "change_type",
+          "type": "enumeration",
+          "description": "Category of change being requested",
+          "values": ["REQ-CHG", "REQ-ADD", "REQ-REM", "SCOPE-CHG", "PROC-CHG"]
+        },
+        {
+          "name": "status",
+          "type": "enumeration",
+          "description": "Current change request status",
+          "values": ["proposed", "under_review", "approved", "implemented", "rejected"]
+        },
+        {
+          "name": "priority",
+          "type": "enumeration",
+          "description": "Change request priority level",
+          "values": ["low", "medium", "high", "critical"]
+        },
+        {
+          "name": "requested_by",
+          "type": "string",
+          "description": "Person or role requesting the change"
+        },
+        {
+          "name": "approved_by",
+          "type": "string",
+          "description": "Person or role who approved the change"
+        }
+      ],
+      "domain_area": "Change Management",
+      "source_refs": ["R-040:Requirement Modifications", "R-045:Change Management"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-006",
+      "name": "SkillFramework",
+      "description": "Documented competency structure for evolutionary development",
+      "attributes": [
+        {
+          "name": "framework_id",
+          "type": "identifier",
+          "description": "Unique framework identifier"
+        },
+        {
+          "name": "competency_areas",
+          "type": "array",
+          "description": "List of competency domains"
+        },
+        {
+          "name": "skill_levels",
+          "type": "array",
+          "description": "Proficiency levels (beginner, intermediate, advanced)"
+        },
+        {
+          "name": "assessment_criteria",
+          "type": "string",
+          "description": "Methods for evaluating skill proficiency"
+        }
+      ],
+      "domain_area": "Skill Development",
+      "source_refs": ["R-001:Skill Framework Development"],
+      "confidence": 0.90
+    },
+    {
+      "id": "ENT-007",
+      "name": "LearningPathway",
+      "description": "Structured approach to skill development and progression",
+      "attributes": [
+        {
+          "name": "pathway_id",
+          "type": "identifier",
+          "description": "Unique learning pathway identifier"
+        },
+        {
+          "name": "target_competency",
+          "type": "string",
+          "description": "Skill competency being developed"
+        },
+        {
+          "name": "learning_stages",
+          "type": "array",
+          "description": "Sequential learning phases"
+        },
+        {
+          "name": "prerequisites",
+          "type": "array",
+          "description": "Required prior knowledge or skills"
+        }
+      ],
+      "domain_area": "Skill Development",
+      "source_refs": ["R-003:Skill Framework Development"],
+      "confidence": 0.88
+    },
+    {
+      "id": "ENT-008",
+      "name": "VSCodeWorkspace",
+      "description": "Development environment where AI skills are integrated and executed",
+      "attributes": [
+        {
+          "name": "workspace_path",
+          "type": "string",
+          "description": "File system path to workspace root"
+        },
+        {
+          "name": "project_structure",
+          "type": "object",
+          "description": "Hierarchical folder organization"
+        },
+        {
+          "name": "active_skills",
+          "type": "array",
+          "description": "Currently available AI skills"
+        },
+        {
+          "name": "configuration",
+          "type": "object",
+          "description": "VS Code and Claude Code settings"
+        }
+      ],
+      "domain_area": "Development Environment",
+      "source_refs": ["R-021:Workspace Integration"],
+      "confidence": 0.90
+    },
+    {
+      "id": "ENT-009",
+      "name": "ProcessModel",
+      "description": "Documented workflow or methodology for evolutionary development",
+      "attributes": [
+        {
+          "name": "process_id",
+          "type": "identifier",
+          "description": "Unique process identifier"
+        },
+        {
+          "name": "process_type",
+          "type": "enumeration",
+          "description": "Category of process",
+          "values": ["planning", "design", "implementation", "feedback", "assessment"]
+        },
+        {
+          "name": "steps",
+          "type": "array",
+          "description": "Sequential process activities"
+        },
+        {
+          "name": "outcomes",
+          "type": "array",
+          "description": "Expected process deliverables"
+        }
+      ],
+      "domain_area": "Process Management",
+      "source_refs": ["R-004:Process Skills", "R-005:Process Skills"],
+      "confidence": 0.85
+    },
+    {
+      "id": "ENT-010",
+      "name": "DomainModel",
+      "description": "Conceptual model capturing entities, relationships, and behaviors within a problem domain",
+      "attributes": [
+        {
+          "name": "model_id",
+          "type": "identifier",
+          "description": "Unique domain model identifier"
+        },
+        {
+          "name": "entities",
+          "type": "array",
+          "description": "Business objects in the domain"
+        },
+        {
+          "name": "relationships",
+          "type": "array",
+          "description": "Associations between entities"
+        },
+        {
+          "name": "business_rules",
+          "type": "array",
+          "description": "Domain-specific constraints and logic"
+        }
+      ],
+      "domain_area": "Domain Analysis",
+      "source_refs": ["R-026:Domain.ExtractConcepts", "R-027:Domain.AlignEntities"],
+      "confidence": 0.92
+    },
+    {
+      "id": "ENT-011",
+      "name": "CollaborationDiagram",
+      "description": "Visual representation showing how actors and systems interact",
+      "attributes": [
+        {
+          "name": "diagram_id",
+          "type": "identifier",
+          "description": "Unique diagram identifier"
+        },
+        {
+          "name": "diagram_type",
+          "type": "enumeration",
+          "description": "Type of collaboration diagram",
+          "values": ["sequence", "activity", "collaboration"]
+        },
+        {
+          "name": "participants",
+          "type": "array",
+          "description": "Actors and systems in the diagram"
+        },
+        {
+          "name": "interactions",
+          "type": "array",
+          "description": "Message exchanges and collaborations"
+        },
+        {
+          "name": "format",
+          "type": "enumeration",
+          "description": "Diagram representation format",
+          "values": ["mermaid", "plantuml", "markdown"]
+        }
+      ],
+      "domain_area": "Process Visualization",
+      "source_refs": ["R-029:Diagram.GenerateCollaboration"],
+      "confidence": 0.90
+    },
+    {
+      "id": "ENT-012",
+      "name": "Task",
+      "description": "Individual work item derived from requirements and dependencies",
+      "attributes": [
+        {
+          "name": "task_id",
+          "type": "identifier",
+          "description": "Unique task identifier (T-XXX format)"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Brief task description"
+        },
+        {
+          "name": "task_type",
+          "type": "enumeration",
+          "description": "Category of work being performed",
+          "values": ["process", "data", "system", "test", "infra"]
+        },
+        {
+          "name": "dependencies",
+          "type": "array",
+          "description": "Other tasks that must complete first"
+        },
+        {
+          "name": "artifacts",
+          "type": "array",
+          "description": "Deliverables produced by this task"
+        },
+        {
+          "name": "acceptance_criteria",
+          "type": "array",
+          "description": "Conditions for task completion"
+        },
+        {
+          "name": "requirement_refs",
+          "type": "array",
+          "description": "Source requirements this task addresses"
+        }
+      ],
+      "domain_area": "Project Planning",
+      "source_refs": ["R-033:Plan.DeriveTasks"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-013",
+      "name": "EffortEstimate",
+      "description": "Time and complexity assessment for tasks using PERT methodology",
+      "attributes": [
+        {
+          "name": "estimate_id",
+          "type": "identifier",
+          "description": "Unique estimate identifier"
+        },
+        {
+          "name": "optimistic",
+          "type": "decimal",
+          "description": "Best-case time estimate"
+        },
+        {
+          "name": "most_likely",
+          "type": "decimal",
+          "description": "Most probable time estimate"
+        },
+        {
+          "name": "pessimistic",
+          "type": "decimal",
+          "description": "Worst-case time estimate"
+        },
+        {
+          "name": "expected",
+          "type": "decimal",
+          "description": "Calculated expected duration"
+        },
+        {
+          "name": "std_dev",
+          "type": "decimal",
+          "description": "Standard deviation indicating uncertainty"
+        },
+        {
+          "name": "confidence",
+          "type": "enumeration",
+          "description": "Confidence level in the estimate",
+          "values": ["low", "medium", "high"]
+        }
+      ],
+      "domain_area": "Project Planning",
+      "source_refs": ["R-034:Plan.EstimateEffort"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-014",
+      "name": "ProjectSchedule",
+      "description": "Timeline and milestone plan using estimates and dependency graphs",
+      "attributes": [
+        {
+          "name": "schedule_id",
+          "type": "identifier",
+          "description": "Unique schedule identifier"
+        },
+        {
+          "name": "total_duration",
+          "type": "decimal",
+          "description": "Complete project timeline"
+        },
+        {
+          "name": "critical_path",
+          "type": "array",
+          "description": "Longest sequence of dependent tasks"
+        },
+        {
+          "name": "milestones",
+          "type": "array",
+          "description": "Key checkpoints and deliverables"
+        },
+        {
+          "name": "resource_conflicts",
+          "type": "array",
+          "description": "Identified scheduling conflicts"
+        }
+      ],
+      "domain_area": "Project Planning",
+      "source_refs": ["R-035:Plan.BuildSchedule"],
+      "confidence": 0.92
+    },
+    {
+      "id": "ENT-015",
+      "name": "OrgModelComponent",
+      "description": "Element of the organizational model documenting processes, roles, and structures",
+      "attributes": [
+        {
+          "name": "component_id",
+          "type": "identifier",
+          "description": "Unique organizational model component identifier"
+        },
+        {
+          "name": "component_type",
+          "type": "enumeration",
+          "description": "Type of organizational element",
+          "values": ["process", "role", "structure", "capability"]
+        },
+        {
+          "name": "related_changes",
+          "type": "array",
+          "description": "Change requests affecting this component"
+        },
+        {
+          "name": "file_path",
+          "type": "string",
+          "description": "Location in the organizational documentation structure"
+        }
+      ],
+      "domain_area": "Organizational Modeling",
+      "source_refs": ["R-038:Change Management", "R-050:Change Process"],
+      "confidence": 0.88
+    }
+  ],
+  "business_concepts": [
+    {
+      "id": "CON-001",
+      "name": "EvolutionaryDevelopment",
+      "definition": "Adaptive development methodology that evolves requirements and solutions iteratively based on feedback",
+      "synonyms": ["adaptive development", "iterative development", "agile methodology"],
+      "domain_area": "Development Methodology",
+      "source_refs": ["R-001:Skill Framework Development", "R-004:Process Skills"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-002",
+      "name": "RequirementsIngest",
+      "definition": "Process of normalizing requirements from various formats into consistent, chunked representation with traceability",
+      "synonyms": ["requirements processing", "requirements normalization"],
+      "domain_area": "Requirements Management",
+      "source_refs": ["R-023:Requirements.Ingest"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-003",
+      "name": "ChangeManagement",
+      "definition": "Systematic approach to tracking, documenting, and managing changes to requirements and project scope",
+      "synonyms": ["change control", "change tracking"],
+      "domain_area": "Project Management",
+      "source_refs": ["R-036:Change Management", "R-037:Change Management"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-004",
+      "name": "SkillAssessment",
+      "definition": "Methodology for evaluating current team capabilities and identifying skill gaps",
+      "synonyms": ["competency evaluation", "capability assessment"],
+      "domain_area": "Human Resources",
+      "source_refs": ["R-017:Assessment and Measurement"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-005",
+      "name": "DomainExtraction",
+      "definition": "Process of identifying actors, systems, and business entities from requirements analysis",
+      "synonyms": ["domain modeling", "concept extraction"],
+      "domain_area": "Systems Analysis",
+      "source_refs": ["R-026:Domain.ExtractConcepts"],
+      "confidence": 0.92
+    },
+    {
+      "id": "CON-006",
+      "name": "W5HAnalysis",
+      "definition": "Framework examining Who, What, When, Where, Why, and How aspects of requirements",
+      "synonyms": ["stakeholder analysis", "requirement analysis framework"],
+      "domain_area": "Requirements Analysis",
+      "source_refs": ["R-025:Process.W5H"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-007",
+      "name": "AtomicRequirements",
+      "definition": "Requirements broken down into single, verifiable units optimized for LLM processing",
+      "synonyms": ["granular requirements", "chunked requirements"],
+      "domain_area": "Requirements Engineering",
+      "source_refs": ["R-023:Requirements.Ingest"],
+      "confidence": 0.92
+    },
+    {
+      "id": "CON-008",
+      "name": "PERTEstimation",
+      "definition": "Three-point estimation technique using optimistic, most likely, and pessimistic scenarios",
+      "synonyms": ["three-point estimation", "Program Evaluation and Review Technique"],
+      "domain_area": "Project Management",
+      "source_refs": ["R-034:Plan.EstimateEffort"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-009",
+      "name": "Traceability",
+      "definition": "Ability to track relationships between requirements, design elements, and implementation throughout development",
+      "synonyms": ["requirement traceability", "audit trail"],
+      "domain_area": "Quality Assurance",
+      "source_refs": ["R-038:Change Management"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-010",
+      "name": "ContinuousIntegration",
+      "definition": "Development practice where code changes are automatically built, tested, and integrated frequently",
+      "synonyms": ["CI", "automated integration"],
+      "domain_area": "Development Process",
+      "source_refs": ["R-010:Technical Skills"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-011",
+      "name": "MarkdownProcessing",
+      "definition": "Standardized approach where all skill inputs and outputs use markdown format for compatibility",
+      "synonyms": ["markdown workflow", "text processing"],
+      "domain_area": "Technical Standards",
+      "source_refs": ["R-020:Markdown Processing"],
+      "confidence": 0.92
+    },
+    {
+      "id": "CON-012",
+      "name": "ConfidenceScoring",
+      "definition": "Numerical rating indicating certainty level of AI analysis and extraction results",
+      "synonyms": ["confidence metrics", "quality scoring"],
+      "domain_area": "AI Quality Assurance",
+      "source_refs": ["Requirements processing methodology"],
+      "confidence": 0.88
+    },
+    {
+      "id": "CON-013",
+      "name": "StakeholderEngagement",
+      "definition": "Process of identifying, communicating with, and managing expectations of project participants",
+      "synonyms": ["stakeholder management", "stakeholder communication"],
+      "domain_area": "Project Management",
+      "source_refs": ["R-012:Collaboration Skills"],
+      "confidence": 0.90
+    }
+  ],
+  "terminology": [
+    {
+      "term": "VS Code",
+      "definition": "Visual Studio Code - Primary development environment for AI skills integration",
+      "context": "Development platform where skills are executed",
+      "domain_area": "Technical Infrastructure",
+      "source_refs": ["R-019:High-Level Architecture"]
+    },
+    {
+      "term": "Claude Code",
+      "definition": "AI coding assistant integration within VS Code providing runtime environment",
+      "context": "AI platform for skill execution",
+      "domain_area": "Technical Infrastructure", 
+      "source_refs": ["R-019:High-Level Architecture"]
+    },
+    {
+      "term": "GitHub Agent Skills Standard",
+      "definition": "Framework providing integration patterns for AI skills in GitHub-based workflows",
+      "context": "Standards compliance for skill development",
+      "domain_area": "Technical Standards",
+      "source_refs": ["SCOPE-CHG-003:Technology Stack Changes"]
+    },
+    {
+      "term": "skill-creator",
+      "definition": "Existing skills framework used as foundation instead of custom framework development",
+      "context": "Base framework for skill implementation",
+      "domain_area": "Technical Framework",
+      "source_refs": ["SCOPE-CHG-003:Technology Stack Changes"]
+    },
+    {
+      "term": "DAG",
+      "definition": "Directed Acyclic Graph - Mathematical structure representing task dependencies",
+      "context": "Task dependency modeling in project planning",
+      "domain_area": "Project Planning",
+      "source_refs": ["R-035:Plan.BuildSchedule"]
+    },
+    {
+      "term": "JSON Schema",
+      "definition": "Structured data validation format for machine processing",
+      "context": "Data format for AI skill outputs",
+      "domain_area": "Technical Standards",
+      "source_refs": ["Requirements processing methodology"]
+    },
+    {
+      "term": "Mermaid",
+      "definition": "Markdown-compatible diagramming language for creating flowcharts and sequence diagrams",
+      "context": "Diagram generation format",
+      "domain_area": "Visualization",
+      "source_refs": ["R-029:Diagram.GenerateCollaboration"]
+    },
+    {
+      "term": "PlantUML", 
+      "definition": "Text-based diagramming tool for creating UML diagrams from textual descriptions",
+      "context": "Alternative diagram generation format",
+      "domain_area": "Visualization",
+      "source_refs": ["R-029:Diagram.GenerateCollaboration"]
+    },
+    {
+      "term": "LLM",
+      "definition": "Large Language Model - AI system used for natural language processing",
+      "context": "AI technology underlying skill processing",
+      "domain_area": "Artificial Intelligence",
+      "source_refs": ["Requirements processing methodology"]
+    },
+    {
+      "term": "API",
+      "definition": "Application Programming Interface - Interface for system interactions",
+      "context": "Integration points between systems and skills",
+      "domain_area": "Technical Integration", 
+      "source_refs": ["Glossary analysis"]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "REL-001",
+      "type": "ownership",
+      "source_entity": "DeveloperTeamMember",
+      "target_entity": "SkillFramework",
+      "description": "Team member uses skill framework for development",
+      "cardinality": "many-to-one",
+      "source_refs": ["R-001:Skill Framework Development"]
+    },
+    {
+      "id": "REL-002",
+      "type": "approval",
+      "source_entity": "ProjectOwner", 
+      "target_entity": "ChangeRequest",
+      "description": "Project owner approves or rejects change requests",
+      "cardinality": "one-to-many",
+      "source_refs": ["Change management workflow"]
+    },
+    {
+      "id": "REL-003",
+      "type": "processing",
+      "source_entity": "AIAgentSkill",
+      "target_entity": "Requirement",
+      "description": "AI skills process requirements to generate analysis outputs",
+      "cardinality": "many-to-many",
+      "source_refs": ["R-023:Requirements.Ingest"]
+    },
+    {
+      "id": "REL-004",
+      "type": "execution",
+      "source_entity": "VSCodeWorkspace",
+      "target_entity": "AIAgentSkill", 
+      "description": "VS Code workspace hosts and executes AI skills",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-021:Workspace Integration"]
+    },
+    {
+      "id": "REL-005",
+      "type": "traceability",
+      "source_entity": "ChangeRequest",
+      "target_entity": "Requirement",
+      "description": "Change requests link to affected requirements",
+      "cardinality": "many-to-many",
+      "source_refs": ["R-038:Change Management"]
+    },
+    {
+      "id": "REL-006",
+      "type": "derivation",
+      "source_entity": "Task",
+      "target_entity": "Requirement",
+      "description": "Tasks are derived from analysis of requirements",
+      "cardinality": "many-to-many",
+      "source_refs": ["R-033:Plan.DeriveTasks"]
+    },
+    {
+      "id": "REL-007",
+      "type": "estimation",
+      "source_entity": "EffortEstimate", 
+      "target_entity": "Task",
+      "description": "Each task has associated effort estimate",
+      "cardinality": "one-to-one",
+      "source_refs": ["R-034:Plan.EstimateEffort"]
+    },
+    {
+      "id": "REL-008",
+      "type": "scheduling",
+      "source_entity": "ProjectSchedule",
+      "target_entity": "Task",
+      "description": "Project schedule incorporates tasks and their dependencies",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-035:Plan.BuildSchedule"]
+    },
+    {
+      "id": "REL-009",
+      "type": "visualization",
+      "source_entity": "CollaborationDiagram",
+      "target_entity": "DomainModel",
+      "description": "Diagrams visualize domain model interactions",
+      "cardinality": "many-to-one", 
+      "source_refs": ["R-029:Diagram.GenerateCollaboration"]
+    },
+    {
+      "id": "REL-010",
+      "type": "assessment",
+      "source_entity": "DeveloperTeamMember",
+      "target_entity": "LearningPathway",
+      "description": "Team members follow learning pathways based on assessments",
+      "cardinality": "many-to-many",
+      "source_refs": ["R-003:Skill Framework Development", "R-017:Assessment and Measurement"]
+    }
+  ],
+  "domain_areas": [
+    {
+      "name": "AI Skills System",
+      "description": "Modular AI capabilities for automating requirements-to-delivery pipeline",
+      "entities": ["AIAgentSkill", "VSCodeWorkspace", "Requirement"],
+      "concepts": ["RequirementsIngest", "DomainExtraction", "MarkdownProcessing", "ConfidenceScoring"],
+      "key_processes": ["Requirements Processing", "Domain Analysis", "Task Generation", "Schedule Building"]
+    },
+    {
+      "name": "Team Management", 
+      "description": "Human resource development and skill building for evolutionary development",
+      "entities": ["DeveloperTeamMember", "SkillFramework", "LearningPathway"],
+      "concepts": ["EvolutionaryDevelopment", "SkillAssessment"],
+      "key_processes": ["Skill Assessment", "Learning Path Creation", "Competency Development"]
+    },
+    {
+      "name": "Change Management",
+      "description": "Systematic tracking and management of requirement and scope changes",
+      "entities": ["ChangeRequest", "OrgModelComponent"],
+      "concepts": ["ChangeManagement", "Traceability"],
+      "key_processes": ["Change Documentation", "Impact Analysis", "Change Approval", "Traceability Maintenance"]
+    },
+    {
+      "name": "Project Planning",
+      "description": "Task derivation, estimation, and scheduling based on requirements analysis", 
+      "entities": ["Task", "EffortEstimate", "ProjectSchedule"],
+      "concepts": ["PERTEstimation", "W5HAnalysis"],
+      "key_processes": ["Task Derivation", "Effort Estimation", "Schedule Building", "Dependency Management"]
+    },
+    {
+      "name": "Requirements Management",
+      "description": "Systematic handling of requirements from ingestion through change tracking",
+      "entities": ["Requirement", "ChangeRequest"],
+      "concepts": ["AtomicRequirements", "RequirementsIngest", "ChangeManagement"],
+      "key_processes": ["Requirements Normalization", "Classification", "Traceability Maintenance"]
+    },
+    {
+      "name": "Domain Analysis",
+      "description": "Extraction and modeling of business concepts, entities, and relationships",
+      "entities": ["DomainModel", "CollaborationDiagram"],
+      "concepts": ["DomainExtraction", "W5HAnalysis"],
+      "key_processes": ["Concept Extraction", "Entity Modeling", "Relationship Mapping", "Visualization"]
+    },
+    {
+      "name": "Development Environment",
+      "description": "Technical infrastructure supporting AI-driven development workflow",
+      "entities": ["VSCodeWorkspace"],
+      "concepts": ["ContinuousIntegration", "MarkdownProcessing"],
+      "key_processes": ["Workspace Configuration", "Skill Integration", "Workflow Automation"]
+    },
+    {
+      "name": "Project Governance",
+      "description": "Decision making, approval authority, and strategic oversight",
+      "entities": ["ProjectOwner"],
+      "concepts": ["StakeholderEngagement"],
+      "key_processes": ["Decision Making", "Change Approval", "Strategic Planning"]
+    }
+  ]
+}
