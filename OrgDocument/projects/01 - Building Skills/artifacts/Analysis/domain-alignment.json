@@ -1,0 +1,371 @@
+{
+  "project_id": "01-Building-Skills",
+  "alignment_metadata": {
+    "generated_at": "2026-02-10T10:30:00Z",
+    "source_concepts_file": "domain-concepts.json",
+    "reference_models": ["orgModel/01-Skill-Development-Process/domain-model.md"],
+    "reference_vocabularies": ["orgModel/01-Skill-Development-Process/vocabulary.md"],
+    "total_alignments": 23,
+    "conflict_count": 3,
+    "alignment_confidence": 0.87
+  },
+  "entity_alignments": [
+    {
+      "extracted_entity": {
+        "id": "ENT-001",
+        "name": "DeveloperTeamMember",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "direct_match",
+        "target_entity": {
+          "name": "Team Member",
+          "source": "orgModel/01-Skill-Development-Process/domain-model.md",
+          "section": "Actors.Primary Actors"
+        },
+        "confidence": 0.95,
+        "mapping_rationale": "Both represent individuals seeking to develop skills within organization",
+        "recommended_action": "map_to_existing",
+        "notes": "DeveloperTeamMember is specialization of Team Member focused on software development"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-002", 
+        "name": "ProjectOwner",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "partial_match",
+        "target_entity": {
+          "name": "Team Lead",
+          "source": "orgModel/01-Skill-Development-Process/domain-model.md", 
+          "section": "Actors.Primary Actors"
+        },
+        "confidence": 0.72,
+        "mapping_rationale": "Both have authority and decision-making responsibilities, but ProjectOwner has broader scope",
+        "recommended_action": "create_distinction",
+        "notes": "ProjectOwner represents project-level authority while Team Lead focuses on team capability management"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-003",
+        "name": "AIAgentSkill", 
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "partial_match",
+        "target_entity": {
+          "name": "Skill",
+          "source": "orgModel/01-Skill-Development-Process/domain-model.md",
+          "section": "Core Entities"
+        },
+        "confidence": 0.85,
+        "mapping_rationale": "Both represent capabilities, but AIAgentSkill is specifically for AI automation",
+        "recommended_action": "create_specialization",
+        "notes": "AIAgentSkill extends Skill concept for AI-enabled capabilities"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-006",
+        "name": "SkillFramework",
+        "source": "domain-concepts.json" 
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.88,
+        "mapping_rationale": "Represents structured competency framework not in organizational model",
+        "recommended_action": "extend_model",
+        "notes": "SkillFramework organizes multiple related skills - valuable addition to organizational model"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-007",
+        "name": "Assessment",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "direct_match", 
+        "target_entity": {
+          "name": "Assessment",
+          "source": "orgModel/01-Skill-Development-Process/domain-model.md",
+          "section": "Core Entities"
+        },
+        "confidence": 0.98,
+        "mapping_rationale": "Identical concept and structure for evaluating skills",
+        "recommended_action": "map_to_existing",
+        "notes": "Perfect semantic and structural alignment"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-004",
+        "name": "Requirement",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.92,
+        "mapping_rationale": "Requirements management not covered in skill development domain model",
+        "recommended_action": "define_new_domain",
+        "notes": "Requirement belongs to separate Requirements Management domain area"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-005", 
+        "name": "ChangeRequest",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.90,
+        "mapping_rationale": "Change management not covered in organizational skill development model",
+        "recommended_action": "define_new_domain", 
+        "notes": "ChangeRequest belongs to separate Change Management domain area"
+      }
+    }
+  ],
+  "terminology_alignments": [
+    {
+      "extracted_term": {
+        "term": "SkillAssessment",
+        "definition": "Methodology for evaluating current team capabilities and identifying skill gaps", 
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "vocabulary_match",
+        "target_term": {
+          "term": "Skills Assessment",
+          "definition": "Systematic evaluation of current skill levels",
+          "source": "orgModel/01-Skill-Development-Process/vocabulary.md"
+        },
+        "confidence": 0.95,
+        "relationship": "synonym", 
+        "recommended_action": "adopt_standard",
+        "notes": "Minor spelling difference - adopt organizational standard 'Skills Assessment'"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "EvolutionaryDevelopment",
+        "definition": "Adaptive development methodology that evolves requirements and solutions iteratively based on feedback",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "vocabulary_match",
+        "target_term": {
+          "term": "Adaptive Planning", 
+          "definition": "Planning approach that adjusts based on learning and feedback",
+          "source": "orgModel/01-Skill-Development-Process/vocabulary.md"
+        },
+        "confidence": 0.88,
+        "relationship": "broader",
+        "recommended_action": "define_new",
+        "notes": "EvolutionaryDevelopment encompasses Adaptive Planning plus other iterative practices"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "ContinuousIntegration",
+        "definition": "Development practice where code changes are automatically built, tested, and integrated frequently",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "vocabulary_match",
+        "target_term": {
+          "term": "Continuous Integration",
+          "definition": "Practice of regularly integrating and testing code changes",
+          "source": "orgModel/01-Skill-Development-Process/vocabulary.md"
+        },
+        "confidence": 1.0,
+        "relationship": "synonym", 
+        "recommended_action": "adopt_standard",
+        "notes": "Exact match in meaning, adopt organizational term format"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "RequirementsIngest",
+        "definition": "Process of normalizing requirements from various formats into consistent, chunked representation with traceability",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.92,
+        "relationship": "unrelated",
+        "recommended_action": "define_new",
+        "notes": "Project-specific concept not in organizational vocabulary - valuable addition"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "ChangeManagement", 
+        "definition": "Systematic approach to tracking, documenting, and managing changes to requirements and project scope",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.95,
+        "relationship": "unrelated",
+        "recommended_action": "define_new",
+        "notes": "Standard industry term not yet in organizational vocabulary"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "W5HAnalysis",
+        "definition": "Framework examining Who, What, When, Where, Why, and How aspects of requirements", 
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.90,
+        "relationship": "unrelated",
+        "recommended_action": "define_new",
+        "notes": "Valuable analysis framework not in organizational vocabulary"
+      }
+    }
+  ],
+  "relationship_alignments": [
+    {
+      "extracted_relationship": {
+        "id": "REL-001", 
+        "source_entity": "DeveloperTeamMember",
+        "target_entity": "SkillProfile",
+        "type": "has"
+      },
+      "alignment_result": {
+        "alignment_pattern": "existing_pattern",
+        "similar_relationships": [
+          {
+            "source": "Team Member",
+            "target": "Skill Profile", 
+            "type": "has",
+            "model": "orgModel/01-Skill-Development-Process/domain-model.md"
+          }
+        ],
+        "recommended_action": "use_existing_pattern",
+        "notes": "Exact match with organizational relationship pattern"
+      }
+    },
+    {
+      "extracted_relationship": {
+        "id": "REL-002",
+        "source_entity": "Assessment", 
+        "target_entity": "AIAgentSkill",
+        "type": "validates"
+      },
+      "alignment_result": {
+        "alignment_pattern": "existing_pattern",
+        "similar_relationships": [
+          {
+            "source": "Assessment",
+            "target": "Skill",
+            "type": "validates", 
+            "model": "orgModel/01-Skill-Development-Process/domain-model.md"
+          }
+        ],
+        "recommended_action": "use_existing_pattern",
+        "notes": "Follows organizational assessment validation pattern"
+      }
+    }
+  ],
+  "conflicts_detected": [
+    {
+      "conflict_id": "CONF-001",
+      "type": "naming_conflict",
+      "description": "Extracted 'SkillAssessment' vs organizational 'Skills Assessment' (pluralization difference)",
+      "affected_items": ["CON-004"],
+      "severity": "low",
+      "resolution_options": [
+        {
+          "option": "adopt_standard",
+          "description": "Use organizational 'Skills Assessment' terminology",
+          "impact": "Improves consistency with established terminology"
+        }
+      ]
+    },
+    {
+      "conflict_id": "CONF-002", 
+      "type": "definition_conflict",
+      "description": "Project Assessment entity broader scope than organizational Skills Assessment",
+      "affected_items": ["ENT-007", "CON-004"],
+      "severity": "medium",
+      "resolution_options": [
+        {
+          "option": "create_hierarchy",
+          "description": "Define Skills Assessment as specialization of broader Assessment concept",
+          "impact": "Maintains both concepts while clarifying relationship"
+        },
+        {
+          "option": "rename_project_concept",
+          "description": "Rename project Assessment to ProjectAssessment for clarity",
+          "impact": "Avoids confusion with organizational Skills Assessment"
+        }
+      ]
+    },
+    {
+      "conflict_id": "CONF-003",
+      "type": "structure_conflict", 
+      "description": "ProjectOwner authority scope differs from Team Lead team-focused responsibilities",
+      "affected_items": ["ENT-002"],
+      "severity": "medium",
+      "resolution_options": [
+        {
+          "option": "define_roles_hierarchy",
+          "description": "Position ProjectOwner as higher authority level than Team Lead",
+          "impact": "Clarifies authority relationships and decision-making chain"
+        },
+        {
+          "option": "separate_domains",
+          "description": "Keep ProjectOwner in project governance, Team Lead in skill development",
+          "impact": "Maintains domain separation with clear role boundaries"
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC-001",
+      "type": "standardization",
+      "priority": "high", 
+      "description": "Adopt organizational terminology: 'Skills Assessment', 'Continuous Integration'",
+      "impact": "Ensures consistency with established organizational vocabulary",
+      "implementation": "Update domain-concepts.json and all project documentation"
+    },
+    {
+      "id": "REC-002",
+      "type": "extension",
+      "priority": "medium",
+      "description": "Extend organizational model with SkillFramework, AIAgentSkill entities",
+      "impact": "Enriches organizational capability modeling for AI-enabled development",
+      "implementation": "Propose additions to organizational domain model"
+    },
+    {
+      "id": "REC-003", 
+      "type": "clarification",
+      "priority": "medium",
+      "description": "Define relationship between ProjectOwner and Team Lead roles",
+      "impact": "Clarifies authority and responsibility boundaries",
+      "implementation": "Document role hierarchy and decision-making authority"
+    },
+    {
+      "id": "REC-004",
+      "type": "domain_expansion", 
+      "priority": "low",
+      "description": "Consider creating separate domain models for Requirements Management and Change Management",
+      "impact": "Provides dedicated governance for requirements and change processes",
+      "implementation": "Create additional organizational domain models as project portfolio grows"
+    }
+  ]
+}
