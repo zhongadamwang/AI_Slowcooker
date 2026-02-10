@@ -13,18 +13,19 @@ Build 12 modular AI skills that can be used within GitHub Copilot in VS Code to 
 
 ## MVP Work Breakdown Structure (WBS)
 
-### Phase 1: Foundation & Core Skills (Current)
+### Phase 1: Foundation & Core Skills (Completed ✅)
 - [x] Requirements analysis completed
 - [x] MVP scope defined
 - [x] AI Agent skill architecture designed (12 skills)
 - [x] Using skill-creator skills framework
 - [x] Requirements.Ingest Skill completed (Feb 8, 2026)
 - [x] Goals.Extract Skill completed (Feb 8, 2026)
-- [ ] Process.W5H Skill
-- [ ] Basic markdown processing and output generation
+- [x] Process.W5H Skill completed (Feb 10, 2026)
+- [x] Basic markdown processing and output generation
 
-### Phase 2: Domain & Process Skills
-- [ ] Domain analysis skills: ExtractConcepts, AlignEntities, ProposeNewConcepts
+### Phase 2: Domain & Process Skills (In Progress)
+- [x] Domain.ExtractConcepts completed (Feb 10, 2026)
+- [ ] Domain analysis skills: AlignEntities, ProposeNewConcepts
 - [ ] Diagram generation: GenerateCollaboration (Mermaid)
 - [ ] Process skills: ScopeMin, Merge, FindTopAndUpdate
 - [ ] Integration testing between skills
@@ -66,8 +67,8 @@ graph TD
 |------|-------------|------------|-------------|-------------|----------|---------|
 | T2 | Requirements.Ingest (Markdown) | 1 day | 2 days | 3 days | 2.0 days | ✅ Completed |
 | T3 | Goals.Extract | 0.5 days | 1 day | 2 days | 1.1 days | ✅ Completed |
-| T4 | Process.W5H | 0.5 days | 1 day | 2 days | 1.1 days |
-| T5 | Domain.ExtractConcepts | 1 day | 2 days | 3 days | 2.0 days |
+| T4 | Process.W5H | 0.5 days | 1 day | 2 days | 1.1 days | ✅ Completed |
+| T5 | Domain.ExtractConcepts | 1 day | 2 days | 3 days | 2.0 days | ✅ Completed |
 | T6 | Domain.AlignEntities | 1 day | 2 days | 4 days | 2.2 days |
 | T7 | Domain.ProposeNewConcepts | 0.5 days | 1 day | 2 days | 1.1 days |
 | T8 | Diagram.GenerateCollaboration | 1 day | 2 days | 3 days | 2.0 days |
@@ -90,7 +91,7 @@ graph TD
 ## Success Metrics
 
 ### Functional Metrics
-- [ ] **Core Pipeline**: Requirements.Ingest → Goals.Extract → W5H works with markdown input/output
+- [x] **Core Pipeline**: ✅ Requirements.Ingest → Goals.Extract → W5H works with markdown input/output
 - [ ] **Domain Analysis**: Entity extraction and alignment produces structured markdown
 - [ ] **Diagram Generation**: Mermaid sequence diagrams embedded in markdown with requirement traceability
 - [ ] **Task Planning**: Task DAG and PERT estimates generated in markdown format

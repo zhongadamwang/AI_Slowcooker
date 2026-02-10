@@ -13,7 +13,7 @@ Format: Project Identifier, Project Description, Project folder path mapping, Re
 
 | ID | Project Name | Description | Status | Start Date |
 |----|--------------|-------------|---------|------------|
-| 01 | Building Skills | Build the skills needed for evolutionary development process | Initial Setup | 2026-02-07 |
+| 01 | Building Skills | Build the skills needed for evolutionary development process | Development | 2026-02-07 |
 
 ## Completed Projects
 
