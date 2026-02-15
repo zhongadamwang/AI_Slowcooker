@@ -11,9 +11,9 @@ Format: Project Identifier, Project Description, Project folder path mapping, Re
 
 ## Active Projects
 
-| ID | Project Name | Description | Status | Start Date |
-|----|--------------|-------------|---------|------------|
-| 01 | Building Skills | Build the skills needed for evolutionary development process | Development | 2026-02-07 |
+| ID | Project Name | Description | Status | Start Date | Progress |
+|----|--------------|-------------|---------|------------|----------|
+| 01 | Building Skills | Build the skills needed for evolutionary development process | Development (43% Complete) | 2026-02-07 | Phase 2 Advanced |
 
 ## Completed Projects
 
