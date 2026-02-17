@@ -1,7 +1,7 @@
 # Project Glossary - 01 Building Skills
 
-**Generated**: 2026-02-10T00:00:00Z  
-**Source**: Requirements analysis of 11 project documents  
+**Generated**: 2026-02-17T00:00:00Z  
+**Source**: Requirements analysis of 13 project documents (+2 incremental)  
 **Usage**: Domain terminology for AI Agent Skills development
 
 ## Technical Infrastructure Terms
@@ -119,6 +119,55 @@ Standardized document structures that ensure consistency in project documentatio
 
 ### Reference Management  
 System for maintaining links and relationships between documents, requirements, and project artifacts.
+
+## Evolutionary Development Process (EDP) Terms
+
+### Systems Theory
+Interdisciplinary study of systems that focuses on understanding the structure and behavior of complex systems through holistic rather than reductionist approaches.
+
+### Information Theory  
+Mathematical framework for quantifying, storing, and communicating information, providing foundation for understanding system inputs, outputs, and transformations.
+
+### Object-Oriented Development
+Programming paradigm that organizes software design around data objects rather than functions and logic, emphasizing encapsulation, inheritance, and polymorphism.
+
+### Open System Framing
+Analytical approach that views systems as having explicit boundaries, inputs, outputs, environment interactions, and constraints rather than closed or isolated systems.
+
+### Targeted System
+The main subject or core domain system that delivers primary function and value within an EDP analysis context.
+
+### Empowerer
+External systems or roles that provide goals, resources, and constraints to the Targeted System within the responsibility chain.
+
+### Responsibility Chain
+Formal relationship structure showing how goals, resources, and constraints flow from Empowerers to the Targeted System.
+
+### Value Chain
+Formal relationship structure showing how deliverables, acceptance criteria, and metrics flow from the Targeted System back to Empowerers.
+
+### System Boundaries
+Explicit definition of what is inside versus outside the system, including spatial, temporal, cognitive, organizational, technical, data, and compliance boundaries.
+
+### Validation Methods
+Systematic approaches for verifying assumptions, testing hypotheses, and confirming system descriptions through empirical evidence and stakeholder feedback.
+
+### UML Policy
+Guidelines that prefer Mermaid and structured text over UML diagrams, requiring explicit justification and limitation documentation when UML is used.
+
+## Model Integration Terms
+
+### Process Breakdown Hierarchy
+Hierarchical organization of organizational processes where each level contains detailed sub-processes, similar to work breakdown structure but for process models.
+
+### Integration Planning
+Systematic approach to merging new models into existing organizational structures by identifying minimal disruption paths and domain entity alignments.
+
+### Model Assessment
+Analysis process for understanding current organizational model structure, including domain models, process flows, collaboration patterns, and state machines.
+
+### Stakeholder Training
+Formal process for educating affected parties about new models, changes to existing processes, and implementation impacts during model integration.
 
 ## Change Management Specific Terms
 

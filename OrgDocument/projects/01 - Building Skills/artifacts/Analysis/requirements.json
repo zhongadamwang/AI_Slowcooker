@@ -1,7 +1,7 @@
 {
   "project_id": "01-Building-Skills",
-  "generated_at": "2026-02-10T00:00:00Z",
-  "total_requirements": 53,
+  "generated_at": "2026-02-17T00:00:00Z",
+  "total_requirements": 76,
   "requirements": [
     {
       "id": "R-001",
@@ -426,6 +426,190 @@
       "text": "From OrgModel to Changes: ../../projects/{project-name}/artifacts/Changes/ path pattern", 
       "tags": ["constraint", "technical"],
       "confidence": 0.95
+    },
+    {
+      "id": "R-054",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "ROLE section, prime directive",
+      "text": "System shall use systems theory, information theory, and object-oriented development as foundational principles",
+      "tags": ["functional", "constraint"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-055",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "ROLE section, prime directive",
+      "text": "System must optimize for accurate, multi-perspective system description over UML compliance",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-056",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "ROLE section",
+      "text": "System shall use Mermaid and structured text as primary documentation formats",
+      "tags": ["functional", "technical"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-057",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "PRINCIPLES section",
+      "text": "System must describe all entities through a system lens using Open System framing with Boundaries, Inputs, Outputs, Environment, Constraints",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-058",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "PRINCIPLES section",
+      "text": "System shall implement responsibility chain from Empowerers to Targeted System providing goals, resources, and constraints",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-059",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "PRINCIPLES section",
+      "text": "System must implement value chain from Targeted System to Empowerers delivering deliverables, acceptance, and metrics",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-060",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "PRINCIPLES section",
+      "text": "System shall support evolutionary development with recorded iterations, hypotheses, validations, corrections, and rollback points",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-061",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "PRINCIPLES section",
+      "text": "System must always state perspective, assumptions, uncertainties, and validation methods",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-062",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "OUTPUT STANDARDS section",
+      "text": "System shall provide structured sections with headings for Boundaries/Inputs/Outputs/Environment/Constraints",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-063",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "OUTPUT STANDARDS section",
+      "text": "System must include collaboration protocols, responsibility chains, value chains, views, perspectives, assumptions, uncertainties, and validation methods in outputs",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-064",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "OUTPUT STANDARDS section, UML POLICY",
+      "text": "System shall prefer Mermaid diagrams over UML with justification required for UML usage and limitations documented",
+      "tags": ["functional", "technical"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-065",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "OUTPUT STANDARDS section",
+      "text": "System must provide validation checklists that enforce accuracy over notation compliance",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-066",
+      "source_file": "evolutionary development process methodology.md",
+      "location_hint": "OUTPUT STANDARDS section",
+      "text": "System shall deliver clear, actionable next steps in all outputs",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-067",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 1 - Assess the Current Model",
+      "text": "System must assess current model retained in orgModel folder using process breakdown hierarchy",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-068",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 1 - Assess the Current Model",
+      "text": "System shall maintain domain-model.md, process.md, collaboration.md, state-machine.md, main.md, vocabulary.md, and test-case-list.md for each process",
+      "tags": ["functional", "technical"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-069",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 1 - Assess the Current Model",
+      "text": "System must map collaboration.md messages to sub-process folders in orgModel for organized representation",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-070",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 2 - Identify the New Model",
+      "text": "System shall identify new model using analysis skills and change management skills",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-071",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 2 - Identify the New Model",
+      "text": "System must create corresponding models (domain, process, collaboration, state machine, main, vocabulary, test cases) for new requirements",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-072",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 3 - Plan the Integration",
+      "text": "System shall plan integration by identifying minimum sub-process model matching new model by domain entities",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-073",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 3 - Plan the Integration",
+      "text": "System must replace identified sub-process model with new model for seamless integration while minimizing disruption",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-074",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 3 - Plan the Integration",
+      "text": "System shall generate tasks for development team based on identified changes to implement new model",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-075",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 4 - Implement the Changes",
+      "text": "System must implement changes with stakeholder training and close monitoring to address issues promptly",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-076",
+      "source_file": "how to merge new model to existing organization model.md",
+      "location_hint": "Step 5 - Evaluate and Refine",
+      "text": "System shall evaluate and refine with stakeholder feedback and performance metrics for continuous improvement",
+      "tags": ["functional", "process"],
+      "confidence": 0.95
     }
   ],
   "glossary_suspects": [
@@ -463,15 +647,33 @@
     "Change Tracking",
     "Audit Trail",
     "Template System",
-    "Reference Management"
+    "Reference Management",
+    "Systems Theory",
+    "Information Theory",
+    "Object-Oriented Development",
+    "Open System Framing",
+    "Targeted System",
+    "Empowerer",
+    "Responsibility Chain",
+    "Value Chain",
+    "Evolutionary Development",
+    "System Boundaries",
+    "Validation Methods",
+    "UML Policy",
+    "Process Breakdown Hierarchy",
+    "Integration Planning",
+    "Model Assessment",
+    "Stakeholder Training"
   ],
   "processing_metadata": {
-    "documents_processed": 11,
+    "documents_processed": 13,
     "source_files": [
       "initial-requirements.md",
       "AI Agent Skillpack — Task Planning Assistant.md",
       "requirements-process-description.md", 
       "task-template-for-github-issue.md",
+      "evolutionary development process methodology.md",
+      "how to merge new model to existing organization model.md",
       "2026-02-08-PROC-CHG-001-implement-change-management-system.md",
       "2026-02-08-SCOPE-CHG-002-add-change-management-skill.md",
       "2026-02-08-SCOPE-CHG-003-remove-custom-framework-task.md",

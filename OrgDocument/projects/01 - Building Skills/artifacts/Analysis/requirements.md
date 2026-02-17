@@ -1,8 +1,8 @@
 # Requirements Analysis Report
 
 **Project**: 01-Building-Skills
-**Generated**: 2026-02-10T00:00:00Z  
-**Total Requirements**: 47
+**Generated**: 2026-02-17T00:00:00Z  
+**Total Requirements**: 76
 
 ## Requirements
 
@@ -109,16 +109,41 @@
 | R-051 | Change Process | Track implementation status in relevant task files | functional, process | high |
 | R-052 | Referencing | From Tasks to Changes: ../artifacts/Changes/ path pattern | constraint, technical | high |
 | R-053 | Referencing | From OrgModel to Changes: ../../projects/{project-name}/artifacts/Changes/ path pattern | constraint, technical | high |
+| R-054 | EDP Methodology | System shall use systems theory, information theory, and object-oriented development as foundational principles | functional, constraint | high |
+| R-055 | EDP Methodology | System must optimize for accurate, multi-perspective system description over UML compliance | functional | high |
+| R-056 | EDP Methodology | System shall use Mermaid and structured text as primary documentation formats | functional, technical | high |
+| R-057 | EDP Methodology | System must describe all entities through a system lens using Open System framing with Boundaries, Inputs, Outputs, Environment, Constraints | functional | high |
+| R-058 | EDP Methodology | System shall implement responsibility chain from Empowerers to Targeted System providing goals, resources, and constraints | functional | high |
+| R-059 | EDP Methodology | System must implement value chain from Targeted System to Empowerers delivering deliverables, acceptance, and metrics | functional | high |
+| R-060 | EDP Methodology | System shall support evolutionary development with recorded iterations, hypotheses, validations, corrections, and rollback points | functional, process | high |
+| R-061 | EDP Methodology | System must always state perspective, assumptions, uncertainties, and validation methods | functional | high |
+| R-062 | EDP Methodology | System shall provide structured sections with headings for Boundaries/Inputs/Outputs/Environment/Constraints | functional | high |
+| R-063 | EDP Methodology | System must include collaboration protocols, responsibility chains, value chains, views, perspectives, assumptions, uncertainties, and validation methods in outputs | functional | high |
+| R-064 | EDP Methodology | System shall prefer Mermaid diagrams over UML with justification required for UML usage and limitations documented | functional, technical | high |
+| R-065 | EDP Methodology | System must provide validation checklists that enforce accuracy over notation compliance | functional | high |
+| R-066 | EDP Methodology | System shall deliver clear, actionable next steps in all outputs | functional | high |
+| R-067 | Model Integration | System must assess current model retained in orgModel folder using process breakdown hierarchy | functional, process | high |
+| R-068 | Model Integration | System shall maintain domain-model.md, process.md, collaboration.md, state-machine.md, main.md, vocabulary.md, and test-case-list.md for each process | functional, technical | high |
+| R-069 | Model Integration | System must map collaboration.md messages to sub-process folders in orgModel for organized representation | functional | high |
+| R-070 | Model Integration | System shall identify new model using analysis skills and change management skills | functional, process | high |
+| R-071 | Model Integration | System must create corresponding models (domain, process, collaboration, state machine, main, vocabulary, test cases) for new requirements | functional | high |
+| R-072 | Model Integration | System shall plan integration by identifying minimum sub-process model matching new model by domain entities | functional, process | high |
+| R-073 | Model Integration | System must replace identified sub-process model with new model for seamless integration while minimizing disruption | functional, process | high |
+| R-074 | Model Integration | System shall generate tasks for development team based on identified changes to implement new model | functional, process | high |
+| R-075 | Model Integration | System must implement changes with stakeholder training and close monitoring to address issues promptly | functional, process | high |
+| R-076 | Model Integration | System shall evaluate and refine with stakeholder feedback and performance metrics for continuous improvement | functional, process | high |
 
 ## Source Documents Processed
 1. **[initial-requirements.md](../Requirements/initial-requirements.md)** - Building Skills for Evolutionary Development (R-001 to R-018)
 2. **[AI Agent Skillpack — Task Planning Assistant.md](../Requirements/AI%20Agent%20Skillpack%20—%20Task%20Planning%20Assistant.md)** - Comprehensive AI skillpack specification (R-019 to R-035)
 3. **[requirements-process-description.md](../Requirements/requirements-process-description.md)** - Meta-process description
-4. **[PROC-CHG-001](../Changes/2026-02-08-PROC-CHG-001-implement-change-management-system.md)** - Change management implementation (R-036 to R-039)
-5. **[SCOPE-CHG-002](../Changes/2026-02-08-SCOPE-CHG-002-add-change-management-skill.md)** - Skill addition change
-6. **[SCOPE-CHG-003](../Changes/2026-02-08-SCOPE-CHG-003-remove-custom-framework-task.md)** - Scope reduction change
-7. **[change-template.md](../Changes/change-template.md)** - Change documentation template (R-040 to R-047)
-8. **[README.md](../Changes/README.md)** - Change management system overview (R-048 to R-053)
+4. **[evolutionary development process methodology.md](../Requirements/evolutionary%20development%20process%20methodology.md)** - EDP methodology specification (R-054 to R-066)
+5. **[how to merge new model to existing organization model.md](../Requirements/how%20to%20merge%20new%20model%20to%20existing%20organization%20model.md)** - Model integration process (R-067 to R-076)
+6. **[PROC-CHG-001](../Changes/2026-02-08-PROC-CHG-001-implement-change-management-system.md)** - Change management implementation (R-036 to R-039)
+7. **[SCOPE-CHG-002](../Changes/2026-02-08-SCOPE-CHG-002-add-change-management-skill.md)** - Skill addition change
+8. **[SCOPE-CHG-003](../Changes/2026-02-08-SCOPE-CHG-003-remove-custom-framework-task.md)** - Scope reduction change
+9. **[change-template.md](../Changes/change-template.md)** - Change documentation template (R-040 to R-047)
+10. **[README.md](../Changes/README.md)** - Change management system overview (R-048 to R-053)
 
 ## Quality Assessment
 - **Atomic Granularity**: ✅ All requirements under 400 tokens each
