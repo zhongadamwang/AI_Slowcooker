@@ -7,12 +7,12 @@
 
 ## Executive Summary
 
-**MVP Definition**: A functioning AI Agent Skills system with 6 core skills that can process requirements, extract domain concepts, and generate basic project artifacts within VS Code/Claude Code environment, establishing the foundation for evolutionary development practices.
+**MVP Definition**: A functioning AI Agent Skills system with 6 core skills that can process requirements, extract domain concepts, and generate basic project artifacts using VS Code Copilot as the skill invocation framework, establishing the foundation for evolutionary development practices.
 
-**Core Features Count**: 8 features identified as essential for MVP viability
+**Core Features Count**: 7 features identified as essential for MVP viability (reduced from 8 due to Copilot framework)
 **Enhancement Features**: 12 features for post-MVP phases  
 **Optional Features**: 6 features for future consideration
-**Estimated MVP Effort**: 12-15 weeks (based on current project tracking showing 68% completion at 11.4 days)
+**Estimated MVP Effort**: 8-10 weeks (reduced due to leveraging existing Copilot infrastructure)
 
 ## Core Features (MVP Essential)
 
@@ -23,12 +23,12 @@
 - **User Impact**: Enables automated processing of requirement documents
 - **Risk of Exclusion**: Without this, no other skills can function
 
-### Feature: Skills Framework Architecture  
-- **Business Value**: High - Core infrastructure for all AI skills
-- **Technical Complexity**: Medium - VS Code integration and markdown processing
-- **Dependencies**: None - Foundational architecture
-- **User Impact**: Enables skill invocation and execution within VS Code
-- **Risk of Exclusion**: System cannot operate without core framework
+### Feature: Skills Framework Architecture (Copilot-Based)
+- **Business Value**: High - Core infrastructure leveraging existing Copilot framework
+- **Technical Complexity**: Low - Leverages existing VS Code Copilot infrastructure
+- **Dependencies**: None - Foundational architecture using Copilot
+- **User Impact**: Enables skill invocation through natural Copilot interactions
+- **Risk of Exclusion**: System cannot operate without skills framework
 
 ### Feature: Basic Domain Analysis (ExtractConcepts + AlignEntities)
 - **Business Value**: High - Essential for understanding project scope  
@@ -65,12 +65,12 @@
 - **User Impact**: Provides visibility into skill development progress
 - **Risk of Exclusion**: Cannot monitor or communicate project progress effectively
 
-### Feature: VS Code/Claude Code Integration
-- **Business Value**: High - Core user interface and workflow integration
-- **Technical Complexity**: Medium - IDE extension development and skill invocation
-- **Dependencies**: Skills Framework Architecture
-- **User Impact**: Seamless integration with developer workflow
-- **Risk of Exclusion**: Skills become standalone tools rather than workflow-integrated capabilities
+### Feature: Copilot Skill Integration
+- **Business Value**: High - Seamless skill access through existing Copilot interface
+- **Technical Complexity**: Low - Skills accessible via natural language prompts to Copilot
+- **Dependencies**: Skills Framework Architecture (Copilot-Based)
+- **User Impact**: Natural language skill invocation within existing Copilot workflow
+- **Risk of Exclusion**: Skills would require separate invocation mechanism outside developer workflow
 
 ## Enhancement Features (Post-MVP Phase 1)
 
@@ -201,13 +201,13 @@
 | Feature | Business Value | Technical Complexity | Dependencies | MVP Category |
 |---------|----------------|---------------------|--------------|--------------|
 | Requirements Ingestion | High | Medium | None | Core |
-| Skills Framework | High | Medium | None | Core |
+| Skills Framework (Copilot) | High | Low | None | Core |
 | Domain Analysis (Basic) | High | Medium | Requirements Ingestion | Core |
 | Goals Extraction | High | Low | Requirements Ingestion | Core |
 | W5H Analysis Framework | Medium | Medium | Requirements Ingestion, Goals | Core |
 | Change Management (Core) | High | Low | Skills Framework | Core |
 | Progress Tracking (Basic) | Medium | Low | Skills Framework, Change Mgmt | Core |
-| VS Code Integration | High | Medium | Skills Framework | Core |
+| Copilot Skill Integration | High | Low | Skills Framework | Core |
 | Collaboration Diagrams | Medium | High | Domain Analysis, W5H | Enhancement |
 | Scope Minimization | High | Medium | Goals, Domain Analysis, W5H | Enhancement |
 | Process Merging | Medium | High | Domain Analysis, W5H, Diagrams | Enhancement |
@@ -229,13 +229,13 @@
 
 ## MVP Roadmap
 
-### Phase 0 - Foundation (Weeks 1-4)
+### Phase 0 - Foundation (Weeks 1-3)
 - Requirements Ingestion System implementation
-- Skills Framework Architecture development  
-- VS Code/Claude Code integration framework
+- Skills Framework Architecture (Copilot-based) development
+- Copilot Skill Integration setup
 - Core Change Management system setup
 
-### Phase 1 - MVP Launch (Weeks 5-12)
+### Phase 1 - MVP Launch (Weeks 4-8)
 - Domain Analysis (ExtractConcepts + AlignEntities) implementation
 - Goals and Success Criteria Extraction capability
 - Basic W5H Analysis Framework development
@@ -260,11 +260,12 @@
 
 ### In Scope (MVP)
 - 6 core AI skills covering requirements analysis workflow
-- VS Code/Claude Code seamless integration
+- VS Code Copilot-based skill invocation through natural language
 - Markdown-based document processing pipeline
 - Basic domain concept extraction and alignment
 - Core change management with traceability
 - Foundation for iterative skill enhancement
+- Skill documentation and usage examples for Copilot interaction
 
 ### Out of Scope (MVP)
 - Advanced visualization and diagram generation
@@ -272,13 +273,14 @@
 - Cross-project domain model management
 - Machine learning-enhanced processing
 - Real-time collaboration capabilities
-- External tool integrations beyond VS Code
+- External tool integrations beyond Copilot framework
+- Custom skill invocation UI (leveraging Copilot instead)
 
 ## Risk Assessment
 
 ### High Priority Risks
-- **VS Code Integration Complexity**: Integration may prove more complex than estimated
-  - *Mitigation*: Start with simple skill invocation, iterate to full workflow integration
+- **Copilot Skill Discoverability**: Users may not know how to invoke specific skills through Copilot
+  - *Mitigation*: Create clear skill documentation and example prompts, implement skill help system
 - **Domain Analysis Accuracy**: Natural language processing may not achieve required accuracy
   - *Mitigation*: Implement rule-based fallbacks, plan for human validation workflow
 - **Change Management Adoption**: Team may not follow new change management processes
@@ -308,10 +310,11 @@
 ## Recommendations
 
 ### Immediate Actions
-1. **Prioritize VS Code Integration Architecture**: Establish robust skill invocation framework early
-2. **Develop Comprehensive Test Suite**: Create diverse requirement samples for validation
-3. **Implement Incremental Delivery**: Release skills individually as they reach maturity
-4. **Establish Change Management Early**: Begin using change management system immediately
+1. **Leverage Copilot Framework**: Design skills for optimal Copilot integration and natural language invocation
+2. **Create Skill Documentation**: Develop clear usage examples and prompt patterns for each skill
+3. **Develop Comprehensive Test Suite**: Create diverse requirement samples for validation
+4. **Implement Incremental Delivery**: Release skills individually as they reach maturity
+5. **Establish Change Management Early**: Begin using change management system immediately
 
 ### Future Considerations  
 1. **Plan for Machine Learning Integration**: Design skill architecture to accommodate future ML enhancements

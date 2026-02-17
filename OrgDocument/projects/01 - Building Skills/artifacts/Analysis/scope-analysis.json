@@ -7,11 +7,11 @@
     "skill_version": "1.0.0"
   },
   "mvp_summary": {
-    "definition": "A functioning AI Agent Skills system with 6 core skills that can process requirements, extract domain concepts, and generate basic project artifacts within VS Code/Claude Code environment",
-    "core_features_count": 8,
+    "definition": "A functioning AI Agent Skills system with 6 core skills that can process requirements, extract domain concepts, and generate basic project artifacts using VS Code Copilot as the skill invocation framework",
+    "core_features_count": 7,
     "enhancement_features_count": 12,
     "optional_features_count": 6,
-    "estimated_effort": "12-15 weeks"
+    "estimated_effort": "8-10 weeks"
   },
   "features": [
     {
@@ -33,18 +33,18 @@
     },
     {
       "id": "FEAT-002", 
-      "name": "Skills Framework Architecture",
+      "name": "Skills Framework Architecture (Copilot-Based)",
       "category": "core",
       "business_value": {
         "score": "high",
-        "justification": "Core infrastructure enabling all AI skill functionality"
+        "justification": "Core infrastructure leveraging existing Copilot framework"
       },
       "technical_complexity": {
-        "score": "medium", 
-        "implementation_notes": "VS Code integration patterns, skill invocation system"
+        "score": "low", 
+        "implementation_notes": "Leverages existing VS Code Copilot infrastructure, skill routing through natural language"
       },
       "dependencies": [],
-      "user_impact": "Enables skill execution within VS Code environment",
+      "user_impact": "Enables skill invocation through natural Copilot interactions",
       "priority_score": 95,
       "phase_assignment": "phase0_foundation"
     },
@@ -135,18 +135,18 @@
     },
     {
       "id": "FEAT-008",
-      "name": "VS Code/Claude Code Integration",
+      "name": "Copilot Skill Integration",
       "category": "core",
       "business_value": {
         "score": "high", 
-        "justification": "Core user interface and workflow integration"
+        "justification": "Seamless skill access through existing Copilot interface"
       },
       "technical_complexity": {
-        "score": "medium",
-        "implementation_notes": "IDE extension development, skill invocation UI"
+        "score": "low",
+        "implementation_notes": "Skills accessible via natural language prompts, documentation and examples"
       },
       "dependencies": ["FEAT-002"],
-      "user_impact": "Seamless integration with developer workflow",
+      "user_impact": "Natural language skill invocation within existing Copilot workflow",
       "priority_score": 90,
       "phase_assignment": "phase0_foundation"
     },
@@ -466,11 +466,12 @@
   "scope_boundaries": {
     "in_scope": [
       "6 core AI skills covering requirements analysis workflow",
-      "VS Code/Claude Code seamless integration",
+      "VS Code Copilot-based skill invocation through natural language",
       "Markdown-based document processing pipeline", 
       "Basic domain concept extraction and alignment",
       "Core change management with traceability",
-      "Foundation for iterative skill enhancement"
+      "Foundation for iterative skill enhancement",
+      "Skill documentation and usage examples for Copilot interaction"
     ],
     "out_of_scope": [
       "Advanced visualization and diagram generation",
@@ -478,16 +479,17 @@
       "Cross-project domain model management", 
       "Machine learning-enhanced processing",
       "Real-time collaboration capabilities",
-      "External tool integrations beyond VS Code"
+      "External tool integrations beyond Copilot framework",
+      "Custom skill invocation UI (leveraging Copilot instead)"
     ]
   },
   "risks": [
     {
       "id": "RISK-001",
       "priority": "high",
-      "description": "VS Code Integration Complexity: Integration may prove more complex than estimated",
-      "impact": "Could delay MVP delivery by 2-4 weeks",
-      "mitigation": "Start with simple skill invocation, iterate to full workflow integration"
+      "description": "Copilot Skill Discoverability: Users may not know how to invoke specific skills through Copilot",
+      "impact": "Skills may be underutilized due to unclear invocation patterns",
+      "mitigation": "Create clear skill documentation and example prompts, implement skill help system"
     },
     {
       "id": "RISK-002", 
@@ -542,7 +544,7 @@
     {
       "feature_id": "FEAT-002", 
       "source_requirements": ["R-019", "R-021"],
-      "justification": "Skills framework architecture enables VS Code skill invocation"
+      "justification": "Skills framework architecture leverages existing Copilot infrastructure for skill invocation"
     },
     {
       "feature_id": "FEAT-003",
@@ -572,7 +574,7 @@
     {
       "feature_id": "FEAT-008",
       "source_requirements": ["R-019", "R-021"],
-      "justification": "VS Code integration provides seamless developer workflow integration"
+      "justification": "Copilot integration provides natural language skill access within existing developer workflow"
     }
   ]
 }
