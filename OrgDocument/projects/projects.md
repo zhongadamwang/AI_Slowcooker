@@ -8,12 +8,14 @@ This document tracks all active and completed projects in the organization.
 Format: Project Identifier, Project Description, Project folder path mapping, Related OrgModel Process
 
 - PRJ-01, Building Skills - Build the skills needed for evolutionary development process, projects/01 - Building Skills, orgModel/01 - Skill Development Process
+- PRJ-02, Establish Skill Invocation Framework - Build robust framework for dynamic skill discovery and execution, projects/02 - Establish skill invocation framework, (TBD)
 
 ## Active Projects
 
 | ID | Project Name | Description | Status | Start Date | Progress |
 |----|--------------|-------------|---------|------------|----------|
 | 01 | Building Skills | Build the skills needed for evolutionary development process | Development (43% Complete) | 2026-02-07 | Phase 2 Advanced |
+| 02 | Establish Skill Invocation Framework | Build robust framework for dynamic skill discovery and execution | Initial Setup | 2026-02-16 | Phase 1 Planning |
 
 ## Completed Projects
 
