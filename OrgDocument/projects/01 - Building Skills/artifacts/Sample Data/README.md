@@ -34,10 +34,31 @@ Each sample is designed to test specific skills:
 
 ## Usage Instructions
 
+### Quick Start
+1. **Follow the step-by-step checklist**: See [test-execution-checklist.md](test-execution-checklist.md) for guided testing
+2. **Start with simple samples**: Begin with `simple-todo-app.md` to validate basic skill functionality
+3. **Progress to complex samples**: Move to `healthcare-emr.md` and `banking-transactions.md` for comprehensive testing
+4. **Use Copilot commands**: Execute tests via `@workspace` commands in VS Code
+
+### Execution Methods
+- **Manual Testing**: Use individual Copilot commands for each skill/sample combination
+- **Workflow Testing**: Execute complete skill chains for end-to-end validation  
+- **Batch Testing**: Follow systematic testing procedures in the validation framework
+
+### Getting Started
+```
+@workspace Use the requirements-ingest skill to process /artifacts/Sample Data/simple-todo-app.md
+```
+
 1. Use samples individually to test specific skill components
 2. Run complete test suite to validate end-to-end workflow
 3. Compare skill outputs against expected results documented in each sample
 4. Use edge cases to test error handling and boundary conditions
+
+## Test Execution Files
+
+- **[test-execution-checklist.md](test-execution-checklist.md)** - Step-by-step testing guide with checkboxes
+- **[test-validation-framework.md](test-validation-framework.md)** - Complete testing procedures and automation guidelines
 
 ## Sample Inventory
 
@@ -53,6 +74,14 @@ Each sample is designed to test specific skills:
 | incomplete-requirements | Generic | Simple | Narrative | Gap analysis, assumption identification |
 | regulatory-compliance | Healthcare | Complex | Technical Specs | Compliance mapping, risk analysis |
 | legacy-modernization | Generic | Complex | Mixed | Migration analysis, integration planning |
+
+## Test Execution Files
+
+| File | Purpose | Usage |
+|------|---------|-------|
+| test-execution-checklist.md | Step-by-step testing guide | Follow checkboxes for systematic validation |
+| test-validation-framework.md | Complete testing framework | Reference for automation and procedures |
+| README.md | Test suite overview | Getting started and sample inventory |
 
 ## Expected Outcomes
 
