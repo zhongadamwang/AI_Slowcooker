@@ -1,8 +1,8 @@
 # AI Skills MVP - Task Tracking
 
-**Last Updated**: February 15, 2026  
-**Current Phase**: Phase 2 - Domain & Process Skills (Advanced - 85% Complete)  
-**Project Focus**: Building 16 modular AI skills for GitHub Copilot in VS Code (**Expanded from original 12**)
+**Last Updated**: February 17, 2026 (Enhanced with orgModel functionality)  
+**Current Phase**: Phase 2 - Domain & Process Skills (Advanced - 77% Complete)  
+**Project Focus**: Building 22 modular AI skills for GitHub Copilot in VS Code (**Expanded from original 16 to include comprehensive orgModel management**)
 
 ## Phase 1: Foundation & Core Skills (Completed)
 
@@ -87,10 +87,11 @@
   - **Description**: Merge multiple requirement sources into coherent specification
   - **Dependencies**: Process.ScopeMin
 
-- [ ] **Process.FindTopAndUpdate Skill (T11)**
-  - **Effort**: 1.1 days (estimated)
-  - **Description**: Find top-level requirements and update based on analysis
-  - **Dependencies**: Process.Merge
+- [ ] **Process.FindTopAndUpdate Skill (T11)** (ENHANCED)
+  - **Effort**: 2.2 days (estimated; increased from 1.1 days)
+  - **Priority**: High (elevated due to orgModel update requirements)
+  - **Description**: Find top-level requirements and update based on analysis, including orgModel consistency maintenance
+  - **Dependencies**: Process.Merge, coordination with OrgModel-Update skill
 
 ## Project Management Skills (Completed)
 
@@ -113,37 +114,57 @@
   - **Description**: Generate comprehensive project status reports and dashboards
   - **Status**: ✅ Completed - Executive dashboards, automatic data aggregation
 
-## Phase 3: Planning & Integration (Future)
+## Phase 3: Planning & Integration (Enhanced)
 
 ### Planning Skills  
-- [ ] **Plan.DeriveTasks Skill**
+- [ ] **Plan.DeriveTasks Skill (T12)**
   - **Effort**: 2.0 days (estimated)
   - **Description**: Derive actionable tasks from analyzed requirements
   
-- [ ] **Plan.EstimateEffort Skill**
+- [ ] **Plan.EstimateEffort Skill (T13)**
   - **Effort**: 1.1 days (estimated)
   - **Description**: Estimate effort for derived tasks using multiple estimation methods
 
-- [ ] **Plan.BuildSchedule Skill**  
+- [ ] **Plan.BuildSchedule Skill (T14)**  
   - **Effort**: 2.0 days (estimated)
   - **Description**: Generate project schedule with dependencies and critical path in markdown
 
+### Organizational Model & Integration Skills (NEW)
+- [ ] **OrgModel-Update Skill (T17)**
+  - **Effort**: 2.5 days (estimated)
+  - **Priority**: High
+  - **Description**: Manage orgModel folder structure updates, document generation, and consistency maintenance
+  - **Dependencies**: Domain skills (T5-T7), Diagram generation (T8), Process skills (T11)
+
+- [ ] **Model-Integration Skill (T18)**
+  - **Effort**: 3.0 days (estimated)
+  - **Priority**: High
+  - **Description**: Systematic integration of new models into existing organizational structures following EDP methodology
+  - **Dependencies**: Domain alignment (T6), New concepts (T7), OrgModel-Update (T17), Process skills (T11)
+
+- [ ] **EDPS-Skill-Navigator Skill (T19)**
+  - **Effort**: 1.8 days (estimated)
+  - **Priority**: Medium
+  - **Description**: Natural language navigation and orchestration of EDPS skills within GitHub Copilot
+  - **Dependencies**: All EDPS skills (T2-T18), Change Management (T16)
+
 ### Integration & Testing
-- [ ] **Complete Skill Integration**
+- [ ] **Complete Skill Integration (T15)**
   - **Effort**: 3.2 days (estimated)
   - **Description**: End-to-end workflow testing and VS Code integration validation
   
 ## Current Progress & Metrics
 
 **Phase 1 Progress**: 8/8 tasks complete (100%) ✅ COMPLETE  
-**Phase 2 Progress**: 6/8 tasks complete (85% by effort: 10.2/12.1 days)  
+**Phase 2 Progress**: 6/8 tasks complete (77% by effort: 10.2/13.2 days - T11 increased from 1.1 to 2.2 days)  
 **Project Management Skills**: 3/3 skills complete (100%) ✅ COMPLETE  
-**Overall MVP Progress**: 17/19 core tasks complete (89% by count, 59% by total effort)  
-**Total Project Effort**: 18.9/32.2 days completed (including all 16 skills)  
-**Estimated Completion**: ~2.5 weeks from start (Significantly ahead of schedule)
+**Overall Core Skills Progress**: 17/19 core tasks complete (89% by count)  
+**Enhanced Project Scope**: 22 total skills (expanded from 16 to include 3 new orgModel/integration skills)  
+**Total Project Effort**: 18.9/41.8 days completed (including all 22 skills)  
+**Estimated Completion**: ~3.5 weeks from start (Extended due to expanded scope for complete orgModel functionality)
 
 ## Key Decisions Made
-1. **16 Modular Skills Approach**: Focus on building independent, composable AI skills for GitHub Copilot (expanded from 12 to include change management + 3 project skills)
+1. **22 Modular Skills Approach**: Focus on building independent, composable AI skills for GitHub Copilot (expanded from 16 to include orgModel functionality)
 2. **skill-creator Framework**: Use existing skill-creator framework instead of custom development
 3. **GitHub Agent Skills Standard**: Leverage GitHub's Agent Skills Standard for VS Code integration
 4. **Markdown-First Workflow**: All skills consume and produce markdown for seamless editor integration  
@@ -154,6 +175,7 @@
 9. **Analysis Folder Structure**: Outputs organized in Analysis subfolder for organizational consistency
 10. **Dual Output Format**: Markdown (primary) + JSON (secondary) for requirements processing
 11. **Project Management Skills Addition**: Added 3 comprehensive project management skills for complete workflow support
+12. **OrgModel Functionality Integration**: Added 3 critical skills (OrgModel-Update, Model-Integration, EDPS-Skill-Navigator) to address organizational model management gaps identified in skills analysis
 
 ## Issues & Blockers
 *None currently identified*
@@ -182,11 +204,12 @@
 - **February 20, 2026**: Phase 2 completion target
 - **Weekly Reviews**: Every Monday during active development phases
 
-## Current Priorities (As of February 15, 2026)
-1. **Process Skills Completion (T10-T11)** - Merge and FindTopAndUpdate for complete requirement processing pipeline
-2. **Integration Testing** - Validate skill chaining and markdown format consistency across all 11 completed skills
-3. **Phase 3 Planning** - Prepare for final planning skills development (DeriveTasks, EstimateEffort, BuildSchedule)
-4. **VS Code Integration Validation** - Test all completed skills within GitHub Copilot environment
+## Current Priorities (As of February 17, 2026)
+1. **Process Skills Completion (T10-T11)** - Merge and FindTopAndUpdate (enhanced with orgModel updates) for complete requirement processing pipeline
+2. **OrgModel Management Skills (T17-T18)** - Critical missing functionality for organizational model maintenance and integration
+3. **Integration Testing** - Validate skill chaining and markdown format consistency across all completed skills
+4. **Phase 3 Enhanced Planning** - Prepare for final planning skills development including orgModel-aware orchestration
+5. **VS Code Integration Validation** - Test all completed skills within GitHub Copilot environment
 
 ## Notes
 - **T1 Removed**: Custom skill framework setup task removed - using skill-creator framework instead
