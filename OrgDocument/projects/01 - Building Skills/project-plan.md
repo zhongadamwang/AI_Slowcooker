@@ -31,9 +31,12 @@ Build 22 modular AI skills that can be used within GitHub Copilot in VS Code to 
 - [x] Domain.ProposeNewConcepts completed (Feb 10, 2026) - 4 new concepts proposed  
 - [x] Diagram.GenerateCollaboration completed (Feb 10, 2026) - Mermaid integration
 - [x] Process.ScopeMin completed (Feb 15, 2026) - MVP boundary identification
-- [x] Change Management skill completed (Feb 15, 2026) - Automated change tracking
-- [ ] Process.Merge (T10) - Multiple requirement sources integration
+- [x] Change Management skill completed (Feb 15, 2026) - Automated change tracking  
+- [x] Requirements.Merge (T10-RENAMED) completed (Feb 15, 2026) - Requirements document merging only
 - [ ] Process.FindTopAndUpdate (T11) - Enhanced with orgModel consistency maintenance
+- [ ] OrgModel-Update Skill (T17) - **PREREQUISITE for true process merge**
+- [ ] Model-Integration Skill (T18) - **PREREQUISITE for true process merge**
+- [ ] Process.Merge (T10-NEW) - True process model integration (requires T17, T18)
 - [ ] Integration testing between skills
 
 ### Phase 3: Planning & Organizational Model Integration (Enhanced)
@@ -62,11 +65,14 @@ graph TD
     T7 --> T8[Diagram.GenerateCollaboration ✅]
     T8 --> T9[Process.ScopeMin ✅]
     T7 --> T16[Change Management ✅]
-    T9 --> T10[Process.Merge]
-    T10 --> T11[Process.FindTopAndUpdate - Enhanced]
-    T11 --> T17[OrgModel-Update NEW]
+    T9 --> T10R[Requirements.Merge ✅]
+    T10R --> T11[Process.FindTopAndUpdate]
+    T6 --> T17[OrgModel-Update NEW]
+    T7 --> T17
     T17 --> T18[Model-Integration NEW]
-    T18 --> T12[Plan.DeriveTasks]
+    T18 --> T10N[Process.Merge NEW]
+    T10N --> T11
+    T11 --> T12[Plan.DeriveTasks]
     T12 --> T13[Plan.EstimateEffort]
     T13 --> T14[Plan.BuildSchedule]
     T14 --> T19[EDPS-Skill-Navigator NEW]
@@ -92,11 +98,15 @@ graph TD
 | T7 | Domain.ProposeNewConcepts | 0.5 days | 1 day | 2 days | 1.1 days | 1.0 days | ✅ Completed |
 | T8 | Diagram.GenerateCollaboration | 1 day | 2 days | 3 days | 2.0 days | 2.0 days | ✅ Completed |
 | T9 | Process.ScopeMin | 0.5 days | 1 day | 2 days | 1.1 days | 1.1 days | ✅ Completed |
-| T10 | Process.Merge | 1 day | 2 days | 4 days | 2.2 days | - | Pending |
+| T10-R | Requirements.Merge (RENAMED) | 1 day | 2 days | 4 days | 2.2 days | 2.2 days | ✅ Completed |
+| T17 | OrgModel-Update | 1.5 days | 2.5 days | 4 days | 2.7 days | - | **PREREQUISITE** |
+| T18 | Model-Integration | 2 days | 3 days | 5 days | 3.2 days | - | **PREREQUISITE** |
+| T10-N | Process.Merge (NEW - True Process) | 2 days | 3.5 days | 6 days | 3.8 days | - | Requires T17,T18 |
 | T11 | Process.FindTopAndUpdate (Enhanced) | 1 day | 2 days | 4 days | 2.2 days | - | Pending |
 | T12 | Plan.DeriveTasks | 1 day | 2 days | 3 days | 2.0 days | - | Future |
 | T13 | Plan.EstimateEffort | 0.5 days | 1 day | 2 days | 1.1 days | - | Future |
 | T14 | Plan.BuildSchedule (Markdown) | 1 day | 2 days | 3 days | 2.0 days | - | Future |  
+| T19 | EDPS-Skill-Navigator | 1 day | 1.5 days | 3 days | 1.8 days | - | Future |
 | T15 | Integration & Testing | 2 days | 3 days | 5 days | 3.2 days | - | Future |
 | T16 | Change Management | 1.5 days | 2.5 days | 4 days | 2.5 days | 2.5 days | ✅ Completed |
 | T17 | OrgModel-Update | 1.5 days | 2.5 days | 4 days | 2.5 days | - | New |

@@ -82,16 +82,24 @@
   - **Status**: ✅ Completed - Automated change tracking, impact analysis, structured documentation
 
 ### Remaining Process Skills
-- [ ] **Process.Merge Skill (T10)**
-  - **Effort**: 2.2 days (estimated)
-  - **Description**: Merge multiple requirement sources into coherent specification
+- [x] **Requirements.Merge Skill (T10)** (RENAMED from Process.Merge)
+  - **Effort**: 2.2 days (actual - completed)
+  - **Description**: Merge multiple requirement sources into coherent specification (requirements documents only)
   - **Dependencies**: Process.ScopeMin
+  - **Status**: ✅ Completed but renamed to clarify scope - handles requirements documents, not process models
 
 - [ ] **Process.FindTopAndUpdate Skill (T11)** (ENHANCED)
   - **Effort**: 2.2 days (estimated; increased from 1.1 days)
   - **Priority**: High (elevated due to orgModel update requirements)
   - **Description**: Find top-level requirements and update based on analysis, including orgModel consistency maintenance
-  - **Dependencies**: Process.Merge, coordination with OrgModel-Update skill
+  - **Dependencies**: Requirements.Merge (T10), coordination with OrgModel-Update skill
+
+- [ ] **Process.Merge Skill (T10-NEW)** (**NEW TASK for actual process model merging**)
+  - **Effort**: 3.5 days (estimated)
+  - **Priority**: High
+  - **Description**: Merge new process models with existing organizational models using minimum sub-process overlap identification
+  - **Dependencies**: OrgModel-Update (T17), Model-Integration (T18), Domain.AlignEntities (T6)
+  - **Status**: Not started - requires true process model integration capabilities
 
 ## Project Management Skills (Completed)
 
