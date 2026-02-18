@@ -2,7 +2,7 @@
 
 **Project**: 01-Building-Skills  
 **Source**: Requirements analysis documents and goals extraction  
-**Generated**: 2026-02-10T00:00:00Z  
+**Generated**: 2026-02-17T00:00:00Z  
 **Analysis Framework**: Who, What, When, Where, Why, How
 
 ## WHO - Stakeholders and Roles
@@ -22,6 +22,12 @@
   - *Influence*: Medium | *Interest*: Medium | *Authority*: Influencers
 - **Process Improvement Teams**: Groups responsible for organizational development methodologies
   - *Influence*: Medium | *Interest*: High | *Authority*: Advisory
+- **Systems Modeling Facilitators**: Practitioners of EDP methodology and systems theory approaches
+  - *Influence*: Medium | *Interest*: High | *Authority*: Subject matter experts
+- **Model Integration Specialists**: Teams responsible for merging new models into existing organizational structures
+  - *Influence*: Medium | *Interest*: High | *Authority*: Technical advisors
+- **EDP Methodology Trainers**: Individuals providing training on evolutionary development processes
+  - *Influence*: Medium | *Interest*: Medium | *Authority*: Training specialists
 
 ### Roles and Responsibilities
 
@@ -102,6 +108,33 @@
 - **F52**: Enforce path patterns from Tasks to Changes *(R-052)*
 - **F53**: Enforce path patterns from OrgModel to Changes *(R-053)*
 
+#### EDP Methodology Implementation (F54-F66)
+- **F54**: Apply systems theory, information theory, and object-oriented development principles *(R-054)*
+- **F55**: Optimize for accurate, multi-perspective system description over UML compliance *(R-055)*
+- **F56**: Use Mermaid and structured text as primary documentation formats *(R-056)*
+- **F57**: Describe all entities through Open System framing with boundaries, inputs, outputs, environment, constraints *(R-057)*
+- **F58**: Implement responsibility chain from Empowerers to Targeted System *(R-058)*
+- **F59**: Implement value chain from Targeted System to Empowerers with deliverables, acceptance, metrics *(R-059)*
+- **F60**: Support evolutionary development with recorded iterations, hypotheses, validations, corrections, rollback points *(R-060)*
+- **F61**: Always state perspective, assumptions, uncertainties, and validation methods *(R-061)*
+- **F62**: Provide structured sections with headings for Boundaries/Inputs/Outputs/Environment/Constraints *(R-062)*
+- **F63**: Include collaboration protocols, responsibility chains, value chains, views, perspectives, assumptions, uncertainties, validation methods in outputs *(R-063)*
+- **F64**: Prefer Mermaid diagrams over UML with justification required for UML usage and limitations documented *(R-064)*
+- **F65**: Provide validation checklists that enforce accuracy over notation compliance *(R-065)*
+- **F66**: Deliver clear, actionable next steps in all outputs *(R-066)*
+
+#### Model Integration Processes (F67-F76)
+- **F67**: Assess current model retained in orgModel folder using process breakdown hierarchy *(R-067)*
+- **F68**: Maintain domain-model.md, process.md, collaboration.md, state-machine.md, main.md, vocabulary.md, test-case-list.md for each process *(R-068)*
+- **F69**: Map collaboration.md messages to sub-process folders in orgModel for organized representation *(R-069)*
+- **F70**: Identify new model using analysis skills and change management skills *(R-070)*
+- **F71**: Create corresponding models (domain, process, collaboration, state machine, main, vocabulary, test cases) for new requirements *(R-071)*
+- **F72**: Plan integration by identifying minimum sub-process model matching new model by domain entities *(R-072)*
+- **F73**: Replace identified sub-process model with new model for seamless integration while minimizing disruption *(R-073)*
+- **F74**: Generate tasks for development team based on identified changes to implement new model *(R-074)*
+- **F75**: Implement changes with stakeholder training and close monitoring to address issues promptly *(R-075)*
+- **F76**: Evaluate and refine with stakeholder feedback and performance metrics for continuous improvement *(R-076)*
+
 ### Non-Functional Requirements
 
 #### Integration Constraints (NF1-NF5)
@@ -111,19 +144,24 @@
 - **NF4**: Skills must work within existing VS Code project structure
 - **NF5**: Must integrate with GitHub Agent Skills Standard framework
 
-#### Quality Requirements (NF6-NF10)
+#### Quality Requirements (NF6-NF15)
 - **NF6**: Change management must maintain 100% traceability
 - **NF7**: Skill assessment must achieve 100% team coverage
 - **NF8**: Requirements processing must be fully automated
 - **NF9**: Progress tracking must be continuous and accurate
 - **NF10**: Development agility improvement must be measurable
+- **NF11**: Must follow systems theory and information theory principles for all modeling
+- **NF12**: Must provide validation checklists enforcing accuracy over compliance
+- **NF13**: Must maintain orgModel structure with specified file types for each process
+- **NF14**: Must use Open System framing for all entity descriptions
+- **NF15**: EDP methodology must be consistently applied across all skills
 
-#### Performance Requirements (NF11-NF15)
-- **NF11**: Skill implementation timeline must be flexible and adaptive
-- **NF12**: AI skills must process requirements efficiently within VS Code
-- **NF13**: Change management workflow must not disrupt development velocity
-- **NF14**: Learning pathways must be accessible to all team skill levels
-- **NF15**: Implementation must show measurable improvement in agility
+#### Performance Requirements (NF16-NF20)
+- **NF16**: Skill implementation timeline must be flexible and adaptive
+- **NF17**: AI skills must process requirements efficiently within VS Code
+- **NF18**: Change management workflow must not disrupt development velocity
+- **NF19**: Learning pathways must be accessible to all team skill levels
+- **NF20**: Implementation must show measurable improvement in agility
 
 ### System Boundaries
 
@@ -134,6 +172,9 @@
 - Process adaptation for evolutionary development practices
 - Integration with existing VS Code/Claude Code environment
 - Documentation and training materials creation
+- EDP methodology implementation with systems theory principles
+- Model integration capabilities with orgModel structure maintenance
+- Iterative development processes with documented rollback points
 
 #### Out of Scope
 - External vendor training or skill development programs
@@ -361,6 +402,11 @@
 - **Template-Driven Consistency**: Standardized templates for changes, documentation, and processes
 - **Traceability-First Design**: Every artifact linked to source requirements with full audit trail
 - **Feedback-Driven Iteration**: Continuous refinement based on user feedback and performance metrics
+- **Systems Theory Approach**: Apply systems theory, information theory, and object-oriented development principles consistently
+- **Open System Framing**: Describe all entities with explicit boundaries, inputs, outputs, environment, and constraints
+- **Evolutionary Development Process**: Implement recorded iterations, hypotheses, validations, corrections, and rollback points
+- **Model Integration Methodology**: Assess, identify, plan, implement, and evaluate model integration with minimal disruption
+- **Responsibility/Value Chain Implementation**: Establish clear chains from Empowerers to Targeted System and back
 
 #### Quality Framework
 - **Dual Output Format**: Both human-readable (markdown) and machine-processable (JSON) outputs
@@ -368,6 +414,11 @@
 - **Source Traceability**: Complete lineage from original requirements through all transformations
 - **Validation Checkpoints**: Regular quality reviews at each phase of implementation
 - **Automated Testing**: Validation of AI skills functionality within VS Code environment
+- **Accuracy-Over-Compliance Validation**: Validation checklists that enforce accuracy over notation compliance
+- **Mermaid-First Documentation**: Prefer Mermaid diagrams over UML with justification required for UML usage
+- **Perspective and Assumption Declaration**: Always state perspective, assumptions, uncertainties, and validation methods
+- **Structured Output Standards**: Provide structured sections with defined headings and actionable next steps
+- **OrgModel Structure Compliance**: Maintain domain-model.md, process.md, collaboration.md, state-machine.md, main.md, vocabulary.md, test-case-list.md for each process
 
 ### Implementation Strategy
 
