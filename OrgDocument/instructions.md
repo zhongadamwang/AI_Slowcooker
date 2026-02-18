@@ -16,7 +16,7 @@ orgDocument/
 │   └── projects.md             # Projects Id and name mapping
 ├── orgModel/                   # Folder for modeling documents
 │   ├── NN - Process Name/           # Sub Process folder for sub-process "NN - Process Name" definined in collaboration.md of root orgModel folder
-│   │   ├── main.md             # Main documentation of each sub-folder or process. It should provide an overview of the folder's purpose and link to related documents or subfolders.
+│   │   ├── main.md             # Business model description for current process level - summary of business model, overview and source of requirements for this granular level
 │   │   ├── process.md          # Mermaid Activity Diagram, should describe step-by-step procedures, workflows, or business logic.
 │   │   ├── collaboration.md    # Mermaid sequence diagram to describe the collaborations among the indentified entities. It drives the next level process breakdowns.
 │   │   ├── domain-model.md     # Contains identified actors, systems, entities in the scope of current level process, and also their relationships
@@ -41,7 +41,7 @@ during the analysis
 - `artifacts/`: Contains supporting materials and references generated during analysis, organized into subfolders as needed (e.g., Analysis, Requirements, Sample Data, UI Mockups). These subfolders help keep related documents together for easy access. The naming of these subfolders should reflect their content clearly. There is no strict requirement to number these artifact subfolders and filenames.
 - `tasks/`: Contains individual task files formatted as GitHub issues to enable seamless integration with GitHub's issue tracking system. Task files follow T##-task-name.md naming convention and include clear acceptance criteria, dependencies, and effort estimates.
 - `orgModel/`: It is the root folder that contains modeling documents for processes, including main documentation, process diagrams, collaboration diagrams, domain models, and vocabulary mappings.
-- `main.md`: Provides an overview of the folder's purpose and links to related documents or subfolders.
+- `main.md`: Business model description for the current process level - contains summary of business model, overview and source of requirements for this specific granular level, not folder structure guidelines.
 - `process.md`: Contains Mermaid Activity Diagrams describing workflows or business logic.  
 - `collaboration.md`: Contains Mermaid sequence diagrams illustrating collaborations among identified entities.
 - `domain-model.md`: Lists identified actors, systems, entities, and their relationships within the scope of the current process.

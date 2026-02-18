@@ -99,8 +99,20 @@ orgDocument/orgModel/[NN] - [Process Name]/
 ```markdown
 # [NN] - [Process Name]
 
-## Purpose
-[Process objective and scope description]
+## Business Model Overview
+[Description of the business model at this process level]
+
+## Requirements Source
+[Overview of requirements driving this process level]
+
+## Process Scope
+[Specific scope and boundaries for this process granularity]
+
+## Business Context
+[Business context and rationale for this process level]
+
+## Key Stakeholders
+[Primary stakeholders involved at this process level]
 
 ## Process Flow
 See [process.md](process.md) for detailed activity diagram.
