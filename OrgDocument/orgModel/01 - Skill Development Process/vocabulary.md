@@ -9,6 +9,8 @@
 | Term | Definition | Synonyms | Notes |
 |------|------------|----------|--------|
 | **Skill** | A measurable capability required for effective job performance | Competency, Ability | Must be observable and assessable |
+| **AI Agent Skill** | AI-enabled capability that automates or enhances development tasks | AI Skill, Automation Capability | Specialization of Skill with AI-specific attributes |
+| **Skill Framework** | Structured competency model organizing related skills | Competency Framework, Skill Model | Organizes multiple related skills into coherent structure |
 | **Skill Profile** | Documented record of individual's current and target skills | Competency Profile, Skill Matrix | Updated regularly through assessments |
 | **Learning Path** | Structured sequence of activities to develop a specific skill | Development Plan, Learning Journey | Customized to individual needs and roles |
 | **Skill Gap** | Difference between current and required skill levels | Development Need, Capability Gap | Basis for prioritizing learning efforts |
@@ -23,12 +25,16 @@
 | **Knowledge Transfer** | Process of sharing expertise between individuals | Knowledge Sharing, Skill Transfer | Critical for organizational learning |
 | **Mentoring** | One-on-one guidance relationship for skill development | Coaching, Skill Guidance | Pairs experienced with developing practitioners |
 | **Learning Activity** | Specific action taken to develop skills | Training Activity, Development Exercise | Can be formal or informal |
+| **Requirements Ingest** | Process of normalizing requirements from various formats into consistent, chunked representation with traceability | Requirements Processing, Requirements Import | Project-specific process for requirements management |
+| **Change Management** | Systematic approach to tracking, documenting, and managing changes to requirements and project scope | Change Control, Change Tracking | Standard industry practice for project governance |
+| **W5H Analysis** | Framework examining Who, What, When, Where, Why, and How aspects of requirements | Five W and H Analysis, Requirements Analysis Framework | Valuable analysis framework for comprehensive understanding |
 
 ### Roles and Responsibilities
 
 | Term | Definition | Synonyms | Notes |
 |------|------------|----------|--------|
 | **Skill Manager** | Person responsible for organizational skill development coordination | Learning Coordinator, Competency Manager | Central role in skill development ecosystem |
+| **Project Owner** | Primary decision maker and change approver for the project | Project Manager, Product Owner | Has broader authority scope than Team Lead |
 | **Subject Matter Expert (SME)** | Individual with deep expertise in specific domain | Domain Expert, Technical Lead | Resource for advanced skill development |
 | **Learning Facilitator** | Person who guides group learning activities | Trainer, Instructor | Focuses on knowledge transfer and group dynamics |
 
@@ -36,6 +42,7 @@
 
 | Term | Definition | Synonyms | Notes |
 |------|------------|----------|--------|
+| **Evolutionary Development** | Adaptive development methodology that evolves requirements and solutions iteratively based on feedback | Iterative Development, Adaptive Methodology | Encompasses Adaptive Planning plus other iterative practices |
 | **Adaptive Planning** | Planning approach that adjusts based on learning and feedback | Iterative Planning, Responsive Planning | Key skill for evolutionary development |
 | **Continuous Integration** | Practice of regularly integrating and testing code changes | CI, Automated Integration | Technical skill for evolutionary development |
 | **Feedback Loop** | System for collecting and incorporating stakeholder input | Response Cycle, Learning Loop | Process skill for evolutionary development |

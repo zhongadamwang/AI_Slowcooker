@@ -7,6 +7,7 @@
 ### Primary Actors
 - **Team Member**: Individual seeking to develop skills
 - **Team Lead**: Manager responsible for team capability
+- **Project Owner**: Primary decision maker and change approver for the project, with broader authority scope than Team Lead
 - **Skill Manager**: Specialist in organizational skill development
 - **Mentor**: Experienced practitioner providing guidance
 
@@ -48,6 +49,25 @@
 - **Notes**: Detailed feedback and observations
 - **Date**: Assessment completion date
 
+### SkillFramework
+- **Framework ID**: Unique identifier
+- **Name**: Framework designation
+- **Domain**: Business domain or area of focus
+- **Skills Collection**: Related skills organized together
+- **Competency Model**: Structured representation of capabilities
+- **Version**: Framework iteration and update management
+- **Governance**: Authority and change management process
+
+### AIAgentSkill
+- **Skill ID**: Unique identifier (extends Skill)
+- **Name**: AI skill designation
+- **Category**: AI Automation, Intelligence, Enhancement
+- **Automation Level**: Manual, Semi-automated, Fully automated
+- **AI Technology**: Machine learning, NLP, computer vision, etc.
+- **Integration Method**: API, plugin, embedded system
+- **Training Requirements**: Data, model setup, configuration
+- **Performance Metrics**: Accuracy, efficiency, reliability measures
+
 ## Key Relationships
 
 - Team Member **has** Skill Profile
@@ -56,7 +76,11 @@
 - Assessment **validates** Skill acquisition
 - Mentor **guides** Team Member through Learning Path
 - Team Lead **oversees** skill development for team
+- Project Owner **approves** major skill development changes and resource allocation
 - Skill Manager **coordinates** organizational skill development
+- SkillFramework **organizes** related Skills into coherent competency models
+- AIAgentSkill **extends** Skill with AI-specific capabilities and requirements
+- Assessment **validates** AIAgentSkill through automated testing and performance metrics
 
 ## Business Rules
 
@@ -65,3 +89,7 @@
 3. Learning paths must align with organizational priorities
 4. Mentors must have expert-level proficiency in skills they guide
 5. Skill validation requires practical demonstration, not just theoretical knowledge
+6. Project Owner approval required for significant skill development initiatives involving resource allocation
+7. SkillFrameworks must be governed by designated authority with clear versioning and change control
+8. AIAgentSkills require additional validation including performance metrics and integration testing
+9. Team Lead authority is focused on team capability, while Project Owner has broader project-level authority
