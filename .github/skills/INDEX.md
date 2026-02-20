@@ -86,6 +86,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **goals-extract** | Extract business goals and success criteria | [Individual skill docs](.github/skills/goals-extract/SKILL.md) |
 | **process-w5h** | WHO/What/When/Where/Why/How analysis | [Individual skill docs](.github/skills/process-w5h/SKILL.md) |
 | **process-merge** | Merge multiple requirement sources | [Individual skill docs](.github/skills/process-merge/SKILL.md) |
+| **process-findtopandupdate** | Identify and update top-level requirements in hierarchies | [Individual skill docs](.github/skills/process-findtopandupdate/SKILL.md) |
 
 ### 🎯 Domain Modeling
 | Skill | Purpose | Documentation |
