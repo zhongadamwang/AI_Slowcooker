@@ -41,13 +41,31 @@ Systematically identify and extract domain entities, business concepts, terminol
         {
           "name": "user_id",
           "type": "identifier",
-          "description": "Unique user identifier"
+          "description": "Unique user identifier",
+          "visibility": "public"
         },
         {
           "name": "role",
           "type": "enumeration",
           "description": "User access level",
-          "values": ["admin", "user", "guest"]
+          "values": ["admin", "user", "guest"],
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "authenticate",
+          "description": "Verify user credentials",
+          "parameters": ["username", "password"],
+          "return_type": "boolean",
+          "visibility": "public"
+        },
+        {
+          "name": "updateProfile",
+          "description": "Modify user profile data",
+          "parameters": ["profile_data"],
+          "return_type": "void",
+          "visibility": "public"
         }
       ],
       "domain_area": "Authentication",
@@ -123,9 +141,14 @@ Systematically identify and extract domain entities, business concepts, terminol
 **Description**: System user who interacts with the application
 
 **Attributes**:
-- `user_id` (identifier): Unique user identifier
-- `role` (enumeration): User access level [admin, user, guest]
-- `email` (string): User contact information
+- `user_id` (identifier): Unique user identifier [public]
+- `role` (enumeration): User access level [admin, user, guest] [public]
+- `email` (string): User contact information [public]
+
+**Operations**:
+- `authenticate(username, password)` → boolean: Verify user credentials [public]
+- `updateProfile(profile_data)` → void: Modify user profile data [public]
+- `validateSession()` → boolean: Check session validity [private]
 
 **Source References**: [R-001:section1], [R-003:section2]
 
@@ -210,8 +233,17 @@ Systematically identify and extract domain entities, business concepts, terminol
 ### Entity Extraction Rules
 1. **Focus on business-relevant nouns** that represent persistent data or active system participants
 2. **Abstract concrete implementations** - prefer "Payment" over "CreditCardPayment" for initial modeling
-3. **Prioritize entities with attributes** - standalone terms may be concepts rather than entities
-4. **Maintain traceability** to source requirements for validation and refinement
+3. **Prioritize entities with attributes and operations** - standalone terms may be concepts rather than entities
+4. **Extract behavioral aspects** - identify key operations/methods that entities perform
+5. **Capture visibility indicators** - distinguish between public and private attributes/operations
+6. **Maintain traceability** to source requirements for validation and refinement
+
+### Operation/Method Extraction
+1. **Identify entity behaviors** from action verbs in requirements (authenticate, validate, process)
+2. **Extract parameters** from context - what data does the operation need
+3. **Determine return types** based on expected outcomes
+4. **Infer visibility** from business context - public for external interactions, private for internal logic
+5. **Group related operations** to understand entity responsibilities
 
 ### Concept Classification
 1. **Business Concepts**: Domain-specific processes, rules, and workflows

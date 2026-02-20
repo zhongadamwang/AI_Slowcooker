@@ -2,6 +2,184 @@
 
 # Skill Development Process Domain Model
 
+## Domain Class Diagram
+
+```mermaid
+classDiagram
+    %% Primary Actors
+    class TeamMember:::actor {
+        +member_id: String
+        +name: String
+        +email: String
+        +department: String
+        +joinDate: Date
+        +getSkillProfile()
+        +createLearningPath()
+    }
+
+    class TeamLead:::actor {
+        +lead_id: String
+        +name: String
+        +team_size: Integer
+        +oversight_scope: String
+        +overseeSkillDevelopment()
+        +approveAssessments()
+    }
+
+    class ProjectOwner:::actor {
+        +owner_id: String
+        +name: String
+        +authority_scope: String
+        +budget_control: Boolean
+        +approveChanges()
+        +allocateResources()
+    }
+
+    class Mentor:::actor {
+        +mentor_id: String
+        +name: String
+        +expertise_areas: String[]
+        +experience_years: Integer
+        +guideTeamMember()
+        +conductAssessment()
+    }
+
+    %% Core Entities
+    class Skill:::entity {
+        +skill_id: String
+        +name: String
+        +category: SkillCategory
+        +proficiency_levels: String[]
+        +description: String
+        +required_for: String[]
+        +validateProficiency()
+    }
+
+    class SkillProfile:::entity {
+        +profile_id: String
+        +current_skills: Skill[]
+        +target_skills: Skill[]
+        +last_updated: Date
+        +updateSkills()
+        +addTargetSkill()
+    }
+
+    class LearningPath:::entity {
+        +path_id: String
+        +target_skill: Skill
+        +learning_activities: Activity[]
+        +timeline: Duration
+        +success_criteria: String[]
+        +progress(): Float
+        +complete()
+    }
+
+    class Assessment:::entity {
+        +assessment_id: String
+        +type: AssessmentType
+        +result: ProficiencyLevel
+        +notes: String
+        +date: Date
+        +conduct()
+        +validate()
+    }
+
+    class SkillFramework:::entity {
+        +framework_id: String
+        +name: String
+        +domain: String
+        +version: String
+        +governance: String
+        +organizeSkills()
+        +updateVersion()
+    }
+
+    class AIAgentSkill:::ai {
+        +automation_level: AutomationLevel
+        +ai_technology: String
+        +integration_method: String
+        +training_requirements: String[]
+        +performance_metrics: Metric[]
+        +trainModel()
+        +measurePerformance()
+    }
+
+    class SkillNavigator:::ai {
+        +navigator_id: String
+        +framework_integration: String
+        +navigation_scope: String
+        +workflow_templates: Template[]
+        +context_awareness: Context
+        +orchestrateSkills()
+        +recommendExecution()
+    }
+
+    class ChangeManagementProcess:::entity {
+        +process_id: String
+        +change_tracking: ChangeLog[]
+        +reference_management: Reference[]
+        +classification_system: String
+        +impact_assessment: Impact
+        +trackChanges()
+        +manageReferences()
+    }
+
+    %% Enums
+    class SkillCategory:::enum {
+        <<enumeration>>
+        TECHNICAL
+        PROCESS
+        COLLABORATION
+        LEADERSHIP
+    }
+
+    class AssessmentType:::enum {
+        <<enumeration>>
+        INITIAL
+        PROGRESS
+        FINAL
+    }
+
+    class AutomationLevel:::enum {
+        <<enumeration>>
+        MANUAL
+        SEMI_AUTOMATED
+        FULLY_AUTOMATED
+    }
+
+    class ProficiencyLevel:::enum {
+        <<enumeration>>
+        BEGINNER
+        INTERMEDIATE
+        ADVANCED
+        EXPERT
+    }
+
+    %% Relationships
+    TeamMember --> SkillProfile : has
+    SkillProfile --> Skill : contains
+    LearningPath --> Skill : develops
+    Assessment --> Skill : validates
+    Mentor --> TeamMember : guides
+    TeamLead --> TeamMember : oversees
+    ProjectOwner --> ChangeManagementProcess : governs
+    SkillFramework --> Skill : organizes
+    AIAgentSkill --|> Skill : extends
+    SkillNavigator --> AIAgentSkill : orchestrates
+    ChangeManagementProcess --> Skill : tracks
+    ChangeManagementProcess --> LearningPath : tracks
+    ChangeManagementProcess --> Assessment : tracks
+    Assessment --> Mentor : conducted_by
+    LearningPath --> TeamMember : assigned_to
+
+    %% Styling
+    classDef actor fill:#e1f5fe
+    classDef entity fill:#f3e5f5
+    classDef enum fill:#fff3e0
+    classDef ai fill:#e8f5e8
+
+```
+
 ## Actors
 
 ### Primary Actors

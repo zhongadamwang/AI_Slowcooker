@@ -15,7 +15,8 @@ Systematically compare new domain concepts extracted from requirements against e
 - **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
 - **References**: Organizational domain models (`orgModel/**/*domain-model.md`)
 - **References**: Organizational vocabularies (`orgModel/**/*vocabulary.md`)
-- **Format**: Structured domain concepts with entities, terminology, relationships, and metadata
+- **References**: Organizational class diagrams (`orgModel/**/*domain-model.md` containing Mermaid class diagrams)
+- **Format**: Structured domain concepts with entities, terminology, relationships, operations, and metadata
 
 ## Outputs
 **Files Generated:**
@@ -40,6 +41,8 @@ Systematically compare new domain concepts extracted from requirements against e
       "extracted_entity": {
         "id": "ENT-001",
         "name": "User",
+        "attributes": ["user_id", "email", "role"],
+        "operations": ["authenticate", "updateProfile"],
         "source": "domain-concepts.json"
       },
       "alignment_result": {
@@ -121,6 +124,30 @@ Systematically compare new domain concepts extracted from requirements against e
       ]
     }
   ],
+  "operation_alignments": [
+    {
+      "extracted_operation": {
+        "entity": "User",
+        "operation": "authenticate",
+        "parameters": ["username", "password"],
+        "return_type": "boolean",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "method_match|method_conflict|new_method",
+        "target_operation": {
+          "entity": "Team Member",
+          "operation": "validateCredentials", 
+          "parameters": ["credentials"],
+          "source": "orgModel/01-skill-dev/domain-model.md"
+        },
+        "confidence": "0.0-1.0",
+        "similarity": "identical|similar|different",
+        "recommended_action": "use_existing|rename_operation|define_new",
+        "notes": "Similar functionality, consider parameter alignment"
+      }
+    }
+  ],
   "recommendations": [
     {
       "id": "REC-001",
@@ -177,6 +204,26 @@ Extracted entities with no organizational counterparts - potential model extensi
 **Domain Area**: Learning Management  
 **Rationale**: Project-specific concept not in organizational model  
 **Action**: ➕ Propose addition to organizational model
+
+## Operation Alignments
+
+### ✅ Method Matches
+Extracted operations that align with existing organizational entity methods.
+
+#### User.authenticate() → Team Member.validateCredentials() *(OP-001)*
+**Confidence**: 0.85  
+**Source Entity**: Team Member (orgModel/01-skill-dev/domain-model.md)  
+**Parameter Mapping**: [username, password] → [credentials]  
+**Action**: ✅ Align with organizational operation pattern
+
+### 🆕 New Operations
+Extracted operations with no organizational counterparts.
+
+#### User.updateProfile() *(OP-002)*
+**Entity**: User  
+**Parameters**: [profile_data]  
+**Return Type**: void  
+**Action**: 🆕 Propose as new capability
 
 ## Terminology Alignments
 

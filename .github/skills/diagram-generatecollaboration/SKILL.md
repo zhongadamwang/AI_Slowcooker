@@ -1,19 +1,20 @@
 ---
 name: diagram-generatecollaboration
-description: Generate Mermaid collaboration diagrams embedded in markdown, visualizing system interactions and workflows from domain concepts and requirements. Creates sequence diagrams, flowcharts, and interaction patterns with traceability links to source requirements.
+description: Generate Mermaid collaboration diagrams embedded in markdown, visualizing system interactions and workflows from domain concepts and requirements. Creates sequence diagrams, flowcharts, class diagrams, and interaction patterns with traceability links to source requirements.
 license: MIT
 ---
 
 # Diagram Generate Collaboration
 
-Generate visual collaboration diagrams from domain analysis to illustrate system interactions, user workflows, and entity relationships using Mermaid syntax embedded in markdown.
+Generate visual collaboration diagrams from domain analysis to illustrate system interactions, user workflows, entity relationships, and domain models using Mermaid syntax embedded in markdown.
 
 ## Intent
-Transform analyzed domain concepts and requirements into clear, actionable collaboration diagrams that visualize key system interactions, user journeys, and cross-system workflows. Focus on communicating complex relationships through standardized diagram patterns.
+Transform analyzed domain concepts and requirements into clear, actionable collaboration diagrams that visualize key system interactions, user journeys, cross-system workflows, and domain entity relationships. Focus on communicating complex relationships through standardized diagram patterns.
 
 ## Inputs
 - **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
 - **Secondary**: `projects/[project-name]/artifacts/Analysis/requirements.json` (from requirements-ingest skill)
+- **Tertiary**: `orgModel/**/domain-model.md` (existing domain models for class diagram generation)
 - **Optional**: `projects/[project-name]/artifacts/Analysis/goals.json` (from goals-extract skill)
 - **Format**: Structured domain entities, relationships, and requirements data
 
@@ -30,9 +31,46 @@ Transform analyzed domain concepts and requirements into clear, actionable colla
 **Generated**: [timestamp]  
 **Source**: domain-concepts.json, requirements.json
 
+## Domain Class Model
+
+### Entity Relationship Overview *(Diagram D-001)*
+**Source Requirements**: [R-001], [R-003]  
+**Domain Source**: orgModel/01-skill-dev/domain-model.md
+
+```mermaid
+classDiagram
+    class User:::core {
+        +user_id: String
+        +name: String
+        +email: String
+        +role: UserRole
+        +authenticate()
+        +updateProfile()
+    }
+    
+    class UserRole:::core {
+        +role_id: String
+        +name: String
+        +permissions: String[]
+        +grantAccess()
+    }
+    
+    class Session:::entity {
+        +session_id: String
+        +start_time: DateTime
+        +expiry_time: DateTime
+        +is_active: Boolean
+        +extend()
+        +terminate()
+    }
+    
+    User --> UserRole : has
+    User --> Session : creates
+```
+
 ## User-System Interactions
 
-### Authentication Flow *(Diagram D-001)*
+### Authentication Flow *(Diagram D-002)*
 **Source Requirements**: [R-001], [R-003]  
 **Entities Involved**: User, AuthenticationService, Database
 
@@ -93,11 +131,23 @@ sequenceDiagram
     "generated_at": "ISO8601",
     "source_files": ["domain-concepts.json", "requirements.json"],
     "total_diagrams": "number",
-    "diagram_types": ["sequence", "flowchart", "stateDiagram"]
+    "diagram_types": ["class", "sequence", "flowchart", "stateDiagram"]
   },
   "diagrams": [
     {
       "id": "D-001",
+      "title": "Entity Relationship Overview", 
+      "type": "class",
+      "category": "domain-model",
+      "description": "Core domain entities and their relationships",
+      "entities": ["User", "UserRole", "Session"],
+      "source_requirements": ["R-001", "R-003"],
+      "mermaid_code": "classDiagram...",
+      "complexity": "medium",
+      "maintenance_priority": "high"
+    },
+    {
+      "id": "D-002",
       "title": "Authentication Flow", 
       "type": "sequence",
       "category": "user-system",
@@ -126,6 +176,12 @@ sequenceDiagram
 - Extract temporal sequences and decision points
 
 ### 2. Diagram Type Selection
+**Domain Class Models:**
+- Use class diagrams to visualize entity relationships and domain structure
+- Include core entities with attributes and operations
+- Show inheritance, composition, and association relationships
+- Add styling to distinguish entity types (actors, core entities, enums)
+
 **User-System Interactions:**
 - Use sequence diagrams for user workflows
 - Include system responses and error paths
@@ -142,6 +198,30 @@ sequenceDiagram
 - Show approval workflows and state transitions
 
 ### 3. Mermaid Generation Rules
+
+**Class Diagrams:**
+```
+classDiagram
+    class [EntityName]:::[styleCategory] {
+        +attribute_name: Type
+        -private_attribute: Type
+        +operation_name()
+        -private_operation()
+    }
+    
+    [SourceEntity] --> [TargetEntity] : relationship_label
+    [ParentEntity] <|-- [ChildEntity]
+    [CompositeEntity] *--> [ComponentEntity]
+    [AggregateEntity] o--> [PartEntity]
+```
+
+**Naming Conventions for Class Diagrams:**
+- Entity names: PascalCase (User, UserProfile, PaymentGateway)
+- Attributes: snake_case (user_id, created_at, is_active)
+- Methods: camelCase (authenticate(), updateProfile(), calculateTotal())
+- Relationships: Use clear, descriptive labels
+- Styling: Use inline styling with :::styleCategory syntax
+- Style categories: actor, entity, enum, ai (or custom categories as needed)
 
 **Sequence Diagrams:**
 ```
@@ -167,43 +247,57 @@ end
 - Link each diagram to source requirements using `[R-XXX]` format
 - Include entity references using `ENT-XXX` identifiers from domain concepts
 - Maintain bidirectional traceability for change impact analysis
+- Reference domain models using `orgModel/**/*domain-model.md` paths for class diagrams
 
 **Diagram Metadata:**
 - Assign unique diagram IDs (`D-001`, `D-002`, etc.)
 - Track complexity level (simple/medium/complex)
 - Set maintenance priority based on business criticality
+- Category classification: domain-model, user-system, system-system, process-workflow
 
 ## Quality Guidelines
 
 ### Readability Standards
-- Limit sequence diagrams to 8-10 participants maximum
+- **Class diagrams**: Limit to 10-15 entities maximum for clarity
+- **Sequence diagrams**: Limit to 8-10 participants maximum  
 - Use meaningful, business-friendly entity names
+- Include essential attributes and methods only
 - Include notes for non-obvious business rules
 - Show both happy path and key error scenarios
 
 ### Technical Standards  
 - Valid Mermaid syntax that renders in VS Code
+- Consistent naming conventions across all diagram types
+- Appropriate use of visibility markers (+/- for public/private)
+- Clear distinction between inheritance, composition, and association
+- Proper use of inline styling with :::category syntax for entity categorization
 - Consistent participant naming across related diagrams
 - Appropriate use of activation boxes for long-running operations
 - Clear distinction between synchronous and asynchronous calls
 
 ### Business Value
-- Focus on high-value interactions that need visualization
+- **Class diagrams**: Focus on core business entities and critical relationships
+- **Interaction diagrams**: Focus on high-value interactions that need visualization
 - Prioritize user-facing workflows and critical system integrations
 - Include compliance and security-related flows
 - Show cross-system dependencies that affect architecture decisions
+- Ensure domain models align with organizational standards and terminology
 
 ## Usage Pattern
 ```
 1. Call after domain-extractconcepts skill completion
-2. Load domain-concepts.json and requirements.json
-3. Generate collaboration diagrams for key interaction patterns
-4. Output markdown file with embedded Mermaid diagrams and JSON metadata
-5. Update project documentation with visual collaboration models
+2. Load domain-concepts.json and requirements.json  
+3. Review existing orgModel domain models for class diagram context
+4. Generate domain class diagrams showing entity relationships and structure
+5. Generate collaboration diagrams for key interaction patterns
+6. Output markdown file with embedded Mermaid diagrams and JSON metadata
+7. Update project documentation with visual collaboration and domain models
 ```
 
 ## Integration Notes
-- Diagrams complement domain models and requirements documentation
+- Class diagrams complement textual domain models and requirements documentation
+- Collaboration diagrams complement domain models and requirements documentation
 - Generated diagrams can inform architecture and design decisions
+- Domain class diagrams should align with organizational domain model standards
 - Supports iterative refinement as requirements evolve
 - Compatible with VS Code Mermaid preview and documentation workflows
