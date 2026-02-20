@@ -68,6 +68,23 @@
 - **Training Requirements**: Data, model setup, configuration
 - **Performance Metrics**: Accuracy, efficiency, reliability measures
 
+### SkillNavigator
+- **Navigator ID**: Unique identifier
+- **Framework Integration**: Copilot, VS Code, CLI
+- **Navigation Scope**: Available skills registry and orchestration capabilities
+- **Workflow Templates**: Predefined skill execution sequences
+- **Context Awareness**: Project state, available artifacts, user preferences
+- **Orchestration Intelligence**: Pattern recognition, dependency resolution, optimization
+- **Learning Capability**: Adaptive recommendations, usage pattern analysis
+
+### ChangeManagementProcess
+- **Process ID**: Unique identifier
+- **Change Tracking**: Systematic documentation and impact analysis
+- **Reference Management**: Automated cross-reference updates and consistency
+- **Classification System**: Change type identification and categorization
+- **Impact Assessment**: Stakeholder analysis, effort estimation, risk evaluation
+- **Integration Points**: OrgModel updates, task dependencies, requirement traceability
+
 ## Key Relationships
 
 - Team Member **has** Skill Profile
@@ -81,6 +98,11 @@
 - SkillFramework **organizes** related Skills into coherent competency models
 - AIAgentSkill **extends** Skill with AI-specific capabilities and requirements
 - Assessment **validates** AIAgentSkill through automated testing and performance metrics
+- SkillNavigator **orchestrates** multiple AIAgentSkills in coordinated workflows
+- SkillNavigator **provides** intelligent recommendations for skill execution sequences
+- ChangeManagementProcess **tracks** all modifications to Skills, Learning Paths, and Assessments
+- ChangeManagementProcess **integrates** with SkillFramework for systematic capability evolution
+- Project Owner **governs** ChangeManagementProcess through approval workflows
 
 ## Business Rules
 
@@ -93,3 +115,8 @@
 7. SkillFrameworks must be governed by designated authority with clear versioning and change control
 8. AIAgentSkills require additional validation including performance metrics and integration testing
 9. Team Lead authority is focused on team capability, while Project Owner has broader project-level authority
+10. SkillNavigator must maintain registry of all available skills with current capability status
+11. ChangeManagementProcess requires approval workflow for changes affecting multiple stakeholder groups
+12. All AIAgentSkill integrations must support SkillNavigator orchestration patterns
+13. Requirements incremental updates must maintain traceability through ChangeManagementProcess
+14. SkillNavigator recommendations must consider organizational constraints and priorities

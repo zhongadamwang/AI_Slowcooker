@@ -108,6 +108,90 @@ flowchart LR
     style P fill:#f3e5f5
 ```
 
+## EDPS Skill Navigator Orchestration
+
+```mermaid
+sequenceDiagram
+    participant User as Developer
+    participant Navigator as SkillNavigator
+    participant Registry as SkillRegistry
+    participant Skills as AIAgentSkills
+    participant Context as ProjectContext
+    
+    User->>Navigator: "I need to process requirements"
+    Navigator->>Context: Analyze current project state
+    Context->>Navigator: Project phase, available artifacts
+    
+    Navigator->>Registry: Query available skills
+    Registry->>Navigator: Matching capabilities
+    
+    Navigator->>User: Recommend workflow sequence
+    User->>Navigator: Approve workflow
+    
+    loop Skill Execution
+        Navigator->>Skills: Execute skill with context
+        Skills->>Navigator: Return results
+        Navigator->>Context: Update project state
+        Navigator->>User: Progress notification
+    end
+    
+    Navigator->>User: Workflow complete, suggest next steps
+```
+
+## Change Management Integration
+
+```mermaid
+flowchart LR
+    A[Identify Change] --> B[Classify Change Type]
+    B --> C[Generate Impact Analysis]
+    C --> D[Auto-Update References]
+    D --> E[Stakeholder Notification]
+    
+    E --> F{Approval Required?}
+    F -->|Yes| G[Route for Approval]
+    F -->|No| H[Implement Directly]
+    
+    G --> I{Approved?}
+    I -->|Yes| H
+    I -->|No| J[Document Rejection]
+    
+    H --> K[Update OrgModel]
+    K --> L[Trace to Requirements]
+    L --> M[Validate Consistency]
+    
+    J --> N[Archive Change Request]
+    M --> O[Change Complete]
+    N --> O
+```
+
+## Incremental Requirements Integration
+
+```mermaid
+sequenceDiagram
+    participant Stakeholder as Requirement Source
+    participant CM as ChangeManagement
+    participant RI as RequirementsIngest
+    participant Analysis as AnalysisArtifacts
+    participant OrgModel as OrgModel
+    
+    Stakeholder->>CM: Submit new requirements
+    CM->>CM: Classify as incremental update
+    CM->>RI: Process new requirements
+    
+    RI->>Analysis: Generate requirements R-XXX to R-YYY
+    RI->>Analysis: Update processing log
+    RI->>Analysis: Enhance glossary
+    
+    Analysis->>CM: Signal analysis artifacts updated
+    CM->>OrgModel: Update model components
+    CM->>CM: Generate change documentation
+    
+    CM->>Stakeholder: Confirm integration complete
+    
+    Note over CM: Maintains full traceability
+    Note over Analysis: Preserves existing analysis
+```
+
 ## Key Interactions
 
 ### Team Member - Skill Manager
@@ -151,3 +235,21 @@ flowchart LR
 - Structured approach to creating new AI-enabled capabilities
 - Quality assurance and user acceptance testing
 - Continuous improvement and evolution cycles
+
+### EDPS Skill Navigator Interactions
+- **Intelligent Orchestration**: Navigator coordinates multiple AI skills for complex workflows
+- **Context-Aware Recommendations**: Provides personalized skill suggestions based on project state
+- **Workflow Automation**: Executes predefined skill sequences with minimal user intervention
+- **Progress Monitoring**: Tracks skill execution and provides real-time feedback
+
+### Change Management Process Interactions
+- **Automated Change Detection**: AI conversation analysis identifies requirement changes
+- **Impact Assessment Generation**: Systematic evaluation of change effects on stakeholders
+- **Reference Management**: Automated consistency maintenance across organizational documents
+- **Approval Workflow Coordination**: Routes significant changes through appropriate stakeholders
+
+### Incremental Requirements Processing
+- **Dynamic Integration**: Seamlessly incorporates new requirements without disrupting existing analysis
+- **Traceability Preservation**: Maintains links between changes and source requirements
+- **Artifact Synchronization**: Updates all related analysis documents consistently
+- **Progressive Enhancement**: Builds organizational understanding incrementally

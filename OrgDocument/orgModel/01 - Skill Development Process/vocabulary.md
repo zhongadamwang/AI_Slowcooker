@@ -48,6 +48,25 @@
 | **Feedback Loop** | System for collecting and incorporating stakeholder input | Response Cycle, Learning Loop | Process skill for evolutionary development |
 | **Refactoring** | Restructuring code without changing external behavior | Code Improvement, Restructuring | Technical skill for maintaining evolving systems |
 
+### AI Skills and Automation Terms
+
+| Term | Definition | Synonyms | Notes |
+|------|------------|----------|--------|
+| **Skill Navigator** | Intelligent orchestration system that coordinates multiple AI skills | Workflow Orchestrator, Skill Coordinator | Meta-skill for managing skill ecosystem |
+| **Natural Language Orchestration** | Capability to invoke and coordinate skills using conversational input | NL Workflow Control, Conversational Automation | Core feature of EDPS Skill Navigator |
+| **Skill Registry** | Catalog of available AI skills with capabilities and metadata | Skill Catalog, Capability Index | Maintained by SkillNavigator for intelligent recommendations |
+| **Workflow Template** | Predefined sequence of skills for common development patterns | Skill Chain, Process Template | Reusable patterns for efficient workflow execution |
+| **Context Awareness** | System ability to consider project state and user history in recommendations | Situational Intelligence, Adaptive Guidance | Key capability for intelligent skill orchestration |
+
+### Change Management Terms
+
+| Term | Definition | Synonyms | Notes |
+|------|------------|----------|--------|
+| **Change Classification** | Systematic categorization of changes by type, scope, and impact | Change Typing, Modification Classification | Enables proper workflow routing and approval processes |
+| **Impact Assessment** | Analysis of change effects on stakeholders, processes, and systems | Change Impact Analysis, Effect Evaluation | Required for all significant organizational changes |
+| **Reference Management** | Automated maintenance of cross-references and dependencies | Link Management, Dependency Tracking | Ensures organizational model consistency during evolution |
+| **Incremental Requirement Updates** | Process for integrating new requirements without disrupting existing analysis | Progressive Requirements Integration, Delta Updates | Supports continuous evolution while maintaining traceability |
+
 ## Naming Standards
 
 ### File Naming
