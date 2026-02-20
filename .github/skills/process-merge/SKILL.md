@@ -1,275 +1,370 @@
-````skill
 ---
 name: process-merge
-description: Merge new process models with existing organizational models by identifying minimum sub-process overlap and implementing systematic integration following EDP methodology principles.
+description: Merges new process models with existing organizational models by identifying minimum sub-process overlap and implementing systematic integration following EDP methodology principles for minimal disruption while maintaining model coherence.
 license: MIT
 ---
 
 # Process Merge
 
-Intelligently merges new process models with existing organizational model structures by identifying the minimum sub-process overlap and implementing systematic integration that preserves organizational coherence while minimizing disruption to existing processes.
+Systematically merges new process models derived from requirements with existing organizational model structures through intelligent overlap analysis, minimal disruption integration, and comprehensive stakeholder validation workflows.
 
-## Core Function
+## Intent
+Implement true process model integration that analyzes new process elements against existing orgModel structure, identifies minimum sub-process overlap using domain entity matching, and executes systematic integration following EDP methodology principles. Maintains process coherence while preserving existing organizational content and ensuring stakeholder validation at critical integration points.
 
-**Input**: New process model + existing orgModel structure + domain entity mappings + integration strategy
-**Primary Output**: Integrated orgModel with merged process structure
-**Secondary Output**: Integration analysis with impact assessment and change documentation
-**Output Destination**: 
-- Updated orgModel structure in `OrgDocument/orgModel/`
-- Integration analysis: `outputs/projects/{project_id}/Analysis/process-integration-analysis.json`
-- Change documentation: `outputs/projects/{project_id}/Changes/` (following change management conventions)
-**Directory Structure**: Updates existing orgModel hierarchy while preserving process breakdown structure
+## Inputs
+- **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (new process entities from domain-extractconcepts skill)
+- **Secondary**: `projects/[project-name]/artifacts/Analysis/domain-alignment.json` (entity mappings from domain-alignentities skill)
+- **Context**: `projects/[project-name]/artifacts/Analysis/requirements.json` (source requirements for traceability)
+- **Context**: `projects/[project-name]/artifacts/Analysis/w5h-analysis.json` (process context understanding)
+- **Existing**: `orgModel/*/process.md` (existing organizational process flows)
+- **Existing**: `orgModel/*/domain-model.md` (existing domain models for entity mapping)
+- **Existing**: `orgModel/*/vocabulary.md` (organizational terminology consistency)
 
-## Prerequisites
+## Outputs
+**Files Generated:**
+- `projects/[project-name]/artifacts/Analysis/process-merge.json` - Structured merge plan and overlap analysis
+- `projects/[project-name]/artifacts/Analysis/process-merge.md` - Human-readable integration report
+- `projects/[project-name]/artifacts/Analysis/process-integration-plan.md` - Stakeholder review and approval workflow
+- `projects/[project-name]/artifacts/Analysis/process-rollback-data.json` - Rollback capabilities and validation checkpoints
 
-**Required Skills:**
-- Domain.AlignEntities (T6): For domain entity mapping between new and existing models
-- Domain.ProposeNewConcepts (T7): For identifying gaps requiring new concepts
-- OrgModel-Update (T17): For systematic orgModel structure updates
-- Model-Integration (T18): For systematic model integration methodology
-
-**Required Context:**
-- Existing orgModel structure with process breakdown hierarchy
-- New process model analyzed through requirements analysis pipeline
-- Domain entity alignments between new and existing models
-- Organizational model vocabulary and terminology standards
-
-## Integration Methodology
-
-**Step 1: Process Overlap Analysis**
-- Analyze new process model against existing orgModel process hierarchy
-- Identify domain entities shared between new and existing processes
-- Map process flows and interaction patterns
-- Calculate overlap percentage by domain entity coverage
-
-**Step 2: Minimum Sub-Process Identification**
-- Find the minimum sub-process model that matches maximum new process coverage by domain entities
-- Identify integration points with least organizational disruption
-- Determine optimal integration depth (main process vs sub-process level)
-- Assess impact on existing collaboration patterns
-
-**Step 3: Integration Planning**
-- Generate integration strategy (replace, extend, or hybrid approach)
-- Plan staged integration with rollback capabilities
-- Identify stakeholder impact and approval requirements
-- Create validation checkpoints for integration success
-
-**Step 4: Model Merging**
-- Execute systematic integration following EDP principles
-- Update orgModel structure while preserving existing content
-- Maintain vocabulary consistency and terminology alignment
-- Generate updated collaboration diagrams and process documentation
-
-## Usage
-
-**GitHub Copilot Integration (Recommended):**
-```markdown
-Use this skill after completing domain analysis and having prerequisites satisfied.
-Copilot will identify process overlap and implement systematic integration.
-
-Example prompt:
-"Use process-merge skill to integrate the new customer onboarding process model with existing CRM processes. Apply minimal disruption strategy with stakeholder validation checkpoints."
-
-Prerequisites check:
-- Domain alignment completed (requires T6-T7 output)
-- OrgModel structure current (requires T17 availability) 
-- Integration framework ready (requires T18 availability)
-```
-
-**Integration Workflow:**
-```python
-# This represents the intended workflow - actual implementation pending prerequisites
-from process_merge import ProcessModelIntegrator
-
-integrator = ProcessModelIntegrator()
-
-# Step 1: Analyze overlap
-overlap_analysis = integrator.analyze_overlap(
-    new_model_path="outputs/projects/PROJECT-001/Analysis/",
-    existing_orgmodel_path="OrgDocument/orgModel/",
-    domain_mappings="outputs/projects/PROJECT-001/Analysis/domain-alignment.json"
-)
-
-# Step 2: Plan integration
-integration_plan = integrator.plan_integration(
-    overlap_analysis, 
-    strategy="minimal_disruption",
-    validation_required=True
-)
-
-# Step 3: Execute merge
-integration_result = integrator.merge_models(
-    integration_plan,
-    project_id="PROJECT-001"
-)
-# Creates: 
-#   Updated OrgDocument/orgModel/ structure
-#   outputs/projects/PROJECT-001/Analysis/process-integration-analysis.json
-#   outputs/projects/PROJECT-001/Changes/YYYY-MM-DD-PROC-CHG-xxx-process-integration.md
-```
-
-## Output Schema
-
-**Primary Format** - Updated OrgModel Structure:
-
-The skill updates the existing `OrgDocument/orgModel/` hierarchy while maintaining the process breakdown structure:
-
-```
-OrgDocument/orgModel/
-├── {Process Name}/
-│   ├── main.md                    # Updated with integration summary
-│   ├── domain-model.md           # Enhanced with new domain entities  
-│   ├── process.md                # Updated with merged process steps
-│   ├── collaboration.md          # Updated collaboration patterns
-│   ├── vocabulary.md             # Enhanced terminology
-│   ├── test-case-list.md         # Updated test scenarios
-│   └── {Sub-Process}/            # New or updated sub-processes
-│       ├── main.md
-│       ├── domain-model.md
-│       └── ...
-```
-
-**Secondary Format** - Integration Analysis (JSON):
-
+### JSON Structure (`process-merge.json`)
 ```json
 {
-  "integration_analysis": {
-    "timestamp": "2026-02-18T14:30:00Z",
-    "project_id": "PROJECT-001",
+  "project_id": "string",
+  "merge_metadata": {
+    "generated_at": "ISO8601",
+    "source_domain_concepts": "domain-concepts.json",
+    "source_alignment": "domain-alignment.json",
+    "target_orgmodels": ["orgModel/01-skill-dev/process.md"],
+    "overlap_analysis_method": "entity_matching",
     "integration_strategy": "minimal_disruption",
-    "overlap_analysis": {
-      "matching_processes": [
+    "edp_compliance": "boolean",
+    "total_processes_analyzed": "number",
+    "minimum_overlap_identified": "number",
+    "integration_complexity": "low|medium|high",
+    "stakeholder_validation_required": "boolean",
+    "rollback_capability": "boolean"
+  },
+  "overlap_analysis": {
+    "process_mappings": [
+      {
+        "mapping_id": "PM-001",
+        "new_process": {
+          "name": "User Authentication Process",
+          "source_requirements": ["REQ-001", "REQ-003"],
+          "entities": ["User", "Authentication Service", "Security Token"],
+          "activities": ["Login Request", "Credential Validation", "Token Generation"],
+          "decision_points": ["Credential Valid?", "Multi-factor Required?"],
+          "estimated_integration_impact": "low|medium|high"
+        },
+        "existing_processes": [
+          {
+            "orgmodel": "orgModel/02-security-management/process.md",
+            "process_name": "Access Control Process",
+            "overlap_percentage": 85,
+            "shared_entities": ["User", "Security Token"],
+            "shared_activities": ["Credential Validation"],
+            "integration_points": ["post_authentication", "token_management"],
+            "disruption_assessment": "minimal"
+          }
+        ],
+        "overlap_type": "significant|partial|minimal|none",
+        "integration_strategy": {
+          "approach": "extend_existing|merge_processes|create_specialized|create_new",
+          "minimal_disruption_plan": {
+            "preserve_existing": ["authentication_flow", "token_structure"],
+            "extend_with": ["multi_factor_support", "enhanced_logging"],
+            "stakeholder_checkpoints": ["after_entity_mapping", "before_deployment"]
+          }
+        }
+      }
+    ],
+    "overlap_summary": {
+      "total_new_processes": "number",
+      "processes_with_significant_overlap": "number",
+      "processes_requiring_new_creation": "number",
+      "processes_for_extension": "number",
+      "minimum_integration_scope": {
+        "entities_to_integrate": "number",
+        "activities_to_merge": "number",
+        "decision_points_to_align": "number"  
+      }
+    }
+  },
+  "integration_plan": {
+    "phases": [
+      {
+        "phase_id": "P1",
+        "phase_name": "Entity Alignment",
+        "sequence": 1,
+        "strategy": "minimal_disruption",
+        "activities": [
+          "Map new entities to existing entity hierarchy",
+          "Identify terminology conflicts and resolutions",
+          "Validate entity relationship consistency"
+        ],
+        "deliverables": ["entity_mapping_validation.md"],
+        "stakeholder_checkpoints": ["entity_review_meeting"],
+        "rollback_points": ["before_entity_integration"],
+        "estimated_effort": "0.5 days",
+        "risk_assessment": "low"
+      },
+      {
+        "phase_id": "P2",
+        "phase_name": "Process Flow Integration",
+        "sequence": 2,
+        "strategy": "extend_existing_flows",
+        "activities": [
+          "Integrate new activities into existing process flows",
+          "Align decision points and branching logic",
+          "Update process documentation and diagrams"
+        ],
+        "deliverables": ["updated_process_flows.md", "integration_validation.json"],
+        "stakeholder_checkpoints": ["process_flow_review"],
+        "rollback_points": ["before_process_update", "after_validation"],
+        "estimated_effort": "1.5 days",
+        "risk_assessment": "medium"
+      }
+    ],
+    "stakeholder_validation": {
+      "required_approvals": [
         {
-          "existing_process": "Customer Management/Customer Onboarding",
-          "new_process": "Enhanced Customer Registration",
-          "overlap_percentage": 85,
-          "shared_entities": ["Customer", "Account", "Verification"],
-          "integration_depth": "sub_process"
+          "approval_id": "SV-001",
+          "stakeholder_role": "Process Owner",
+          "scope": "process_flow_changes",
+          "validation_criteria": ["business_logic_preservation", "performance_maintenance"],
+          "approval_deadline": "ISO8601",
+          "escalation_path": "department_head > executive_sponsor"
         }
       ],
-      "total_overlap_coverage": 73,
-      "integration_complexity": "medium"
-    },
-    "integration_plan": {
-      "target_process": "Customer Management/Customer Onboarding",
-      "integration_type": "enhance_existing",
-      "changes_required": [
+      "validation_checkpoints": [
         {
-          "change_type": "process_step_addition",
-          "location": "Customer Management/Customer Onboarding/process.md",
-          "description": "Add enhanced verification steps from new model",
-          "impact_level": "medium"
-        },
-        {
-          "change_type": "domain_entity_enhancement", 
-          "location": "Customer Management/Customer Onboarding/domain-model.md",
-          "description": "Add enhanced Customer entity attributes",
-          "impact_level": "low"
+          "checkpoint_id": "CP-001",
+          "name": "Entity Integration Validation",
+          "criteria": ["terminology_consistency", "relationship_integrity"],
+          "validation_method": "stakeholder_review",
+          "required_participants": ["domain_expert", "process_owner"],
+          "success_criteria": "unanimous_approval"
         }
       ]
     },
-    "validation_checkpoints": [
-      {
-        "checkpoint": "stakeholder_review",
-        "description": "Review enhanced customer onboarding process",
-        "required_approvers": ["Customer Success Lead", "Compliance Officer"],
-        "status": "pending"
-      }
-    ]
+    "rollback_strategy": {
+      "rollback_points": [
+        {
+          "point_id": "RP-001",
+          "name": "Pre-Integration State",
+          "captured_state": "complete_orgmodel_snapshot",
+          "rollback_triggers": ["validation_failure", "stakeholder_rejection"],
+          "recovery_time": "< 1 hour",
+          "data_integrity": "guaranteed"
+        }
+      ],
+      "rollback_procedures": [
+        "Restore orgModel files from snapshot",
+        "Reset domain model alignments",
+        "Notify stakeholders of rollback completion"
+      ]
+    }
   },
-  "implementation_results": {
-    "files_updated": ["Customer Management/Customer Onboarding/process.md", "Customer Management/Customer Onboarding/domain-model.md"],
-    "new_files_created": [],
-    "process_coherence_validated": true,
-    "vocabulary_consistency_maintained": true,
-    "integration_success": true
+  "integration_results": {
+    "successful_integrations": [
+      {
+        "integration_id": "SI-001",
+        "process_name": "Enhanced Authentication Process",
+        "target_orgmodel": "orgModel/02-security-management/",
+        "integration_type": "extension",
+        "changes_applied": [
+          "Added multi-factor authentication activities",
+          "Extended user entity with authentication attributes",  
+          "Updated decision points for security levels"
+        ],
+        "validation_status": "passed",
+        "stakeholder_approval": "approved",
+        "rollback_status": "not_required"
+      }
+    ],
+    "failed_integrations": [
+      {
+        "integration_id": "FI-001", 
+        "process_name": "Complex Workflow Process",
+        "failure_reason": "irreconcilable_entity_conflicts",
+        "rollback_executed": "true",
+        "alternative_approach": "create_separate_process_model",
+        "stakeholder_notification": "completed"
+      }
+    ],
+    "integration_metrics": {
+      "total_processes_integrated": "number",
+      "average_overlap_percentage": "number",
+      "minimal_disruption_achieved": "boolean",
+      "stakeholder_satisfaction": "high|medium|low",
+      "rollback_incidents": "number",
+      "integration_completion_time": "hours"
+    }
   }
 }
 ```
 
-**Change Documentation** - Following existing change management format:
+## Core Functions
 
-````markdown
-# Change Record: Process Integration
+### 1. Process Overlap Analysis
 
-**Change ID**: 2026-02-18-PROC-CHG-012-integrate-enhanced-customer-onboarding
-**Type**: Process Integration
-**Impact**: Medium
-**Status**: Implemented
-**Approval**: Pending Stakeholder Review
+**Identifies minimum sub-process overlap through sophisticated entity matching:**
 
-## Overview
-Integrated enhanced customer onboarding process model with existing Customer Management processes based on 85% domain entity overlap identification.
+- **Entity-Based Mapping**: Matches new process entities with existing domain models using fuzzy matching and semantic analysis
+- **Activity Flow Analysis**: Compares process activities and workflows to identify shared patterns and integration opportunities
+- **Decision Point Alignment**: Maps decision criteria and branching logic between new and existing processes
+- **Impact Assessment**: Evaluates integration complexity and potential disruption to existing organizational flows
 
-## Changes Implemented
+**Algorithm**: Domain entity mapping with coverage optimization to identify minimal viable integration points that preserve maximum existing process integrity.
 
-### Process Updates
-- **Customer Management/Customer Onboarding/process.md**: Added enhanced verification steps (lines 45-67)
-- **Customer Management/Customer Onboarding/domain-model.md**: Enhanced Customer entity with additional verification attributes
+### 2. EDP Methodology Integration
 
-### Integration Analysis
-- **Minimum sub-process overlap**: Customer Management/Customer Onboarding (85% entity match)
-- **Integration strategy**: Enhanced existing process rather than replacement
-- **Disruption level**: Minimal - no existing process flow modifications
+**Implements Evolutionary Development Process principles for minimal disruption:**
 
-## Validation Status
-- [ ] Process coherence validated
-- [ ] Vocabulary consistency maintained  
-- [ ] Stakeholder approval pending
-- [ ] Test case updates required
+- **Incremental Integration**: Phases integration into digestible stages with validation checkpoints
+- **Stakeholder-Driven Validation**: Requires explicit approval at critical integration points
+- **Progressive Enhancement**: Extensions over replacements wherever possible
+- **Rollback Capability**: Maintains ability to revert changes at multiple integration stages
 
-## Rollback Plan
-Integration changes isolated to specific process files with version control tags for easy rollback if validation fails.
-````
+**Philosophy**: "Extend rather than replace, validate before committing, preserve organizational investment."
 
-## Implementation Status
+### 3. Systematic Integration Planning
 
-**Current Status**: Skill definition created - Implementation pending prerequisites
-**Prerequisites Status**: 
-- T17 (OrgModel-Update): Not started 
-- T18 (Model-Integration): Not started
-- Domain skills (T6-T7): Completed
+**Orchestrates integration with comprehensive planning and risk management:**
 
-**Next Steps**:
-1. Complete T17 (OrgModel-Update skill) for systematic orgModel management
-2. Complete T18 (Model-Integration skill) for integration methodology 
-3. Implement process-merge skill with full orgModel integration capabilities
-4. Test with complex multi-process integration scenarios
+```markdown
+## Integration Strategy Selection
 
-## Technical Notes
+### Minimal Disruption Hierarchy (Preferred Order):
+1. **Extension**: Add capabilities to existing processes (lowest risk)
+2. **Specialization**: Create specialized variants of existing processes  
+3. **Merger**: Combine compatible processes with careful conflict resolution
+4. **New Creation**: Establish separate processes only when integration impossible
 
-- Implementation requires sophisticated process analysis and orgModel manipulation capabilities
-- Must preserve existing orgModel structure and content integrity
-- Should implement EDP methodology principles for minimal disruption
-- Requires coordination with change management system for proper documentation
-- Must maintain bidirectional traceability between process models and domain entities
-- Should support progressive integration with validation checkpoints
+### Risk Assessment Matrix:
+- **Low Risk**: Entity extensions, terminology alignment, documentation updates
+- **Medium Risk**: Activity integration, decision point modifications, workflow changes
+- **High Risk**: Core process replacement, entity restructuring, fundamental logic changes
+```
 
-## Dependencies
+### 4. OrgModel Structure Preservation
 
-**Hard Dependencies** (must complete first):
-- T17: OrgModel-Update Skill
-- T18: Model-Integration Skill  
-- T6: Domain.AlignEntities Skill
-- T7: Domain.ProposeNewConcepts Skill
+**Maintains existing organizational model integrity during integration:**
 
-**Soft Dependencies** (integration enhanced with):
-- Change Management Skill (for change documentation)
-- T11: Process.FindTopAndUpdate (for process hierarchy management)
-- T19: EDPS-Skill-Navigator (for workflow orchestration)
+- **Content Preservation**: Existing process documentation remains intact unless explicitly changed
+- **Cross-Reference Maintenance**: Updates all internal references and links affected by changes
+- **Vocabulary Consistency**: Ensures terminology alignment across all affected organizational models
+- **Test Case Continuity**: Updates test cases to reflect process changes while preserving coverage
 
-## Validation Criteria
+### 5. Stakeholder Validation Workflow
 
-**Integration Success Criteria:**
-- orgModel structure integrity maintained
-- Process coherence validated across integration points
-- Vocabulary consistency preserved
-- Change documentation complete and traceable
-- Stakeholder validation checkpoints satisfied
-- Rollback capabilities tested and available
+**Implements comprehensive validation and approval process:**
 
-**Performance Criteria:**
-- Integration analysis completion < 2 minutes for standard process models
-- orgModel updates preserve existing content with 100% fidelity
-- Change impact assessment accuracy > 90% for disruption predictions
+```markdown
+## Validation Checkpoints
+
+### Phase 1: Pre-Integration Validation
+- Entity mapping review with domain experts
+- Process flow compatibility assessment
+- Risk assessment validation with process owners
+- **Go/No-Go Decision Point**
+
+### Phase 2: Integration Validation  
+- Integration results review with stakeholders
+- Performance impact assessment
+- Business continuity validation
+- **Deployment Approval Checkpoint**
+
+### Phase 3: Post-Integration Validation
+- Operational validation with end users
+- Integration success metrics review
+- Rollback assessment (if required)
+- **Final Acceptance Checkpoint**
+```
+
+## Usage Examples
+
+### GitHub Copilot Integration
+
+**Direct Invocation:**
+```markdown
+Use process-merge skill to analyze and integrate the new authentication processes from requirements analysis with existing security management processes in orgModel. Apply minimal disruption strategy with stakeholder validation checkpoints.
+
+Expected Input Files:
+- projects/AUTH-2026/artifacts/Analysis/domain-concepts.json
+- projects/AUTH-2026/artifacts/Analysis/domain-alignment.json  
+- orgModel/02-security-management/process.md
+
+Generate integration plan with rollback capability and stakeholder approval workflow.
+```
+
+**Workflow Orchestration:**
+```markdown
+1. Extract domain concepts from requirements (domain-extractconcepts skill)
+2. Align entities with existing models (domain-alignentities skill)  
+3. **Merge processes with existing orgModel (process-merge skill)**
+4. Update organizational models (orgmodel-update skill)
+5. Generate integration documentation (change-management skill)
+```
+
+### Command Line Usage
+
+```bash
+# Analyze process overlap and generate integration plan
+python -m skills.process_merge PROJECT-AUTH-2026 \
+  --source-concepts "projects/AUTH-2026/artifacts/Analysis/domain-concepts.json" \
+  --domain-alignment "projects/AUTH-2026/artifacts/Analysis/domain-alignment.json" \
+  --target-orgmodel "orgModel/02-security-management/" \
+  --integration-strategy "minimal_disruption" \
+  --validation-mode "stakeholder_required"
+
+# Output Files:
+#   projects/AUTH-2026/artifacts/Analysis/process-merge.json
+#   projects/AUTH-2026/artifacts/Analysis/process-merge.md  
+#   projects/AUTH-2026/artifacts/Analysis/process-integration-plan.md
+#   projects/AUTH-2026/artifacts/Analysis/process-rollback-data.json
+```
+
+### Integration with Model-Integration Skill
+
+**Collaborative Workflow:**
+```markdown
+process-merge skill focuses on process flow integration and overlap analysis
+model-integration skill handles entity relationship conflicts and cross-process consistency
+orgmodel-update skill applies validated changes to organizational model structure
+
+Recommended sequence:
+1. process-merge → generates integration plan
+2. model-integration → resolves entity conflicts  
+3. orgmodel-update → applies changes systematically
+```
+
+## Implementation Notes
+
+### Dependencies
+- **Hard Requirements**: orgmodel-update skill (T17), model-integration skill (T18), domain-alignentities skill (T6)
+- **Soft Dependencies**: change-management skill (T16), edps-skill-navigator skill (T19)
+
+### EDP Methodology Compliance
+- **Minimal Disruption**: Prioritizes extensions over replacements
+- **Stakeholder Validation**: Requires explicit approval for significant changes
+- **Progressive Integration**: Implements changes in phases with rollback points
+- **Documentation Continuity**: Maintains organizational knowledge preservation
+
+### Performance Considerations
+- **Large OrgModel Handling**: Optimized for organizations with 10+ process models
+- **Overlap Analysis Efficiency**: Entity matching algorithms scale to 100+ entities per process
+- **Validation Workflow**: Supports concurrent stakeholder review processes
+- **Rollback Performance**: < 1 hour recovery time for typical integration scenarios
+
+### Error Handling
+- **Integration Conflicts**: Automatically escalates irreconcilable conflicts to stakeholder review
+- **Validation Failures**: Triggers rollback to last stable checkpoint
+- **Entity Mapping Errors**: Provides detailed conflict analysis and resolution options
+- **Stakeholder Approval Timeout**: Implements escalation paths and deadline management
+
+---
+
+*This skill implements the true process model integration capability identified in task T10-NEW, providing systematic merge functionality that respects existing organizational investments while enabling evolutionary development through minimal disruption integration strategies.*
 ````
