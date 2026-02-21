@@ -87,6 +87,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **process-w5h** | WHO/What/When/Where/Why/How analysis | [Individual skill docs](.github/skills/process-w5h/SKILL.md) |
 | **process-merge** | Merge multiple requirement sources | [Individual skill docs](.github/skills/process-merge/SKILL.md) |
 | **process-findtopandupdate** | Identify and update top-level requirements in hierarchies | [Individual skill docs](.github/skills/process-findtopandupdate/SKILL.md) |
+| **requirements-merge** | Combine multiple requirement sources with conflict resolution | [Individual skill docs](.github/skills/requirements-merge/SKILL.md) |
 
 ### 🎯 Domain Modeling
 | Skill | Purpose | Documentation |
@@ -95,6 +96,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **domain-alignentities** | Align concepts with existing systems | [Individual skill docs](.github/skills/domain-alignentities/SKILL.md) |
 | **domain-proposenewconcepts** | Propose new concepts for gaps | [Individual skill docs](.github/skills/domain-proposenewconcepts/SKILL.md) |
 | **diagram-generatecollaboration** | Generate system interaction diagrams | [Individual skill docs](.github/skills/diagram-generatecollaboration/SKILL.md) |
+| **model-integration** | Integrate new domain models into existing organizational structures | [Individual skill docs](.github/skills/model-integration/SKILL.md) |
 
 ### 📊 Planning & Management  
 | Skill | Purpose | Documentation |
@@ -113,6 +115,8 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 |-------|---------|---------------|
 | **edps-skill-navigator** | Navigate and orchestrate skills | [Individual skill docs](.github/skills/edps-skill-navigator/SKILL.md) |
 | **skill-creator** | Create new EDPS skills | [Individual skill docs](.github/skills/skill-creator/SKILL.md) |
+| **integration-testing** | Comprehensive testing and validation of all EDPS skills | [Individual skill docs](.github/skills/integration-testing/SKILL.md) |
+| **orgmodel-update** | Update organizational model documents and folder structures | [Individual skill docs](.github/skills/orgmodel-update/SKILL.md) |
 
 ---
 
