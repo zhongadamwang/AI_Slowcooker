@@ -1,0 +1,318 @@
+{
+  "project_id": "simple-todo-app", 
+  "extraction_metadata": {
+    "generated_at": "2026-02-20T18:45:19Z",
+    "source_files": ["requirements.json", "goals.json"],
+    "total_concepts": 4,
+    "total_entities": 3,
+    "confidence_score": 0.92
+  },
+  "domain_entities": [
+    {
+      "id": "ENT-001",
+      "name": "User",
+      "description": "Individual person using the todo application for personal task management",
+      "attributes": [
+        {
+          "name": "session_id",
+          "type": "identifier", 
+          "description": "Browser session identifier for local storage access",
+          "visibility": "private"
+        },
+        {
+          "name": "preferences",
+          "type": "object",
+          "description": "User interface and display preferences",
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "createTask",
+          "description": "Create a new task with text description",
+          "parameters": ["task_description"],
+          "return_type": "Task",
+          "visibility": "public"
+        },
+        {
+          "name": "editTask", 
+          "description": "Modify existing task description",
+          "parameters": ["task_id", "new_description"],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "markComplete",
+          "description": "Mark task as completed",
+          "parameters": ["task_id"],
+          "return_type": "void", 
+          "visibility": "public"
+        },
+        {
+          "name": "viewTasks",
+          "description": "Display current task list with completion status",
+          "parameters": [],
+          "return_type": "Task[]",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Task Management",
+      "source_refs": ["R-001:Core Functionality", "R-002:Core Functionality", "R-008:User Interface Requirements", "R-009:User Interface Requirements"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-002",
+      "name": "Task", 
+      "description": "Individual todo item with description and completion status",
+      "attributes": [
+        {
+          "name": "task_id",
+          "type": "identifier",
+          "description": "Unique identifier for the task",
+          "visibility": "public"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Text description of the task to be completed",
+          "visibility": "public"
+        },
+        {
+          "name": "is_completed",
+          "type": "boolean",
+          "description": "Completion status of the task",
+          "visibility": "public"
+        },
+        {
+          "name": "created_at",
+          "type": "datetime",
+          "description": "Timestamp when task was created",
+          "visibility": "public"
+        },
+        {
+          "name": "completed_at",
+          "type": "datetime",
+          "description": "Timestamp when task was marked complete",
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "updateDescription",
+          "description": "Change task description text",
+          "parameters": ["new_description"],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "toggleComplete", 
+          "description": "Switch completion status",
+          "parameters": [],
+          "return_type": "void",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Task Management",
+      "source_refs": ["R-001:Core Functionality", "R-002:Core Functionality", "R-003:Core Functionality", "R-004:Core Functionality"],
+      "confidence": 0.98
+    },
+    {
+      "id": "ENT-003",
+      "name": "TodoList",
+      "description": "Collection of tasks with persistence and display management",
+      "attributes": [
+        {
+          "name": "tasks", 
+          "type": "array",
+          "description": "Collection of Task objects",
+          "visibility": "private"
+        },
+        {
+          "name": "total_count",
+          "type": "number",
+          "description": "Total number of tasks in list",
+          "visibility": "public"
+        },
+        {
+          "name": "completed_count",
+          "type": "number",
+          "description": "Number of completed tasks",
+          "visibility": "public"
+        },
+        {
+          "name": "remaining_count",
+          "type": "number", 
+          "description": "Number of incomplete tasks",
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "addTask",
+          "description": "Add new task to the list",
+          "parameters": ["task"],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "removeTask",
+          "description": "Remove task from the list",  
+          "parameters": ["task_id"],
+          "return_type": "boolean",
+          "visibility": "public"
+        },
+        {
+          "name": "sortByNewest",
+          "description": "Order tasks with newest at top",
+          "parameters": [],
+          "return_type": "void",
+          "visibility": "public" 
+        },
+        {
+          "name": "persistToStorage",
+          "description": "Save current list to browser local storage",
+          "parameters": [],
+          "return_type": "boolean", 
+          "visibility": "private"
+        },
+        {
+          "name": "loadFromStorage",
+          "description": "Restore list from browser local storage",
+          "parameters": [],
+          "return_type": "boolean",
+          "visibility": "private"
+        },
+        {
+          "name": "getProgressSummary",
+          "description": "Return completion statistics",
+          "parameters": [],
+          "return_type": "object",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Task Management",
+      "source_refs": ["R-004:Core Functionality", "R-005:Core Functionality", "R-006:Core Functionality"],
+      "confidence": 0.90
+    }
+  ],
+  "business_concepts": [
+    {
+      "id": "CON-001",
+      "name": "Task Management",
+      "definition": "Process of organizing, tracking, and completing individual work items or activities",
+      "synonyms": ["todo management", "task tracking", "activity organization"],
+      "domain_area": "Personal Productivity",
+      "source_refs": ["simple-todo-app.md:Project Overview"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-002", 
+      "name": "Persistence",
+      "definition": "Data storage capability that maintains information across application sessions",
+      "synonyms": ["data storage", "session memory", "local storage"],
+      "domain_area": "Data Management",
+      "source_refs": ["R-006:Core Functionality", "R-012:Technical Considerations"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-003",
+      "name": "Progressive Completion",
+      "definition": "Workflow where users mark items as done while maintaining visibility for reference",
+      "synonyms": ["task completion", "progress tracking", "completion workflow"],
+      "domain_area": "User Experience",
+      "source_refs": ["R-003:Core Functionality", "R-005:Core Functionality"],
+      "confidence": 0.85
+    },
+    {
+      "id": "CON-004",
+      "name": "Responsive Design",
+      "definition": "Interface adaptability to work effectively on both desktop and mobile devices",
+      "synonyms": ["mobile-friendly", "cross-platform interface", "adaptive layout"], 
+      "domain_area": "User Interface",
+      "source_refs": ["R-010:User Interface Requirements"],
+      "confidence": 0.90
+    }
+  ],
+  "terminology": [
+    {
+      "term": "Todo List",
+      "definition": "Collection of tasks or activities to be completed",
+      "context": "Primary application data structure",
+      "domain_area": "Task Management",
+      "source_refs": ["simple-todo-app.md:Project Overview"]
+    },
+    {
+      "term": "Local Storage",
+      "definition": "Browser-based data storage that persists without server connectivity",
+      "context": "Data persistence mechanism",
+      "domain_area": "Technical Infrastructure",
+      "source_refs": ["R-012:Technical Considerations"]
+    },
+    {
+      "term": "Responsive", 
+      "definition": "Interface design that adapts to different screen sizes",
+      "context": "Cross-device compatibility requirement",
+      "domain_area": "User Interface",
+      "source_refs": ["R-010:User Interface Requirements"]
+    },
+    {
+      "term": "Session",
+      "definition": "Period of continuous application use within browser context",
+      "context": "Data persistence scope",
+      "domain_area": "Data Management", 
+      "source_refs": ["R-006:Core Functionality"]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "REL-001",
+      "type": "composition",
+      "source_entity": "TodoList",
+      "target_entity": "Task",
+      "description": "TodoList contains and manages multiple Task objects",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-004:Core Functionality", "R-005:Core Functionality"]
+    },
+    {
+      "id": "REL-002",
+      "type": "interaction",
+      "source_entity": "User", 
+      "target_entity": "TodoList",
+      "description": "User interacts with TodoList through create, edit, and view operations",
+      "cardinality": "one-to-one",
+      "source_refs": ["R-001:Core Functionality", "R-008:User Interface Requirements"]
+    },
+    {
+      "id": "REL-003",
+      "type": "operation",
+      "source_entity": "User",
+      "target_entity": "Task",
+      "description": "User directly manipulates Task objects through edit and completion actions",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-002:Core Functionality", "R-003:Core Functionality", "R-009:User Interface Requirements"]
+    }
+  ],
+  "domain_areas": [
+    {
+      "name": "Task Management",
+      "description": "Core functionality for creating, organizing, and tracking personal tasks",
+      "entities": ["User", "Task", "TodoList"],
+      "concepts": ["Task Management", "Progressive Completion"],
+      "key_processes": ["Create Task", "Edit Task", "Mark Complete", "View Progress"]
+    },
+    {
+      "name": "Data Management",
+      "description": "Persistence and storage of task data using browser local storage",
+      "entities": ["TodoList"],
+      "concepts": ["Persistence"],
+      "key_processes": ["Save Data", "Load Data", "Session Management"]
+    },
+    {
+      "name": "User Interface",
+      "description": "Clean, responsive interface design for cross-platform usability",
+      "entities": ["User"],
+      "concepts": ["Responsive Design"],
+      "key_processes": ["Display Tasks", "Handle Input", "Provide Feedback"]
+    }
+  ]
+}
