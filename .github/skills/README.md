@@ -47,6 +47,9 @@ Project ID: [YOUR-PROJECT-ID]
 | `project-document-management` | Initialize project structure | Project details | Project folder tree | → Requirements |
 | `project-planning-tracking` | Create project plans and timelines | Project scope | Project plans and tracking | → Execution |
 | `project-status-reporting` | Generate status reports | Project artifacts | Status reports and dashboards | → Stakeholder review |
+| `plan-derivetasks` | Convert requirements into actionable tasks | requirements.json, goals.json | task-breakdown.json/md | → `plan-estimateeffort` |
+| `plan-estimateeffort` | Generate effort estimates with confidence levels | task-breakdown.json | effort-estimates.json/md | → `plan-buildschedule` |
+| `plan-buildschedule` | Generate project schedules with dependencies | task-breakdown.json, effort-estimates.json | project-schedule.json/md | → Resource allocation |
 
 ### 🧠 Meta Skills
 | Skill | Purpose | Input | Output | Next Step |
@@ -93,6 +96,19 @@ Timeline: 3 months
 Team Size: 5 developers, 1 designer
 ```
 
+### 📊 Complete Planning Pipeline (20 minutes)
+```markdown
+@workspace Execute full planning workflow from requirements to schedule:
+
+1. Use plan-derivetasks skill to break down requirements into actionable tasks
+2. Use plan-estimateeffort skill to estimate effort for all tasks
+3. Use plan-buildschedule skill to generate project schedule with critical path
+
+Project: Customer Portal Redesign (CPR-2024)
+Team: 5 developers (3 senior, 2 junior), 1 designer
+Deadline: 12 weeks from start
+```
+
 ## Advanced Usage Patterns
 
 ### Skill Chaining
@@ -132,7 +148,11 @@ projects/[PROJECT-ID]/
 │   │   ├── domain-concepts.json/md
 │   │   ├── domain-alignment.json/md
 │   │   ├── scope-analysis.json/md
-│   │   └── collaboration-diagrams.json/md
+│   │   ├── collaboration-diagrams.json/md
+│   │   ├── task-breakdown.json/md      # Planning outputs
+│   │   ├── effort-estimates.json/md
+│   │   ├── project-schedule.json/md
+│   │   └── critical-path-analysis.md
 │   ├── Changes/           # Change management
 │   │   └── [DATE]-[TYPE]-CHG-[NUM]-[description].md
 │   ├── Requirements/      # Input documents
