@@ -102,6 +102,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **project-document-management** | Initialize project structure | [Individual skill docs](.github/skills/project-document-management/SKILL.md) |
 | **project-planning-tracking** | Create plans and track progress | [Individual skill docs](.github/skills/project-planning-tracking/SKILL.md) |
 | **project-status-reporting** | Generate status reports | [Individual skill docs](.github/skills/project-status-reporting/SKILL.md) |
+| **plan-derivetasks** | Convert requirements into actionable development tasks | [Individual skill docs](.github/skills/plan-derivetasks/SKILL.md) |
 | **process-scopemin** | Define MVP and scope boundaries | [Individual skill docs](.github/skills/process-scopemin/SKILL.md) |
 | **change-management** | Track and manage changes | [Individual skill docs](.github/skills/change-management/SKILL.md) |
 
