@@ -1,159 +1,63 @@
 # Requirements Analysis Report
 
-**Project**: 01-Building-Skills
-**Generated**: 2026-02-17T00:00:00Z  
-**Total Requirements**: 76
+**Project**: full-workflow-test  
+**Source**: banking-transactions.md  
+**Generated**: 2026-02-21T14:30:00Z  
+**Total Requirements**: 18  
 
 ## Requirements
 
 | ID | Section | Text | Tags | Confidence |
 |----|---------|------|---------|------------|
-| R-001 | Skill Framework Development | Define core competencies required for evolutionary development | functional | high |
-| R-002 | Skill Framework Development | Identify skill gaps in current team capabilities | functional | high |
-| R-003 | Skill Framework Development | Create learning pathways for skill development | functional | high |
-| R-004 | Process Skills | Adaptive planning methodologies | functional | high |
-| R-005 | Process Skills | Iterative design and implementation practices | functional | high |
-| R-006 | Process Skills | Continuous feedback integration | functional | high |
-| R-007 | Process Skills | Rapid prototyping capabilities | functional | high |
-| R-008 | Technical Skills | Version control best practices for evolutionary development | functional | high |
-| R-009 | Technical Skills | Automated testing and quality assurance | functional | high |
-| R-010 | Technical Skills | Continuous integration and deployment | functional | high |
-| R-011 | Technical Skills | Refactoring and code evolution techniques | functional | high |
-| R-012 | Collaboration Skills | Stakeholder engagement and communication | functional | high |
-| R-013 | Collaboration Skills | Cross-functional team coordination | functional | high |
-| R-014 | Collaboration Skills | Customer feedback collection and integration | functional | high |
-| R-015 | Collaboration Skills | Documentation that evolves with the product | functional | high |
-| R-016 | Assessment and Measurement | Metrics for evolutionary development success | functional | high |
-| R-017 | Assessment and Measurement | Skill assessment methodologies | functional | high |
-| R-018 | Assessment and Measurement | Progress tracking and reporting | functional | high |
-| R-019 | High-Level Architecture | Skills Framework: Individual AI skills that can be invoked through VS Code/Claude Code | functional | high |
-| R-020 | High-Level Architecture | Markdown Processing: All inputs and outputs in markdown format | functional | high |
-| R-021 | High-Level Architecture | Workspace Integration: Skills work within existing VS Code project structure | functional | high |
-| R-022 | High-Level Architecture | Memory: Project-level context maintained through markdown artifacts | functional | high |
-| R-023 | Requirements.Ingest | Normalize markdown requirements into a consistent, chunked representation | functional | high |
-| R-024 | Goals.Extract | Derive the business goal, success criteria, constraints, and KPIs | functional | high |
-| R-025 | Process.W5H | Build the Who/What/When/Where/How map | functional | high |
-| R-026 | Domain.ExtractConcepts | Identify Actors, Systems, Business Entities with key attributes & verbs | functional | high |
-| R-027 | Domain.AlignEntities | Map extracted concepts to the existing domain model; rename to canonical | functional | high |
-| R-028 | Domain.ProposeNewConcepts | Define new concepts to avoid conflicts; propose names & definitions | functional | high |
-| R-029 | Diagram.GenerateCollaboration | Produce a collaboration/sequence diagram from process flow & requirements | functional | high |
-| R-030 | Process.ScopeMin | Define the minimum viable process scope and whether a master data model is needed | functional | high |
-| R-031 | Process.Merge | Merge new process with existing process catalog; detect sub-process nesting and depth | functional | high |
-| R-032 | Process.FindTopAndUpdate | Find the top node in merged graph; update process, collaboration, and domain-model diagrams | functional | high |
-| R-033 | Plan.DeriveTasks | Identify tasks to modify/create processes and models; order by dependencies | functional | high |
-| R-034 | Plan.EstimateEffort | Estimate tasks using three-point PERT and confidence | functional | high |
-| R-035 | Plan.BuildSchedule | Build a schedule (markdown format) using estimates + DAG | functional | high |
-| R-036 | Change Management | Preserve Original Requirements: Keep the original requirement documents intact as source of truth | functional, constraint | high |
-| R-037 | Change Management | Track Evolution: Document how requirements evolve over time | functional | high |
-| R-038 | Change Management | Maintain Traceability: Link changes to impacted tasks and orgModel files | functional | high |
-| R-039 | Change Management | Support Reviews: Enable proper review workflow for requirement changes | functional | high |
-| R-040 | Change Management | Requirement Modifications (REQ-CHG-###) - Changes to existing requirements | functional | high |
-| R-041 | Change Management | Requirement Additions (REQ-ADD-###) - New requirements added | functional | high |
-| R-042 | Change Management | Requirement Removals (REQ-REM-###) - Requirements marked obsolete | functional | high |
-| R-043 | Change Management | Scope Changes (SCOPE-CHG-###) - Project scope adjustments | functional | high |
-| R-044 | Change Management | Process Changes (PROC-CHG-###) - Development process modifications | functional | high |
-| R-045 | Change Management | Naming Convention: YYYY-MM-DD-{TYPE}-{ID}-{short-description}.md | constraint | high |
-| R-046 | Change Management | Structured change documentation using templates | functional | high |
-| R-047 | Change Management | Clear referencing system linking changes to affected documents | functional | high |
+| R-001 | Architecture | The NTPE shall implement a distributed microservices architecture using containerized deployment with Kubernetes orchestration. Each service shall be independently deployable and scalable with dedicated data persistence layers. | functional, constraint | high |
+| R-002 | Architecture | Transaction events shall be processed using Apache Kafka message streaming with exactly-once delivery guarantees. Event sourcing patterns shall maintain complete audit trails of all transaction state changes. | functional, nonfunctional | high |
+| R-003 | Architecture | ACID compliance shall be maintained across distributed transactions using the Saga pattern with compensating transactions. Two-phase commit protocols are prohibited due to performance constraints. | functional, constraint | high |
+| R-004 | Functional | The system shall authorize or decline transactions within 150 milliseconds for 95% of domestic transactions and 300 milliseconds for international transactions. | nonfunctional, functional | high |
+| R-005 | Functional | The system shall support transaction processing in 47 major currencies with real-time exchange rate application. Currency conversion shall occur at the time of authorization using mid-market rates plus configured spreads. | functional | high |
+| R-006 | Functional | Machine learning-based fraud detection shall evaluate every transaction in real-time. Risk scores above configured thresholds shall trigger additional authentication requirements or transaction decline. | functional, nonfunctional | high |
+| R-007 | Integration | The NTPE shall integrate bidirectionally with the existing FIS Profile core banking system using ISO 8583 message format over TCP/IP connections. | functional, constraint | high |
+| R-008 | Integration | Integration with major payment networks shall support Visa VisaNet Authorization Service, Mastercard Mastercom, Federal Reserve FedWire, and NACHA ACH processing. | functional, constraint | high |
+| R-009 | Integration | Real-time integration with external data sources including OFAC sanctions screening, credit bureau interfaces, KYC/AML providers, and Federal Reserve master account database. | functional, nonfunctional | high |
+| R-010 | Security | All data shall be encrypted using AES-256 for data at rest with HSM key management, TLS 1.3 for data in transit, and field-level encryption for sensitive transaction data. | nonfunctional, constraint | high |
+| R-011 | Security | Multi-factor authentication shall be required for all system access with role-based authorization controls including smart card + PIN + biometric for admin access. | nonfunctional, functional | high |
+| R-012 | Security | Network architecture shall implement defense-in-depth with DMZ deployment, network segmentation, DDoS protection capable of mitigating 10 Gbps attacks, and intrusion detection. | nonfunctional, constraint | high |
+| R-013 | Performance | The system shall support peak loads of 50,000 TPS for authorization requests, 100,000 TPS for settlement processing, and 25,000 TPS for balance inquiries. | nonfunctional | high |
+| R-014 | Performance | System uptime shall be 99.99% with RTO of 15 minutes maximum and RPO of 30 seconds maximum data loss. | nonfunctional, constraint | high |
+| R-015 | Compliance | Compliance with federal banking regulations including BSA/AML automated detection, OFAC real-time screening, Regulation E dispute processing, and GLBA privacy protection. | functional, constraint | high |
+| R-016 | Compliance | Consumer data protection compliance including GLBA Safeguards Rule, CCPA privacy rights, GDPR for international transactions, and SOX financial reporting controls. | nonfunctional, constraint | high |
+| R-017 | Success Criteria | Transaction authorization success rate shall exceed 99.95% with average response time under 100ms for domestic transactions and fraud detection accuracy above 99%. | nonfunctional, assumption | medium |
+| R-018 | Success Criteria | System shall achieve 25% transaction processing cost reduction, 15% customer satisfaction improvement, and support 40% transaction volume growth without infrastructure expansion. | assumption, constraint | medium |
 
 ## Glossary Suspects
-- AI Agent Skills
-- VS Code
-- Claude Code
-- Markdown Processing
-- Requirements Ingest
-- Domain Model
-- Collaboration Diagram
-- Sequence Diagram
-- Mermaid
-- PlantUML
-- PERT
-- DAG (Directed Acyclic Graph)
-- Change Management
-- Traceability
-- OrgModel
-- Evolutionary Development
-- Continuous Integration
-- Version Control
-- Stakeholder Engagement
-- W5H Framework
-- Business Entities
-- Atomic Requirements
-- Confidence Score
-- Schema Validation
-
-## Change Requests Analyzed
-
-### PROC-CHG-001: Implement Change Management System
-- **Status**: Implemented
-- **Impact**: Added systematic change tracking mechanism
-- **Requirements Added**: R-036 through R-039
-
-### SCOPE-CHG-002: Add Change Management Skill  
-- **Status**: Approved
-- **Impact**: Expanded project scope from 13 to 14 skills
-- **Requirements Added**: Additional skill specification requirements
-
-### SCOPE-CHG-003: Remove Custom Framework Task
-- **Status**: Implemented  
-- **Impact**: Reduced project scope by removing T1 task
-- **Timeline**: Reduced from 24.3 to 23.2 days
-
-## Meta Requirements (From Changes Documentation)
-
-| ID | Section | Text | Tags | Confidence |
-|----|---------|------|---------|------------|
-| R-048 | Change Process | Create change document using change template for all requirement modifications | functional, process | high |
-| R-049 | Change Process | Review and approve changes through stakeholder review workflow | functional, process | high |
-| R-050 | Change Process | Update references in tasks and orgModel files when changes are implemented | functional, process | high |
-| R-051 | Change Process | Track implementation status in relevant task files | functional, process | high |
-| R-052 | Referencing | From Tasks to Changes: ../artifacts/Changes/ path pattern | constraint, technical | high |
-| R-053 | Referencing | From OrgModel to Changes: ../../projects/{project-name}/artifacts/Changes/ path pattern | constraint, technical | high |
-| R-054 | EDP Methodology | System shall use systems theory, information theory, and object-oriented development as foundational principles | functional, constraint | high |
-| R-055 | EDP Methodology | System must optimize for accurate, multi-perspective system description over UML compliance | functional | high |
-| R-056 | EDP Methodology | System shall use Mermaid and structured text as primary documentation formats | functional, technical | high |
-| R-057 | EDP Methodology | System must describe all entities through a system lens using Open System framing with Boundaries, Inputs, Outputs, Environment, Constraints | functional | high |
-| R-058 | EDP Methodology | System shall implement responsibility chain from Empowerers to Targeted System providing goals, resources, and constraints | functional | high |
-| R-059 | EDP Methodology | System must implement value chain from Targeted System to Empowerers delivering deliverables, acceptance, and metrics | functional | high |
-| R-060 | EDP Methodology | System shall support evolutionary development with recorded iterations, hypotheses, validations, corrections, and rollback points | functional, process | high |
-| R-061 | EDP Methodology | System must always state perspective, assumptions, uncertainties, and validation methods | functional | high |
-| R-062 | EDP Methodology | System shall provide structured sections with headings for Boundaries/Inputs/Outputs/Environment/Constraints | functional | high |
-| R-063 | EDP Methodology | System must include collaboration protocols, responsibility chains, value chains, views, perspectives, assumptions, uncertainties, and validation methods in outputs | functional | high |
-| R-064 | EDP Methodology | System shall prefer Mermaid diagrams over UML with justification required for UML usage and limitations documented | functional, technical | high |
-| R-065 | EDP Methodology | System must provide validation checklists that enforce accuracy over notation compliance | functional | high |
-| R-066 | EDP Methodology | System shall deliver clear, actionable next steps in all outputs | functional | high |
-| R-067 | Model Integration | System must assess current model retained in orgModel folder using process breakdown hierarchy | functional, process | high |
-| R-068 | Model Integration | System shall maintain domain-model.md, process.md, collaboration.md, state-machine.md, main.md, vocabulary.md, and test-case-list.md for each process | functional, technical | high |
-| R-069 | Model Integration | System must map collaboration.md messages to sub-process folders in orgModel for organized representation | functional | high |
-| R-070 | Model Integration | System shall identify new model using analysis skills and change management skills | functional, process | high |
-| R-071 | Model Integration | System must create corresponding models (domain, process, collaboration, state machine, main, vocabulary, test cases) for new requirements | functional | high |
-| R-072 | Model Integration | System shall plan integration by identifying minimum sub-process model matching new model by domain entities | functional, process | high |
-| R-073 | Model Integration | System must replace identified sub-process model with new model for seamless integration while minimizing disruption | functional, process | high |
-| R-074 | Model Integration | System shall generate tasks for development team based on identified changes to implement new model | functional, process | high |
-| R-075 | Model Integration | System must implement changes with stakeholder training and close monitoring to address issues promptly | functional, process | high |
-| R-076 | Model Integration | System shall evaluate and refine with stakeholder feedback and performance metrics for continuous improvement | functional, process | high |
-
-## Source Documents Processed
-1. **[initial-requirements.md](../Requirements/initial-requirements.md)** - Building Skills for Evolutionary Development (R-001 to R-018)
-2. **[AI Agent Skillpack — Task Planning Assistant.md](../Requirements/AI%20Agent%20Skillpack%20—%20Task%20Planning%20Assistant.md)** - Comprehensive AI skillpack specification (R-019 to R-035)
-3. **[requirements-process-description.md](../Requirements/requirements-process-description.md)** - Meta-process description
-4. **[evolutionary development process methodology.md](../Requirements/evolutionary%20development%20process%20methodology.md)** - EDP methodology specification (R-054 to R-066)
-5. **[how to merge new model to existing organization model.md](../Requirements/how%20to%20merge%20new%20model%20to%20existing%20organization%20model.md)** - Model integration process (R-067 to R-076)
-6. **[PROC-CHG-001](../Changes/2026-02-08-PROC-CHG-001-implement-change-management-system.md)** - Change management implementation (R-036 to R-039)
-7. **[SCOPE-CHG-002](../Changes/2026-02-08-SCOPE-CHG-002-add-change-management-skill.md)** - Skill addition change
-8. **[SCOPE-CHG-003](../Changes/2026-02-08-SCOPE-CHG-003-remove-custom-framework-task.md)** - Scope reduction change
-9. **[change-template.md](../Changes/change-template.md)** - Change documentation template (R-040 to R-047)
-10. **[README.md](../Changes/README.md)** - Change management system overview (R-048 to R-053)
-
-## Quality Assessment
-- **Atomic Granularity**: ✅ All requirements under 400 tokens each
-- **Source Traceability**: ✅ All requirements linked to source documents
-- **Classification Coverage**: ✅ Functional, constraint, and process requirements identified
-- **Consistency**: ✅ Unified terminology and format applied
-- **Completeness**: ✅ All identified capabilities and constraints captured
-
-## Processing Notes
-- Change documents were treated as requirements sources since they establish new functional and process requirements
-- Template and guideline documents contributed to constraint and process requirements
-- Meta-requirements extracted from governance and process documentation
-- High confidence scores assigned due to clear, explicit requirement statements
+- NTPE (NextGen Transaction Processing Engine)
+- Kubernetes
+- Apache Kafka
+- Event Sourcing
+- ACID Compliance
+- Saga Pattern
+- ISO 8583
+- PCI DSS
+- OFAC
+- AML (Anti-Money Laundering)
+- BSA (Bank Secrecy Act)
+- KYC (Know Your Customer)
+- HSM (Hardware Security Module)
+- TLS (Transport Layer Security)
+- FIPS 140-2
+- OAuth 2.0
+- JWT (JSON Web Token)
+- DDoS (Distributed Denial of Service)
+- SIEM (Security Information and Event Management)
+- TPS (Transactions Per Second)
+- RTO (Recovery Time Objective)
+- RPO (Recovery Point Objective)
+- GLBA (Gramm-Leach-Bliley Act)
+- CCPA (California Consumer Privacy Act)
+- GDPR (General Data Protection Regulation)
+- SOX (Sarbanes-Oxley Act)
+- Federal Reserve
+- FedWire
+- NACHA
+- ACH (Automated Clearing House)
+- Visa VisaNet
+- Mastercard Mastercom

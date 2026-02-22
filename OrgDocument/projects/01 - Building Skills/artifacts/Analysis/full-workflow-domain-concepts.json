@@ -1,0 +1,540 @@
+{
+  "project_id": "full-workflow-test",
+  "extraction_metadata": {
+    "generated_at": "2026-02-21T11:15:00Z",
+    "source_files": ["full-workflow-requirements.json", "full-workflow-goals.json"],
+    "total_concepts": 18,
+    "total_entities": 12,
+    "total_relationships": 8,
+    "confidence_score": 0.92
+  },
+  "domain_entities": [
+    {
+      "id": "ENT-001",
+      "name": "Transaction",
+      "description": "Financial transaction processed by the NTPE system",
+      "attributes": [
+        {
+          "name": "transaction_id",
+          "type": "identifier",
+          "description": "Unique transaction identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "description": "Transaction monetary amount",
+          "visibility": "public"
+        },
+        {
+          "name": "currency_code",
+          "type": "string",
+          "description": "ISO 4217 currency code",
+          "visibility": "public"
+        },
+        {
+          "name": "authorization_code",
+          "type": "string",
+          "description": "Payment network authorization code",
+          "visibility": "private"
+        },
+        {
+          "name": "status",
+          "type": "enumeration",
+          "description": "Transaction processing status",
+          "values": ["pending", "authorized", "declined", "settled", "reversed"],
+          "visibility": "public"
+        },
+        {
+          "name": "timestamp",
+          "type": "datetime",
+          "description": "Transaction initiation timestamp",
+          "visibility": "public"
+        },
+        {
+          "name": "risk_score",
+          "type": "decimal",
+          "description": "ML-generated fraud risk score",
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "authorize",
+          "description": "Perform authorization check with 150ms/300ms response time",
+          "parameters": ["account_id", "amount", "merchant_id"],
+          "return_type": "AuthorizationResult",
+          "visibility": "public"
+        },
+        {
+          "name": "calculateRisk",
+          "description": "Generate fraud risk score within 50ms",
+          "parameters": ["transaction_data", "behavior_patterns"],
+          "return_type": "RiskScore",
+          "visibility": "private"
+        },
+        {
+          "name": "settle",
+          "description": "Process settlement and update account balances",
+          "parameters": ["authorization_code"],
+          "return_type": "SettlementResult",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Transaction Processing",
+      "source_refs": ["R-008:Functional", "R-011:Functional", "R-022:Performance"],
+      "confidence": 0.98
+    },
+    {
+      "id": "ENT-002", 
+      "name": "Account",
+      "description": "Bank account involved in transaction processing",
+      "attributes": [
+        {
+          "name": "account_number",
+          "type": "identifier",
+          "description": "Unique account identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "balance",
+          "type": "decimal",
+          "description": "Available account balance",
+          "visibility": "private"
+        },
+        {
+          "name": "account_type",
+          "type": "enumeration",
+          "description": "Type of account",
+          "values": ["checking", "savings", "credit", "business"],
+          "visibility": "public"
+        },
+        {
+          "name": "status",
+          "type": "enumeration", 
+          "description": "Account operational status",
+          "values": ["active", "frozen", "closed", "restricted"],
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "validateBalance",
+          "description": "Check sufficient funds for transaction",
+          "parameters": ["amount"],
+          "return_type": "boolean",
+          "visibility": "public"
+        },
+        {
+          "name": "updateBalance",
+          "description": "Apply debit/credit to account balance", 
+          "parameters": ["amount", "transaction_type"],
+          "return_type": "void",
+          "visibility": "private"
+        }
+      ],
+      "domain_area": "Account Management",
+      "source_refs": ["R-008:Functional", "R-013:Integration"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-003",
+      "name": "FraudDetectionEngine",
+      "description": "Machine learning system for real-time fraud detection",
+      "attributes": [
+        {
+          "name": "model_version",
+          "type": "string",
+          "description": "Active ML model version identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "accuracy_threshold",
+          "type": "decimal",
+          "description": "Minimum required accuracy (>99%)",
+          "visibility": "private"
+        },
+        {
+          "name": "false_positive_rate",
+          "type": "decimal", 
+          "description": "Current false positive rate (<0.1%)",
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "evaluateTransaction",
+          "description": "Analyze transaction for fraud risk within 50ms",
+          "parameters": ["transaction_data", "customer_profile", "behavioral_patterns"],
+          "return_type": "FraudAssessment",
+          "visibility": "public"
+        },
+        {
+          "name": "updateModel",
+          "description": "Deploy updated ML model with continuous learning",
+          "parameters": ["model_data"],
+          "return_type": "void",
+          "visibility": "private"
+        }
+      ],
+      "domain_area": "Risk Management",
+      "source_refs": ["R-011:Functional", "R-012:Functional"],
+      "confidence": 0.96
+    },
+    {
+      "id": "ENT-004",
+      "name": "PaymentNetwork",
+      "description": "External payment processing network (Visa, Mastercard, FedWire)",
+      "attributes": [
+        {
+          "name": "network_id",
+          "type": "identifier",
+          "description": "Payment network identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "network_type",
+          "type": "enumeration",
+          "description": "Type of payment network",
+          "values": ["visa", "mastercard", "fedwire", "ach"],
+          "visibility": "public"
+        },
+        {
+          "name": "certification_level",
+          "type": "string",
+          "description": "Required certification (PCI DSS Level 1)",
+          "visibility": "public"
+        },
+        {
+          "name": "uptime_sla",
+          "type": "decimal",
+          "description": "Required uptime percentage (99.99%)",
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "processAuthorization",
+          "description": "Send authorization request to payment network",
+          "parameters": ["iso8583_message"],
+          "return_type": "AuthorizationResponse",
+          "visibility": "public"
+        },
+        {
+          "name": "processSettlement",
+          "description": "Submit settlement batch to network",
+          "parameters": ["settlement_batch"],
+          "return_type": "SettlementConfirmation",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Payment Processing",
+      "source_refs": ["R-015:Integration", "R-016:Integration"],
+      "confidence": 0.94
+    },
+    {
+      "id": "ENT-005",
+      "name": "HSM",
+      "description": "Hardware Security Module for cryptographic key management",
+      "attributes": [
+        {
+          "name": "hsm_id",
+          "type": "identifier",
+          "description": "Hardware security module identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "fips_level",
+          "type": "string",
+          "description": "FIPS 140-2 certification level (Level 3)",
+          "visibility": "public"
+        },
+        {
+          "name": "key_rotation_schedule",
+          "type": "string",
+          "description": "Automatic monthly key rotation schedule",
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "generateKey",
+          "description": "Generate cryptographic keys with FIPS compliance",
+          "parameters": ["key_type", "key_length"],
+          "return_type": "CryptographicKey",
+          "visibility": "private"
+        },
+        {
+          "name": "rotateKeys",
+          "description": "Perform automatic monthly key rotation with zero downtime",
+          "parameters": ["rotation_policy"],
+          "return_type": "void",
+          "visibility": "private"
+        }
+      ],
+      "domain_area": "Security Infrastructure",
+      "source_refs": ["R-018:Security", "R-019:Security"],
+      "confidence": 0.93
+    },
+    {
+      "id": "ENT-006",
+      "name": "CurrencyExchange",
+      "description": "Multi-currency transaction processing and rate management",
+      "attributes": [
+        {
+          "name": "currency_pair",
+          "type": "string",
+          "description": "Source/target currency pair (e.g., USD/EUR)",
+          "visibility": "public"
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "description": "Current exchange rate with 0.01% accuracy",
+          "visibility": "public"
+        },
+        {
+          "name": "rate_timestamp",
+          "type": "datetime",
+          "description": "Rate update timestamp (30-second intervals)",
+          "visibility": "public"
+        },
+        {
+          "name": "rate_source",
+          "type": "enumeration",
+          "description": "Exchange rate data source",
+          "values": ["federal_reserve", "ecb", "bank_of_england"],
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "convertCurrency",
+          "description": "Convert transaction amount using real-time rates",
+          "parameters": ["amount", "source_currency", "target_currency"],
+          "return_type": "ConvertedAmount",
+          "visibility": "public"
+        },
+        {
+          "name": "updateRates",
+          "description": "Refresh exchange rates every 30 seconds during market hours",
+          "parameters": ["rate_feed_data"],
+          "return_type": "void",
+          "visibility": "private"
+        }
+      ],
+      "domain_area": "Currency Management",
+      "source_refs": ["R-009:Functional", "R-010:Functional"],
+      "confidence": 0.91
+    }
+  ],
+  "business_concepts": [
+    {
+      "id": "CON-001",
+      "name": "Transaction Authorization",
+      "definition": "Real-time process to approve or decline financial transactions within 150ms/300ms",
+      "synonyms": ["transaction approval", "payment authorization", "transaction validation"],
+      "domain_area": "Payment Processing",
+      "source_refs": ["R-008:Functional"],
+      "confidence": 0.98
+    },
+    {
+      "id": "CON-002",
+      "name": "Fraud Detection",
+      "definition": "Machine learning-based real-time evaluation of transaction risk with >99% accuracy",
+      "synonyms": ["risk assessment", "fraud prevention", "transaction screening"],
+      "domain_area": "Risk Management", 
+      "source_refs": ["R-011:Functional", "R-012:Functional"],
+      "confidence": 0.97
+    },
+    {
+      "id": "CON-003",
+      "name": "Regulatory Compliance",
+      "definition": "Adherence to banking regulations including BSA/AML, OFAC, PCI DSS, and data protection laws",
+      "synonyms": ["compliance monitoring", "regulatory adherence", "audit compliance"],
+      "domain_area": "Compliance Management",
+      "source_refs": ["R-024:Compliance", "R-025:Compliance"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-004",
+      "name": "High Availability",
+      "definition": "System uptime of 99.99% with maximum 15-minute recovery time and 30-second data loss tolerance",
+      "synonyms": ["system availability", "uptime management", "disaster recovery"],
+      "domain_area": "System Reliability",
+      "source_refs": ["R-023:Performance"],
+      "confidence": 0.96
+    },
+    {
+      "id": "CON-005",
+      "name": "Event Sourcing",
+      "definition": "Architecture pattern maintaining complete audit trails of all transaction state changes",
+      "synonyms": ["event logging", "audit trail", "transaction history"],
+      "domain_area": "System Architecture",
+      "source_refs": ["R-004:Architecture"],
+      "confidence": 0.92
+    }
+  ],
+  "terminology": [
+    {
+      "term": "NTPE",
+      "definition": "NextGen Transaction Processing Engine - the core banking transaction system",
+      "context": "System name for the new transaction processing platform",
+      "domain_area": "System Architecture",
+      "source_refs": ["System Overview"]
+    },
+    {
+      "term": "ISO 8583",
+      "definition": "International standard for financial transaction messaging",
+      "context": "Message format for core banking system integration",
+      "domain_area": "Technical Standards",
+      "source_refs": ["R-013:Integration"]
+    },
+    {
+      "term": "TPS",
+      "definition": "Transactions Per Second - measure of system throughput",
+      "context": "Performance metric for transaction processing capacity",
+      "domain_area": "Performance Measurement",
+      "source_refs": ["R-022:Performance"]
+    },
+    {
+      "term": "OFAC",
+      "definition": "Office of Foreign Assets Control - US Treasury sanctions authority",
+      "context": "Real-time sanctions screening requirement",
+      "domain_area": "Regulatory Compliance",
+      "source_refs": ["R-017:Integration", "R-024:Compliance"]
+    },
+    {
+      "term": "HSM",
+      "definition": "Hardware Security Module - dedicated cryptographic hardware",
+      "context": "FIPS 140-2 Level 3 compliant encryption key management",
+      "domain_area": "Security Infrastructure",
+      "source_refs": ["R-018:Security"]
+    },
+    {
+      "term": "Saga Pattern",
+      "definition": "Distributed transaction pattern using compensating transactions",
+      "context": "ACID compliance implementation without two-phase commit",
+      "domain_area": "System Architecture",
+      "source_refs": ["R-006:Architecture"]
+    },
+    {
+      "term": "PCI DSS",
+      "definition": "Payment Card Industry Data Security Standard",
+      "context": "Level 1 certification requirement for payment network integration",
+      "domain_area": "Security Compliance",
+      "source_refs": ["R-016:Integration"]
+    },
+    {
+      "term": "RTO",
+      "definition": "Recovery Time Objective - maximum acceptable downtime",
+      "context": "15-minute maximum recovery time requirement",
+      "domain_area": "Disaster Recovery",
+      "source_refs": ["R-023:Performance"]
+    },
+    {
+      "term": "RPO",
+      "definition": "Recovery Point Objective - maximum acceptable data loss",
+      "context": "30-second maximum data loss tolerance",
+      "domain_area": "Disaster Recovery",
+      "source_refs": ["R-023:Performance"]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "REL-001",
+      "type": "processes",
+      "source_entity": "FraudDetectionEngine", 
+      "target_entity": "Transaction",
+      "description": "Fraud detection engine evaluates every transaction for risk scoring",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-011:Functional"]
+    },
+    {
+      "id": "REL-002",
+      "type": "authorizes",
+      "source_entity": "PaymentNetwork",
+      "target_entity": "Transaction",
+      "description": "Payment networks provide authorization responses for transactions",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-015:Integration"]
+    },
+    {
+      "id": "REL-003",
+      "type": "secures",
+      "source_entity": "HSM",
+      "target_entity": "Transaction",
+      "description": "HSM provides cryptographic protection for transaction data",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-018:Security"]
+    },
+    {
+      "id": "REL-004",
+      "type": "debits_credits",
+      "source_entity": "Transaction",
+      "target_entity": "Account",
+      "description": "Transactions modify account balances through debit/credit operations",
+      "cardinality": "many-to-one",
+      "source_refs": ["R-008:Functional"]
+    },
+    {
+      "id": "REL-005",
+      "type": "converts",
+      "source_entity": "CurrencyExchange",
+      "target_entity": "Transaction",
+      "description": "Currency exchange service converts international transaction amounts",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-009:Functional"]
+    }
+  ],
+  "domain_areas": [
+    {
+      "name": "Transaction Processing",
+      "description": "Core financial transaction processing with real-time authorization and settlement",
+      "entities": ["Transaction", "Account"],
+      "concepts": ["Transaction Authorization", "High Availability"],
+      "key_processes": ["Authorization", "Settlement", "Balance Validation"],
+      "performance_requirements": ["150ms domestic authorization", "300ms international authorization", "50K TPS capacity"]
+    },
+    {
+      "name": "Risk Management", 
+      "description": "Machine learning fraud detection and risk assessment for transaction security",
+      "entities": ["FraudDetectionEngine"],
+      "concepts": ["Fraud Detection"],
+      "key_processes": ["Risk Scoring", "Fraud Assessment", "Model Training"],
+      "performance_requirements": ["50ms risk scoring", ">99% accuracy", "<0.1% false positives"]
+    },
+    {
+      "name": "Payment Processing",
+      "description": "Integration with external payment networks for authorization and settlement",
+      "entities": ["PaymentNetwork"],
+      "concepts": ["Transaction Authorization"],
+      "key_processes": ["Network Integration", "Authorization Messaging", "Settlement Processing"],
+      "performance_requirements": ["99.99% network uptime", "PCI DSS Level 1 compliance"]
+    },
+    {
+      "name": "Security Infrastructure",
+      "description": "Cryptographic key management and data protection using hardware security modules",
+      "entities": ["HSM"],
+      "concepts": ["Regulatory Compliance", "Event Sourcing"],
+      "key_processes": ["Key Generation", "Key Rotation", "Encryption Management"],
+      "performance_requirements": ["FIPS 140-2 Level 3 compliance", "Zero-downtime key rotation"]
+    },
+    {
+      "name": "Currency Management",
+      "description": "Multi-currency transaction support with real-time exchange rate processing",
+      "entities": ["CurrencyExchange"],
+      "concepts": ["Transaction Authorization"],
+      "key_processes": ["Rate Updates", "Currency Conversion", "Rate Validation"],
+      "performance_requirements": ["30-second rate updates", "0.01% rate accuracy", "47 currency support"]
+    },
+    {
+      "name": "Compliance Management", 
+      "description": "Regulatory compliance monitoring and reporting for banking regulations",
+      "entities": [],
+      "concepts": ["Regulatory Compliance"],
+      "key_processes": ["OFAC Screening", "AML Monitoring", "Audit Trail Maintenance"],
+      "performance_requirements": ["100ms OFAC screening", "Real-time compliance monitoring", "7-year audit retention"]
+    }
+  ]
+}

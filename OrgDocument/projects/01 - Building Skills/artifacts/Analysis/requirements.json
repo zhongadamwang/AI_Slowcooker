@@ -1,7 +1,9 @@
 {
-  "project_id": "01-Building-Skills",
-  "generated_at": "2026-02-17T00:00:00Z",
-  "total_requirements": 76,
+  "project_id": "full-workflow-test",
+  "source_file": "banking-transactions.md",
+  "generated_at": "2026-02-21T14:30:00Z",
+  "processing_time_seconds": 45,
+  "total_requirements": 18,
   "requirements": [
     {
       "id": "R-001",

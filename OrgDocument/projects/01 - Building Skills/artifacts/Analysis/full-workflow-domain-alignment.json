@@ -1,0 +1,285 @@
+{
+  "project_id": "full-workflow-test",
+  "alignment_metadata": {
+    "generated_at": "2026-02-21T11:30:00Z",
+    "source_concepts_file": "full-workflow-domain-concepts.json",
+    "reference_models": ["orgModel/01 - Skill Development Process/domain-model.md"],
+    "reference_vocabularies": ["orgModel/01 - Skill Development Process/vocabulary.md"],
+    "total_alignments": 8,
+    "conflict_count": 0,
+    "new_entities_count": 6,
+    "alignment_confidence": 0.87,
+    "domain_relationship": "orthogonal_domains"
+  },
+  "entity_alignments": [
+    {
+      "extracted_entity": {
+        "id": "ENT-001",
+        "name": "Transaction",
+        "attributes": ["transaction_id", "amount", "currency_code", "authorization_code", "status", "timestamp", "risk_score"],
+        "operations": ["authorize", "calculateRisk", "settle"],
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.95,
+        "mapping_rationale": "Financial transaction entity is domain-specific to banking sector with no equivalent in skill development domain",
+        "recommended_action": "create_new",
+        "domain_alignment": "orthogonal",
+        "notes": "Banking transaction is core entity in financial services, no overlap with skill development entities"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-002", 
+        "name": "Account",
+        "attributes": ["account_number", "balance", "account_type", "status"],
+        "operations": ["validateBalance", "updateBalance"],
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.94,
+        "mapping_rationale": "Bank account entity is financial services specific, no equivalent in skill development domain",
+        "recommended_action": "create_new",
+        "domain_alignment": "orthogonal",
+        "notes": "Account management is specific to banking operations"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-003",
+        "name": "FraudDetectionEngine",
+        "attributes": ["model_version", "accuracy_threshold", "false_positive_rate"],
+        "operations": ["evaluateTransaction", "updateModel"],
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "conceptual_similarity",
+        "target_entity": {
+          "name": "AIAgentSkill",
+          "source": "orgModel/01 - Skill Development Process/domain-model.md",
+          "section": "Core Entities"
+        },
+        "confidence": 0.72,
+        "mapping_rationale": "Both are AI-powered systems, but serve completely different purposes - fraud detection vs skill development",
+        "recommended_action": "create_new",
+        "domain_alignment": "pattern_similarity",
+        "notes": "Shares AI/ML patterns but different functional domains"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-004",
+        "name": "PaymentNetwork", 
+        "attributes": ["network_id", "network_type", "certification_level", "uptime_sla"],
+        "operations": ["processAuthorization", "processSettlement"],
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.96,
+        "mapping_rationale": "Payment network integration is banking-specific infrastructure with no skill development equivalent",
+        "recommended_action": "create_new",
+        "domain_alignment": "orthogonal",
+        "notes": "External payment network integration specific to financial services"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-005",
+        "name": "HSM",
+        "attributes": ["hsm_id", "fips_level", "key_rotation_schedule"],
+        "operations": ["generateKey", "rotateKeys"],
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.93,
+        "mapping_rationale": "Hardware Security Module is specialized cryptographic infrastructure not present in skill development domain",
+        "recommended_action": "create_new",
+        "domain_alignment": "orthogonal",
+        "notes": "Security infrastructure specific to financial transaction processing"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-006",
+        "name": "CurrencyExchange",
+        "attributes": ["currency_pair", "exchange_rate", "rate_timestamp", "rate_source"],
+        "operations": ["convertCurrency", "updateRates"], 
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.95,
+        "mapping_rationale": "Currency exchange functionality is banking-specific with no skill development analog",
+        "recommended_action": "create_new",
+        "domain_alignment": "orthogonal", 
+        "notes": "Multi-currency processing specific to international banking operations"
+      }
+    }
+  ],
+  "terminology_alignments": [
+    {
+      "extracted_term": {
+        "term": "Transaction Authorization",
+        "definition": "Real-time process to approve or decline financial transactions within 150ms/300ms",
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.94,
+        "relationship": "unrelated",
+        "recommended_action": "define_new",
+        "notes": "Financial transaction processing concept not present in skill development vocabulary"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "Fraud Detection", 
+        "definition": "Machine learning-based real-time evaluation of transaction risk with >99% accuracy",
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.91,
+        "relationship": "unrelated",
+        "recommended_action": "define_new", 
+        "notes": "Risk management concept specific to financial services"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "Regulatory Compliance",
+        "definition": "Adherence to banking regulations including BSA/AML, OFAC, PCI DSS, and data protection laws",
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "conceptual_similarity",
+        "target_term": {
+          "term": "Change Management",
+          "definition": "Systematic approach to tracking, documenting, and managing changes to requirements and project scope",
+          "source": "orgModel/01 - Skill Development Process/vocabulary.md"
+        },
+        "confidence": 0.65,
+        "relationship": "similar_pattern",
+        "recommended_action": "define_new",
+        "notes": "Both involve systematic adherence to standards, but different domains (regulatory vs change control)"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "High Availability",
+        "definition": "System uptime of 99.99% with maximum 15-minute recovery time and 30-second data loss tolerance", 
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.92,
+        "relationship": "unrelated",
+        "recommended_action": "define_new",
+        "notes": "Operations and reliability concept not present in skill development domain"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "Event Sourcing",
+        "definition": "Architecture pattern maintaining complete audit trails of all transaction state changes",
+        "source": "full-workflow-domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.90,
+        "relationship": "unrelated", 
+        "recommended_action": "define_new",
+        "notes": "Technical architecture pattern not referenced in existing vocabulary"
+      }
+    }
+  ],
+  "process_alignments": [
+    {
+      "extracted_process": "Real-time Transaction Authorization",
+      "existing_process": "Skills Assessment", 
+      "alignment_type": "pattern_similarity",
+      "confidence": 0.58,
+      "similarities": [
+        "Both involve systematic evaluation against predefined criteria",
+        "Both require rapid decision-making within time constraints", 
+        "Both generate authoritative results affecting subsequent actions"
+      ],
+      "differences": [
+        "Transaction authorization is automated vs manual skills assessment",
+        "Financial domain vs learning domain",
+        "Millisecond timeframes vs hours/days timeframes"
+      ],
+      "recommended_action": "acknowledge_pattern_similarity",
+      "notes": "Interesting parallel in evaluation patterns but different operational contexts"
+    }
+  ],
+  "architectural_patterns": [
+    {
+      "banking_pattern": "Microservices with Event-Driven Processing",
+      "skill_development_pattern": "Process-Driven Skill Framework",
+      "alignment": "architectural_philosophy_similarity",
+      "confidence": 0.71,
+      "analysis": "Both use modular, loosely-coupled approaches but in different domains"
+    },
+    {
+      "banking_pattern": "Machine Learning Fraud Detection",
+      "skill_development_pattern": "AI Agent Skills",
+      "alignment": "technology_pattern_match",
+      "confidence": 0.78,
+      "analysis": "Both leverage AI/ML capabilities but for different functional purposes"
+    }
+  ],
+  "integration_recommendations": [
+    {
+      "recommendation": "Create new banking transaction domain model as separate domain",
+      "rationale": "Banking transaction processing is orthogonal to skill development - minimal overlap justifies separate domain treatment",
+      "implementation": "Establish new orgModel section for Financial Services domain",
+      "priority": "high"
+    },
+    {
+      "recommendation": "Extract common AI/ML patterns for organizational reuse",
+      "rationale": "Both domains use AI/ML capabilities - patterns can be generalized for cross-domain application",
+      "implementation": "Create shared AI/ML architectural patterns library",
+      "priority": "medium"
+    },
+    {
+      "recommendation": "Establish cross-domain terminology standards",
+      "rationale": "Prevent terminology conflicts between different business domains within organization",
+      "implementation": "Create domain-qualified terminology namespace conventions",
+      "priority": "medium"
+    },
+    {
+      "recommendation": "Develop domain integration guidelines",
+      "rationale": "Organization may need to integrate across multiple business domains in future projects",
+      "implementation": "Create integration patterns and guidelines for cross-domain scenarios",
+      "priority": "low"
+    }
+  ],
+  "organizational_impact": {
+    "domain_expansion": "Introduces new Financial Services domain alongside existing Skill Development domain",
+    "vocabulary_growth": "Adds 30+ new domain-specific terms to organizational vocabulary", 
+    "architectural_diversity": "Adds event-driven microservices patterns alongside existing process-driven patterns",
+    "skill_requirements": "Team will need banking domain expertise for effective implementation",
+    "governance_implications": "May require separate governance approaches for regulatory compliance vs learning compliance"
+  },
+  "quality_metrics": {
+    "alignment_completeness": 1.0,
+    "conflict_resolution_ratio": 1.0,
+    "new_entity_classification_accuracy": 0.95,
+    "terminology_mapping_confidence": 0.89,
+    "domain_boundary_clarity": 0.94
+  }
+}

@@ -1,0 +1,323 @@
+{
+  "project_id": "full-workflow-test",
+  "source_file": "full-workflow-requirements.json",
+  "generated_at": "2026-02-21T11:00:00Z",
+  "analysis_framework": "W5H",
+  "who": {
+    "primary_stakeholders": [
+      {
+        "role": "Bank Customers",
+        "description": "End users conducting financial transactions requiring fast, secure, and reliable processing",
+        "influence": "high",
+        "interest": "high",
+        "impact": "direct"
+      },
+      {
+        "role": "Bank Operations Team", 
+        "description": "Staff responsible for transaction monitoring, compliance, and system operations",
+        "influence": "high",
+        "interest": "high",
+        "impact": "operational"
+      },
+      {
+        "role": "Development Team",
+        "description": "Technical personnel implementing and maintaining the NTPE system", 
+        "influence": "high",
+        "interest": "high",
+        "impact": "implementation"
+      },
+      {
+        "role": "Regulatory Bodies",
+        "description": "Federal Reserve, OCC, FDIC, FFIEC requiring compliance with banking regulations",
+        "influence": "high",
+        "interest": "medium",
+        "impact": "compliance"
+      }
+    ],
+    "secondary_stakeholders": [
+      {
+        "role": "Payment Network Partners",
+        "description": "Visa, Mastercard, Federal Reserve FedWire requiring integration compliance",
+        "influence": "medium", 
+        "interest": "medium",
+        "impact": "integration"
+      },
+      {
+        "role": "External Data Providers",
+        "description": "OFAC, credit bureaus, KYC/AML providers supplying critical verification data",
+        "influence": "medium",
+        "interest": "low",
+        "impact": "service"
+      },
+      {
+        "role": "Security Team",
+        "description": "Personnel responsible for cybersecurity, HSM management, and threat monitoring",
+        "influence": "high",
+        "interest": "high", 
+        "impact": "security"
+      }
+    ],
+    "roles_responsibilities": [
+      {
+        "role": "System Architect",
+        "responsibilities": ["Design microservices architecture", "Define integration patterns", "Ensure scalability"],
+        "authority_level": "Technical decisions",
+        "requirements": ["R-001", "R-003", "R-006"]
+      },
+      {
+        "role": "Security Officer",
+        "responsibilities": ["Implement cryptography", "Manage access controls", "Oversee HSM operations"],
+        "authority_level": "Security policies",
+        "requirements": ["R-018", "R-019", "R-020"]
+      },
+      {
+        "role": "Compliance Manager",
+        "responsibilities": ["Ensure regulatory adherence", "Maintain audit trails", "Manage compliance reporting"],
+        "authority_level": "Compliance validation",
+        "requirements": ["R-024", "R-025"]
+      }
+    ]
+  },
+  "what": {
+    "functional_requirements": [
+      {
+        "id": "F1",
+        "description": "Real-time transaction authorization with 150ms/300ms response times",
+        "priority": "critical",
+        "category": "transaction_processing",
+        "source_ref": "R-008"
+      },
+      {
+        "id": "F2", 
+        "description": "Multi-currency transaction processing for 47 major currencies",
+        "priority": "high",
+        "category": "currency_handling",
+        "source_ref": "R-009"
+      },
+      {
+        "id": "F3",
+        "description": "Machine learning fraud detection with <50ms risk scoring",
+        "priority": "critical",
+        "category": "fraud_detection",
+        "source_ref": "R-011"
+      },
+      {
+        "id": "F4",
+        "description": "Bidirectional core banking system integration using ISO 8583",
+        "priority": "critical",
+        "category": "system_integration",
+        "source_ref": "R-013"
+      }
+    ],
+    "non_functional_requirements": [
+      {
+        "id": "NF1",
+        "description": "Microservices architecture with Kubernetes orchestration", 
+        "type": "architecture",
+        "priority": "critical",
+        "source_ref": "R-001"
+      },
+      {
+        "id": "NF2",
+        "description": "99.99% system availability (52 minutes downtime annually)",
+        "type": "availability",
+        "priority": "critical",
+        "source_ref": "R-023"
+      },
+      {
+        "id": "NF3",
+        "description": "50,000 TPS authorization, 100,000 TPS settlement processing",
+        "type": "performance",
+        "priority": "critical",
+        "source_ref": "R-022"
+      }
+    ],
+    "scope": {
+      "in_scope": [
+        "Transaction processing and authorization",
+        "Multi-currency exchange rate handling", 
+        "Fraud detection and prevention",
+        "Payment network integration",
+        "Regulatory compliance and reporting",
+        "Security and encryption management"
+      ],
+      "out_of_scope": [
+        "Core banking ledger management",
+        "Customer onboarding processes",
+        "Mobile application development",
+        "ATM network management", 
+        "Branch banking operations"
+      ]
+    }
+  },
+  "when": {
+    "timeline": {
+      "total_duration": "18 months",
+      "phases": [
+        {
+          "name": "Phase 1",
+          "description": "Architecture design and security framework",
+          "duration": "Months 1-3",
+          "deliverables": ["System architecture", "Security framework", "HSM deployment"]
+        },
+        {
+          "name": "Phase 2", 
+          "description": "Core transaction processing development",
+          "duration": "Months 4-8",
+          "deliverables": ["Transaction engine", "Fraud detection", "Authorization services"]
+        },
+        {
+          "name": "Phase 3",
+          "description": "Payment network integration and compliance",
+          "duration": "Months 9-12",
+          "deliverables": ["Network integrations", "Compliance validation", "External API connections"]
+        },
+        {
+          "name": "Phase 4",
+          "description": "Performance optimization and production deployment",
+          "duration": "Months 13-18",
+          "deliverables": ["Performance tuning", "Production deployment", "Go-live support"]
+        }
+      ]
+    },
+    "milestones": [
+      {
+        "id": "M1",
+        "name": "Security architecture approval and HSM deployment",
+        "target_date": "Month 3",
+        "dependencies": ["Architecture design", "Security framework"],
+        "criticality": "high"
+      },
+      {
+        "id": "M2",
+        "name": "Core transaction engine completion", 
+        "target_date": "Month 8",
+        "dependencies": ["Phase 1 completion", "Development team allocation"],
+        "criticality": "high"
+      },
+      {
+        "id": "M3",
+        "name": "Payment network certification completion",
+        "target_date": "Month 12", 
+        "dependencies": ["Integration completion", "Compliance validation"],
+        "criticality": "critical"
+      }
+    ],
+    "performance_requirements": {
+      "authorization_response": "150ms domestic, 300ms international",
+      "fraud_detection": "50ms risk scoring",
+      "external_api_calls": "<100ms OFAC, <200ms credit bureau",
+      "transaction_completion": "Maximum 5 seconds",
+      "recovery_time": "15 minutes maximum RTO"
+    }
+  },
+  "where": {
+    "environment": {
+      "development": "Containerized microservices on Kubernetes clusters",
+      "production": "Multi-region data centers with active-passive disaster recovery",
+      "security": "DMZ deployment with dual firewall protection, HSM infrastructure",
+      "geographic": "Primary data center (East Coast), disaster recovery (West Coast)"
+    },
+    "integration_points": {
+      "core_banking": "Bidirectional ISO 8583 messaging with FIS Profile system",
+      "payment_networks": "Visa VisaNet, Mastercard Mastercom, Federal Reserve FedWire, NACHA ACH",
+      "external_apis": "OFAC sanctions screening, credit bureau interfaces, KYC/AML providers",
+      "security_infrastructure": "Hardware Security Modules, PKI certificate authorities"
+    },
+    "boundaries": {
+      "network": "Dedicated payment network connections, encrypted internet APIs",
+      "security": "FIPS 140-2 Level 3 compliant secure zones for HSM operations",
+      "compliance": "Regulated facility requirements for financial data processing"
+    }
+  },
+  "why": {
+    "business_drivers": {
+      "primary": "Modernize aging transaction infrastructure to support business growth and reduce operational costs",
+      "secondary": "Improve customer transaction experience through faster processing and reduced failures", 
+      "strategic": "Position the bank as a technology leader in financial services transaction processing",
+      "competitive": "Meet or exceed industry standards for transaction speed, security, and reliability"
+    },
+    "success_metrics": {
+      "cost_reduction": "25% decrease in transaction processing cost per transaction",
+      "revenue_growth": "Support 40% transaction volume increase without infrastructure expansion",
+      "customer_experience": "15% improvement in customer satisfaction ratings for transaction processing",
+      "operational_excellence": "Achieve 99.99% uptime with automated incident response"
+    }, 
+    "regulatory_drivers": [
+      "BSA/AML compliance and automated suspicious activity detection",
+      "OFAC sanctions screening with real-time processing",
+      "GLBA Safeguards Rule and consumer data protection",
+      "PCI DSS Level 1 certification for payment processing"
+    ],
+    "value_proposition": {
+      "technical_excellence": "Industry-leading performance with 150ms authorization times",
+      "security_leadership": "Advanced fraud detection with >99% accuracy and <0.1% false positives", 
+      "operational_resilience": "15-minute recovery time with 30-second maximum data loss",
+      "business_agility": "Real-time processing capabilities supporting new product launches"
+    }
+  },
+  "how": {
+    "technical_approach": {
+      "architecture_pattern": "Event-driven microservices with CQRS and event sourcing",
+      "development_methodology": "Agile development with continuous integration and deployment",
+      "quality_assurance": "Automated testing with >90% code coverage, security scanning, performance testing",
+      "integration_strategy": "API-first design with standardized protocols (ISO 8583, ISO 20022, REST/GraphQL)"
+    },
+    "implementation_phases": [
+      {
+        "phase": "Foundation",
+        "description": "Establish Kubernetes infrastructure, HSM deployment, security framework",
+        "activities": ["Infrastructure setup", "Security implementation", "Base platform development"]
+      },
+      {
+        "phase": "Core Development",
+        "description": "Build transaction engine, fraud detection, and authorization services",
+        "activities": ["Transaction processing logic", "ML fraud detection", "Authorization workflows"]
+      },
+      {
+        "phase": "Integration",
+        "description": "Connect payment networks, external APIs, and core banking systems", 
+        "activities": ["Payment network APIs", "External service integration", "Core banking connectivity"]
+      },
+      {
+        "phase": "Validation",
+        "description": "Performance testing, security penetration testing, compliance validation",
+        "activities": ["Load testing", "Security assessment", "Compliance auditing"]
+      }
+    ],
+    "technology_stack": {
+      "orchestration": "Kubernetes with Helm for deployment management",
+      "messaging": "Apache Kafka with schema registry for event processing",
+      "database": "Distributed NoSQL (Cassandra) for transaction data, SQL for configuration",
+      "security": "FIPS 140-2 Level 3 HSMs, OAuth 2.0 + JWT for API security",
+      "monitoring": "Prometheus/Grafana for metrics, ELK stack for logging"
+    },
+    "risks": [
+      {
+        "risk": "Performance degradation under peak load",
+        "probability": "medium", 
+        "impact": "high",
+        "mitigation": "Comprehensive load testing simulating 150% peak load for 4-hour duration"
+      },
+      {
+        "risk": "Security vulnerabilities in transaction processing",
+        "probability": "low",
+        "impact": "critical",
+        "mitigation": "Multi-layer security validation, penetration testing, HSM redundancy"
+      },
+      {
+        "risk": "Payment network integration failures",
+        "probability": "medium",
+        "impact": "critical", 
+        "mitigation": "Parallel integration testing, rollback procedures, circuit breaker patterns"
+      }
+    ]
+  },
+  "analysis_quality": {
+    "completeness": "full_w5h_coverage",
+    "stakeholder_coverage": 9,
+    "requirement_traceability": 25,
+    "risk_assessment": 15,
+    "confidence_score": 0.93
+  }
+}
