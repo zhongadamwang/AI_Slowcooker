@@ -1,7 +1,7 @@
 {
   "project_id": "01-Building-Skills",
   "merge_metadata": {
-    "generated_at": "2026-02-19T15:30:00Z",
+    "generated_at": "2026-02-21T15:32:00Z",
     "source_domain_concepts": "domain-concepts.json",
     "source_alignment": "domain-alignment.json",
     "target_orgmodels": ["orgModel/01 - Skill Development Process/process.md"],
@@ -12,7 +12,11 @@
     "minimum_overlap_identified": 1,
     "integration_complexity": "medium",
     "stakeholder_validation_required": true,
-    "rollback_capability": true
+    "rollback_capability": true,
+    "integration_test_execution": true,
+    "chain_position": "step_2_of_3",
+    "previous_step": "domain-alignentities",
+    "next_step": "orgmodel-update"
   },
   "overlap_analysis": {
     "process_mappings": [

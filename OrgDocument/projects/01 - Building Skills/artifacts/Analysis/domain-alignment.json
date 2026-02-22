@@ -1,13 +1,15 @@
 {
   "project_id": "01-Building-Skills",
   "alignment_metadata": {
-    "generated_at": "2026-02-10T10:30:00Z",
-    "source_concepts_file": "domain-concepts.json",
-    "reference_models": ["orgModel/01-Skill-Development-Process/domain-model.md"],
-    "reference_vocabularies": ["orgModel/01-Skill-Development-Process/vocabulary.md"],
+    "generated_at": "2026-02-21T15:30:00Z",
+    "source_concepts_file": "domain-concepts.json", 
+    "reference_models": ["orgModel/01 - Skill Development Process/domain-model.md"],
+    "reference_vocabularies": ["orgModel/01 - Skill Development Process/vocabulary.md"],
     "total_alignments": 23,
     "conflict_count": 3,
-    "alignment_confidence": 0.87
+    "alignment_confidence": 0.87,
+    "integration_test_execution": true,
+    "performance_notes": "Executed as part of integration testing chain"
   },
   "entity_alignments": [
     {
