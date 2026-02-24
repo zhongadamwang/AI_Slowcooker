@@ -1,0 +1,58 @@
+{
+  "github": {
+    "api": {
+      "base_url": "https://api.github.com",
+      "timeout": 30,
+      "rate_limit_delay": 1,
+      "max_retries": 3
+    },
+    "authentication": {
+      "token_env_var": "GITHUB_TOKEN",
+      "token": "github_pat"
+    },
+    "default_repository": {
+      "owner": "zhongadamwang",
+      "name": "AI_Slowcooker"
+    },
+    "issue_defaults": {
+      "auto_create_labels": true,
+      "default_assignee": null,
+      "milestone": null
+    },
+    "field_mapping": {
+      "state_mapping": {
+        "ready": "open",
+        "in-progress": "open", 
+        "completed": "closed",
+        "closed": "closed"
+      },
+      "priority_labels": {
+        "High": {
+          "name": "priority:high",
+          "color": "d73a4a"
+        },
+        "Medium": {
+          "name": "priority:medium", 
+          "color": "fbca04"
+        },
+        "Low": {
+          "name": "priority:low",
+          "color": "0e8a16"
+        }
+      },
+      "effort_label_prefix": "effort:",
+      "additional_labels": [],
+      "exclude_labels": ["internal"]
+    },
+    "batch_processing": {
+      "max_concurrent": 5,
+      "progress_reporting": true,
+      "stop_on_error": false
+    },
+    "file_updates": {
+      "add_github_metadata": true,
+      "metadata_format": "yaml_frontmatter",
+      "backup_on_update": false
+    }
+  }
+}
