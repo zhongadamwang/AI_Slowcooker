@@ -207,39 +207,29 @@ class GitHubAPIClient:
         return response.json()
 ```
 
-### Authentication & Setup
+### Authentication Priority Order
 
-**Priority Order:**
-1. **GitHub CLI** (if installed and authenticated)
+1. **Local Credentials File** (Preferred - Secure)
+   ```bash
+   # Skill automatically reads github-credentials.json
+   # File is Git-ignored for security
+   ```
+
+2. **GitHub CLI** (If available and authenticated)
    ```bash
    gh auth login
    gh auth status
    ```
 
-2. **Environment Variable Token**
+3. **Environment Variable**
    ```bash
    export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
    ```
 
-3. **Configuration File Reference**
-   ```json
-   {
-     "authentication": {
-       "token_env_var": "GITHUB_TOKEN"
-     }
-   }
-   ```
-
-**Installation Check:**
-```python
-def get_github_client():
-    if shutil.which('gh') and is_gh_authenticated():
-        return GitHubCLIClient()
-    elif os.getenv('GITHUB_TOKEN'):
-        return GitHubAPIClient()
-    else:
-        raise AuthenticationError("No valid GitHub authentication found")
-```
+4. **Interactive Setup** (First-time users)
+   - Prompts for GitHub username and Personal Access Token
+   - Creates secure local credentials file
+   - Provides step-by-step setup guidance
 
 ### Core Components
 
@@ -267,108 +257,59 @@ def get_github_client():
 - **Traceability**: Clear mapping between local tasks and GitHub issues
 - **Performance**: Batch operations with progress reporting for large projects
 
-## Configuration System
+## Configuration Integration
+
+### Secure Credentials Management
+The skill uses a secure local credentials system that keeps sensitive tokens out of Git:
+
+**Credentials File**: `github-credentials.json` (Git-ignored)
+```json
+{
+  "github": {
+    "username": "your-github-username",
+    "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "default_repository": {
+      "owner": "your-username-or-org",
+      "name": "your-repo-name"
+    },
+    "preferences": {
+      "default_assignee": "your-github-username",
+      "remember_credentials": true
+    }
+  }
+}
+```
+
+**First-Time Setup**:
+1. Copy `github-credentials.json.template` to `github-credentials.json`
+2. Replace placeholder values with your real GitHub credentials
+3. Get Personal Access Token from: https://github.com/settings/tokens
+4. Required token scopes: `repo` (full control) for private repos, or `public_repo` for public only
+
+**Interactive Setup**: If credentials file is missing, skill will prompt:
+```
+❌ GitHub credentials not found!
+
+🔧 Setup Required:
+1. Create Personal Access Token: https://github.com/settings/tokens
+   - Token name: AI_Slowcooker_Integration
+   - Scopes: ☑️ repo (or public_repo)
+2. Enter your GitHub username: _______
+3. Enter your Personal Access Token: _______
+4. Credentials saved to: github-credentials.json
+```
 
 ### Hierarchical Configuration
-The skill uses a two-tier configuration system with automatic fallback:
+Project settings override global settings, credentials remain secure:
 
-1. **Global Configuration**: `projects/github-config.json`
-2. **Project Configuration**: `projects/[project-name]/github-config.json`
-
-**Resolution Logic**: Project-specific settings override global settings. Missing project configs fallback to global.
-
-### Global Configuration (`projects/github-config.json`)
 ```json
+// projects/github-config.json (committed to Git)
 {
-  "github": {
-    "api": {
-      "base_url": "https://api.github.com",
-      "timeout": 30,
-      "rate_limit_delay": 1,
-      "max_retries": 3
-    },
-    "authentication": {
-      "token_env_var": "GITHUB_TOKEN",
-      "token": null
-    },
-    "default_repository": {
-      "owner": "your-org",
-      "name": "your-repo"
-    },
-    "issue_defaults": {
-      "auto_create_labels": true,
-      "default_assignee": null,
-      "milestone": null
-    },
-    "field_mapping": {
-      "state_mapping": {
-        "ready": "open",
-        "in-progress": "open",
-        "completed": "closed"
-      },
-      "priority_labels": {
-        "High": {
-          "name": "priority:high",
-          "color": "d73a4a"
-        }
-      },
-      "effort_label_prefix": "effort:",
-      "additional_labels": [],
-      "exclude_labels": ["internal"]
-    },
-    "batch_processing": {
-      "max_concurrent": 5,
-      "progress_reporting": true,
-      "stop_on_error": false
-    }
+  "authentication": {
+    "credentials_file": "../../../github-credentials.json",
+    "token_env_var": "GITHUB_TOKEN"
   }
 }
-```
-
-### Project Configuration (`projects/[project-name]/github-config.json`)
-```json
-{
-  "github": {
-    "issue_defaults": {
-      "default_assignee": "project.lead",
-      "milestone": "Project MVP"
-    },
-    "field_mapping": {
-      "additional_labels": ["project-specific", "feature"],
-      "priority_labels": {
-        "High": {
-          "name": "priority:critical",
-          "color": "b60205"
-        }
-      }
-    }
-  }
-}
-```
-
-### Configuration Merging
-Project configurations are merged with global configurations:
-- **Primitive values**: Project value overrides global
-- **Arrays**: Project arrays merge with global arrays
-- **Objects**: Deep merge with project values taking precedence
-
-### Environment Variables
-```bash
-# Required
-export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
-
-# Optional (can be set via configuration)
-export GITHUB_API_BASE_URL="https://api.github.com"
-```
-
-### Skill Execution
-```python
-# Via skill navigator - auto-detects configuration
-result = execute_skill("github-issue-create-update", {
-    "task_paths": ["./tasks/T1-github-integration.md"],
-    "operation": "sync",  # create, update, or sync
-    "project_path": "./projects/01 - Building Skills"  # optional override
-})
 ```
 
 ## Configuration Best Practices

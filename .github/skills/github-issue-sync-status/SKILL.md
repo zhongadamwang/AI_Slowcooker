@@ -12,8 +12,8 @@ Synchronize local development task status from GitHub Issues for seamless projec
 ## Inputs
 - **Source**: Local task file path(s) or project directory containing files with GitHub issue metadata
 - **Configuration**: Hierarchical configuration system (project-specific overrides global)
-- **Authentication**: GitHub Personal Access Token or GitHub CLI authentication
-- **Repository**: GitHub repository identifier from configuration files
+- **Authentication**: Secure local credentials file, GitHub CLI, or environment variables
+- **Repository**: GitHub repository identifier from configuration or credentials file
 - **Mode**: Real-time sync, manual trigger, or batch operation
 
 ## Outputs
@@ -69,13 +69,54 @@ Accept: application/vnd.github.v3+json
 Authorization: Bearer TOKEN
 ```
 
+## Secure Authentication System
+
+### Credentials Management
+Uses the same secure local credentials system as `github-issue-create-update`:
+
+**Local Credentials File**: `github-credentials.json` (Git-ignored)
+```json
+{
+  "github": {
+    "username": "your-github-username",
+    "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "default_repository": {
+      "owner": "your-username-or-org",
+      "name": "your-repo-name"
+    }
+  }
+}
+```
+
+**Authentication Priority**:
+1. **Local credentials file** (secure, Git-ignored)
+2. **GitHub CLI** (if authenticated: `gh auth status`)
+3. **Environment variable** (`GITHUB_TOKEN`)
+4. **Interactive setup** (prompts for credentials on first use)
+
+**First-Time Setup**:
+```
+❌ GitHub credentials not found for sync operation!
+
+🔧 Setup Required:
+1. Do you have a Personal Access Token? [Y/n]
+2. If no: Visit https://github.com/settings/tokens
+3. Enter GitHub username: _______
+4. Enter Personal Access Token: _______
+5. ✅ Credentials saved securely to github-credentials.json
+```
+
 ## Configuration Integration
 
-Uses the same hierarchical configuration as `github-issue-create-update`:
+Uses the same hierarchical configuration as `github-issue-create-update` with secure credentials:
 
 ```json
 {
   "github": {
+    "authentication": {
+      "credentials_file": "../../../github-credentials.json",
+      "token_env_var": "GITHUB_TOKEN"
+    },
     "sync_behavior": {
       "auto_sync": false,
       "preserve_manual_changes": true,

@@ -7,8 +7,9 @@
       "max_retries": 3
     },
     "authentication": {
+      "credentials_file": "../../../github-credentials.json",
       "token_env_var": "GITHUB_TOKEN",
-      "token": "github_pat"
+      "preferred_method": "github_cli"
     },
     "default_repository": {
       "owner": "zhongadamwang",
@@ -44,6 +45,20 @@
       "additional_labels": [],
       "exclude_labels": ["internal"]
     },
+    "sync_behavior": {
+      "auto_sync": false,
+      "preserve_manual_changes": true,
+      "conflict_resolution": "manual",
+      "sync_frequency": "on_demand"
+    },
+    "state_mapping": {
+      "issue_to_task": {
+        "open": "ready",
+        "closed": "completed"
+      },
+      "preserve_in_progress": true,
+      "add_completion_date": true
+    },
     "batch_processing": {
       "max_concurrent": 5,
       "progress_reporting": true,
@@ -53,6 +68,11 @@
       "add_github_metadata": true,
       "metadata_format": "yaml_frontmatter",
       "backup_on_update": false
+    },
+    "file_handling": {
+      "backup_before_sync": false,
+      "create_sync_log": true,
+      "preserve_format": true
     }
   }
 }

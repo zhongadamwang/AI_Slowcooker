@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+*.log
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# GitHub Credentials (NEVER COMMIT)
+github-credentials.json
+.env
+*.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# OS generated files
+Thumbs.db
+.directory
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PowerShell
+*.ps1xml
+*.ps1.bak
+
+# Backup files
+*.bak
+*.backup
+*~
