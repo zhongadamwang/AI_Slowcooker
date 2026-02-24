@@ -4,132 +4,155 @@
 - **Project**: PRJ-02 - Integration with GitHub
 - **Document Type**: Initial Requirements
 - **Created**: February 23, 2026
-- **Status**: Draft
-- **Version**: 0.1
+- **Updated**: February 24, 2026
+- **Status**: MVP Scope - Minimum Viable Product
+- **Version**: 0.3
 
 ## Executive Summary
-This document outlines the initial requirements for developing comprehensive GitHub integration capabilities that will enhance collaboration workflows and enable seamless bidirectional synchronization between local project documents and GitHub platform features.
+This document outlines the MVP requirements for GitHub issue management integration using AI agent skills. The MVP develops two manual AI agent skills: one for creating/updating GitHub Issues from local task changes, and another for updating local task status from GitHub Issue status. Both skills follow the EDPS skills framework and are triggered manually.
 
 ## Business Objectives
-1. **Enhanced Collaboration**: Improve team collaboration efficiency through GitHub integration
-2. **Process Automation**: Reduce manual overhead in project and repository management
-3. **Workflow Consistency**: Maintain consistency between local development and GitHub workflows
-4. **Scalability**: Enable scalable team collaboration as organization grows
-5. **Integration Excellence**: Seamless user experience across development tools
+1. **Skill-Based Integration**: Leverage AI agent skills for GitHub API operations
+2. **Manual Control**: Provide controlled, manual synchronization between tasks and issues
+3. **EDPS Framework**: Extend existing skills framework with GitHub integration capabilities
+4. **Foundation**: Establish GitHub integration patterns for future automation
 
 ## Functional Requirements
 
-### 1. Issue Management Integration
-- **REQ-001**: Bidirectional synchronization between local task files and GitHub Issues
-- **REQ-002**: Automatic issue creation from local task templates
-- **REQ-003**: Status synchronization (local task status ↔ GitHub issue state)
-- **REQ-004**: Comment and discussion synchronization
-- **REQ-005**: Label and metadata management
+### 1. Task-to-Issue Skill (Local → GitHub)
+- **REQ-001**: AI agent skill to create GitHub Issues from new local task files
+- **REQ-002**: Update existing GitHub Issues when local task files are modified
+- **REQ-003**: Manual trigger - skill runs when explicitly invoked
+- **REQ-004**: Extract title, description, labels from task file markdown
+- **REQ-005**: Map local task metadata to GitHub Issue fields
+- **REQ-006**: Handle task file creation, updates, and completion states
 
-### 2. Repository Management
-- **REQ-006**: Automated repository setup and configuration
-- **REQ-007**: Branch protection rules management
-- **REQ-008**: Repository template management
-- **REQ-009**: Access control and permissions management
-- **REQ-010**: Repository metadata synchronization
+### 2. Issue-to-Task Skill (GitHub → Local)
+- **REQ-007**: AI agent skill to update local task status from GitHub Issue state
+- **REQ-008**: Sync issue state changes (open, closed, etc.) to local task status
+- **REQ-009**: Manual trigger - skill runs when explicitly invoked
+- **REQ-010**: Preserve local task file format and metadata
+- **REQ-011**: Update task completion status based on issue state
 
-### 3. Project Board Integration  
-- **REQ-011**: GitHub Projects board synchronization
-- **REQ-012**: Automatic card creation and updates
-- **REQ-013**: Sprint and milestone management
-- **REQ-014**: Progress tracking and reporting
-- **REQ-015**: Custom field synchronization
-
-### 4. Pull Request Enhancement
-- **REQ-016**: Enhanced pull request templates
-- **REQ-017**: Automated documentation updates
-- **REQ-018**: Review workflow integration
-- **REQ-019**: CI/CD pipeline integration
-- **REQ-020**: Merge strategy automation
-
-### 5. Authentication and Security
-- **REQ-021**: Secure GitHub API authentication
-- **REQ-022**: Fine-grained access token management
-- **REQ-023**: Multi-user authentication support
-- **REQ-024**: Security audit logging
-- **REQ-025**: Credential management and rotation
+### 3. GitHub API Integration (Shared)
+- **REQ-012**: GitHub REST API v3 integration for issue operations
+- **REQ-013**: Personal Access Token authentication
+- **REQ-014**: Single repository configuration
+- **REQ-015**: Basic error handling with skill output messages
 
 ## Non-Functional Requirements
 
-### Performance
-- **REQ-026**: API operations should complete within 5 seconds
-- **REQ-027**: Batch operations should handle 100+ items efficiently
-- **REQ-028**: Sync operations should not block user interface
+### Performance (MVP)
+- **REQ-016**: Each skill execution should complete within 30 seconds
+- **REQ-017**: Handle up to 10 task files per skill execution
+- **REQ-018**: Skills can run synchronously (acceptable blocking)
 
-### Reliability
-- **REQ-029**: 99.5% uptime for integration services
-- **REQ-030**: Graceful handling of GitHub API rate limits
-- **REQ-031**: Automatic retry mechanisms for failed operations
+### Reliability (MVP)
+- **REQ-019**: 90% successful skill execution rate
+- **REQ-020**: Clear error reporting in skill output
+- **REQ-021**: Graceful handling of GitHub API rate limits
 
-### Usability
-- **REQ-032**: Minimal configuration required for standard workflows
-- **REQ-033**: Clear error messages and troubleshooting guidance
-- **REQ-034**: Consistent user experience with existing tools
+### Skills Framework Integration
+- **REQ-022**: Follow EDPS skills framework patterns and structure
+- **REQ-023**: Integrate with existing VS Code skills environment
+- **REQ-024**: Compatible with GitHub Copilot workflow
+- **REQ-025**: Use standard skill output formats for results
 
-### Scalability
-- **REQ-035**: Support for multiple GitHub organizations
-- **REQ-036**: Handle repositories with 1000+ issues
-- **REQ-037**: Support for teams with 50+ developers
+### MVP Limitations (Accepted)
+- **LIMIT-001**: Manual execution only (no automatic triggers)
+- **LIMIT-002**: Single repository support
+- **LIMIT-003**: Basic conflict resolution (last-change-wins)
+- **LIMIT-004**: Simple error recovery
 
-## Integration Requirements
-- **REQ-038**: Integration with VS Code development environment
-- **REQ-039**: Compatibility with GitHub Copilot workflows
-- **REQ-040**: Integration with existing EDPS skills framework (PRJ-01)
-- **REQ-041**: Support for local markdown-based documentation
-- **REQ-042**: Cross-platform compatibility (Windows, macOS, Linux)
+## Integration Requirements (MVP)
+- **REQ-026**: Integration with EDPS skills framework (PRJ-01)
+- **REQ-027**: VS Code and GitHub Copilot compatible skill development
+- **REQ-028**: Read/write existing markdown task files with no format changes
+- **REQ-029**: Work within current project folder structure
+- **REQ-030**: Skills follow GitHub Agent Skills Standard patterns
+- **REQ-031**: macOS compatibility (primary development environment)
 
 ## Constraints and Assumptions
 
-### Technical Constraints
-- Must use GitHub API v4 (GraphQL) where available
-- Must respect GitHub API rate limiting (5000 requests/hour for authenticated users)
-- Must support GitHub Enterprise Server as well as GitHub.com
+### Technical Constraints (MVP)
+- Use GitHub REST API v3 only (no GraphQL)
+- Basic rate limit handling (stop on limit)
+- GitHub.com support only
+- Single repository per configuration
 
-### Business Constraints
-- Development timeline constrained by GitHub API feature availability
-- Must maintain backward compatibility with existing project structures
-- Budget considerations for GitHub API usage and tooling
+### Business Constraints (MVP)
+- Proof of concept/demonstration purpose
+- No backward compatibility guarantees
+- Manual operation acceptable
+- Minimal error recovery
 
-### Assumptions
-- GitHub organization and repository access will be available
-- Team members have appropriate GitHub licenses and permissions
-- Existing project documentation follows established patterns from PRJ-01
+### Assumptions (MVP)
+- Single developer using the tool
+- GitHub repository with issues enabled
+- Personal Access Token available
+- Task files exist in established format
+- Manual operation is acceptable for MVP
 
-## Success Metrics
-1. **Efficiency Improvement**: 50% reduction in manual task/issue management overhead
-2. **Adoption Rate**: 90% team adoption within 3 months of deployment
-3. **Sync Reliability**: 99% successful synchronization rate between local and GitHub
-4. **User Satisfaction**: Average rating of 4.0/5.0 in user feedback surveys
-5. **Error Rate**: Less than 1% of operations result in errors requiring manual intervention
+## Success Metrics (MVP)
+1. **Basic Functionality**: Successfully create GitHub Issues from 10+ local task files
+2. **Proof of Concept**: Demonstrate GitHub API integration feasibility
+3. **Time Savings**: Show potential for reduced manual issue creation
+4. **Foundation**: Establish codebase for future full synchronization features
+5. **Validation**: Confirm approach works with existing task file format
 
-## Stakeholder Requirements
+## Stakeholder Requirements (MVP)
 
-### Development Team
-- Seamless integration with existing development workflows
-- Minimal disruption to current processes
-- Clear documentation and training materials
+### Developer (Skills User)
+- Two distinct AI agent skills for GitHub integration
+- Manual control over when skills execute
+- Clear skill output indicating success/failure
+- No disruption to existing task management workflows
+- Integration with existing VS Code and Copilot environment
 
-### Project Managers
-- Real-time project visibility and reporting
-- Automated progress tracking
-- Integration with planning and estimation tools
+### Skills Framework (Technical)
+- Skills follow established EDPS framework patterns
+- Compatible with skill discovery and execution mechanisms
+- Proper error handling and status reporting
+- Extensible for future automation and enhancement
 
-### Team Leads
-- Enhanced team collaboration capabilities
-- Streamlined code review processes
-- Improved project coordination tools
+## Next Steps (MVP)
+1. Design two AI agent skills following EDPS framework
+2. Implement github-issue-create-update skill (local → GitHub)
+3. Implement github-issue-sync-status skill (GitHub → local)
+4. Test skills with existing task files from PRJ-01
+5. Integrate skills into VS Code/Copilot environment
+6. Document skill usage and configuration
 
-## Next Steps
-1. Stakeholder review and feedback on initial requirements
-2. Technical feasibility assessment of GitHub API capabilities
-3. Detailed analysis and design phase planning
-4. Risk assessment and mitigation strategy development
-5. Project timeline and resource allocation planning
+## MVP Deliverable
+**Two AI Agent Skills**:
+1. **github-issue-create-update**: Creates/updates GitHub Issues from local task changes
+2. **github-issue-sync-status**: Updates local task status from GitHub Issue state
+
+**Estimated Effort**: 2-3 days skill development
+**Success**: Successfully create and sync 10+ issues with existing task files
+
+## Skills Architecture
+```
+Skill 1: github-issue-create-update (Manual)
+├── Input: Local task file path(s)
+├── Process: Parse task, create/update GitHub Issue
+└── Output: Issue URL(s), operation status
+
+Skill 2: github-issue-sync-status (Manual)   
+├── Input: GitHub Issue URL(s) or repository scan
+├── Process: Check issue status, update local task
+└── Output: Updated task file(s), sync status
+```
+
+## Out of Scope (Future Versions)
+- Automatic skill triggering (webhooks, file watchers)
+- Multi-repository support
+- Advanced conflict resolution
+- Bulk operations and performance optimization
+- Repository and project board management
+- Team collaboration features
+- GitHub Enterprise Server support
+- Real-time bidirectional sync
 
 ---
-*This requirements document will be refined and expanded based on stakeholder feedback and technical analysis.*
+*This MVP creates two manual AI agent skills for basic GitHub Issue integration, following the EDPS skills framework established in PRJ-01. Future versions can add automation and advanced synchronization features.*
