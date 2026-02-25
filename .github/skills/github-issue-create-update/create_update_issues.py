@@ -7,6 +7,8 @@ Creates and updates GitHub Issues from local task markdown files with
 field mapping, metadata extraction, and two-way synchronization support 
 for project management integration.
 
+Part of the EDPS (Evolutionary Development Process System) skills.
+
 Usage:
     python create_update_issues.py --file <task_file>
     python create_update_issues.py --project <project_directory>
@@ -17,62 +19,216 @@ import argparse
 import json
 import os
 import sys
+import re
+import requests
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
-
-# Import shared utilities
-sys.path.insert(0, str(Path(__file__).parent.parent / "shared"))
-from github_utils import (
-    ConfigurationManager, GitHubAuthenticator, GitHubClient,
-    TaskFileParser, GitHubAuthenticationError, GitHubAPIError,
-    get_repository_from_config_or_credentials
-)
+from typing import List, Dict, Any, Optional
 
 
 class GitHubIssueCreator:
     """Main class for creating and updating GitHub issues from task files."""
     
     def __init__(self, project_path: Optional[str] = None, config_override: Optional[Dict] = None):
-        self.config_manager = ConfigurationManager(project_path)
-        if config_override:
-            # Merge in any configuration overrides
-            self.config_manager.config.update(config_override)
-        
-        self.authenticator = GitHubAuthenticator(self.config_manager)
-        self.credentials = None
-        self.github_client = None
+        self.config = self._load_config(project_path, config_override)
+        self.token = self._get_token()
+        self.repo_owner = self.config['github']['default_repository']['owner']
+        self.repo_name = self.config['github']['default_repository']['name']
+        self.headers = {
+            'Authorization': f'token {self.token}',
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+        }
+        self.base_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}"
         self.results = []
     
-    def initialize(self):
-        """Initialize GitHub authentication and client."""
+    def _load_config(self, project_path: Optional[str], config_override: Optional[Dict]) -> Dict:
+        """Load configuration from JSON file."""
+        # Try project-specific config first
+        config_paths = []
+        if project_path:
+            config_paths.append(Path(project_path) / "github-config.json")
+        config_paths.extend([
+            Path("projects/github-config.json"),
+            Path("../../../projects/github-config.json"),
+            Path("github-config.json")
+        ])
+        
+        config = None
+        for config_path in config_paths:
+            if config_path.exists():
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                    break
+        
+        if not config:
+            raise Exception("No github-config.json found. Please create configuration file.")
+        
+        if config_override:
+            # Simple merge of overrides
+            config.update(config_override)
+        
+        return config
+    
+    def _get_token(self) -> str:
+        """Get GitHub token from environment or configuration."""
+        token_env_var = self.config.get('github', {}).get('authentication', {}).get('token_env_var', 'GITHUB_TOKEN')
+        token = os.getenv(token_env_var)
+        if not token:
+            raise Exception(f"GitHub token not found in environment variable {token_env_var}")
+        return token
+    
+    def parse_task_file(self, file_path: str) -> Dict:
+        """Parse a task markdown file and extract metadata."""
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Extract title from first heading
+        title_match = re.search(r'^#\s+(.+)', content, re.MULTILINE)
+        title = title_match.group(1).strip() if title_match else os.path.basename(file_path)
+        
+        # Check if there's already a GitHub issue reference
+        github_issue_match = re.search(r'\*\*GitHub Issue:\*\*\s*#?(\d+)', content)
+        existing_issue = int(github_issue_match.group(1)) if github_issue_match else None
+        
+        # Extract state from content (if present)
+        state_match = re.search(r'\*\*State:\*\*\s*(\w+)', content)
+        state = state_match.group(1).lower() if state_match else "open"
+        
+        # Map task state to GitHub state
+        state_mapping = self.config['github']['field_mapping']['state_mapping']
+        github_state = state_mapping.get(state, "open")
+        
+        # Generate labels
+        labels = self.config['github']['field_mapping']['additional_labels'].copy()
+        
+        # Create issue body from content (remove title)
+        body_content = re.sub(r'^#\s+.+\n?', '', content, flags=re.MULTILINE)
+        body_content = body_content.strip()
+        
+        return {
+            'title': title,
+            'body': body_content,
+            'state': github_state,
+            'labels': labels,
+            'existing_issue': existing_issue,
+            'file_path': file_path,
+            'original_content': content
+        }
+
+    def create_issue(self, task_data: Dict) -> Optional[int]:
+        """Create a new GitHub issue."""
+        url = f"{self.base_url}/issues"
+        payload = {
+            'title': task_data['title'],
+            'body': task_data['body'],
+            'labels': task_data['labels']
+        }
+        
+        # Add default assignee
+        if self.config['github']['issue_defaults'].get('default_assignee'):
+            payload['assignees'] = [self.config['github']['issue_defaults']['default_assignee']]
+        
         try:
-            self.credentials = self.authenticator.get_credentials()
-            self.github_client = GitHubClient(self.credentials, self.config_manager)
-            print(f"✅ Authenticated as: {self.credentials.username}")
-        except GitHubAuthenticationError as e:
-            print(f"❌ Authentication failed: {e}")
-            sys.exit(1)
+            response = requests.post(url, headers=self.headers, json=payload)
+            response.raise_for_status()
+            issue_data = response.json()
+            print(f"✅ Created issue #{issue_data['number']}: {task_data['title']}")
+            return issue_data['number']
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Failed to create issue for {task_data['title']}: {e}")
+            if hasattr(e, 'response') and hasattr(e.response, 'text'):
+                print(f"   Response: {e.response.text}")
+            return None
+
+    def update_issue(self, issue_number: int, task_data: Dict) -> bool:
+        """Update an existing GitHub issue."""
+        url = f"{self.base_url}/issues/{issue_number}"
+        payload = {
+            'title': task_data['title'],
+            'body': task_data['body'],
+            'state': task_data['state'],
+            'labels': task_data['labels']
+        }
+        
+        try:
+            response = requests.patch(url, headers=self.headers, json=payload)
+            response.raise_for_status()
+            print(f"🔄 Updated issue #{issue_number}: {task_data['title']}")
+            return True
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Failed to update issue #{issue_number}: {e}")
+            if hasattr(e, 'response') and hasattr(e.response, 'text'):
+                print(f"   Response: {e.response.text}")
+            return False
+
+    def update_task_file(self, task_data: Dict, issue_number: int):
+        """Update task file with GitHub issue metadata."""
+        content = task_data['original_content']
+        
+        # Check if GitHub metadata already exists
+        if '**GitHub Issue:**' in content:
+            # Update existing metadata
+            content = re.sub(
+                r'\*\*GitHub Issue:\*\*\s*#?\d+',
+                f'**GitHub Issue:** #{issue_number}',
+                content
+            )
+            content = re.sub(
+                r'\*\*Issue URL:\*\*.*',
+                f'**Issue URL:** https://github.com/{self.repo_owner}/{self.repo_name}/issues/{issue_number}',
+                content
+            )
+        else:
+            # Add metadata after the title
+            title_match = re.search(r'^(#\s+.+\n)', content, re.MULTILINE)
+            if title_match:
+                insert_pos = title_match.end()
+                metadata = f"\n**GitHub Issue:** #{issue_number}\n**Issue URL:** https://github.com/{self.repo_owner}/{self.repo_name}/issues/{issue_number}\n"
+                content = content[:insert_pos] + metadata + content[insert_pos:]
+        
+        # Write updated content back to file
+        with open(task_data['file_path'], 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        print(f"📝 Updated task file: {Path(task_data['file_path']).name}")
     
     def process_single_file(self, file_path: Path) -> Dict[str, Any]:
         """Process a single task file."""
-        print(f"📄 Processing: {file_path.name}")
+        print(f"📋 Processing {file_path.name}...")
         
         try:
-            # Parse task file
-            task_data = TaskFileParser.parse_task_file(file_path)
+            task_data = self.parse_task_file(str(file_path))
             
-            # Get repository info
-            owner, repo = get_repository_from_config_or_credentials(
-                self.config_manager, self.credentials
-            )
-            
-            # Determine if this is create or update operation
-            if task_data['github_issue_number']:
-                return self._update_existing_issue(owner, repo, task_data)
+            if task_data['existing_issue']:
+                # Update existing issue
+                success = self.update_issue(task_data['existing_issue'], task_data)
+                if success:
+                    self.update_task_file(task_data, task_data['existing_issue'])
+                return {
+                    'file': file_path.name,
+                    'operation': 'updated',
+                    'issue_number': task_data['existing_issue'],
+                    'success': success
+                }
             else:
-                return self._create_new_issue(owner, repo, task_data)
-        
+                # Create new issue
+                issue_number = self.create_issue(task_data)
+                if issue_number:
+                    self.update_task_file(task_data, issue_number)
+                    return {
+                        'file': file_path.name,
+                        'operation': 'created',
+                        'issue_number': issue_number,
+                        'success': True
+                    }
+                else:
+                    return {
+                        'file': file_path.name,
+                        'operation': 'failed',
+                        'success': False
+                    }
+                
         except Exception as e:
             error_msg = f"❌ Error processing {file_path.name}: {e}"
             print(error_msg)
@@ -82,289 +238,47 @@ class GitHubIssueCreator:
                 'error': str(e),
                 'success': False
             }
-    
-    def _create_new_issue(self, owner: str, repo: str, task_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Create a new GitHub issue."""
-        try:
-            # Map task data to GitHub issue fields
-            title, body, labels, assignees = self._map_task_to_issue_fields(task_data)
-            
-            # Create the issue
-            issue = self.github_client.create_issue(owner, repo, title, body, labels, assignees)
-            
-            # Update task file with GitHub issue metadata
-            updates = {
-                'github_issue_number': issue.number,
-                'github_issue_url': issue.url,
-                'last_synced': datetime.now().isoformat()
-            }
-            
-            success = TaskFileParser.update_task_file(
-                task_data['file_path'], 
-                updates,
-                backup=self.config_manager.get("github.file_handling.backup_on_update", False)
-            )
-            
-            if success:
-                result = {
-                    'file': task_data['file_path'].name,
-                    'operation': 'created',
-                    'issue_number': issue.number,
-                    'issue_url': issue.url,
-                    'title': title,
-                    'success': True
-                }
-                print(f"✅ Created issue #{issue.number}: {title}")
-            else:
-                result = {
-                    'file': task_data['file_path'].name,
-                    'operation': 'created_but_update_failed',
-                    'issue_number': issue.number,
-                    'issue_url': issue.url,
-                    'success': False,
-                    'warning': 'Issue created but task file update failed'
-                }
-                print(f"⚠️ Created issue #{issue.number} but failed to update task file")
-            
-            return result
-            
-        except GitHubAPIError as e:
-            error_msg = f"Failed to create issue: {e}"
-            print(f"❌ {error_msg}")
-            return {
-                'file': task_data['file_path'].name,
-                'operation': 'create_failed',
-                'error': str(e),
-                'success': False
-            }
-    
-    def _update_existing_issue(self, owner: str, repo: str, task_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Update an existing GitHub issue."""
-        issue_number = task_data['github_issue_number']
+
+    def process_tasks_directory(self, tasks_directory: str):
+        """Sync all tasks in the directory to GitHub issues."""
+        task_files = list(Path(tasks_directory).glob("T*.md"))
+        if not task_files:
+            print(f"❌ No task files found in {tasks_directory}")
+            return
         
-        try:
-            # Map task data to GitHub issue fields
-            title, body, labels, assignees = self._map_task_to_issue_fields(task_data)
-            
-            # Get current issue to determine what needs updating
-            current_issue = self.github_client.get_issue(owner, repo, issue_number)
-            
-            # Determine state mapping
-            new_state = self._map_task_state_to_github_state(task_data['state'])
-            
-            # Update the issue
-            issue = self.github_client.update_issue(
-                owner, repo, issue_number, 
-                title=title, 
-                body=body, 
-                state=new_state,
-                labels=labels,
-                assignees=assignees
-            )
-            
-            # Update task file sync metadata
-            updates = {
-                'last_synced': datetime.now().isoformat()
-            }
-            
-            success = TaskFileParser.update_task_file(
-                task_data['file_path'], 
-                updates,
-                backup=self.config_manager.get("github.file_handling.backup_on_update", False)
-            )
-            
-            # Summarize changes
-            changes = []
-            if current_issue.title != title:
-                changes.append("title")
-            if current_issue.body != body:
-                changes.append("description") 
-            if current_issue.state != new_state:
-                changes.append("state")
-            if set(current_issue.labels) != set(labels or []):
-                changes.append("labels")
-            if set(current_issue.assignees) != set(assignees or []):
-                changes.append("assignees")
-            
-            result = {
-                'file': task_data['file_path'].name,
-                'operation': 'updated',
-                'issue_number': issue.number,
-                'issue_url': issue.url,
-                'title': title,
-                'changes': changes,
-                'success': True
-            }
-            
-            if changes:
-                print(f"✅ Updated issue #{issue.number}: {', '.join(changes)} changed")
-            else:
-                print(f"ℹ️  Issue #{issue.number} is already up to date")
-            
-            return result
-            
-        except GitHubAPIError as e:
-            error_msg = f"Failed to update issue #{issue_number}: {e}"
-            print(f"❌ {error_msg}")
-            return {
-                'file': task_data['file_path'].name,
-                'operation': 'update_failed',
-                'issue_number': issue_number,
-                'error': str(e),
-                'success': False
-            }
-    
-    def _map_task_to_issue_fields(self, task_data: Dict[str, Any]) -> Tuple[str, str, List[str], List[str]]:
-        """Map task file data to GitHub issue fields."""
-        title = task_data['title'] or f"Task: {task_data['file_path'].stem}"
-        body = task_data['description'] or "No description provided."
+        print(f"🚀 Syncing {len(task_files)} tasks to GitHub...")
+        print(f"📁 Repository: {self.repo_owner}/{self.repo_name}")
+        print()
         
-        # Process labels
-        labels = list(task_data['labels']) if task_data['labels'] else []
+        for task_file in sorted(task_files):
+            result = self.process_single_file(task_file)
+            self.results.append(result)
+            print()
         
-        # Add priority label if configured
-        if task_data['priority']:
-            priority_mapping = self.config_manager.get("github.field_mapping.priority_labels", {})
-            if task_data['priority'] in priority_mapping:
-                priority_config = priority_mapping[task_data['priority']]
-                labels.append(priority_config.get("name", f"priority:{task_data['priority'].lower()}"))
-            else:
-                labels.append(f"priority:{task_data['priority'].lower()}")
+        # Print summary
+        successful = sum(1 for r in self.results if r['success'])
+        total = len(self.results)
+        print(f"✅ {successful}/{total} tasks synced successfully")
         
-        # Add effort label if configured
-        if task_data['estimated_effort']:
-            effort_prefix = self.config_manager.get("github.field_mapping.effort_label_prefix", "effort:")
-            effort_label = f"{effort_prefix}{task_data['estimated_effort'].replace(' ', '-')}"
-            labels.append(effort_label)
-        
-        # Add additional labels from configuration
-        additional_labels = self.config_manager.get("github.field_mapping.additional_labels", [])
-        labels.extend(additional_labels)
-        
-        # Remove excluded labels
-        excluded_labels = self.config_manager.get("github.field_mapping.exclude_labels", [])
-        labels = [label for label in labels if label not in excluded_labels]
-        
-        # Remove duplicates while preserving order
-        seen = set()
-        unique_labels = []
-        for label in labels:
-            if label not in seen:
-                unique_labels.append(label)
-                seen.add(label)
-        
-        # Process assignees
-        assignees = task_data['assignees'] if task_data['assignees'] else []
-        
-        # Add default assignee if configured
-        default_assignee = self.config_manager.get("github.issue_defaults.default_assignee")
-        if default_assignee and default_assignee not in assignees:
-            assignees.append(default_assignee)
-        
-        return title, body, unique_labels, assignees
-    
-    def _map_task_state_to_github_state(self, task_state: str) -> str:
-        """Map task state to GitHub issue state."""
-        state_mapping = self.config_manager.get("github.field_mapping.state_mapping", {})
-        return state_mapping.get(task_state, "open")
-    
-    def process_directory(self, directory: Path) -> List[Dict[str, Any]]:
-        """Process all task files in a directory."""
-        if not directory.exists():
-            print(f"❌ Directory not found: {directory}")
-            return []
-        
-        print(f"📁 Processing directory: {directory}")
-        
-        # Find all markdown files (potential task files)
-        markdown_files = list(directory.glob("*.md"))
-        
-        if not markdown_files:
-            print("ℹ️  No markdown files found in directory")
-            return []
-        
-        results = []
-        successful = 0
-        failed = 0
-        
-        for file_path in markdown_files:
-            # Skip README and other non-task files
-            if file_path.name.lower() in ['readme.md', 'index.md']:
-                continue
-                
-            result = self.process_single_file(file_path)
-            results.append(result)
-            
-            if result.get('success', False):
-                successful += 1
-            else:
-                failed += 1
-        
-        print(f"\n📊 Summary: {successful} successful, {failed} failed")
-        return results
-    
-    def process_project(self, project_path: Path) -> List[Dict[str, Any]]:
-        """Process all task files in a project's tasks directory."""
-        tasks_dir = project_path / "tasks"
-        if not tasks_dir.exists():
-            print(f"❌ Tasks directory not found: {tasks_dir}")
-            return []
-        
-        print(f"🎯 Processing project: {project_path.name}")
-        return self.process_directory(tasks_dir)
-    
-    def generate_report(self, results: List[Dict[str, Any]]) -> str:
-        """Generate a summary report of the operations."""
-        if not results:
-            return "No operations performed."
-        
-        successful = [r for r in results if r.get('success', False)]
-        failed = [r for r in results if not r.get('success', False)]
-        
-        report = [
-            f"GitHub Issue Create/Update Report",
-            f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"",
-            f"Summary:",
-            f"  Total files processed: {len(results)}",
-            f"  Successful operations: {len(successful)}",
-            f"  Failed operations: {len(failed)}",
-            f""
-        ]
-        
-        if successful:
-            report.append("Successful Operations:")
-            for result in successful:
-                operation = result['operation']
-                file_name = result['file']
-                issue_num = result.get('issue_number', 'N/A')
-                
-                if operation == 'created':
-                    report.append(f"  ✅ {file_name} → Created issue #{issue_num}")
-                elif operation == 'updated':
-                    changes = result.get('changes', [])
-                    if changes:
-                        report.append(f"  ✅ {file_name} → Updated issue #{issue_num} ({', '.join(changes)})")
-                    else:
-                        report.append(f"  ℹ️  {file_name} → Issue #{issue_num} already up to date")
-            report.append("")
-        
-        if failed:
-            report.append("Failed Operations:")
-            for result in failed:
-                file_name = result['file']
-                error = result.get('error', 'Unknown error')
-                report.append(f"  ❌ {file_name} → {error}")
-            report.append("")
-        
-        return "\n".join(report)
+        return self.results
 
 
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
         description="Create and update GitHub Issues from EDPS task files",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+    # Process a single task file
+    python create_update_issues.py --file T001-setup.md
+    
+    # Process all tasks in a directory
+    python create_update_issues.py --directory ./tasks
+    
+    # Process all tasks in a project (looks for tasks/ subdirectory)
+    python create_update_issues.py --project ./projects/my-project
+        """
     )
     
     parser.add_argument(
@@ -382,100 +296,62 @@ def main():
     parser.add_argument(
         '--project', '-p',
         type=Path,
-        help='Process all task files in a project (looks for tasks/ subdirectory)'
+        help='Process all task files in a project\'s tasks directory'
     )
     
     parser.add_argument(
         '--config',
         type=Path,
-        help='Path to configuration file override'
-    )
-    
-    parser.add_argument(
-        '--dry-run',
-        action='store_true',
-        help='Show what would be done without making changes'
-    )
-    
-    parser.add_argument(
-        '--verbose', '-v',
-        action='store_true',
-        help='Enable verbose output'
-    )
-    
-    parser.add_argument(
-        '--report',
-        type=Path,
-        help='Save detailed report to file'
+        help='Path to configuration file'
     )
     
     args = parser.parse_args()
     
     # Validate arguments
-    input_sources = [args.file, args.directory, args.project]
-    if sum(1 for source in input_sources if source) != 1:
-        parser.error("Please specify exactly one of: --file, --directory, or --project")
+    if not any([args.file, args.directory, args.project]):
+        parser.error("Must specify --file, --directory, or --project")
     
-    # Load configuration override if specified
-    config_override = {}
-    if args.config and args.config.exists():
-        with open(args.config) as f:
-            config_override = json.load(f)
+    try:
+        # Initialize the issue creator
+        creator = GitHubIssueCreator(
+            project_path=str(args.project) if args.project else None
+        )
+        
+        # Process based on arguments
+        if args.file:
+            if not args.file.exists():
+                print(f"❌ File not found: {args.file}")
+                sys.exit(1)
+            
+            result = creator.process_single_file(args.file)
+            if result['success']:
+                print("✅ Task successfully synced to GitHub!")
+            else:
+                print("❌ Sync failed!")
+                sys.exit(1)
+                
+        elif args.directory:
+            if not args.directory.exists():
+                print(f"❌ Directory not found: {args.directory}")
+                sys.exit(1)
+            
+            creator.process_tasks_directory(str(args.directory))
+            
+        elif args.project:
+            if not args.project.exists():
+                print(f"❌ Project not found: {args.project}")
+                sys.exit(1)
+            
+            tasks_dir = args.project / "tasks"
+            if not tasks_dir.exists():
+                print(f"❌ Tasks directory not found: {tasks_dir}")
+                sys.exit(1)
+            
+            creator.process_tasks_directory(str(tasks_dir))
     
-    # Determine project path for configuration hierarchy
-    project_path = None
-    if args.project:
-        project_path = str(args.project)
-    elif args.directory and 'projects' in str(args.directory):
-        # Try to infer project path from directory
-        parts = args.directory.parts
-        if 'projects' in parts:
-            project_idx = parts.index('projects')
-            if project_idx + 1 < len(parts):
-                project_path = str(Path(*parts[:project_idx + 2]))
-    
-    if args.dry_run:
-        print("🔍 DRY RUN MODE - No changes will be made")
-        print()
-    
-    # Initialize creator
-    creator = GitHubIssueCreator(project_path, config_override)
-    creator.initialize()
-    
-    # Process files based on arguments
-    results = []
-    
-    if args.file:
-        if not args.file.exists():
-            print(f"❌ File not found: {args.file}")
-            sys.exit(1)
-        results = [creator.process_single_file(args.file)]
-    
-    elif args.directory:
-        results = creator.process_directory(args.directory)
-    
-    elif args.project:
-        results = creator.process_project(args.project)
-    
-    # Generate and display report
-    report = creator.generate_report(results)
-    print("\n" + "="*50)
-    print(report)
-    
-    # Save report if requested
-    if args.report:
-        with open(args.report, 'w') as f:
-            f.write(report)
-        print(f"\n📄 Report saved to: {args.report}")
-    
-    # Exit with appropriate code
-    failed_count = sum(1 for r in results if not r.get('success', False))
-    if failed_count > 0:
-        print(f"\n⚠️  {failed_count} operations failed")
+    except Exception as e:
+        print(f"❌ Error: {e}")
         sys.exit(1)
-    else:
-        print(f"\n✅ All operations completed successfully")
-        sys.exit(0)
 
 
 if __name__ == "__main__":
