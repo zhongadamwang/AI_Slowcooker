@@ -1,0 +1,24 @@
+{
+  "github": {
+    "default_repository": {
+      "owner": "zhongadamwang",
+      "name": "AI_Slowcooker"
+    },
+    "issue_defaults": {
+      "default_assignee": "zhongadamwang",
+      "milestone": "MVP - Process Expand"
+    },
+    "field_mapping": {
+      "additional_labels": ["process-expansion", "edps-framework"],
+      "priority_labels": {
+        "High": {
+          "name": "priority:critical",
+          "color": "b60205"
+        }
+      }
+    },
+    "batch_processing": {
+      "stop_on_error": true
+    }
+  }
+}
