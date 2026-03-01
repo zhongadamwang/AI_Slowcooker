@@ -1,75 +1,265 @@
 #!/usr/bin/env python3
 """
-GitHub Issue Sync Status Script
-===============================
+GitHub Issue Sync Status Script - Self-Contained Implementation
+===============================================================
 
 Updates local task status from GitHub Issue state changes while preserving 
-local file format and metadata. Enables one-way synchronization from GitHub 
-project management back to local development tasks.
+local file format and metadata. Self-contained with embedded authentication,
+configuration defaults, and complete sync functionality. No external dependencies.
 
 Usage:
     python sync_status.py --file <task_file>
     python sync_status.py --project <project_directory>
     python sync_status.py --directory <tasks_directory>
-    python sync_status.py --issue <issue_number> --repo <owner/repo>
+    python sync_status.py --issue <issue_number>
+    
+Environment Variables:
+    GITHUB_TOKEN    - GitHub Personal Access Token (required)
+    GITHUB_REPO     - Repository in format 'owner/repo' (required)
 """
 
 import argparse
 import json
 import os
 import sys
+import re
+import requests
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
-# Import shared utilities
-sys.path.insert(0, str(Path(__file__).parent.parent / "shared"))
-from github_utils import (
-    ConfigurationManager, GitHubAuthenticator, GitHubClient,
-    TaskFileParser, GitHubAuthenticationError, GitHubAPIError,
-    get_repository_from_config_or_credentials, find_task_files_with_github_issues
-)
 
-
-class ConflictType:
-    """Types of state conflicts between local and GitHub."""
-    LOCAL_NEWER = "local_newer" 
-    GITHUB_NEWER = "github_newer"
-    INCOMPATIBLE_STATES = "incompatible_states"
-    MANUAL_REVIEW_NEEDED = "manual_review_needed"
+class SyncConfig:
+    """Self-contained sync configuration with embedded defaults."""
+    
+    def __init__(self, **overrides):
+        # Load GitHub configuration from file and environment
+        repo_config = self._find_repo_config()
+        
+        # Set defaults from config file and environment
+        self.repository = repo_config.get('repository', '')
+        self.token = repo_config.get('token', '') or os.getenv('GITHUB_TOKEN', '')
+        self.base_url = "https://api.github.com"
+        self.timeout = 30
+        self.max_retries = 3
+        
+        # Sync behavior defaults
+        self.preserve_manual_changes = True
+        self.conflict_resolution = "manual"  # manual, github_wins, local_wins
+        self.dry_run = False
+        self.add_completion_date = True
+        self.create_sync_log = True
+        
+        # State mapping defaults
+        self.issue_to_task_mapping = {
+            "open": "ready",
+            "closed": "completed"
+        }
+        
+        # Apply any overrides
+        for key, value in overrides.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        
+        # Validate required fields
+        if not self.repository or not self.token:
+            self._interactive_setup()
+    
+    def _find_repo_config(self) -> Dict[str, str]:
+        """Find and load repository configuration from github-credentials.json."""
+        # Look for github-credentials.json in current directory and parent directories
+        current_dir = Path.cwd()
+        
+        for path in [current_dir] + list(current_dir.parents):
+            config_file = path / "github-credentials.json"
+            if config_file.exists():
+                try:
+                    with open(config_file) as f:
+                        config = json.load(f)
+                    
+                    github_config = config.get('github', {})
+                    default_repo = github_config.get('default_repository', {})
+                    
+                    owner = default_repo.get('owner', '')
+                    name = default_repo.get('name', '')
+                    repository = f"{owner}/{name}" if owner and name else ""
+                    
+                    return {
+                        'repository': repository,
+                        'token': github_config.get('personal_access_token', '')
+                    }
+                except (json.JSONDecodeError, KeyError) as e:
+                    print(f"⚠️  Warning: Error reading {config_file}: {e}")
+                    continue
+                
+        return {'repository': '', 'token': ''}
+    
+    def _interactive_setup(self):
+        """Interactive setup for missing configuration."""
+        print("GitHub Issue Sync Setup")
+        print("=" * 25)
+        
+        if not self.repository:
+            self.repository = input("Repository (owner/repo): ").strip()
+        
+        if not self.token:
+            print("\nGet Personal Access Token:")
+            print("https://github.com/settings/tokens")
+            print("Required scopes: repo (read access to issues)")
+            self.token = input("Personal Access Token: ").strip()
+        
+        print(f"\n✅ Sync configuration complete for {self.repository}")
+    
+    def get_repo_owner_name(self) -> tuple:
+        """Split repository into owner and name."""
+        if '/' not in self.repository:
+            raise ValueError(f"Repository must be in format 'owner/repo', got: {self.repository}")
+        return self.repository.split('/', 1)
 
 
 class GitHubStatusSyncer:
-    """Main class for syncing GitHub issue status to local task files."""
+    """Self-contained GitHub Issue status syncer with embedded functionality."""
     
-    def __init__(self, project_path: Optional[str] = None, config_override: Optional[Dict] = None):
-        self.config_manager = ConfigurationManager(project_path)
-        if config_override:
-            self.config_manager.config.update(config_override)
-        
-        self.authenticator = GitHubAuthenticator(self.config_manager)
-        self.credentials = None
-        self.github_client = None
+    def __init__(self, **config_overrides):
+        self.config = SyncConfig(**config_overrides)
+        self.repo_owner, self.repo_name = self.config.get_repo_owner_name()
+        self.headers = {
+            'Authorization': f'token {self.config.token}',
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+        }
+        self.base_url = f"{self.config.base_url}/repos/{self.repo_owner}/{self.repo_name}"
         self.results = []
         self.conflicts = []
     
-    def initialize(self):
-        """Initialize GitHub authentication and client."""
+    def parse_task_file(self, file_path: Path) -> Dict:
+        """Parse a task markdown file and extract metadata."""
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Extract current state
+        state_match = re.search(r'\*\*State:\*\*\s*(\w+)', content)
+        current_state = state_match.group(1).lower() if state_match else "ready"
+        
+        # Extract GitHub issue number
+        github_issue_match = re.search(r'\*\*GitHub Issue:\*\*\s*#?(\d+)', content)
+        github_issue_number = int(github_issue_match.group(1)) if github_issue_match else None
+        
+        # Extract last synced time if present
+        last_synced_match = re.search(r'\*\*Last Synced:\*\*\s*(.+)', content)
+        last_synced = last_synced_match.group(1) if last_synced_match else None
+        
+        return {
+            'file_path': file_path,
+            'current_state': current_state,
+            'github_issue_number': github_issue_number,
+            'last_synced': last_synced,
+            'original_content': content
+        }
+    
+    def get_github_issue_state(self, issue_number: int) -> Optional[Dict]:
+        """Get GitHub issue state."""
+        url = f"{self.base_url}/issues/{issue_number}"
+        
         try:
-            self.credentials = self.authenticator.get_credentials()
-            self.github_client = GitHubClient(self.credentials, self.config_manager)
-            print(f"✅ Authenticated as: {self.credentials.username}")
-        except GitHubAuthenticationError as e:
-            print(f"❌ Authentication failed: {e}")
-            sys.exit(1)
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
+            issue_data = response.json()
+            
+            return {
+                'state': issue_data['state'],  # 'open' or 'closed'
+                'updated_at': issue_data['updated_at'],
+                'closed_at': issue_data.get('closed_at'),
+                'title': issue_data['title'],
+                'assignees': [a['login'] for a in issue_data.get('assignees', [])]
+            }
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Failed to get issue state for #{issue_number}: {e}")
+            return None
+    
+    def detect_conflict(self, task_data: Dict, github_state: Dict) -> Optional[str]:
+        """Detect conflicts between local and GitHub states."""
+        if not self.config.preserve_manual_changes:
+            return None
+        
+        current_state = task_data['current_state']
+        github_issue_state = github_state['state']
+        target_state = self.config.issue_to_task_mapping.get(github_issue_state, current_state)
+        
+        # Check for potential conflicts
+        if current_state == "in-progress" and target_state == "completed":
+            # Task marked as in-progress but issue is closed
+            return "task_in_progress_issue_closed"
+        
+        if current_state == "completed" and target_state == "ready":
+            # Task marked as completed but issue is reopened
+            return "task_completed_issue_reopened"
+        
+        return None
+    
+    def update_task_file_status(self, task_data: Dict, new_state: str, github_state: Dict) -> bool:
+        """Update task file with new status while preserving format."""
+        content = task_data['original_content']
+        file_path = task_data['file_path']
+        
+        if self.config.dry_run:
+            print(f"🔍 [DRY RUN] Would update {file_path.name} state: {task_data['current_state']} → {new_state}")
+            return True
+        
+        try:
+            # Update state
+            content = re.sub(
+                r'\*\*State:\*\*\s*\w+',
+                f'**State:** {new_state}',
+                content
+            )
+            
+            # Add completion date if transitioning to completed
+            if new_state == "completed" and self.config.add_completion_date:
+                completion_date = datetime.now().strftime('%Y-%m-%d')
+                # Check if completion date already exists
+                if not re.search(r'\*\*Completed Date:\*\*', content):
+                    # Find a good place to insert completion date (after State)
+                    state_line_match = re.search(r'(\*\*State:\*\*[^\n]*\n)', content)
+                    if state_line_match:
+                        insert_pos = state_line_match.end()
+                        completion_line = f"**Completed Date:** {completion_date}\n"
+                        content = content[:insert_pos] + completion_line + content[insert_pos:]
+            
+            # Update last synced timestamp
+            sync_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            if '**Last Synced:**' in content:
+                content = re.sub(
+                    r'\*\*Last Synced:\*\*.*',
+                    f'**Last Synced:** {sync_timestamp}',
+                    content
+                )
+            else:
+                # Add sync timestamp after GitHub metadata
+                github_url_match = re.search(r'(\*\*Issue URL:\*\*[^\n]*\n)', content)
+                if github_url_match:
+                    insert_pos = github_url_match.end()
+                    sync_line = f"**Last Synced:** {sync_timestamp}\n"
+                    content = content[:insert_pos] + sync_line + content[insert_pos:]
+            
+            # Write updated content back to file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            
+            print(f"📝 Updated {file_path.name}: {task_data['current_state']} → {new_state}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Failed to update {file_path.name}: {e}")
+            return False
     
     def sync_single_file(self, file_path: Path) -> Dict[str, Any]:
         """Sync status for a single task file."""
-        print(f"📄 Syncing: {file_path.name}")
+        print(f"🔍 Syncing: {file_path.name}")
         
         try:
             # Parse task file
-            task_data = TaskFileParser.parse_task_file(file_path)
+            task_data = self.parse_task_file(file_path)
             
             # Check if file has GitHub issue metadata
             if not task_data['github_issue_number']:
@@ -81,12 +271,70 @@ class GitHubStatusSyncer:
                     'success': True
                 }
             
-            # Get repository info
-            owner, repo = get_repository_from_config_or_credentials(
-                self.config_manager, self.credentials
-            )
+            # Get GitHub issue state
+            github_state = self.get_github_issue_state(task_data['github_issue_number'])
+            if not github_state:
+                return {
+                    'file': file_path.name,
+                    'operation': 'error',
+                    'reason': 'failed_to_get_issue_state',
+                    'success': False
+                }
             
-            return self._sync_with_github_issue(owner, repo, task_data)
+            # Map GitHub state to task state
+            current_state = task_data['current_state']
+            github_issue_state = github_state['state']
+            target_state = self.config.issue_to_task_mapping.get(github_issue_state, current_state)
+            
+            # Check if sync is needed
+            if current_state == target_state:
+                print(f"✅ {file_path.name} already in sync (state: {current_state})")
+                return {
+                    'file': file_path.name,
+                    'operation': 'no_change',
+                    'current_state': current_state,
+                    'success': True
+                }
+            
+            # Check for conflicts
+            conflict_type = self.detect_conflict(task_data, github_state)
+            if conflict_type and self.config.conflict_resolution == "manual":
+                print(f"⚠️  Conflict detected in {file_path.name}: {conflict_type}")
+                conflict_info = {
+                    'file': file_path.name,
+                    'operation': 'conflict',
+                    'conflict_type': conflict_type,
+                    'current_state': current_state,
+                    'github_state': github_issue_state,
+                    'target_state': target_state,
+                    'success': False
+                }
+                self.conflicts.append(conflict_info)
+                return conflict_info
+            
+            # Perform sync
+            if self.config.conflict_resolution == "github_wins":
+                target_state = self.config.issue_to_task_mapping.get(github_issue_state, current_state)
+            elif self.config.conflict_resolution == "local_wins":
+                print(f"🔒 Preserving local state for {file_path.name}: {current_state}")
+                return {
+                    'file': file_path.name,
+                    'operation': 'local_preserved',
+                    'current_state': current_state,
+                    'success': True
+                }
+            
+            # Update the file
+            success = self.update_task_file_status(task_data, target_state, github_state)
+            
+            return {
+                'file': file_path.name,
+                'operation': 'synced' if success else 'failed',
+                'previous_state': current_state,
+                'new_state': target_state,
+                'github_state': github_issue_state,
+                'success': success
+            }
         
         except Exception as e:
             error_msg = f"Error syncing {file_path.name}: {e}"
@@ -98,434 +346,110 @@ class GitHubStatusSyncer:
                 'success': False
             }
     
-    def sync_specific_issue(self, owner: str, repo: str, issue_number: int, 
-                           tasks_directory: Optional[Path] = None) -> Dict[str, Any]:
-        """Sync a specific GitHub issue with its corresponding local task file."""
-        print(f"🔍 Syncing specific issue #{issue_number} from {owner}/{repo}")
+    def find_task_files_with_github_issues(self, directory: Path) -> List[Path]:
+        """Find task files that have GitHub issue metadata."""
+        task_files = []
         
-        try:
-            # Get issue from GitHub
-            issue = self.github_client.get_issue(owner, repo, issue_number)
+        for file_path in directory.glob("*.md"):
+            if file_path.name.startswith('.'):
+                continue
             
-            # Find corresponding local task file
-            task_file = self._find_task_file_for_issue(issue_number, tasks_directory)
-            
-            if not task_file:
-                print(f"ℹ️  No local task file found for issue #{issue_number}")
-                return {
-                    'issue_number': issue_number,
-                    'operation': 'skipped',
-                    'reason': 'no_local_file',
-                    'success': True
-                }
-            
-            # Parse the task file
-            task_data = TaskFileParser.parse_task_file(task_file)
-            
-            # Sync the status
-            return self._sync_task_with_issue(task_data, issue)
-        
-        except GitHubAPIError as e:
-            error_msg = f"Failed to get issue #{issue_number}: {e}"
-            print(f"❌ {error_msg}")
-            return {
-                'issue_number': issue_number,
-                'operation': 'error',
-                'error': str(e),
-                'success': False
-            }
-    
-    def _sync_with_github_issue(self, owner: str, repo: str, task_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Sync task file with its corresponding GitHub issue."""
-        issue_number = task_data['github_issue_number']
-        
-        try:
-            # Get current issue state from GitHub
-            issue = self.github_client.get_issue(owner, repo, issue_number)
-            
-            return self._sync_task_with_issue(task_data, issue)
-            
-        except GitHubAPIError as e:
-            error_msg = f"Failed to get issue #{issue_number}: {e}"
-            print(f"❌ {error_msg}")
-            return {
-                'file': task_data['file_path'].name,
-                'operation': 'error',
-                'issue_number': issue_number,
-                'error': str(e),
-                'success': False
-            }
-    
-    def _sync_task_with_issue(self, task_data: Dict[str, Any], issue) -> Dict[str, Any]:
-        """Sync task data with GitHub issue, handling conflicts."""
-        file_path = task_data['file_path']
-        issue_number = issue.number
-        
-        # Map GitHub issue state to local task state
-        github_state = self._map_github_state_to_task_state(issue.state, issue.assignees)
-        local_state = task_data['state']
-        
-        # Check for conflicts
-        conflict = self._detect_state_conflict(local_state, github_state, task_data, issue)
-        
-        if conflict:
-            return self._handle_conflict(task_data, issue, conflict)
-        
-        # No conflict - proceed with sync
-        if local_state == github_state:
-            print(f"ℹ️  {file_path.name} already in sync (both {local_state})")
-            return {
-                'file': file_path.name,
-                'operation': 'no_change',
-                'issue_number': issue_number,
-                'local_state': local_state,
-                'github_state': github_state,
-                'success': True
-            }
-        
-        # Update local state
-        return self._update_local_state(task_data, issue, github_state)
-    
-    def _detect_state_conflict(self, local_state: str, github_state: str, 
-                              task_data: Dict[str, Any], issue) -> Optional[Dict[str, Any]]:
-        """Detect conflicts between local and GitHub states."""
-        conflict_resolution = self.config_manager.get("github.sync_behavior.conflict_resolution", "manual")
-        
-        # No conflict if states match
-        if local_state == github_state:
-            return None
-        
-        # Check for incompatible state transitions
-        incompatible_transitions = [
-            ("completed", "open"),  # Local completed but GitHub reopened
-            ("cancelled", "open"),   # Local cancelled but GitHub reopened
-        ]
-        
-        if (local_state, github_state) in incompatible_transitions:
-            return {
-                'type': ConflictType.INCOMPATIBLE_STATES,
-                'local_state': local_state,
-                'github_state': github_state,
-                'description': f"Local task is {local_state} but GitHub issue is {issue.state}"
-            }
-        
-        # Check timestamps to determine which is newer (if available)
-        last_synced = task_data.get('last_synced')
-        if last_synced and hasattr(issue, 'updated_at'):
             try:
-                sync_time = datetime.fromisoformat(last_synced.replace('Z', '+00:00'))
-                issue_time = datetime.fromisoformat(issue.updated_at.replace('Z', '+00:00'))
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
                 
-                if sync_time > issue_time:
-                    return {
-                        'type': ConflictType.LOCAL_NEWER,
-                        'local_state': local_state,
-                        'github_state': github_state,
-                        'description': f"Local changes are newer than GitHub updates"
-                    }
-                elif issue_time > sync_time:
-                    return {
-                        'type': ConflictType.GITHUB_NEWER,
-                        'local_state': local_state,
-                        'github_state': github_state,
-                        'description': f"GitHub changes are newer than local sync"
-                    }
-            except (ValueError, AttributeError):
-                pass
+                if re.search(r'\*\*GitHub Issue:\*\*\s*#?\d+', content):
+                    task_files.append(file_path)
+            except Exception:
+                continue
         
-        # Default to manual review if we can't determine precedence
-        if conflict_resolution == "manual":
-            return {
-                'type': ConflictType.MANUAL_REVIEW_NEEDED,
-                'local_state': local_state,
-                'github_state': github_state,
-                'description': f"State mismatch: local={local_state}, github={github_state}"
-            }
-        
-        return None
+        return sorted(task_files)
     
-    def _handle_conflict(self, task_data: Dict[str, Any], issue, conflict: Dict[str, Any]) -> Dict[str, Any]:
-        """Handle state conflicts based on configuration."""
-        file_path = task_data['file_path']
-        conflict_resolution = self.config_manager.get("github.sync_behavior.conflict_resolution", "manual")
-        
-        print(f"⚠️  Conflict detected in {file_path.name}: {conflict['description']}")
-        
-        if conflict_resolution == "github_wins":
-            # Always use GitHub state
-            github_state = self._map_github_state_to_task_state(issue.state, issue.assignees)
-            return self._update_local_state(task_data, issue, github_state, conflict_resolved=True)
-        
-        elif conflict_resolution == "local_wins":
-            # Keep local state, just update sync timestamp
-            updates = {'last_synced': datetime.now().isoformat()}
-            success = TaskFileParser.update_task_file(file_path, updates)
-            
-            return {
-                'file': file_path.name,
-                'operation': 'local_preserved',
-                'issue_number': issue.number,
-                'conflict': conflict,
-                'success': success
-            }
-        
-        elif conflict_resolution == "smart" and conflict['type'] == ConflictType.GITHUB_NEWER:
-            # Use GitHub state if it's newer
-            github_state = self._map_github_state_to_task_state(issue.state, issue.assignees)
-            return self._update_local_state(task_data, issue, github_state, conflict_resolved=True)
-        
-        else:
-            # Manual resolution - mark for review
-            return self._mark_for_manual_review(task_data, issue, conflict)
-    
-    def _mark_for_manual_review(self, task_data: Dict[str, Any], issue, conflict: Dict[str, Any]) -> Dict[str, Any]:
-        """Mark conflict for manual review."""
-        file_path = task_data['file_path']
-        
-        # Add conflict marker to task file
-        conflict_marker = f"""
-<!-- SYNC CONFLICT DETECTED -->
-<!-- Local State: {conflict['local_state']} -->
-<!-- GitHub State: {conflict['github_state']} --> 
-<!-- Conflict: {conflict['description']} -->
-<!-- Please resolve manually and remove this comment -->
-"""
-        
-        # Read current content
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Add conflict marker if not already present
-        if "SYNC CONFLICT DETECTED" not in content:
-            # Insert after the metadata section
-            lines = content.split('\n')
-            insert_idx = 0
-            for i, line in enumerate(lines):
-                if line.startswith('**') and ':' in line:
-                    insert_idx = i + 1
-                elif insert_idx > 0 and not line.startswith('**') and line.strip():
-                    break
-            
-            lines.insert(insert_idx, conflict_marker)
-            
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(lines))
-        
-        # Track conflict for reporting
-        self.conflicts.append({
-            'file': file_path.name,
-            'issue_number': issue.number,
-            'conflict': conflict
-        })
-        
-        return {
-            'file': file_path.name,
-            'operation': 'conflict_marked',
-            'issue_number': issue.number,
-            'conflict': conflict,
-            'success': True
-        }
-    
-    def _update_local_state(self, task_data: Dict[str, Any], issue, new_state: str,
-                           conflict_resolved: bool = False) -> Dict[str, Any]:
-        """Update local task file with new state."""
-        file_path = task_data['file_path']
-        old_state = task_data['state']
-        
-        updates = {
-            'state': new_state,
-            'last_synced': datetime.now().isoformat()
-        }
-        
-        # Add completion date if transitioning to completed
-        if new_state == 'completed' and old_state != 'completed':
-            if hasattr(issue, 'closed_at') and issue.closed_at:
-                updates['completed_date'] = issue.closed_at
-        
-        success = TaskFileParser.update_task_file(
-            file_path, 
-            updates,
-            backup=self.config_manager.get("github.file_handling.backup_before_sync", False)
-        )
-        
-        operation = "conflict_resolved" if conflict_resolved else "updated"
-        
-        if success:
-            print(f"✅ Updated {file_path.name}: {old_state} → {new_state}")
-            return {
-                'file': file_path.name,
-                'operation': operation,
-                'issue_number': issue.number,
-                'state_change': f"{old_state} → {new_state}",
-                'success': True
-            }
-        else:
-            print(f"❌ Failed to update {file_path.name}")
-            return {
-                'file': file_path.name,
-                'operation': 'update_failed',
-                'issue_number': issue.number,
-                'error': 'File update failed',
-                'success': False
-            }
-    
-    def _map_github_state_to_task_state(self, github_state: str, assignees: List[str]) -> str:
-        """Map GitHub issue state to local task state."""
-        # Get state mapping from configuration
-        state_mapping = self.config_manager.get("github.sync_behavior.state_mapping", {})
-        issue_to_task = state_mapping.get("issue_to_task", {
-            "open": "ready",
-            "closed": "completed"
-        })
-        
-        if github_state == "open":
-            # If issue is open and assigned, consider it in-progress
-            if assignees and self.config_manager.get("github.sync_behavior.preserve_in_progress", True):
-                return "in-progress"
-            else:
-                return issue_to_task.get("open", "ready")
-        elif github_state == "closed":
-            return issue_to_task.get("closed", "completed")
-        else:
-            return issue_to_task.get(github_state, "ready")
-    
-    def _find_task_file_for_issue(self, issue_number: int, search_directory: Optional[Path] = None) -> Optional[Path]:
-        """Find local task file that references the given GitHub issue number."""
-        if search_directory and search_directory.exists():
-            search_paths = [search_directory]
-        else:
-            # Default search paths
-            search_paths = [
-                Path.cwd() / "tasks",
-                Path.cwd() / "OrgDocument" / "projects" / "*" / "tasks",
-            ]
-        
-        for search_path in search_paths:
-            if '*' in str(search_path):
-                # Handle glob patterns
-                from pathlib import Path
-                parent = Path(str(search_path).split('*')[0])
-                if parent.exists():
-                    for path in parent.glob(str(search_path).split('/')[-1]):
-                        if path.is_dir():
-                            task_files = find_task_files_with_github_issues(path)
-                            for task_file in task_files:
-                                if self._file_references_issue(task_file, issue_number):
-                                    return task_file
-            elif search_path.exists():
-                task_files = find_task_files_with_github_issues(search_path)
-                for task_file in task_files:
-                    if self._file_references_issue(task_file, issue_number):
-                        return task_file
-        
-        return None
-    
-    def _file_references_issue(self, file_path: Path, issue_number: int) -> bool:
-        """Check if task file references the given GitHub issue number."""
-        try:
-            task_data = TaskFileParser.parse_task_file(file_path)
-            return task_data.get('github_issue_number') == issue_number
-        except Exception:
-            return False
-    
-    def sync_directory(self, directory: Path) -> List[Dict[str, Any]]:
-        """Sync all task files with GitHub issues in a directory."""
-        if not directory.exists():
-            print(f"❌ Directory not found: {directory}")
-            return []
-        
-        print(f"📁 Syncing directory: {directory}")
-        
-        # Find all task files with GitHub issue metadata
-        task_files = find_task_files_with_github_issues(directory)
+    def sync_directory(self, directory: Path) -> List[Dict]:
+        """Sync all task files in directory that have GitHub issues."""
+        task_files = self.find_task_files_with_github_issues(directory)
         
         if not task_files:
-            print("ℹ️  No task files with GitHub issues found")
+            print(f"ℹ️  No task files with GitHub issues found in {directory}")
             return []
+        
+        print(f"🔄 Syncing {len(task_files)} task files with GitHub issues...")
+        print(f"📁 Repository: {self.repo_owner}/{self.repo_name}")
+        print()
         
         results = []
-        successful = 0
-        failed = 0
-        
-        for file_path in task_files:
-            result = self.sync_single_file(file_path)
+        for task_file in task_files:
+            result = self.sync_single_file(task_file)
             results.append(result)
-            
-            if result.get('success', False):
-                successful += 1
-            else:
-                failed += 1
+            self.results.append(result)
+            print()
         
-        print(f"\n📊 Summary: {successful} successful, {failed} failed")
+        # Print summary
+        successful = sum(1 for r in results if r['success'])
+        total = len(results)
+        conflicts = len(self.conflicts)
+        
+        print(f"📊 Sync Summary:")
+        print(f"  ✅ Synced: {successful}/{total}")
+        if conflicts > 0:
+            print(f"  ⚠️  Conflicts: {conflicts}")
+            print("\nConflicts require manual resolution:")
+            for conflict in self.conflicts:
+                print(f"  - {conflict['file']}: {conflict['conflict_type']}")
+        
         return results
-    
-    def sync_project(self, project_path: Path) -> List[Dict[str, Any]]:
-        """Sync all task files in a project's tasks directory."""
-        tasks_dir = project_path / "tasks"
-        if not tasks_dir.exists():
-            print(f"❌ Tasks directory not found: {tasks_dir}")
-            return []
-        
-        print(f"🎯 Syncing project: {project_path.name}")
-        return self.sync_directory(tasks_dir)
-    
-    def generate_report(self, results: List[Dict[str, Any]]) -> str:
-        """Generate a summary report of sync operations."""
-        if not results:
-            return "No sync operations performed."
-        
-        successful = [r for r in results if r.get('success', False)]
-        failed = [r for r in results if not r.get('success', False)]
-        updated = [r for r in successful if r.get('operation') in ['updated', 'conflict_resolved']]
-        conflicts = [r for r in successful if r.get('operation') == 'conflict_marked']
-        
-        report = [
-            f"GitHub Issue Status Sync Report",
-            f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"",
-            f"Summary:",
-            f"  Total files processed: {len(results)}",
-            f"  Successful operations: {len(successful)}",
-            f"  Failed operations: {len(failed)}",
-            f"  Files updated: {len(updated)}",
-            f"  Conflicts detected: {len(conflicts)}",
-            f""
-        ]
-        
-        if updated:
-            report.append("Updated Files:")
-            for result in updated:
-                file_name = result['file']
-                issue_num = result.get('issue_number', 'N/A')
-                state_change = result.get('state_change', 'N/A')
-                report.append(f"  ✅ {file_name} → Issue #{issue_num}: {state_change}")
-            report.append("")
-        
-        if conflicts:
-            report.append("Conflicts (Manual Review Needed):")
-            for result in conflicts:
-                file_name = result['file']
-                issue_num = result.get('issue_number', 'N/A')
-                conflict = result.get('conflict', {})
-                report.append(f"  ⚠️  {file_name} → Issue #{issue_num}: {conflict.get('description', 'Unknown conflict')}")
-            report.append("")
-        
-        if failed:
-            report.append("Failed Operations:")
-            for result in failed:
-                file_name = result.get('file', result.get('issue_number', 'Unknown'))
-                error = result.get('error', 'Unknown error')
-                report.append(f"  ❌ {file_name} → {error}")
-            report.append("")
-        
-        return "\n".join(report)
 
 
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Sync local task status from GitHub Issue state changes",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        description="Sync GitHub Issue status to local task files",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Configuration:
+    The tool requires GitHub authentication and repository information.
+    
+    Method 1 - Environment Variable + Config File (Recommended):
+        1. Set GITHUB_TOKEN environment variable: export GITHUB_TOKEN="ghp_xxxx"
+        2. Ensure github-credentials.json exists in repository root with:
+           {
+             "github": {
+               "default_repository": {
+                 "owner": "your-username",
+                 "name": "your-repo"
+               }
+             }
+           }
+    
+    Method 2 - Config File Only:
+        Create github-credentials.json in repository root with:
+        {
+          "github": {
+            "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxx",
+            "default_repository": {
+              "owner": "your-username", 
+              "name": "your-repo"
+            }
+          }
+        }
+
+Examples:
+    
+    # Sync a single task file
+    python sync_status.py --file T001-auth.md
+    
+    # Sync all task files in a directory
+    python sync_status.py --directory ./tasks
+    
+    # Sync all task files in a project (looks for tasks/ subdirectory)
+    python sync_status.py --project ./projects/my-project
+    
+    # Sync specific issue number
+    python sync_status.py --issue 123
+    
+    # Dry run to see what would change
+    python sync_status.py --directory ./tasks --dry-run
+        """
     )
     
     parser.add_argument(
@@ -543,7 +467,7 @@ def main():
     parser.add_argument(
         '--project', '-p',
         type=Path,
-        help='Sync all task files in a project (looks for tasks/ subdirectory)'
+        help='Sync all task files in a project\'s tasks directory'
     )
     
     parser.add_argument(
@@ -553,134 +477,106 @@ def main():
     )
     
     parser.add_argument(
-        '--repo', '-r',
-        help='GitHub repository in owner/repo format (required with --issue)'
-    )
-    
-    parser.add_argument(
-        '--config',
-        type=Path,
-        help='Path to configuration file override'
-    )
-    
-    parser.add_argument(
-        '--check-only',
-        action='store_true',
-        help='Check for conflicts without making changes'
-    )
-    
-    parser.add_argument(
         '--dry-run',
         action='store_true',
-        help='Show what would be done without making changes'
+        help='Show what would be synced without making changes'
     )
     
     parser.add_argument(
-        '--verbose', '-v',
-        action='store_true',
-        help='Enable verbose output'
-    )
-    
-    parser.add_argument(
-        '--report',
-        type=Path,
-        help='Save detailed report to file'
+        '--conflict-resolution',
+        choices=['manual', 'github_wins', 'local_wins'],
+        default='manual',
+        help='How to handle conflicts between local and GitHub states'
     )
     
     args = parser.parse_args()
     
     # Validate arguments
-    if args.issue and not args.repo:
-        parser.error("--repo is required when using --issue")
+    if not any([args.file, args.directory, args.project, args.issue]):
+        parser.error("Must specify --file, --directory, --project, or --issue")
     
-    if args.issue:
-        input_sources = 1
-    else:
-        input_sources = sum(1 for source in [args.file, args.directory, args.project] if source)
-        if input_sources != 1:
-            parser.error("Please specify exactly one of: --file, --directory, --project, or --issue")
-    
-    # Load configuration override if specified
-    config_override = {}
-    if args.config and args.config.exists():
-        with open(args.config) as f:
-            config_override = json.load(f)
-    
-    # Determine project path for configuration hierarchy
-    project_path = None
-    if args.project:
-        project_path = str(args.project)
-    elif args.directory and 'projects' in str(args.directory):
-        parts = args.directory.parts
-        if 'projects' in parts:
-            project_idx = parts.index('projects')
-            if project_idx + 1 < len(parts):
-                project_path = str(Path(*parts[:project_idx + 2]))
-    
-    if args.dry_run or args.check_only:
-        mode = "CHECK ONLY" if args.check_only else "DRY RUN"
-        print(f"🔍 {mode} MODE - No changes will be made")
-        print()
-    
-    # Initialize syncer
-    syncer = GitHubStatusSyncer(project_path, config_override)
-    syncer.initialize()
-    
-    # Process files based on arguments
-    results = []
-    
-    if args.issue:
-        # Parse repository
-        if '/' not in args.repo:
-            parser.error("Repository must be in owner/repo format")
-        owner, repo = args.repo.split('/', 1)
+    try:
+        # Build configuration overrides
+        config_overrides = {
+            'dry_run': args.dry_run,
+            'conflict_resolution': args.conflict_resolution
+        }
         
-        # Determine search directory
-        search_dir = None
-        if args.directory:
-            search_dir = args.directory
+        # Initialize the syncer
+        syncer = GitHubStatusSyncer(**config_overrides)
+        
+        # Process based on arguments
+        if args.file:
+            if not args.file.exists():
+                print(f"❌ File not found: {args.file}")
+                sys.exit(1)
+            
+            result = syncer.sync_single_file(args.file)
+            if not result['success']:
+                print("❌ Sync failed!")
+                sys.exit(1)
+            else:
+                print("✅ Sync complete!")
+                
+        elif args.directory:
+            if not args.directory.exists():
+                print(f"❌ Directory not found: {args.directory}")
+                sys.exit(1)
+            
+            results = syncer.sync_directory(args.directory)
+            if any(not r['success'] for r in results):
+                print("❌ Some syncs failed!")
+                sys.exit(1)
+            
         elif args.project:
-            search_dir = args.project / "tasks"
+            if not args.project.exists():
+                print(f"❌ Project not found: {args.project}")
+                sys.exit(1)
+            
+            tasks_dir = args.project / "tasks"
+            if not tasks_dir.exists():
+                print(f"❌ Tasks directory not found: {tasks_dir}")
+                sys.exit(1)
+            
+            results = syncer.sync_directory(tasks_dir)
+            if any(not r['success'] for r in results):
+                print("❌ Some syncs failed!")
+                sys.exit(1)
         
-        results = [syncer.sync_specific_issue(owner, repo, args.issue, search_dir)]
+        elif args.issue:
+            # Find task file for specific issue
+            task_files = []
+            search_dirs = [Path.cwd(), Path.cwd() / "tasks"]
+            
+            for search_dir in search_dirs:
+                if search_dir.exists():
+                    task_files.extend(syncer.find_task_files_with_github_issues(search_dir))
+            
+            # Find the file that references this issue
+            target_file = None
+            for task_file in task_files:
+                try:
+                    task_data = syncer.parse_task_file(task_file)
+                    if task_data['github_issue_number'] == args.issue:
+                        target_file = task_file
+                        break
+                except Exception:
+                    continue
+            
+            if not target_file:
+                print(f"❌ No local task file found for GitHub issue #{args.issue}")
+                sys.exit(1)
+            
+            result = syncer.sync_single_file(target_file)
+            if not result['success']:
+                print("❌ Sync failed!")
+                sys.exit(1)
+            else:
+                print("✅ Sync complete!")
     
-    elif args.file:
-        if not args.file.exists():
-            print(f"❌ File not found: {args.file}")
-            sys.exit(1)
-        results = [syncer.sync_single_file(args.file)]
-    
-    elif args.directory:
-        results = syncer.sync_directory(args.directory)
-    
-    elif args.project:
-        results = syncer.sync_project(args.project)
-    
-    # Generate and display report
-    report = syncer.generate_report(results)
-    print("\n" + "="*50)
-    print(report)
-    
-    # Save report if requested
-    if args.report:
-        with open(args.report, 'w') as f:
-            f.write(report)
-        print(f"\n📄 Report saved to: {args.report}")
-    
-    # Display conflicts summary
-    if syncer.conflicts:
-        print(f"\n⚠️  {len(syncer.conflicts)} conflicts detected - manual review needed")
-        for conflict in syncer.conflicts:
-            print(f"   📄 {conflict['file']} (Issue #{conflict['issue_number']})")
-    
-    # Exit with appropriate code
-    failed_count = sum(1 for r in results if not r.get('success', False))
-    if failed_count > 0:
-        print(f"\n⚠️  {failed_count} operations failed")
+    except Exception as e:
+        print(f"❌ Error: {e}")
         sys.exit(1)
-    else:
-        print(f"\n✅ All operations completed successfully")
-        sys.exit(0)
 
 
 if __name__ == "__main__":

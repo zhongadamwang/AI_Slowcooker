@@ -1,197 +1,97 @@
-# GitHub Issue Create/Update Skill
+# GitHub Issue Create/Update Skill - Self-Contained
 
-This skill creates and updates GitHub Issues from local task markdown files with field mapping, metadata extraction, and two-way synchronization support for project management integration.
+## Overview
+This skill creates and updates GitHub Issues from local task markdown files. It's completely self-contained with embedded authentication, configuration defaults, and complete field mapping functionality. No external dependencies or configuration files required.
+
+## Files
+
+- **`SKILL.md`** - Complete skill definition with embedded implementation template
+- **`create_update_issues.py`** - Self-contained Python implementation
+- **`task-template.md`** - Template for creating new task files
+- **`README.md`** - This file
 
 ## Quick Start
 
-### 1. Setup Authentication
+1. **Set Environment Variables:**
+   ```bash
+   export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+   export GITHUB_REPO="organization/repository-name"
+   ```
 
-Choose one of these authentication methods:
+2. **Run the Skill:**
+   ```bash
+   # Create issues from all task files in a directory
+   python create_update_issues.py --directory ./tasks/
+   
+   # Create issue from a single file
+   python create_update_issues.py --file ./tasks/T1-feature.md
+   ```
 
-#### Option A: GitHub CLI (Recommended)
-```bash
-gh auth login
-```
+## Features
 
-#### Option B: Personal Access Token
-1. Create a Personal Access Token at https://github.com/settings/tokens
-2. Copy `github-credentials.json.template` to `github-credentials.json`
-3. Update with your credentials:
-```json
-{
-  "github": {
-    "username": "your-github-username",
-    "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxx",
-    "default_repository": {
-      "owner": "your-username-or-org", 
-      "name": "your-repo-name"
-    }
-  }
-}
-```
-
-#### Option C: Environment Variable
-```bash
-export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
-```
-
-### 2. Configuration
-
-Copy the example configuration:
-```bash
-cp github-config.json.example github-config.json
-```
-
-Edit `github-config.json` to set your default repository and preferences.
-
-### 3. Usage
-
-#### Process Single Task File
-```bash
-python create_update_issues.py --file /path/to/task.md
-```
-
-#### Process All Tasks in a Directory
-```bash
-python create_update_issues.py --directory /path/to/tasks
-```
-
-#### Process Entire Project
-```bash
-python create_update_issues.py --project /path/to/project
-```
-
-## Script Features
-
-- **Dual Integration**: Uses GitHub CLI when available, falls back to REST API
-- **Field Mapping**: Maps task metadata to GitHub issue fields automatically
-- **State Management**: Handles create vs update operations intelligently
-- **Error Handling**: Robust error handling with detailed feedback
-- **Batch Processing**: Efficiently processes multiple files
-- **Configuration**: Hierarchical configuration system (global + project-specific)
+- **Self-Contained Authentication**: Uses environment variables only
+- **Embedded Configuration**: All defaults built-in, no config files needed
+- **Complete Field Mapping**: Task metadata → GitHub issue fields
+- **Create & Update**: Handles both new issues and updates to existing ones
+- **Task File Updates**: Automatically adds GitHub metadata to task files
 
 ## Task File Format
 
-The script expects EDPS-style task files with metadata fields:
+Use the `task-template.md` as a starting point for new tasks:
 
 ```markdown
-# Issue: T1 - GitHub Integration Skill
-
+# Issue: T1 - Feature Name
 **State:** ready
-**Labels:** feature, github-integration, mvp
-**Assignees:** adam.wang
-**Priority:** High
-**Estimated Effort:** 1.5 days
+**Labels:** feature, priority-medium
+**Assignees:** username
+**Priority:** Medium
+**Estimated Effort:** 2 days
 
 ## Description
-Description of the task...
+Brief description of the feature.
 
 ## Tasks
-- [ ] Task item 1
-- [ ] Task item 2
+- [ ] Implement core functionality
+- [ ] Add tests
+- [ ] Update documentation
 
 ## Acceptance Criteria
-- Acceptance criterion 1
-- Acceptance criterion 2
+- [ ] Feature works as expected
+- [ ] Tests pass
+- [ ] Documentation updated
 ```
 
-After processing, the script adds GitHub metadata:
-```markdown
-**GitHub Issue:** #123
-**Issue URL:** https://github.com/owner/repo/issues/123
-**Last Synced:** 2026-02-24T14:30:00
-```
+This will automatically be converted to a GitHub Issue with all metadata properly mapped.
 
-## Field Mapping
+## Environment Variables
 
-| Task Field | GitHub Field | Notes |
-|------------|-------------|-------|
-| Title/Header | title | First heading or "Issue:" line |
-| Description + Tasks + Criteria | body | Combined markdown content |
-| State | state | Maps to open/closed |
-| Labels | labels | Direct mapping, auto-creates missing |
-| Assignees | assignees | GitHub usernames |
-| Priority | labels | High → priority:high |
-| Estimated Effort | labels | effort:1.5-days format |
-
-## Configuration Options
-
-See `github-config.json.example` for full configuration options:
-
-- **Authentication**: Multiple authentication methods
-- **Repository**: Default repository settings
-- **Field Mapping**: Customize how task fields map to GitHub
-- **Label Management**: Priority labels, effort labels, additional labels
-- **Batch Processing**: Concurrency and error handling
-- **File Updates**: Metadata format and backup options
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GITHUB_TOKEN` | Yes | GitHub Personal Access Token |
+| `GITHUB_REPO` | Yes | Repository in format 'owner/repo' |
+| `GITHUB_DEFAULT_ASSIGNEE` | No | Default assignee for issues |
 
 ## Command Line Options
 
-```
-usage: create_update_issues.py [-h] [--file FILE] [--directory DIRECTORY] 
-                              [--project PROJECT] [--config CONFIG] 
-                              [--dry-run] [--verbose] [--report REPORT]
+```bash
+# Process single task file
+python create_update_issues.py --file ./tasks/T1-feature.md
 
-Create and update GitHub Issues from EDPS task files
+# Process all files in directory
+python create_update_issues.py --directory ./tasks/
 
-options:
-  -h, --help            show this help message and exit
-  --file FILE, -f FILE  Process a single task file
-  --directory DIRECTORY, -d DIRECTORY
-                        Process all task files in a directory
-  --project PROJECT, -p PROJECT
-                        Process all task files in a project (looks for tasks/ subdirectory)
-  --config CONFIG       Path to configuration file override
-  --dry-run             Show what would be done without making changes
-  --verbose, -v         Enable verbose output
-  --report REPORT       Save detailed report to file
+# Process project (looks for tasks/ subdirectory)
+python create_update_issues.py --project ./projects/my-project/
+
+# Override assignee for this execution
+python create_update_issues.py --directory ./tasks/ --assignee "team-lead"
 ```
 
-## Error Handling
+## No External Dependencies
 
-The script provides detailed error messages for common issues:
-
-- **Authentication Errors**: Clear guidance on token setup
-- **Permission Errors**: Missing repository access
-- **API Errors**: Rate limits, network issues
-- **File Errors**: Missing files, permission issues
-- **Configuration Errors**: Invalid settings with suggestions
-
-## Integration with VS Code
-
-Add to your project's `.vscode/tasks.json`:
-
-```json
-{
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Create GitHub Issues",
-            "type": "shell",
-            "command": "python",
-            "args": [
-                "${workspaceFolder}/.github/skills/github-issue-create-update/create_update_issues.py",
-                "--project",
-                "${workspaceFolder}/OrgDocument/projects/${input:projectName}"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        }
-    ],
-    "inputs": [
-        {
-            "id": "projectName",
-            "description": "Project name",
-            "default": "01 - Building Skills",
-            "type": "promptString"
-        }
-    ]
-}
-```
-
-Then run via Command Palette: `Tasks: Run Task` > `Create GitHub Issues`
+This skill is completely self-contained:
+- ✅ No shared utility imports
+- ✅ No external configuration files required
+- ✅ No dependency on other skills or systems
+- ✅ All authentication embedded
+- ✅ All configuration defaults embedded

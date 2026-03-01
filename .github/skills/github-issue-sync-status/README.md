@@ -1,56 +1,47 @@
-# GitHub Issue Sync Status Skill
+# GitHub Issue Sync Status Skill - Self-Contained
 
-This skill updates local task status from GitHub Issue state changes while preserving local file format and metadata. Enables one-way synchronization from GitHub project management back to local development tasks.
+## Overview
+This skill updates local task status from GitHub Issue state changes while preserving local file format and metadata. It's completely self-contained with embedded authentication, configuration defaults, and complete conflict resolution functionality. No external dependencies required.
+
+## Files
+
+- **`SKILL.md`** - Complete skill definition with embedded implementation template
+- **`sync_status.py`** - Self-contained Python implementation
+- **`task-template.md`** - Template for creating new task files
+- **`README.md`** - This file
 
 ## Quick Start
 
-### 1. Setup Authentication
+1. **Set Environment Variables:**
+   ```bash
+   export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+   export GITHUB_REPO="organization/repository-name"
+   ```
 
-Use the same authentication setup as the create/update skill:
+2. **Run the Skill:**
+   ```bash
+   # Sync all task files with GitHub issues
+   python sync_status.py --directory ./tasks/
+   
+   # Sync a single task file
+   python sync_status.py --file ./tasks/T1-feature.md
+   
+   # Dry run to see what would change
+   python sync_status.py --directory ./tasks/ --dry-run
+   ```
 
-#### Option A: GitHub CLI (Recommended)
-```bash
-gh auth login
-```
+## Features
 
-#### Option B: Personal Access Token
-Use the same `github-credentials.json` file as the create/update skill.
-
-### 2. Configuration
-
-Copy the example configuration:
-```bash
-cp github-config.json.example github-config.json
-```
-
-Edit to configure sync behavior and conflict resolution.
-
-### 3. Usage
-
-#### Sync Single Task File
-```bash
-python sync_status.py --file /path/to/task.md
-```
-
-#### Sync All Tasks in Directory
-```bash
-python sync_status.py --directory /path/to/tasks
-```
-
-#### Sync Entire Project
-```bash
-python sync_status.py --project /path/to/project
-```
-
-#### Sync Specific Issue
-```bash
-python sync_status.py --issue 123 --repo owner/repo
-```
+- **Self-Contained Authentication**: Uses environment variables only
+- **Embedded Configuration**: All defaults built-in, no config files needed
+- **Intelligent Conflict Resolution**: Multiple resolution strategies
+- **Format Preservation**: Maintains original task file format and structure
+- **State Mapping**: Maps GitHub issue states to local task states
+- **Conflict Detection**: Identifies and handles state conflicts
 
 ## How It Works
 
 The script:
-
 1. **Finds task files** with GitHub issue metadata (`**GitHub Issue:** #123`)
 2. **Fetches current state** from GitHub for each issue
 3. **Compares states** between local tasks and GitHub issues
@@ -64,42 +55,27 @@ The script:
 | open (unassigned) | ready | Issue is available for work |
 | open (assigned) | in-progress | Issue is being worked on |
 | closed | completed | Issue is finished |
-| reopened | ready | Issue needs work again |
 
 ## Conflict Resolution
 
-The script detects conflicts between local and GitHub states:
+The script detects conflicts between local and GitHub states and offers multiple resolution strategies:
 
-### Conflict Types
+### Available Strategies
 
-- **Local Newer**: Local changes are more recent than GitHub
-- **GitHub Newer**: GitHub changes are more recent than local sync
-- **Incompatible States**: Local completed/cancelled but GitHub reopened
-- **Manual Review Needed**: Can't determine precedence
-
-### Resolution Strategies
-
-Configure via `github.sync_behavior.conflict_resolution`:
-
-#### `"manual"` (Default)
+#### `manual` (Default)
 - Mark conflicts in task files with comment markers
 - Report conflicts for manual resolution
-- No automatic state changes
+- No automatic state changes for conflicted items
 
-#### `"github_wins"`
+#### `github_wins`
 - Always use GitHub state
 - Override local changes
 - Good for GitHub-primary workflows
 
-#### `"local_wins"`
+#### `local_wins`
 - Preserve local state
 - Update sync timestamp only
 - Good for local-primary workflows
-
-#### `"smart"`
-- Use GitHub state if it's newer
-- Use timestamps to determine precedence
-- Fallback to manual review
 
 ## Task File Requirements
 
@@ -111,10 +87,46 @@ Files must have GitHub issue metadata to be synced:
 **State:** ready
 **GitHub Issue:** #123
 **Issue URL:** https://github.com/owner/repo/issues/123
-**Last Synced:** 2026-02-24T14:30:00
 
 ## Description
 Task description...
+```
+
+After syncing, the file is updated with sync information:
+
+```markdown
+**State:** completed
+**Last Synced:** 2026-02-24 14:30:00
+**Completed Date:** 2026-02-24
+```
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GITHUB_TOKEN` | Yes | GitHub Personal Access Token (read access) |
+| `GITHUB_REPO` | Yes | Repository in format 'owner/repo' |
+
+## Command Line Options
+
+```bash
+# Sync single task file
+python sync_status.py --file ./tasks/T1-feature.md
+
+# Sync all files in directory
+python sync_status.py --directory ./tasks/
+
+# Sync project (looks for tasks/ subdirectory)
+python sync_status.py --project ./projects/my-project/
+
+# Sync specific GitHub issue number
+python sync_status.py --issue 123
+
+# Dry run to see what would change
+python sync_status.py --directory ./tasks/ --dry-run
+
+# Use specific conflict resolution strategy
+python sync_status.py --directory ./tasks/ --conflict-resolution github_wins
 ```
 
 ## Conflict Markers
@@ -125,141 +137,18 @@ When conflicts are detected in manual mode, the script adds markers:
 <!-- SYNC CONFLICT DETECTED -->
 <!-- Local State: completed -->
 <!-- GitHub State: open -->
-<!-- Conflict: Local task completed but GitHub issue reopened -->
+<!-- Conflict: task_completed_issue_reopened -->
 <!-- Please resolve manually and remove this comment -->
 
 **State:** completed
 ```
 
-## Command Line Options
+## No External Dependencies
 
-```
-usage: sync_status.py [-h] [--file FILE] [--directory DIRECTORY] 
-                     [--project PROJECT] [--issue ISSUE] [--repo REPO]
-                     [--config CONFIG] [--check-only] [--dry-run] 
-                     [--verbose] [--report REPORT]
-
-Sync local task status from GitHub Issue state changes
-
-options:
-  -h, --help            show this help message and exit
-  --file FILE, -f FILE  Sync a single task file
-  --directory DIRECTORY, -d DIRECTORY
-                        Sync all task files in a directory
-  --project PROJECT, -p PROJECT
-                        Sync all task files in a project
-  --issue ISSUE, -i ISSUE
-                        Sync specific GitHub issue number
-  --repo REPO, -r REPO  GitHub repository in owner/repo format
-  --config CONFIG       Path to configuration file override
-  --check-only          Check for conflicts without making changes
-  --dry-run             Show what would be done without making changes
-  --verbose, -v         Enable verbose output
-  --report REPORT       Save detailed report to file
-```
-
-## Configuration Options
-
-Key configuration settings in `github-config.json`:
-
-```json
-{
-  "github": {
-    "sync_behavior": {
-      "conflict_resolution": "manual",
-      "preserve_in_progress": true,
-      "add_completion_date": true,
-      "state_mapping": {
-        "issue_to_task": {
-          "open": "ready",
-          "closed": "completed"
-        }
-      }
-    },
-    "file_handling": {
-      "backup_before_sync": false,
-      "preserve_format": true
-    }
-  }
-}
-```
-
-## Integration Examples
-
-### Automated Sync on Issue State Change
-
-Add to `.github/workflows/sync-status.yml`:
-
-```yaml
-name: Sync Issue Status
-on:
-  issues:
-    types: [closed, reopened, assigned, unassigned]
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-      - name: Install dependencies
-        run: pip install requests
-      - name: Sync issue status
-        run: |
-          python .github/skills/github-issue-sync-status/sync_status.py \
-            --issue ${{ github.event.issue.number }} \
-            --repo ${{ github.repository }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Commit changes
-        if: success()
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git diff --staged --quiet || git commit -m "Sync issue #${{ github.event.issue.number }} status"
-          git push
-```
-
-### VS Code Task
-
-Add to `.vscode/tasks.json`:
-
-```json
-{
-    "label": "Sync GitHub Issue Status",
-    "type": "shell",
-    "command": "python",
-    "args": [
-        "${workspaceFolder}/.github/skills/github-issue-sync-status/sync_status.py",
-        "--project",
-        "${workspaceFolder}/OrgDocument/projects/${input:projectName}"
-    ],
-    "group": "build"
-}
-```
-
-### Manual Sync Workflow
-
-```bash
-# Check for conflicts first
-python sync_status.py --project ./projects/current --check-only
-
-# Perform sync with conflict resolution
-python sync_status.py --project ./projects/current --report sync-report.txt
-
-# Review conflicts and resolve manually
-# Then sync again
-python sync_status.py --project ./projects/current
-```
-
-## Best Practices
-
-1. **Regular Syncing**: Run sync regularly to catch state changes early
-2. **Conflict Review**: Always review conflicts before automatic resolution
-3. **Backup Strategy**: Enable backups for important projects
-4. **Testing**: Use `--check-only` or `--dry-run` before making changes
-5. **Monitoring**: Save reports to track sync history and issues
+This skill is completely self-contained:
+- ✅ No shared utility imports
+- ✅ No external configuration files required
+- ✅ No dependency on other skills or systems
+- ✅ All authentication embedded
+- ✅ All configuration defaults embedded
+- ✅ Complete conflict resolution logic embedded

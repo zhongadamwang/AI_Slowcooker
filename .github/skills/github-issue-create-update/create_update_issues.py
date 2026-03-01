@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-GitHub Issue Create/Update Script
-==================================
+GitHub Issue Create/Update Script - Self-Contained Implementation
+================================================================
 
-Creates and updates GitHub Issues from local task markdown files with 
-field mapping, metadata extraction, and two-way synchronization support 
-for project management integration.
+Creates and updates GitHub Issues from local task markdown files. 
+Self-contained with embedded authentication, configuration defaults, and 
+complete field mapping functionality. No external dependencies required.
 
 Part of the EDPS (Evolutionary Development Process System) skills.
 
@@ -13,6 +13,11 @@ Usage:
     python create_update_issues.py --file <task_file>
     python create_update_issues.py --project <project_directory>
     python create_update_issues.py --directory <tasks_directory>
+    
+Environment Variables:
+    GITHUB_TOKEN    - GitHub Personal Access Token (required)
+    GITHUB_REPO     - Repository in format 'owner/repo' (required)
+    GITHUB_DEFAULT_ASSIGNEE - Default assignee username (optional)
 """
 
 import argparse
@@ -26,57 +31,117 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 
-class GitHubIssueCreator:
-    """Main class for creating and updating GitHub issues from task files."""
+class GitHubConfig:
+    """Self-contained configuration with embedded defaults."""
     
-    def __init__(self, project_path: Optional[str] = None, config_override: Optional[Dict] = None):
-        self.config = self._load_config(project_path, config_override)
-        self.token = self._get_token()
-        self.repo_owner = self.config['github']['default_repository']['owner']
-        self.repo_name = self.config['github']['default_repository']['name']
+    def __init__(self, **overrides):
+        # Load GitHub configuration from file and environment
+        repo_config = self._find_repo_config()
+        
+        # Set defaults from config file and environment
+        self.repository = repo_config.get('repository', '')
+        self.token = repo_config.get('token', '') or os.getenv('GITHUB_TOKEN', '')
+        self.default_assignee = os.getenv('GITHUB_DEFAULT_ASSIGNEE')
+        self.base_url = "https://api.github.com"
+        self.timeout = 30
+        self.max_retries = 3
+        
+        # Field mapping defaults
+        self.state_mapping = {
+            "ready": "open",
+            "in-progress": "open", 
+            "completed": "closed",
+            "cancelled": "closed"
+        }
+        
+        self.priority_labels = {
+            "High": {"name": "priority:high", "color": "d73a4a"},
+            "Medium": {"name": "priority:medium", "color": "fbca04"},
+            "Low": {"name": "priority:low", "color": "0075ca"}
+        }
+        
+        self.additional_labels = ["auto-generated"]
+        self.auto_create_labels = True
+        
+        # Apply any overrides
+        for key, value in overrides.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        
+        # Validate required fields
+        if not self.repository or not self.token:
+            self._interactive_setup()
+    
+    def _find_repo_config(self) -> Dict[str, str]:
+        """Find and load repository configuration from github-credentials.json."""
+        # Look for github-credentials.json in current directory and parent directories
+        current_dir = Path.cwd()
+        
+        for path in [current_dir] + list(current_dir.parents):
+            config_file = path / "github-credentials.json"
+            if config_file.exists():
+                try:
+                    with open(config_file) as f:
+                        config = json.load(f)
+                    
+                    github_config = config.get('github', {})
+                    default_repo = github_config.get('default_repository', {})
+                    
+                    owner = default_repo.get('owner', '')
+                    name = default_repo.get('name', '')
+                    repository = f"{owner}/{name}" if owner and name else ""
+                    
+                    return {
+                        'repository': repository,
+                        'token': github_config.get('personal_access_token', '')
+                    }
+                except (json.JSONDecodeError, KeyError) as e:
+                    print(f"⚠️  Warning: Error reading {config_file}: {e}")
+                    continue
+                
+        return {'repository': '', 'token': ''}
+    
+    def _interactive_setup(self):
+        """Interactive setup for missing configuration."""
+        print("GitHub Issue Creation Setup")
+        print("=" * 30)
+        
+        if not self.repository:
+            self.repository = input("Repository (owner/repo): ").strip()
+        
+        if not self.token:
+            print("\nGet Personal Access Token:")
+            print("https://github.com/settings/tokens")
+            print("Required scopes: repo (or public_repo)")
+            self.token = input("Personal Access Token: ").strip()
+        
+        if not self.default_assignee:
+            assignee = input("Default assignee (optional): ").strip()
+            if assignee:
+                self.default_assignee = assignee
+        
+        print(f"\n✅ Configuration complete for {self.repository}")
+    
+    def get_repo_owner_name(self) -> tuple:
+        """Split repository into owner and name."""
+        if '/' not in self.repository:
+            raise ValueError(f"Repository must be in format 'owner/repo', got: {self.repository}")
+        return self.repository.split('/', 1)
+
+
+class GitHubIssueCreator:
+    """Self-contained GitHub Issue creator with embedded functionality."""
+    
+    def __init__(self, **config_overrides):
+        self.config = GitHubConfig(**config_overrides)
+        self.repo_owner, self.repo_name = self.config.get_repo_owner_name()
         self.headers = {
-            'Authorization': f'token {self.token}',
+            'Authorization': f'token {self.config.token}',
             'Accept': 'application/vnd.github.v3+json',
             'Content-Type': 'application/json'
         }
-        self.base_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}"
+        self.base_url = f"{self.config.base_url}/repos/{self.repo_owner}/{self.repo_name}"
         self.results = []
-    
-    def _load_config(self, project_path: Optional[str], config_override: Optional[Dict]) -> Dict:
-        """Load configuration from JSON file."""
-        # Try project-specific config first
-        config_paths = []
-        if project_path:
-            config_paths.append(Path(project_path) / "github-config.json")
-        config_paths.extend([
-            Path("projects/github-config.json"),
-            Path("../../../projects/github-config.json"),
-            Path("github-config.json")
-        ])
-        
-        config = None
-        for config_path in config_paths:
-            if config_path.exists():
-                with open(config_path, 'r') as f:
-                    config = json.load(f)
-                    break
-        
-        if not config:
-            raise Exception("No github-config.json found. Please create configuration file.")
-        
-        if config_override:
-            # Simple merge of overrides
-            config.update(config_override)
-        
-        return config
-    
-    def _get_token(self) -> str:
-        """Get GitHub token from environment or configuration."""
-        token_env_var = self.config.get('github', {}).get('authentication', {}).get('token_env_var', 'GITHUB_TOKEN')
-        token = os.getenv(token_env_var)
-        if not token:
-            raise Exception(f"GitHub token not found in environment variable {token_env_var}")
-        return token
     
     def parse_task_file(self, file_path: str) -> Dict:
         """Parse a task markdown file and extract metadata."""
@@ -95,15 +160,41 @@ class GitHubIssueCreator:
         state_match = re.search(r'\*\*State:\*\*\s*(\w+)', content)
         state = state_match.group(1).lower() if state_match else "open"
         
-        # Map task state to GitHub state
-        state_mapping = self.config['github']['field_mapping']['state_mapping']
-        github_state = state_mapping.get(state, "open")
+        # Map task state to GitHub state using embedded mapping
+        github_state = self.config.state_mapping.get(state, "open")
         
-        # Generate labels
-        labels = self.config['github']['field_mapping']['additional_labels'].copy()
+        # Extract labels from content
+        labels_match = re.search(r'\*\*Labels:\*\*\s*(.+)', content)
+        labels = []
+        if labels_match:
+            labels = [label.strip() for label in labels_match.group(1).split(',')]
         
-        # Create issue body from content (remove title)
+        # Add priority label if present
+        priority_match = re.search(r'\*\*Priority:\*\*\s*(\w+)', content)
+        if priority_match:
+            priority = priority_match.group(1)
+            if priority in self.config.priority_labels:
+                labels.append(self.config.priority_labels[priority]["name"])
+        
+        # Add additional labels from configuration
+        labels.extend(self.config.additional_labels)
+        
+        # Remove duplicates
+        labels = list(set(labels))
+        
+        # Extract assignees
+        assignees = []
+        assignees_match = re.search(r'\*\*Assignees:\*\*\s*(.+)', content)
+        if assignees_match:
+            assignees = [a.strip() for a in assignees_match.group(1).split(',')]
+        elif self.config.default_assignee:
+            assignees = [self.config.default_assignee]
+        
+        # Create issue body from content (remove title and metadata)
         body_content = re.sub(r'^#\s+.+\n?', '', content, flags=re.MULTILINE)
+        # Remove GitHub metadata if present
+        body_content = re.sub(r'\*\*GitHub Issue:\*\*.*\n?', '', body_content)
+        body_content = re.sub(r'\*\*Issue URL:\*\*.*\n?', '', body_content)
         body_content = body_content.strip()
         
         return {
@@ -111,6 +202,7 @@ class GitHubIssueCreator:
             'body': body_content,
             'state': github_state,
             'labels': labels,
+            'assignees': assignees,
             'existing_issue': existing_issue,
             'file_path': file_path,
             'original_content': content
@@ -125,9 +217,9 @@ class GitHubIssueCreator:
             'labels': task_data['labels']
         }
         
-        # Add default assignee
-        if self.config['github']['issue_defaults'].get('default_assignee'):
-            payload['assignees'] = [self.config['github']['issue_defaults']['default_assignee']]
+        # Add assignees if present
+        if task_data['assignees']:
+            payload['assignees'] = task_data['assignees']
         
         try:
             response = requests.post(url, headers=self.headers, json=payload)
@@ -269,6 +361,33 @@ def main():
         description="Create and update GitHub Issues from EDPS task files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+Configuration:
+    Requires GitHub authentication and repository information.
+    
+    Method 1 - Environment Variable + Config File (Recommended):
+        1. Set GITHUB_TOKEN environment variable: export GITHUB_TOKEN="ghp_xxxx"
+        2. Ensure github-credentials.json exists in repository root with:
+           {
+             "github": {
+               "default_repository": {
+                 "owner": "your-username",
+                 "name": "your-repo"
+               }
+             }
+           }
+    
+    Method 2 - Config File Only:
+        Create github-credentials.json in repository root with:
+        {
+          "github": {
+            "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxx",
+            "default_repository": {
+              "owner": "your-username", 
+              "name": "your-repo"
+            }
+          }
+        }
+
 Examples:
     # Process a single task file
     python create_update_issues.py --file T001-setup.md
@@ -300,9 +419,15 @@ Examples:
     )
     
     parser.add_argument(
-        '--config',
-        type=Path,
-        help='Path to configuration file'
+        '--assignee',
+        type=str,
+        help='Override default assignee for this execution'
+    )
+    
+    parser.add_argument(
+        '--milestone',
+        type=str,
+        help='Set milestone for created/updated issues'
     )
     
     args = parser.parse_args()
@@ -312,10 +437,13 @@ Examples:
         parser.error("Must specify --file, --directory, or --project")
     
     try:
+        # Build configuration overrides
+        config_overrides = {}
+        if args.assignee:
+            config_overrides['default_assignee'] = args.assignee
+        
         # Initialize the issue creator
-        creator = GitHubIssueCreator(
-            project_path=str(args.project) if args.project else None
-        )
+        creator = GitHubIssueCreator(**config_overrides)
         
         # Process based on arguments
         if args.file:

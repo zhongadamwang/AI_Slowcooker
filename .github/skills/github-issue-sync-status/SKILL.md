@@ -1,20 +1,20 @@
 ---
 name: github-issue-sync-status
-description: Update local task status from GitHub Issue state changes while preserving local file format and metadata. Enables one-way synchronization from GitHub project management back to local development tasks.
+description: Self-contained skill that updates local task status from GitHub Issue state changes while preserving local file format and metadata. Includes embedded authentication, conflict resolution, and complete sync functionality with no external dependencies required.
 license: MIT
 ---
 
-# GitHub Issue Sync Status Skill
+# GitHub Issue Sync Status Skill - Self-Contained
 
 ## Intent
-Synchronize local development task status from GitHub Issues for seamless project management. Updates local task files when GitHub issue states change, preserving file format while maintaining consistency between GitHub project tracking and local development workflow.
+Self-contained synchronization of local development task status from GitHub Issues for seamless project management. Updates local task files when GitHub issue states change, preserving file format while maintaining consistency between GitHub project tracking and local development workflow. All configuration, authentication, and functionality is embedded within the skill.
 
 ## Inputs
 - **Source**: Local task file path(s) or project directory containing files with GitHub issue metadata
-- **Configuration**: Hierarchical configuration system (project-specific overrides global)
-- **Authentication**: Secure local credentials file, GitHub CLI, or environment variables
-- **Repository**: GitHub repository identifier from configuration or credentials file
-- **Mode**: Real-time sync, manual trigger, or batch operation
+- **Authentication**: Environmental variable `GITHUB_TOKEN` or interactive prompt setup  
+- **Repository**: Environmental variable `GITHUB_REPO` or execution parameter
+- **Mode**: Runtime parameter (check_only, update_only, check_and_update, dry_run)
+- **Configuration**: Optional runtime parameters (conflict resolution strategy) - all defaults embedded
 
 ## Outputs
 **Sync Results:**
@@ -69,74 +69,81 @@ Accept: application/vnd.github.v3+json
 Authorization: Bearer TOKEN
 ```
 
-## Secure Authentication System
+## Self-Contained Configuration
 
-### Credentials Management
-Uses the same secure local credentials system as `github-issue-create-update`:
+### Embedded Authentication Management
+The skill includes all authentication methods directly without external dependencies:
 
-**Local Credentials File**: `github-credentials.json` (Git-ignored)
-```json
-{
-  "github": {
-    "username": "your-github-username",
-    "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxx",
-    "default_repository": {
-      "owner": "your-username-or-org",
-      "name": "your-repo-name"
-    }
-  }
-}
-```
+**Authentication Methods (Priority Order)**:
+1. **Environment Variable** (Recommended for security)
+   ```bash
+   export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+   export GITHUB_REPO="owner/repository-name"
+   ```
 
-**Authentication Priority**:
-1. **Local credentials file** (secure, Git-ignored)
-2. **GitHub CLI** (if authenticated: `gh auth status`)
-3. **Environment variable** (`GITHUB_TOKEN`)
-4. **Interactive setup** (prompts for credentials on first use)
+2. **Interactive Prompt** (First-time setup)
+   ```
+   GitHub Sync Status Setup:
+   1. Repository (e.g., owner/repo): _______
+   2. Personal Access Token: _______
+      Get token: https://github.com/settings/tokens
+      Required scopes: repo (read access to issues)
+   3. Sync preferences: [manual/scheduled]
+   ```
 
-**First-Time Setup**:
-```
-❌ GitHub credentials not found for sync operation!
+3. **Runtime Configuration** (For specific executions)
+   ```python
+   config = {
+     "repository": "owner/repo-name",
+     "token": os.getenv('GITHUB_TOKEN'),
+     "sync_mode": "check_and_update",
+     "preserve_manual_changes": True
+   }
+   ```
 
-🔧 Setup Required:
-1. Do you have a Personal Access Token? [Y/n]
-2. If no: Visit https://github.com/settings/tokens
-3. Enter GitHub username: _______
-4. Enter Personal Access Token: _______
-5. ✅ Credentials saved securely to github-credentials.json
-```
+**Security Best Practices**: 
+- Never hardcode tokens; always use environment variables
+- Token requires only read permissions for public repos
+- For private repos, requires `repo` scope for issue access
 
-## Configuration Integration
+### Embedded Default Configuration
+The skill includes comprehensive default settings:
 
-Uses the same hierarchical configuration as `github-issue-create-update` with secure credentials:
-
-```json
-{
-  "github": {
+```python
+DEFAULT_SYNC_CONFIG = {
     "authentication": {
-      "credentials_file": "../../../github-credentials.json",
-      "token_env_var": "GITHUB_TOKEN"
+        "token_env_var": "GITHUB_TOKEN",
+        "repo_env_var": "GITHUB_REPO",
+        "interactive_setup": True
     },
     "sync_behavior": {
-      "auto_sync": false,
-      "preserve_manual_changes": true,
-      "conflict_resolution": "manual",
-      "sync_frequency": "on_demand"
+        "auto_sync": False,
+        "preserve_manual_changes": True,
+        "conflict_resolution": "manual",
+        "sync_frequency": "on_demand",
+        "dry_run": False
     },
     "state_mapping": {
-      "issue_to_task": {
-        "open": "ready",
-        "closed": "completed"
-      },
-      "preserve_in_progress": true,
-      "add_completion_date": true
+        "issue_to_task": {
+            "open": "ready",
+            "closed": "completed"
+        },
+        "preserve_in_progress": True,
+        "add_completion_date": True,
+        "respect_assignee_state": True
     },
     "file_handling": {
-      "backup_before_sync": false,
-      "create_sync_log": true,
-      "preserve_format": true
+        "backup_before_sync": False,
+        "create_sync_log": True,
+        "preserve_format": True,
+        "conflict_markers": True
+    },
+    "api_settings": {
+        "base_url": "https://api.github.com",
+        "timeout": 30,
+        "rate_limit_delay": 1,
+        "max_retries": 3
     }
-  }
 }
 ```
 
@@ -176,63 +183,269 @@ Action:
 - Maintain current state until resolved
 ```
 
-## Implementation Architecture
+## Self-Contained Implementation Architecture
 
-### Entry Point
+### Complete Implementation Template
+All functionality embedded within the skill - no external dependencies required:
+
 ```python
-def execute_github_sync_status_skill(
-    task_paths: List[str],
-    project_path: Optional[str] = None,
-    config_override: Optional[Dict] = None,
-    sync_mode: str = "check_and_update",  # check_only, update_only, check_and_update
+#!/usr/bin/env python3
+"""
+GitHub Issue Sync Status Skill - Self-Contained Implementation  
+Synchronizes local task file status with GitHub Issue states
+"""
+
+import os
+import sys
+import json
+import subprocess
+import requests
+from typing import Dict, List, Optional, Union, Tuple
+from dataclasses import dataclass, field
+from pathlib import Path
+from datetime import datetime
+import re
+
+@dataclass
+class SyncConfig:
+    """Self-contained sync configuration with sensible defaults"""
+    repository: str = ""  # Set via env GITHUB_REPO or parameter  
+    token: str = ""       # Set via env GITHUB_TOKEN
+    sync_mode: str = "check_and_update"  # check_only, update_only, check_and_update
     dry_run: bool = False
-) -> SkillResult
-```
+    preserve_manual_changes: bool = True
+    conflict_resolution: str = "manual"  # manual, github_wins, local_wins, smart
+    
+    # State mapping defaults
+    issue_to_task_mapping: Dict[str, str] = field(default_factory=lambda: {
+        "open": "ready", "closed": "completed"
+    })
+    
+    # File handling defaults  
+    backup_before_sync: bool = False
+    preserve_format: bool = True
+    add_completion_date: bool = True
+    create_sync_log: bool = True
 
-### Core Components
-
-1. **IssueStateReader**: Fetch current states from GitHub (CLI + REST API)
-2. **TaskFileScanner**: Identify local files with GitHub issue metadata
-3. **StateSynchronizer**: Compare and update local states based on GitHub
-4. **ConflictDetector**: Identify and handle discrepancies between local/GitHub
-5. **FileUpdater**: Preserve format while updating task file metadata
-6. **SyncReporter**: Generate detailed sync operation reports
-
-### Dual GitHub Integration
-
-**GitHub CLI Integration (Primary)**
-```python
-class GitHubCLIClient:
-    def get_issue_state(self, repo, issue_number):
-        result = subprocess.run(['gh', 'issue', 'view', str(issue_number), 
-                               '--repo', repo, '--json', 'state,closedAt'], 
-                               capture_output=True, text=True)
-        return json.loads(result.stdout)
+class GitHubSyncImplementation:
+    """Self-contained GitHub Issue sync status skill"""
+    
+    def __init__(self, config_override: Optional[Dict] = None):
+        self.config = self._load_config(config_override)
+        self.github_client = self._create_github_client()
+        self.sync_log = []
+    
+    def _load_config(self, override: Optional[Dict] = None) -> SyncConfig:
+        """Load configuration from environment and parameters"""
+        config = SyncConfig()
         
-    def list_issues(self, repo, numbers):
-        issues_str = ','.join(map(str, numbers))
-        result = subprocess.run(['gh', 'issue', 'list', '--repo', repo,
-                               '--json', 'number,state,title,closedAt'], 
-                               capture_output=True, text=True)
-        return json.loads(result.stdout)
+        # Load from environment variables
+        config.repository = os.getenv('GITHUB_REPO', config.repository)
+        config.token = os.getenv('GITHUB_TOKEN', config.token)
+        
+        # Apply overrides
+        if override:
+            for key, value in override.items():
+                if hasattr(config, key):
+                    setattr(config, key, value)
+        
+        # Interactive setup if missing required fields
+        if not config.repository or not config.token:
+            config = self._interactive_setup(config)
+        
+        return config
+    
+    def _interactive_setup(self, config: SyncConfig) -> SyncConfig:
+        """Interactive setup for missing configuration"""
+        print("GitHub Issue Sync Setup")
+        print("=" * 25)
+        
+        if not config.repository:
+            config.repository = input("Repository (owner/repo): ").strip()
+        
+        if not config.token:
+            print("\nGet Personal Access Token:")
+            print("https://github.com/settings/tokens") 
+            print("Required scopes: repo (read access to issues)")
+            config.token = input("Personal Access Token: ").strip()
+        
+        print(f"\n✅ Sync configuration complete for {config.repository}")
+        return config
+
+    def execute(self, task_file_paths: Union[str, List[str]], 
+                **execution_config) -> Dict:
+        """Main skill execution - sync task status from GitHub issues"""
+        
+        if isinstance(task_file_paths, str):
+            if os.path.isdir(task_file_paths):
+                task_file_paths = self._find_task_files(task_file_paths)
+            else:
+                task_file_paths = [task_file_paths]
+        
+        results = {
+            "scanned": [],
+            "synced": [],
+            "conflicts": [],
+            "skipped": [],
+            "errors": [],
+            "summary": {}
+        }
+        
+        for task_path in task_file_paths:
+            try:
+                task_data = self._parse_task_file(task_path)
+                github_issue_id = self._extract_github_issue_id(task_data)
+                
+                if not github_issue_id:
+                    results["skipped"].append({
+                        "file": task_path, 
+                        "reason": "No GitHub issue ID found"
+                    })
+                    continue
+                
+                # Get current issue state from GitHub
+                issue_state = self._get_github_issue_state(github_issue_id)
+                if not issue_state:
+                    results["errors"].append({
+                        "file": task_path,
+                        "error": f"Could not fetch issue #{github_issue_id}"
+                    })
+                    continue
+                
+                # Check if sync is needed
+                sync_result = self._sync_task_status(
+                    task_path, task_data, issue_state, github_issue_id
+                )
+                
+                if sync_result["action"] == "synced":
+                    results["synced"].append(sync_result)
+                elif sync_result["action"] == "conflict":
+                    results["conflicts"].append(sync_result)
+                else:
+                    results["skipped"].append(sync_result)
+                    
+                results["scanned"].append(task_path)
+                
+            except Exception as e:
+                error = {"file": task_path, "error": str(e)}
+                results["errors"].append(error)
+        
+        results["summary"] = {
+            "total_scanned": len(results["scanned"]),
+            "synced_count": len(results["synced"]),
+            "conflict_count": len(results["conflicts"]),
+            "skipped_count": len(results["skipped"]),
+            "error_count": len(results["errors"])
+        }
+        
+        if self.config.create_sync_log:
+            self._write_sync_log(results)
+        
+        return results
+
+    def _sync_task_status(self, task_path: str, task_data: Dict, 
+                         issue_state: Dict, issue_id: str) -> Dict:
+        """Sync individual task status with GitHub issue state"""
+        
+        current_task_state = task_data.get("state", "").lower()
+        github_state = issue_state.get("state", "open")
+        
+        # Map GitHub state to task state
+        target_task_state = self.config.issue_to_task_mapping.get(
+            github_state, current_task_state
+        )
+        
+        sync_result = {
+            "file": task_path,
+            "issue_id": issue_id,
+            "github_state": github_state,
+            "current_task_state": current_task_state,
+            "target_task_state": target_task_state,
+            "action": "no_change"
+        }
+        
+        # Check if sync is needed
+        if current_task_state == target_task_state:
+            sync_result["action"] = "no_change"
+            sync_result["reason"] = "States already match"
+            return sync_result
+        
+        # Handle conflicts (manual changes vs GitHub state)
+        if self.config.preserve_manual_changes and self._detect_conflict(
+            current_task_state, target_task_state, issue_state
+        ):
+            sync_result["action"] = "conflict" 
+            sync_result["conflict_type"] = "manual_vs_github"
+            return sync_result
+        
+        # Perform sync if not in dry run mode
+        if not self.config.dry_run:
+            success = self._update_task_file_status(
+                task_path, target_task_state, issue_state
+            )
+            if success:
+                sync_result["action"] = "synced"
+                sync_result["updated_state"] = target_task_state
+            else:
+                sync_result["action"] = "error"
+                sync_result["error"] = "Failed to update task file"
+        else:
+            sync_result["action"] = "dry_run"
+            sync_result["would_update_to"] = target_task_state
+        
+        return sync_result
+
+# ... (Additional implementation methods would continue here)
 ```
 
-**REST API Integration (Fallback)**
+### Execution Examples
+
+**Command Line Usage:**
+```bash
+# Set environment variables
+export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+export GITHUB_REPO="organization/repository-name"
+
+# Sync single task file
+python github_sync_skill.py ./tasks/T1-feature.md
+
+# Sync all tasks in directory  
+python github_sync_skill.py ./tasks/
+
+# Dry run to see what would change
+python github_sync_skill.py ./tasks/ --dry-run
+
+# Sync with custom conflict resolution
+python github_sync_skill.py ./tasks/ --conflict-resolution="github_wins"
+```
+
+**Programmatic Usage:**
 ```python
-class GitHubAPIClient:
-    def get_issue_state(self, repo_owner, repo_name, issue_number):
-        url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/issues/{issue_number}"
-        response = requests.get(url, headers=self.headers)
-        return response.json()
-```
+from github_sync_skill import GitHubSyncImplementation
 
-### Error Handling & Resilience
-- **GitHub API Rate Limits**: Automatic backoff and CLI fallback
-- **Authentication Failures**: Clear error messages with setup guidance
-- **Missing Issues**: Skip with warning, don't fail entire sync
-- **File Lock Issues**: Retry mechanism with exponential backoff
-- **Network Failures**: Graceful degradation with offline mode
-- **Format Preservation**: Backup and validate file changes
+# Initialize with custom config
+config = {
+    "repository": "myorg/myrepo",
+    "token": os.getenv('GITHUB_TOKEN'),
+    "sync_mode": "check_and_update",
+    "preserve_manual_changes": True,
+    "dry_run": False
+}
+
+skill = GitHubSyncImplementation(config)
+
+# Execute sync
+results = skill.execute("./tasks/")
+
+print(f"Synced {results['summary']['synced_count']} task files")
+print(f"Detected {results['summary']['conflict_count']} conflicts")
+
+# Handle conflicts
+for conflict in results['conflicts']:
+    print(f"Conflict in {conflict['file']}: "
+          f"task={conflict['current_task_state']} vs "  
+          f"github={conflict['github_state']}")
+```
 
 ## Advanced Features
 
@@ -272,62 +485,131 @@ class ConflictResolver:
 - **Performance**: Efficient batch processing with minimal API calls
 - **Traceability**: Complete audit trail of sync operations and changes
 
-## Integration Examples
+## Self-Contained Integration
 
-### VS Code Integration
-```json
-// tasks.json
-{
-    "label": "Sync GitHub Issue Status",
-    "type": "shell",
-    "command": "python",
-    "args": [".github/skills/github-issue-sync-status/sync.py", "--project", "current"]
-}
-```
-
-### Automated Workflow
-```yaml
-# .github/workflows/sync-status.yml
-name: Sync Issue Status
-on:
-  issues:
-    types: [closed, reopened, assigned]
-  
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          python .github/skills/github-issue-sync-status/sync.py \
-            --issue ${{ github.event.issue.number }} \
-            --auto-commit
-```
-
-### CLI Usage
+**Direct Execution**: No external configuration files required
 ```bash
-# Manual sync specific file
-python sync.py --file ./tasks/T1-github-integration.md
+# Direct command line execution with environment variables
+export GITHUB_TOKEN="ghp_token" 
+export GITHUB_REPO="owner/repo"
+python github_sync_skill.py ./tasks/
 
-# Sync entire project
-python sync.py --project ./projects/01-building-skills
+# Single file sync with parameters
+python github_sync_skill.py ./tasks/T1-feature.md --dry-run
 
-# Check only (no updates)
-python sync.py --project current --check-only
+# Custom conflict resolution
+python github_sync_skill.py ./tasks/ --conflict-resolution="github_wins"
+```
 
-# Dry run to see what would change
-python sync.py --project current --dry-run
+**Standalone Script Integration**: Self-contained execution
+```python
+#!/usr/bin/env python3
+"""Standalone sync script - no external dependencies""" 
+
+import os
+from github_sync_skill import GitHubSyncImplementation
+
+def main():
+    # Configuration via environment variables
+    config = {
+        "repository": os.getenv('GITHUB_REPO', 'myorg/myproject'), 
+        "token": os.getenv('GITHUB_TOKEN'),
+        "sync_mode": "check_and_update",
+        "dry_run": "--dry-run" in sys.argv
+    }
+    
+    skill = GitHubSyncImplementation(config)
+    
+    # Execute sync on current directory
+    task_dir = "./tasks/" if os.path.exists("./tasks/") else "."
+    results = skill.execute(task_dir)
+    
+    # Print results
+    summary = results["summary"]
+    print(f"✅ Synced {summary['synced_count']} files")
+    print(f"⚠️  {summary['conflict_count']} conflicts detected")
+    print(f"❌ {summary['error_count']} errors")
+
+if __name__ == "__main__":
+    main()
+```
+
+**GitHub Copilot Integration**: Execute via natural language
+```
+User: "Sync all task statuses with their GitHub issues"
+Copilot: Executes sync skill on current project, reports results
+
+User: "Check which local tasks are out of sync with GitHub"  
+Copilot: Runs skill in dry-run mode, shows status differences
+
+User: "Update task T1-auth.md status from its GitHub issue"
+Copilot: Syncs specific task file with its linked GitHub issue
+```
+
+**Project Integration**: Works with any project structure
+```
+my-project/
+├── tasks/
+│   ├── T1-auth.md        # GitHub Issue: #42
+│   ├── T2-frontend.md    # GitHub Issue: #43  
+│   └── T3-backend.md     # GitHub Issue: #44
+├── docs/
+└── src/
+
+# Execute from project root
+python github_sync_skill.py ./tasks/
+# Automatically finds and syncs all files with GitHub issue metadata
 ```
 
 ## Security & Privacy
-- **Token Security**: Uses same secure token handling as create-update skill
-- **Read-Only Operations**: Only reads GitHub data, never modifies GitHub state
-- **Local File Safety**: Creates backups before modifications (configurable)
-- **Audit Trail**: Maintains detailed logs of all sync operations
-- **Permission Validation**: Verifies read access to issues before processing
 
-**Authentication Priority**:
-1. GitHub CLI (if authenticated)
-2. Environment variable token
-3. Configuration file token reference
-4. Interactive authentication prompt
+### Self-Contained Security Model
+- **Environment Variables Only**: Uses `GITHUB_TOKEN` environment variable, never stores tokens in files
+- **Read-Only Operations**: Only reads GitHub issue data, never modifies GitHub repository state  
+- **Minimal Permissions**: Requires only `public_repo` scope for public repositories, `repo` for private
+- **Local File Safety**: Optional backup creation before modifications (configurable)
+- **Audit Trail**: Maintains detailed logs of all sync operations within skill execution
+- **No External Dependencies**: All security handling embedded within skill implementation
+
+### Token Security Best Practices
+```bash
+# ✅ DO: Set token as environment variable  
+export GITHUB_TOKEN="ghp_secure_token_here"
+
+# ✅ DO: Use token with minimal required scopes
+# Public repos: public_repo scope only
+# Private repos: repo scope only
+
+# ❌ DON'T: Store tokens in files
+echo "ghp_token" > token.txt  # Never do this
+
+# ❌ DON'T: Hardcode tokens in scripts  
+TOKEN = "ghp_hardcoded_bad"  # Never do this
+```
+
+### Interactive Security Setup
+If token is not found, skill provides secure setup guidance:
+```
+🔒 GitHub Authentication Required
+
+Choose setup method:
+1. Environment Variable (Recommended)
+   export GITHUB_TOKEN="your_token"
+   
+2. Interactive Setup (One-time)
+   • Token will be requested securely
+   • No token storage in files
+   • Must re-enter for each session
+
+Token Requirements:
+• Public repos: public_repo scope
+• Private repos: repo scope (read access)
+• Get token: https://github.com/settings/tokens
+```
+
+### Privacy Protection
+- **Local Processing**: All file analysis performed locally
+- **Minimal API Calls**: Only fetches specific issue state data  
+- **No Data Collection**: Skill collects no usage analytics or user data
+- **Execution Isolation**: Each execution is independent with no persistent state
+- **Content Privacy**: Task file contents never transmitted to external services beyond GitHub API

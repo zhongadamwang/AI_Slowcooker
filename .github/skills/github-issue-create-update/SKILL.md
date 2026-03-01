@@ -1,20 +1,20 @@
 ---
 name: github-issue-create-update
-description: Create and update GitHub Issues from local task markdown files with field mapping, metadata extraction, and two-way synchronization support for project management integration.
+description: Self-contained skill that creates and updates GitHub Issues from local task markdown files. Includes embedded authentication, configuration defaults, and complete field mapping with no external dependencies required.
 license: MIT
 ---
 
-# GitHub Issue Create/Update Skill
+# GitHub Issue Create/Update Skill - Self-Contained
 
 ## Intent
-Synchronize local development task files with GitHub Issues for seamless project management. Creates new GitHub Issues from task markdown files and updates existing issues when task files are modified, enabling one-way local-to-GitHub project tracking workflow.
+Self-contained synchronization of local development task files with GitHub Issues for seamless project management. Creates new GitHub Issues from task markdown files and updates existing issues when task files are modified. All configuration, authentication, and functionality is embedded within the skill - no external configuration files or dependencies required.
 
 ## Inputs
 - **Source**: Local task file path(s) or project directory
 - **Format**: Markdown task files following EDPS task structure (title, state, labels, description, acceptance criteria)
-- **Configuration**: Hierarchical configuration system (project-specific overrides global)
-- **Authentication**: GitHub Personal Access Token (via configuration or environment variable)
-- **Repository**: GitHub repository identifier from configuration files
+- **Authentication**: Environmental variable `GITHUB_TOKEN` or interactive prompt setup
+- **Repository**: Environmental variable `GITHUB_REPO` or execution parameter
+- **Configuration**: Optional runtime parameters (milestone, assignee, labels) - all defaults embedded
 
 ## Outputs
 **Operation Results:**
@@ -107,58 +107,75 @@ PATCH /repos/{owner}/{repo}/issues/{issue_number}
 **Issue URL:** https://github.com/owner/repo/issues/123
 ```
 
-## Usage Examples
+## Self-Contained Usage Examples
 
-### Configuration Setup
+### Environment Setup (One-time)
 ```bash
-# 1. Set up global configuration
-cat > projects/github-config.json << EOF
-{
-  "github": {
-    "default_repository": {
-      "owner": "your-org",
-      "name": "main-repo"
-    },
-    "authentication": {
-      "token_env_var": "GITHUB_TOKEN"
-    }
-  }
-}
-EOF
-
-# 2. Set up project-specific config (optional)
-cat > projects/01-my-project/github-config.json << EOF
-{
-  "github": {
-    "issue_defaults": {
-      "milestone": "Sprint 1",
-      "default_assignee": "project.lead"
-    }
-  }
-}
-EOF
-
-# 3. Set environment variable
+# Set required environment variables
 export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+export GITHUB_REPO="your-org/your-repo"
+
+# Optional: Set default assignee
+export GITHUB_DEFAULT_ASSIGNEE="your-username"
 ```
 
-### Single Task File
-```markdown
-// Execute skill on single task file - uses global config
-Input: /path/to/standalone-task.md
-Config: projects/github-config.json
-Output: Created issue #123 at https://github.com/your-org/main-repo/issues/123
+### Single Task File Execution
+```bash
+# Basic execution - uses environment variables
+python github_issue_skill.py ./tasks/T1-authentication.md
+
+# Output:
+# ✅ Created GitHub Issue #123: T1 - Authentication Feature
+# 🔗 https://github.com/your-org/your-repo/issues/123
+# 📝 Updated task file with GitHub metadata
 ```
 
-### Project Directory Batch
-```markdown
-// Execute skill on project tasks directory - uses project-specific config
-Input: /projects/01-building-skills/tasks/
-Config: projects/01-building-skills/github-config.json (+ global fallback)
-Output: 
-- T1-github-integration.md → Created #123 [milestone: "MVP - Building Skills"]
-- T2-requirements-ingest.md → Updated #124 [assignee: "adam.wang"]
-- T3-goals-extract.md → Created #125 [labels: "skills-development", "priority:critical"]
+### Project Directory Batch Processing
+```bash
+# Process all task files in directory
+python github_issue_skill.py ./tasks/
+
+# With custom parameters
+python github_issue_skill.py ./tasks/ \
+  --milestone="Sprint-1" \
+  --assignee="project-lead" \
+  --labels="mvp,feature,priority:high"
+
+# Output:  
+# Processing 3 task files...
+# ✅ T1-auth.md → Created issue #123 [assignee: project-lead]
+# ✅ T2-frontend.md → Updated issue #124 [milestone: Sprint-1] 
+# ✅ T3-backend.md → Created issue #125 [labels: mvp,feature]
+```
+
+### Programmatic Integration
+```python
+from github_issue_skill import GitHubSkillImplementation
+
+# Initialize with environment variables
+skill = GitHubSkillImplementation()
+
+# Or initialize with custom config
+config = {
+    "repository": "myorg/myproject",
+    "token": os.getenv('GITHUB_TOKEN'),
+    "default_assignee": "team-lead",
+    "milestone": "Q1-2026"
+}
+skill = GitHubSkillImplementation(config)
+
+# Execute on task files
+results = skill.execute([
+    "./tasks/T1-authentication.md",
+    "./tasks/T2-user-dashboard.md"
+])
+
+# Check results
+for created in results["created"]:
+    print(f"Created: {created['title']} → {created['url']}")
+
+for updated in results["updated"]:
+    print(f"Updated: {updated['title']} → {updated['url']}")
 ```
 
 ### Update Workflow
@@ -257,165 +274,362 @@ class GitHubAPIClient:
 - **Traceability**: Clear mapping between local tasks and GitHub issues
 - **Performance**: Batch operations with progress reporting for large projects
 
-## Configuration Integration
+## Self-Contained Configuration
 
-### Secure Credentials Management
-The skill uses a secure local credentials system that keeps sensitive tokens out of Git:
+### Embedded Authentication Management
+The skill includes all authentication methods directly without external dependencies:
 
-**Credentials File**: `github-credentials.json` (Git-ignored)
-```json
-{
-  "github": {
-    "username": "your-github-username",
-    "personal_access_token": "ghp_xxxxxxxxxxxxxxxxxxxx",
-    "default_repository": {
-      "owner": "your-username-or-org",
-      "name": "your-repo-name"
+**Authentication Methods (Priority Order)**:
+1. **Environment Variable** (Recommended for security)
+   ```bash
+   export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+   ```
+
+2. **Interactive Prompt** (First-time setup)
+   ```
+   GitHub Integration Setup:
+   1. Repository (e.g., owner/repo): _______
+   2. Personal Access Token: _______
+      Get token: https://github.com/settings/tokens
+      Required scopes: repo (or public_repo for public repos)
+   3. Default assignee (optional): _______
+   ```
+
+3. **Inline Configuration** (For specific executions)
+   ```python
+   config = {
+     "repository": "owner/repo-name",
+     "token": "ghp_xxxxxxxxxxxxxxxxxxxx",  # Use environment variable instead
+     "default_assignee": "username"
+   }
+   ```
+
+**Secure Token Usage**: Never hardcode tokens in files. Always use environment variables:
+```bash
+# Set token in your shell profile
+echo 'export GITHUB_TOKEN="your_token_here"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### Embedded Default Configuration
+The skill includes comprehensive default settings that can be overridden as needed:
+
+```python
+DEFAULT_CONFIG = {
+    "api": {
+        "base_url": "https://api.github.com",
+        "timeout": 30,
+        "rate_limit_delay": 1,
+        "max_retries": 3
     },
-    "preferences": {
-      "default_assignee": "your-github-username",
-      "remember_credentials": true
+    "authentication": {
+        "token_env_var": "GITHUB_TOKEN",
+        "interactive_setup": True
+    },
+    "issue_defaults": {
+        "auto_create_labels": True,
+        "add_github_metadata": True,
+        "backup_on_update": False
+    },
+    "field_mapping": {
+        "state_mapping": {
+            "ready": "open",
+            "in-progress": "open",
+            "completed": "closed",
+            "cancelled": "closed"
+        },
+        "priority_labels": {
+            "High": {"name": "priority:high", "color": "d73a4a"},
+            "Medium": {"name": "priority:medium", "color": "fbca04"},
+            "Low": {"name": "priority:low", "color": "0075ca"}
+        },
+        "effort_label_prefix": "effort:",
+        "additional_labels": ["auto-generated"],
+        "exclude_labels": ["internal"]
+    },
+    "batch_processing": {
+        "max_concurrent": 5,
+        "progress_reporting": True,
+        "stop_on_error": False
     }
-  }
 }
 ```
 
-**First-Time Setup**:
-1. Copy `github-credentials.json.template` to `github-credentials.json`
-2. Replace placeholder values with your real GitHub credentials
-3. Get Personal Access Token from: https://github.com/settings/tokens
-4. Required token scopes: `repo` (full control) for private repos, or `public_repo` for public only
-
-**Interactive Setup**: If credentials file is missing, skill will prompt:
-```
-❌ GitHub credentials not found!
-
-🔧 Setup Required:
-1. Create Personal Access Token: https://github.com/settings/tokens
-   - Token name: AI_Slowcooker_Integration
-   - Scopes: ☑️ repo (or public_repo)
-2. Enter your GitHub username: _______
-3. Enter your Personal Access Token: _______
-4. Credentials saved to: github-credentials.json
-```
-
-### Hierarchical Configuration
-Project settings override global settings, credentials remain secure:
-
-```json
-// projects/github-config.json (committed to Git)
-{
-  "authentication": {
-    "credentials_file": "../../../github-credentials.json",
-    "token_env_var": "GITHUB_TOKEN"
-  }
+**Configuration Override**: Override any defaults at execution time:
+```python
+custom_config = {
+    "issue_defaults": {
+        "default_assignee": "project-lead",
+        "milestone": "Sprint 1"
+    },
+    "field_mapping": {
+        "additional_labels": ["project-alpha", "mvp"]
+    }
 }
+# Config is merged: defaults + custom_config
 ```
 
 ## Configuration Best Practices
 
-### Global Configuration Strategy
-- **Repository Settings**: Set default repository for organization-wide tasks
-- **Authentication**: Use environment variables, never hardcode tokens
-- **API Settings**: Configure rate limits and timeouts for your GitHub instance
-- **Label Standards**: Define consistent labeling scheme across all projects
+### Environment-Based Configuration Strategy
+- **Repository Settings**: Set via environment variables or execution parameters
+- **Authentication**: Always use `GITHUB_TOKEN` environment variable
+- **API Settings**: Use embedded defaults, override only when necessary
+- **Label Standards**: Define via execution parameters for project consistency
 
-### Project Configuration Strategy
-- **Keep Minimal**: Only override what's different from global settings
-- **Milestone Mapping**: Set project-specific milestones and assignees
-- **Custom Labels**: Add project-specific labels while preserving global ones
-- **Priority Overrides**: Customize priority labels for project criticality
+### Project Execution Strategy
+- **Minimal Setup**: Only repository and token required for basic operation
+- **Runtime Parameters**: Pass project-specific settings directly to skill execution
+- **Label Consistency**: Use skill defaults with project-specific additions
+- **Environment Variables**: Set once, use across all projects
 
 ### Security Considerations
-```json
-// ❌ DON'T: Hardcode tokens in configuration
-{
-  "authentication": {
-    "token": "ghp_hardcoded_token_bad"
-  }
-}
+```bash
+# ✅ DO: Use environment variables for sensitive data
+export GITHUB_TOKEN="ghp_your_secure_token_here"
+export GITHUB_REPO="organization/repository-name"
 
-// ✅ DO: Reference environment variables
-{
-  "authentication": {
-    "token_env_var": "GITHUB_TOKEN"
-  }
-}
+# ✅ DO: Pass non-sensitive config at runtime
+python github_skill.py --assignee="project-lead" --milestone="Sprint-1"
+
+# ❌ DON'T: Hardcode tokens anywhere
+config = {"token": "ghp_hardcoded_bad"}
+
+# ❌ DON'T: Store tokens in files
+echo "ghp_token" > token.txt
 ```
 
 ### Configuration Validation
-The skill automatically validates configurations and provides helpful error messages:
-- Missing required fields with suggestions
+The skill automatically validates all settings and provides helpful error messages:
+- Missing required environment variables with setup instructions
 - Invalid repository names with format examples
 - Token permission validation with required scopes
-- Label color format validation with color examples
+- Label validation with format examples
 
-## Configuration Reference
+## Self-Contained Implementation
 
-### Complete Configuration Schema
-```json
-{
-  "github": {
-    "api": {
-      "base_url": "string (GitHub API URL)",
-      "timeout": "number (seconds)",
-      "rate_limit_delay": "number (seconds between requests)",
-      "max_retries": "number (max retry attempts)"
-    },
-    "authentication": {
-      "token_env_var": "string (environment variable name)",
-      "token": "string (direct token - not recommended)"
-    },
-    "default_repository": {
-      "owner": "string (GitHub username or organization)",
-      "name": "string (repository name)"
-    },
-    "issue_defaults": {
-      "auto_create_labels": "boolean (create missing labels)",
-      "default_assignee": "string (default assignee username)",
-      "milestone": "string (milestone name)"
-    },
-    "field_mapping": {
-      "state_mapping": {
-        "task_state": "github_state"
-      },
-      "priority_labels": {
-        "Priority_Level": {
-          "name": "string (GitHub label name)",
-          "color": "string (hex color without #)"
+### Complete Implementation Template
+All functionality is embedded within the skill - no external dependencies required:
+
+```python
+#!/usr/bin/env python3
+"""
+GitHub Issue Create/Update Skill - Self-Contained Implementation
+Converts local task markdown files to GitHub Issues with full field mapping
+"""
+
+import os
+import sys
+import json
+import subprocess
+import requests
+from typing import Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from pathlib import Path
+
+@dataclass
+class GitHubConfig:
+    """Self-contained configuration with sensible defaults"""
+    repository: str = ""  # Set via env GITHUB_REPO or parameter
+    token: str = ""       # Set via env GITHUB_TOKEN
+    default_assignee: Optional[str] = None
+    milestone: Optional[str] = None
+    base_url: str = "https://api.github.com"
+    timeout: int = 30
+    rate_limit_delay: int = 1
+    max_retries: int = 3
+    
+    # Field mapping defaults
+    state_mapping: Dict[str, str] = field(default_factory=lambda: {
+        "ready": "open", "in-progress": "open", 
+        "completed": "closed", "cancelled": "closed"
+    })
+    
+    priority_labels: Dict[str, Dict] = field(default_factory=lambda: {
+        "High": {"name": "priority:high", "color": "d73a4a"},
+        "Medium": {"name": "priority:medium", "color": "fbca04"},
+        "Low": {"name": "priority:low", "color": "0075ca"}
+    })
+    
+    auto_create_labels: bool = True
+    effort_label_prefix: str = "effort:"
+    additional_labels: List[str] = field(default_factory=lambda: ["auto-generated"])
+
+class GitHubSkillImplementation:
+    """Self-contained GitHub Issue creation and update skill"""
+    
+    def __init__(self, config_override: Optional[Dict] = None):
+        self.config = self._load_config(config_override)
+        self.github_client = self._create_github_client()
+    
+    def _load_config(self, override: Optional[Dict] = None) -> GitHubConfig:
+        """Load configuration from environment and parameters"""
+        config = GitHubConfig()
+        
+        # Load from environment variables
+        config.repository = os.getenv('GITHUB_REPO', config.repository)
+        config.token = os.getenv('GITHUB_TOKEN', config.token)
+        config.default_assignee = os.getenv('GITHUB_DEFAULT_ASSIGNEE')
+        
+        # Apply overrides
+        if override:
+            for key, value in override.items():
+                if hasattr(config, key):
+                    setattr(config, key, value)
+        
+        # Interactive setup if missing required fields
+        if not config.repository or not config.token:
+            config = self._interactive_setup(config)
+        
+        return config
+    
+    def _interactive_setup(self, config: GitHubConfig) -> GitHubConfig:
+        """Interactive setup for missing configuration"""
+        print("GitHub Issue Integration Setup")
+        print("=" * 35)
+        
+        if not config.repository:
+            config.repository = input("Repository (owner/repo): ").strip()
+        
+        if not config.token:
+            print("\nGet Personal Access Token:")
+            print("https://github.com/settings/tokens")
+            print("Required scopes: repo (or public_repo)")
+            config.token = input("Personal Access Token: ").strip()
+        
+        if not config.default_assignee:
+            assignee = input("Default assignee (optional): ").strip()
+            if assignee:
+                config.default_assignee = assignee
+        
+        print(f"\n✅ Configuration complete for {config.repository}")
+        return config
+
+    def execute(self, task_file_paths: Union[str, List[str]], 
+                **execution_config) -> Dict:
+        """Main skill execution - create/update GitHub issues from task files"""
+        
+        if isinstance(task_file_paths, str):
+            task_file_paths = [task_file_paths]
+        
+        results = {
+            "processed": [],
+            "created": [],
+            "updated": [],
+            "errors": [],
+            "summary": {}
         }
-      },
-      "effort_label_prefix": "string (prefix for effort labels)",
-      "additional_labels": "array (labels to add to all issues)",
-      "exclude_labels": "array (task labels to not sync)"
-    },
-    "batch_processing": {
-      "max_concurrent": "number (concurrent API requests)",
-      "progress_reporting": "boolean (show progress bars)",
-      "stop_on_error": "boolean (stop batch on first error)"
-    },
-    "file_updates": {
-      "add_github_metadata": "boolean (add GitHub info to task files)",
-      "metadata_format": "string (yaml_frontmatter|markdown)",
-      "backup_on_update": "boolean (create backup before updating)"
-    }
-  }
-}
+        
+        for task_path in task_file_paths:
+            try:
+                task_data = self._parse_task_file(task_path)
+                if self._has_github_issue(task_data):
+                    result = self._update_github_issue(task_data, task_path)
+                    results["updated"].append(result)
+                else:
+                    result = self._create_github_issue(task_data, task_path)
+                    results["created"].append(result)
+                
+                results["processed"].append(task_path)
+                
+            except Exception as e:
+                error = {"file": task_path, "error": str(e)}
+                results["errors"].append(error)
+        
+        results["summary"] = {
+            "total_processed": len(results["processed"]),
+            "created_count": len(results["created"]),
+            "updated_count": len(results["updated"]),
+            "error_count": len(results["errors"])
+        }
+        
+        return results
+
+# ... (Additional implementation methods would continue here)
 ```
 
-## Integration Notes
+### Execution Examples
 
-**VS Code Integration:**
-- Execute via Command Palette: "EDPS: Sync Tasks to GitHub Issues"
-- File explorer context menu on task files
-- Automatic execution hooks for file saves (optional)
+**Command Line Usage:**
+```bash
+# Set environment variables
+export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+export GITHUB_REPO="organization/repository-name"
 
-**Copilot Integration:**
-- Natural language commands: "Create GitHub issues for all tasks in this project"
-- Progress reporting in chat interface
-- Interactive conflict resolution for field mapping issues
+# Execute skill on single file
+python github_issue_skill.py ./tasks/T1-feature.md
 
-**Project Structure Compatibility:**
-- Works with existing EDPS project structure
-- Preserves task file format and metadata
-- Non-destructive updates to task files
+# Execute on multiple files
+python github_issue_skill.py ./tasks/*.md --assignee="project-lead"
+
+# Execute with custom configuration
+python github_issue_skill.py ./tasks/ --milestone="Sprint-1" \
+  --labels="mvp,priority:high" --auto-assign
+```
+
+**Programmatic Usage:**
+```python
+from github_issue_skill import GitHubSkillImplementation
+
+# Initialize with custom config
+config = {
+    "repository": "myorg/myrepo",
+    "token": os.getenv('GITHUB_TOKEN'),
+    "default_assignee": "team-lead",
+    "milestone": "Q1-2026",
+    "additional_labels": ["project-alpha", "auto-created"]
+}
+
+skill = GitHubSkillImplementation(config)
+
+# Execute on task files
+results = skill.execute([
+    "./tasks/T1-authentication.md",
+    "./tasks/T2-user-interface.md"
+])
+
+print(f"Created {results['summary']['created_count']} issues")
+print(f"Updated {results['summary']['updated_count']} issues")
+```
+
+## Self-Contained Integration
+
+**Direct Execution**: No external VS Code configuration required
+```bash
+# Direct command line execution
+python github_issue_create_skill.py ./tasks/
+
+# With custom parameters
+python github_issue_create_skill.py ./tasks/T1-feature.md \
+  --assignee="developer" --milestone="Sprint1" --labels="feature,mvp"
+```
+
+**GitHub Copilot Integration**: Execute via natural language commands
+```
+User: "Create GitHub issues for all task files in the current project"
+Copilot: Executes skill with current directory, provides progress updates
+
+User: "Update the GitHub issue for T1-authentication.md with high priority"
+Copilot: Executes skill with priority label addition
+```
+
+**Standalone Operation**: No external configuration files required
+- All settings embedded in skill or passed as parameters
+- Authentication via environment variables only
+- Self-contained error handling and user guidance
+- Complete functionality in single skill file
+
+**Project Integration**: Works with any project structure
+```
+my-project/
+├── tasks/
+│   ├── T1-feature.md     # Contains task metadata
+│   └── T2-bugfix.md      # Will be converted to issues
+├── docs/
+└── src/
+
+# Execute from project root
+export GITHUB_TOKEN="ghp_token"
+export GITHUB_REPO="myorg/my-project"
+python path/to/github_issue_create_skill.py ./tasks/
+```
