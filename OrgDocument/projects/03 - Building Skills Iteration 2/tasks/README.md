@@ -25,8 +25,9 @@ This folder contains individual task files for implementing hierarchical EDPS me
 ### Phase 4: Migration & Integration
 - **T13**: [Create Project 1 Migration Tools](T13-migration-tools.md) - Migrate existing diagrams
 - **T14**: [Integrate with Existing Skills](T14-skills-integration.md) - Framework integration
-- **T15**: [Performance Testing & Optimization](T15-performance-optimization.md) - Ensure performance
-- **T16**: [Create User Documentation](T16-user-documentation.md) - Training and guidance materials
+- **T15**: [Update OrgModel with Hierarchical Concepts](T15-orgmodel-enhancement.md) - Enhance organizational model
+- **T16**: [Performance Testing & Optimization](T16-performance-optimization.md) - Ensure performance
+- **T17**: [Create User Documentation](T17-user-documentation.md) - Training and guidance materials
 
 ## Task Status Tracking
 
@@ -46,8 +47,9 @@ This folder contains individual task files for implementing hierarchical EDPS me
 | T12 | 3 | Not Started | Low | 1-2 days |
 | T13 | 4 | Not Started | High | 2-3 days |
 | T14 | 4 | Not Started | High | 1-2 days |
-| T15 | 4 | Not Started | Medium | 1-2 days |
-| T16 | 4 | Not Started | Low | 1-2 days |
+| T15 | 4 | Not Started | High | 2-3 days |
+| T16 | 4 | Not Started | Medium | 1-2 days |
+| T17 | 4 | Not Started | Low | 1-2 days |
 
 ## Task Dependencies
 
@@ -72,9 +74,10 @@ graph TD
     
     T12 --> T13[T13: Migration Tools]
     T12 --> T14[T14: Skills Integration]
-    T13 --> T15[T15: Performance Testing]
+    T13 --> T15[T15: OrgModel Enhancement]
     T14 --> T15
-    T15 --> T16[T16: User Documentation]
+    T15 --> T16[T16: Performance Testing]
+    T16 --> T17[T17: User Documentation]
 ```
 
 ## Getting Started

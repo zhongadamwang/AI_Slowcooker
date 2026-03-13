@@ -147,7 +147,40 @@ All generated artifacts must comply with EDPS methodology:
 - Change propagation across hierarchy levels
 - Requirements traceability to appropriate process levels
 
-### R-307: Backward Compatibility
+### R-309: Organizational Model Automation
+**Priority**: Medium  
+**Type**: Functional
+
+The enhanced skills must be capable of automatically updating OrgModel documents:
+- Detect when organizational processes need hierarchical decomposition
+- Generate boundary-enhanced collaboration diagrams for organizational processes
+- Update organizational domain models with new boundary concepts
+- Maintain traceability between enhanced skills and organizational model updates
+
+**Acceptance Criteria:**
+- Skills can identify OrgModel documents requiring hierarchical enhancement
+- Automatic generation of boundary-enhanced organizational diagrams
+- Preservation of organizational model consistency and traceability
+- Integration with existing orgmodel-update skill from Project 1
+
+### R-308: OrgModel Evolution and Integration
+**Priority**: High  
+**Type**: Enhancement
+
+The system must update and evolve the organizational model (OrgModel) to reflect the enhanced hierarchical EDPS capabilities:
+- Update existing OrgModel process documents with boundary concepts
+- Enhance organizational collaboration diagrams with hierarchical decomposition
+- Integrate boundary patterns into organizational domain models
+- Maintain consistency between skills capabilities and organizational methodology
+
+**Acceptance Criteria:**
+- Update OrgModel skill development process with hierarchical boundary concepts
+- Enhance existing organizational collaboration diagrams with box syntax
+- Create organizational templates for hierarchical process modeling
+- Ensure organizational methodology reflects Project 3 capabilities
+- Document organizational boundary patterns and best practices
+
+### R-309: Organizational Model Automation
 **Priority**: Medium  
 **Type**: Compatibility
 

@@ -13,6 +13,7 @@ This project's goal is to improve the analysis skills to be better aligned with 
 - Only one actor interacts with a target participant per boundary
 - Each level maintains focus on key problems without excessive detail
 - Sub-folders organize models and diagrams by process hierarchy
+- **OrgModel evolves to reflect hierarchical capabilities and EDPS methodology improvements**
 
 ## Structure
 - `artifacts/` - Supporting materials and analysis outputs
@@ -57,6 +58,8 @@ A **boundary** represents a cohesive unit where:
 - Consistent modeling at each hierarchy level
 - Integration with existing EDPS skills framework
 - Backward compatibility with Project 1 outputs
+- **Updated OrgModel reflecting hierarchical EDPS methodology and boundary concepts**
+- **Enhanced organizational process models with multi-level decomposition capabilities**
 
 ## Status
 - **Phase**: Initialization - Project 3 Setup

@@ -75,23 +75,26 @@ This project enhances Project 1's AI agent skills to support hierarchical proces
 - Generated documentation meets organizational standards
 
 ### Phase 4: Migration & Integration (1-2 weeks)
-**Goal**: Migrate Project 1 artifacts and integrate with existing skills
+**Goal**: Migrate Project 1 artifacts, integrate with existing skills, and enhance organizational model
 
 #### Phase 4 Deliverables
 - Project 1 migration tools and scripts
 - Integration with existing EDPS skills framework
+- Enhanced OrgModel with hierarchical boundary concepts
 - Performance optimization and testing
 - User training materials and documentation
 
 #### Phase 4 Tasks
 - [T13: Create Project 1 Migration Tools](tasks/T13-migration-tools.md)
-- [T14: Integrate with Existing Skills](tasks/T14-skills-integration.md)  
-- [T15: Performance Testing & Optimization](tasks/T15-performance-optimization.md)
-- [T16: Create User Documentation](tasks/T16-user-documentation.md)
+- [T14: Integrate with Existing Skills](tasks/T14-skills-integration.md)
+- [T15: Update OrgModel with Hierarchical Concepts](tasks/T15-orgmodel-enhancement.md)  
+- [T16: Performance Testing & Optimization](tasks/T16-performance-optimization.md)
+- [T17: Create User Documentation](tasks/T17-user-documentation.md)
 
 #### Phase 4 Success Criteria
 - Successful migration of all Project 1 collaboration diagrams
-- Seamless integration with existing skills workflow  
+- Seamless integration with existing skills workflow
+- Updated OrgModel reflecting hierarchical EDPS methodology
 - Performance meets requirements (≤30 second generation time)
 - User adoption rate >90% based on feedback
 
@@ -182,13 +185,14 @@ This project enhances Project 1's AI agent skills to support hierarchical proces
 - **Phase 1**: 12-15 developer days
 - **Phase 2**: 10-12 developer days  
 - **Phase 3**: 8-10 developer days
-- **Phase 4**: 5-8 developer days
-- **Total**: 35-45 developer days
+- **Phase 4**: 8-11 developer days (including OrgModel enhancement)
+- **Total**: 38-48 developer days
 
 ### Skill Enhancement Focus
-- **Primary**: diagram-generatecollaboration (50% effort)
-- **New Skills**: hierarchy-management, boundary-validation (30% effort)
-- **Integration**: Existing skills enhancement (20% effort)
+- **Primary**: diagram-generatecollaboration (40% effort)
+- **New Skills**: hierarchy-management, boundary-validation (35% effort)
+- **OrgModel Updates**: Organizational methodology enhancement (15% effort)
+- **Integration**: Existing skills enhancement (10% effort)
 
 ---
 

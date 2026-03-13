@@ -350,6 +350,79 @@ Each level includes navigation links:
 - [Customer Service](03-CustomerServiceBoundary/main.md)
 ```
 
+## Example 4: Organizational Skill Development Process (OrgModel Enhancement)
+
+### Level 0: Organizational Learning Journey
+**Scope**: Team member interaction with organizational skill development system
+**Focus**: End-to-end skill development process
+
+```mermaid
+sequenceDiagram
+    participant Member as Team Member
+    participant OrgSystem as Skill Development System
+    participant Manager as Learning Manager
+    participant Organization as Organization
+    
+    Member->>OrgSystem: Request Skill Assessment
+    OrgSystem->>Manager: Coordinate Learning Path
+    Manager->>Organization: Report Development Progress
+    Organization->>Member: Provide Resources & Recognition
+```
+
+### Level 1: Skill Development System Boundary
+**Scope**: Internal organizational skill development components
+**Focus**: System orchestration and capability management
+
+```mermaid
+sequenceDiagram
+    participant Member as Team Member
+    
+    box Skill Development System Boundary
+        participant Assessment as Skill Assessment Engine
+        participant PathBuilder as Learning Path Builder
+        participant ResourceManager as Resource Manager
+        participant ProgressTracker as Progress Tracker
+        participant SkillValidator as Skill Validator
+    end
+    
+    participant Manager as Learning Manager
+    
+    Member->>Assessment: Complete Skill Evaluation
+    Assessment->>PathBuilder: Generate Learning Recommendations
+    PathBuilder->>ResourceManager: Allocate Learning Resources
+    ResourceManager->>ProgressTracker: Initialize Progress Monitoring
+    ProgressTracker->>SkillValidator: Schedule Validation Checkpoints
+    SkillValidator->>Manager: Report Validation Results
+```
+
+### Level 2: Learning Path Builder Boundary
+**Scope**: Internal learning path construction logic
+**Focus**: Personalized curriculum development
+
+```mermaid
+sequenceDiagram
+    participant SkillSystem as Skill Development System
+    
+    box Learning Path Builder Boundary
+        participant Analyzer as Gap Analyzer
+        participant Recommender as Learning Recommender
+        participant Sequencer as Activity Sequencer
+        participant Validator as Path Validator
+    end
+    
+    SkillSystem->>Analyzer: Analyze Skill Gaps
+    Analyzer->>Recommender: Identify Learning Needs
+    Recommender->>Sequencer: Sequence Learning Activities
+    Sequencer->>Validator: Validate Learning Path
+    Validator->>SkillSystem: Deliver Personalized Path
+```
+
+**OrgModel Enhancement Benefits:**
+- **Hierarchical Process Modeling**: Breaking down complex organizational processes into manageable boundaries
+- **Clear Responsibility Zones**: Each boundary has well-defined responsibilities and interfaces
+- **Scalable Organization**: Can decompose any organizational process to appropriate detail level
+- **EDPS Alignment**: Organizational processes follow evolutionary development principles
+
 ## Benefits Demonstration
 
 ### Complexity Management
@@ -374,3 +447,4 @@ Each level includes navigation links:
 2. Test hierarchy generation with real project data
 3. Implement cross-reference link automation  
 4. Create migration tools for Project 1 diagrams
+5. **Update OrgModel with hierarchical boundary concepts and organizational process examples**
