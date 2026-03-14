@@ -1,0 +1,174 @@
+{
+  "project_id": "03-Building-Skills-Iteration-2",
+  "generated_at": "2026-03-14T10:00:00Z",
+  "source_requirements": ["R-301", "R-302", "R-303", "R-304", "R-305", "R-306", "R-308", "R-309a", "R-309b", "R-310", "TC-301", "TC-302"],
+  "goal_statement": "Enhance the AI agent skills framework to support hierarchical EDPS methodology with boundary concepts, enabling multi-level process decomposition that transforms single-level collaboration diagrams into structured, navigable process hierarchies with proper participant stereotyping and organizational model integration.",
+  "success_criteria": [
+    {
+      "id": "SC-1",
+      "criteria": "Generate hierarchical collaboration diagrams with Mermaid box syntax boundaries at 5+ levels of decomposition",
+      "source_refs": ["R-301"]
+    },
+    {
+      "id": "SC-2",
+      "criteria": "Classify all participants using stereotypes (actor, boundary, control, entity) with correct decomposition rule enforcement",
+      "source_refs": ["R-302", "R-310"]
+    },
+    {
+      "id": "SC-3",
+      "criteria": "Maintain 100% backward compatibility with Project 1 diagram outputs",
+      "source_refs": ["R-303", "R-309b"]
+    },
+    {
+      "id": "SC-4",
+      "criteria": "Automatically create and organize sub-folder structures for process hierarchies",
+      "source_refs": ["R-304"]
+    },
+    {
+      "id": "SC-5",
+      "criteria": "Enforce EDPS methodology compliance across all generated artifacts",
+      "source_refs": ["R-306"]
+    },
+    {
+      "id": "SC-6",
+      "criteria": "Update OrgModel to reflect hierarchical EDPS methodology with boundary concepts",
+      "source_refs": ["R-308"]
+    },
+    {
+      "id": "SC-7",
+      "criteria": "Convert 100% of Project 1 diagrams to hierarchical format via migration tools",
+      "source_refs": ["R-309b"]
+    }
+  ],
+  "kpis": [
+    {
+      "id": "KPI-1",
+      "kpi": "Hierarchy depth support — 5+ levels tested and validated",
+      "source_refs": ["R-301"]
+    },
+    {
+      "id": "KPI-2",
+      "kpi": "Boundary accuracy — 100% correct boundary identification in test cases",
+      "source_refs": ["R-302"]
+    },
+    {
+      "id": "KPI-3",
+      "kpi": "Diagram generation performance — ≤30 seconds for hierarchical diagram generation",
+      "source_refs": ["TC-301"]
+    },
+    {
+      "id": "KPI-4",
+      "kpi": "Migration success rate — 100% of Project 1 diagrams convertible",
+      "source_refs": ["R-309b"]
+    },
+    {
+      "id": "KPI-5",
+      "kpi": "User adoption rate — >90% of developers using hierarchical modeling",
+      "source_refs": ["R-305"]
+    },
+    {
+      "id": "KPI-6",
+      "kpi": "EDPS compliance score — 100% validation pass rate",
+      "source_refs": ["R-306"]
+    },
+    {
+      "id": "KPI-7",
+      "kpi": "Backward compatibility — 0 breaking changes to existing skill interfaces",
+      "source_refs": ["R-303"]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "constraint": "Must use Mermaid box syntax for boundaries — no native boundary element",
+      "source_refs": ["TC-301"]
+    },
+    {
+      "id": "CON-2",
+      "constraint": "Must maintain seamless VS Code and GitHub Copilot integration",
+      "source_refs": ["TC-302"]
+    },
+    {
+      "id": "CON-3",
+      "constraint": "Must preserve markdown-based workflow without external tooling dependencies",
+      "source_refs": ["TC-302"]
+    },
+    {
+      "id": "CON-4",
+      "constraint": "Cannot introduce breaking changes to existing Project 1 skill interfaces",
+      "source_refs": ["R-309b"]
+    },
+    {
+      "id": "CON-5",
+      "constraint": "Estimated duration 8-10 weeks, 38-48 developer days",
+      "source_refs": ["project-plan.md"]
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "assumption": "Mermaid box syntax will remain stable and supported in VS Code Mermaid preview",
+      "source_refs": ["TC-301"]
+    },
+    {
+      "id": "ASM-2",
+      "assumption": "All Project 1 skills are fully functional as prerequisites",
+      "source_refs": ["R-303"]
+    },
+    {
+      "id": "ASM-3",
+      "assumption": "Participant stereotype syntax is supported by Mermaid rendering",
+      "source_refs": ["R-310"]
+    },
+    {
+      "id": "ASM-4",
+      "assumption": "Existing OrgModel structure is accessible and modifiable",
+      "source_refs": ["R-308"]
+    },
+    {
+      "id": "ASM-5",
+      "assumption": "Teams have foundational EDPS methodology understanding from Project 1",
+      "source_refs": ["R-306"]
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "OQ-1",
+      "question": "What is the maximum practical hierarchy depth before navigation becomes unwieldy?",
+      "source_refs": ["R-305"]
+    },
+    {
+      "id": "OQ-2",
+      "question": "Should boundary detection be fully automatic or require user confirmation for ambiguous cases?",
+      "source_refs": ["R-302", "R-303"]
+    },
+    {
+      "id": "OQ-3",
+      "question": "How should circular dependencies between process hierarchies be handled?",
+      "source_refs": ["R-301"]
+    },
+    {
+      "id": "OQ-4",
+      "question": "What Mermaid rendering limitations exist for deeply nested box syntax?",
+      "source_refs": ["TC-301"]
+    },
+    {
+      "id": "OQ-5",
+      "question": "Should new OrgModel process areas be created or only existing ones enhanced?",
+      "source_refs": ["R-308"]
+    },
+    {
+      "id": "OQ-6",
+      "question": "What is the migration priority order for Project 1 artifacts?",
+      "source_refs": ["R-309b"]
+    }
+  ],
+  "traceability": {
+    "source_requirements": ["R-301", "R-302", "R-303", "R-304", "R-305", "R-306", "R-308", "R-309a", "R-309b", "R-310", "TC-301", "TC-302"],
+    "extraction_timestamp": "2026-03-14T10:00:00Z",
+    "confidence_scores": {
+      "goal_statement": 0.95,
+      "overall": 0.92
+    }
+  }
+}
