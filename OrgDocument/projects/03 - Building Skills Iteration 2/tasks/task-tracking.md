@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 2 - Hierarchy Management (Not Started)  
+**Current Phase**: Phase 2 - Hierarchy Management (In Progress)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (17 tasks across 4 phases)
 
 ## Overall Progress
@@ -9,10 +9,10 @@
 | Phase | Tasks | Status | Progress |
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
-| Phase 2: Hierarchy Management | T5-T8 | Not Started | 0/4 |
+| Phase 2: Hierarchy Management | T5-T8 | In Progress | 1/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Not Started | 0/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **4/17** |
+| **Total** | **17 tasks** | **In Progress** | **5/17** |
 
 ---
 
@@ -47,12 +47,17 @@
 
 ## Phase 2: Hierarchy Management (Weeks 5-7, 10-12 dev days)
 
-### Not Started
-- [ ] **T5: Create Hierarchy Management Skill**
-  - **Priority**: High | **Effort**: 3-4 days
-  - **Dependencies**: T1, T4
-  - **Requirements**: R-301
+### Completed
+- [x] **T5: Create Hierarchy Management Skill**
+  - **Priority**: High | **Effort**: 3-4 days | **Completed**: March 14, 2026
+  - Created new `hierarchy-management` skill at `.github/skills/hierarchy-management/SKILL.md`
+  - Implements: eligibility validation, Level N+1 sub-process generation, folder naming, `main.md` generation, parent navigation updates, `hierarchy-metadata.json` management, rollback, statistics, and tree visualization
+  - Added `references/hierarchy-metadata-schema.md` (JSON schema, node model, worked example) and `references/decomposition-patterns.md` (inference heuristics, Patterns A/B/C, level-by-level examples)
+  - Created 24 test cases across 9 categories in `T5-test-cases.md`
+  - Registered in `INDEX.md` under Domain Modeling
   - **File**: [T5-hierarchy-management.md](T5-hierarchy-management.md)
+
+### Not Started
 
 - [ ] **T6: Implement Sub-Folder Generation**
   - **Priority**: Medium | **Effort**: 2-3 days
@@ -156,8 +161,8 @@ T1 ──┬──► T2 ──┐
 
 | Milestone | Target Date | Criteria | Status |
 |-----------|------------|----------|--------|
-| M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | In Progress (1/4) |
-| M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | Not Started |
+| M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | ✅ Complete |
+| M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | In Progress (1/4) |
 | M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | Not Started |
 | M4: Project Complete | End Week 12 | T13-T17 complete, OrgModel updated | Not Started |
 
@@ -197,3 +202,26 @@ T1 ──┬──► T2 ──┐
 - Created T2-test-cases.md with 20 test cases across 8 categories
 - T3, T4 remain unblocked; T4 can now leverage stereotype validation rules
 - **Next Step**: Begin T3 (Mermaid Box Syntax Generation) or T4 (Boundary Validation Rules)
+
+### March 14, 2026 - T5 Completed
+- Created new skill `hierarchy-management` at `.github/skills/hierarchy-management/SKILL.md`
+  - Full workflow: eligibility validation (control-only), level and folder name determination, Level N+1 diagram generation, `main.md` generation with parent/child navigation, parent file annotation, `hierarchy-metadata.json` management
+  - Additional capabilities: hierarchy tree visualization (Mermaid `flowchart TD`), decomposition rollback, hierarchy statistics
+  - Skill follows EDPS boundary rules (VR-1–VR-4) and integrates with `diagram-generatecollaboration` stereotype model
+- Created `references/hierarchy-metadata-schema.md` — schema, node model, example document covering 3 levels, update/rollback rules
+- Created `references/decomposition-patterns.md` — inference heuristics, Patterns A (Service), B (Engine), C (Multi-Boundary), level-by-level Mermaid examples L0→L3, naming conventions
+- Created `artifacts/Testing/T5-test-cases.md` with 24 test cases across 9 categories (18 Must Have, 6 Should Have)
+- Registered skill in `INDEX.md` Domain Modeling table
+- T5 unblocks T6, T7, T8, T9, T10, T11
+- **Milestone M1 complete** (T1–T4 all done)
+- **Next Step**: Begin T6 (Sub-Folder Generation)
+
+### March 14, 2026 - T5 Test Cases Executed
+- Executed all 24 T5 test cases — **24/24 PASS** (100%)
+- 3 defects found and fixed during execution:
+  - **D-T5-01**: Test criteria used `error.code`/`error.type` notation; corrected to match flat JSON output fields `error`/`type` (TCs 1.2, 1.4)
+  - **D-T5-02**: Missing `suggestion` field in SKILL.md error JSON for non-control type rejections; added to skill (TC 1.3)
+  - **D-T5-03**: Test criteria expected `## Parent Process` section header; corrected to match bold front-matter format in template (TC 5.3)
+- TC 6.2 tree visualization Mermaid diagram validated using validator — no syntax errors
+- Results documented in `artifacts/Testing/T5-test-results.md`
+- **Next Step**: Begin T6 (Sub-Folder Generation)

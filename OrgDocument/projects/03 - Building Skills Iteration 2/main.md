@@ -62,12 +62,17 @@ A **boundary** represents a cohesive unit where:
 - **Enhanced organizational process models with multi-level decomposition capabilities**
 
 ## Status
-- **Phase**: Phase 1 - Foundation Enhancement (In Progress, 1/4 tasks complete)
+- **Phase**: Phase 2 - Hierarchy Management (In Progress, 1/4 tasks complete)
 - **Started**: March 13, 2026
 - **Analysis Completed**: March 14, 2026
 - **T1 Completed**: March 14, 2026 — Enhanced collaboration skill with boundary support
-- **Next Milestone**: M1 - Boundary-Enhanced Diagrams (End Week 4)
-- **Next Task**: T2 (Participant Stereotype Classification) or T3 (Mermaid Box Syntax Generation)
+- **T2 Completed**: March 14, 2026 — Participant stereotype classification
+- **T3 Completed**: March 14, 2026 — Mermaid box syntax generation
+- **T4 Completed**: March 14, 2026 — Boundary validation rules (VR-1 through VR-4)
+- **T5 Completed**: March 14, 2026 — Hierarchy management skill created
+- **Milestone M1 Complete**: Boundary-enhanced diagrams generating (T1–T4)
+- **Next Milestone**: M2 - Full Hierarchy (End Week 7)
+- **Next Task**: T6 (Sub-Folder Generation)
 - **Dependencies**: Project 1 skills (requirements-ingest, domain concepts, collaboration generation)
 
 ---

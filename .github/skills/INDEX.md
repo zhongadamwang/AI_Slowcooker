@@ -97,6 +97,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **domain-proposenewconcepts** | Propose new concepts for gaps | [Individual skill docs](.github/skills/domain-proposenewconcepts/SKILL.md) |
 | **diagram-generatecollaboration** | Generate system interaction diagrams | [Individual skill docs](.github/skills/diagram-generatecollaboration/SKILL.md) |
 | **model-integration** | Integrate new domain models into existing organizational structures | [Individual skill docs](.github/skills/model-integration/SKILL.md) |
+| **hierarchy-management** | Decompose control-type participants into sub-processes, track parent-child hierarchy, manage folder structure and metadata | [Individual skill docs](.github/skills/hierarchy-management/SKILL.md) |
 
 ### 📊 Planning & Management  
 | Skill | Purpose | Documentation |
