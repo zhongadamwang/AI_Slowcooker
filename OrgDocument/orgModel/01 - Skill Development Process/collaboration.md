@@ -278,9 +278,19 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+    %% ─────────────────────────────────────────────────────
+    %% BOUNDARY SUMMARY
+    %% ─────────────────────────────────────────────────────
+    %% [B-1] diagram-generatecollaboration Skill
+    %%         Participants: Participant Classifier (boundary),
+    %%                       Box Syntax Generator (control), Boundary Validator (control),
+    %%                       Diagram Output (entity)
+    %%         Decomposable: Box Syntax Generator, Boundary Validator
+    %%         External actor: Developer
+    %% ─────────────────────────────────────────────────────
+
     participant Dev@{ "type": "actor", "label": "Developer" }
 
-    %% Boundary: diagram-generatecollaboration Skill Pipeline
     box rgb(235, 245, 255) diagram-generatecollaboration Skill
         participant Classifier@{ "type": "boundary", "label": "Participant Classifier" }
         participant BoxGen@{ "type": "control", "label": "Box Syntax Generator" }
@@ -288,39 +298,39 @@ sequenceDiagram
         participant DiagramOut@{ "type": "entity", "label": "Diagram Output" }
     end
 
-    Dev->>Classifier: Generate hierarchical diagram (domain-concepts.json + config)
+    Dev->>Classifier: Generate hierarchical diagram
 
-    Note over Classifier: Step 1 — Participant Classification
-    Classifier->>Classifier: Apply stereotype inference rules (actor/boundary/control/entity)
-    Classifier->>Classifier: Apply manual overrides; log type_overrides
+    Note over Classifier: Step 1 - Participant Classification
+    Classifier->>Classifier: Apply stereotype inference rules
+    Classifier->>Classifier: Apply manual overrides, log type_overrides
     Classifier->>Classifier: Generate participant_type_summary
 
-    Note over BoxGen: Step 2 — Box Syntax Generation
+    Note over BoxGen: Step 2 - Box Syntax Generation
     Classifier-->>BoxGen: Typed participants
     BoxGen->>BoxGen: Emit actor declarations outside all boxes
-    BoxGen->>BoxGen: Order within each box: boundary → control(s) → entity
-    BoxGen->>BoxGen: Resolve boundary names (domain concept first, suffix Boundary)
-    BoxGen->>BoxGen: Assign boundary colors (round-robin palette if auto_color: true)
-    BoxGen->>BoxGen: Inject boundary summary comments (%% BOUNDARY SUMMARY)
+    BoxGen->>BoxGen: Order within each box: boundary, control, entity
+    BoxGen->>BoxGen: Resolve boundary names (domain concept first)
+    BoxGen->>BoxGen: Assign boundary colors (round-robin palette)
+    BoxGen->>BoxGen: Inject boundary summary comment block
 
-    Note over Validator: Step 3 — Pre-render Boundary Validation
+    Note over Validator: Step 3 - Pre-render Boundary Validation
     BoxGen-->>Validator: Draft Mermaid with box blocks
-    Validator->>Validator: VR-1 Single External Interface — one actor per boundary
-    Validator->>Validator: VR-2 Boundary-First Reception — actor must hit boundary type first
-    Validator->>Validator: VR-3 Control-Only Decomposition — only control eligible for sub-process
-    Validator->>Validator: VR-4 Cohesive Responsibility — participants share functional domain (warning)
+    Validator->>Validator: VR-1 Single External Interface
+    Validator->>Validator: VR-2 Boundary-First Reception
+    Validator->>Validator: VR-3 Control-Only Decomposition
+    Validator->>Validator: VR-4 Cohesive Responsibility (warning)
 
-    alt Strict mode + error violations
-        Validator-->>Dev: boundary_validation_report (JSON) — generation blocked
-    else Advisory mode (default) or no errors
-        Validator->>DiagramOut: Annotate violations as inline %% comments
+    alt Strict mode with error violations
+        Validator-->>Dev: boundary_validation_report blocked generation
+    else Advisory mode or no errors
+        Validator->>DiagramOut: Annotate violations as inline comments
         DiagramOut->>DiagramOut: Render final Mermaid output
         DiagramOut->>DiagramOut: Emit boundary_validation_report to JSON
-        DiagramOut-->>Dev: collaboration-diagrams.md + collaboration-diagrams.json
+        DiagramOut-->>Dev: collaboration-diagrams.md and JSON
     end
 
-    Note over Validator: VR-1/VR-2/VR-3 = error severity (block in strict mode)
-    Note over Validator: VR-4 = warning severity (never blocks generation)
+    Note over Validator: VR-1, VR-2, VR-3 are error severity
+    Note over Validator: VR-4 is warning severity only
 ```
 
 ## Key Interactions
