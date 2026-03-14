@@ -39,12 +39,12 @@ Since Mermaid sequence diagrams don't have a native "boundary" element, we use t
 
 ```mermaid
 sequenceDiagram
-    participant External@{ "type" : "actor" } as External Actor
+    participant External@{ "type": "actor", "label": "External Actor" }
     
     box Boundary Name
-        participant UI@{ "type" : "boundary" } as User Interface
-        participant System1@{ "type" : "control" } as Business System
-        participant Entity1@{ "type" : "entity" } as Data Store
+        participant UI@{ "type": "boundary", "label": "User Interface" }
+        participant System1@{ "type": "control", "label": "Business System" }
+        participant Entity1@{ "type": "entity", "label": "Data Store" }
     end
     
     External->>UI: Single interface point
@@ -69,12 +69,12 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant User@{ "type" : "actor" } as User
+    participant User@{ "type": "actor", "label": "User" }
     
     box Database System
-        participant API@{ "type" : "boundary" } as Database API
-        participant Engine@{ "type" : "control" } as Query Engine
-        participant Storage@{ "type" : "entity" } as Storage Layer
+        participant API@{ "type": "boundary", "label": "Database API" }
+        participant Engine@{ "type": "control", "label": "Query Engine" }
+        participant Storage@{ "type": "entity", "label": "Storage Layer" }
     end
     
     User->>API: Execute Query
@@ -96,13 +96,13 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant Client@{ "type" : "actor" } as Client Application
+    participant Client@{ "type": "actor", "label": "Client Application" }
     
     box Order Processing Service
-        participant Gateway@{ "type" : "boundary" } as API Gateway
-        participant Validator@{ "type" : "control" } as Order Validator
-        participant Repository@{ "type" : "entity" } as Order Repository
-        participant EventBus@{ "type" : "control" } as Event Bus
+        participant Gateway@{ "type": "boundary", "label": "API Gateway" }
+        participant Validator@{ "type": "control", "label": "Order Validator" }
+        participant Repository@{ "type": "entity", "label": "Order Repository" }
+        participant EventBus@{ "type": "control", "label": "Event Bus" }
     end
     
     Client->>Gateway: Submit Order
@@ -124,13 +124,13 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant Customer@{ "type" : "actor" } as <<Actor>> Customer
+    participant Customer@{ "type": "actor", "label": "<<Actor>> Customer" }
     
     box Loan Approval Process
-        participant Application@{ "type" : "boundary" } as <<UI>> Application Handler
-        participant CreditCheck@{ "type" : "control" } as <<System>> Credit Checker
-        participant Underwriter@{ "type" : "control" } as <<System>> Underwriter
-        participant DecisionEngine@{ "type" : "control" } as <<System>> Decision Engine
+        participant Application@{ "type": "boundary", "label": "<<UI>> Application Handler" }
+        participant CreditCheck@{ "type": "control", "label": "<<System>> Credit Checker" }
+        participant Underwriter@{ "type": "control", "label": "<<System>> Underwriter" }
+        participant DecisionEngine@{ "type": "control", "label": "<<System>> Decision Engine" }
     end
     
     Customer->>Application: Submit Loan Application

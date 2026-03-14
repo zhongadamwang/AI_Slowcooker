@@ -1,31 +1,31 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 1 - Foundation Enhancement (Not Started)  
+**Current Phase**: Phase 1 - Foundation Enhancement (In Progress)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (17 tasks across 4 phases)
 
 ## Overall Progress
 
 | Phase | Tasks | Status | Progress |
 |-------|-------|--------|----------|
-| Phase 1: Foundation Enhancement | T1-T4 | Not Started | 0/4 |
+| Phase 1: Foundation Enhancement | T1-T4 | In Progress | 1/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Not Started | 0/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Not Started | 0/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **Not Started** | **0/17** |
+| **Total** | **17 tasks** | **In Progress** | **1/17** |
 
 ---
 
 ## Phase 1: Foundation Enhancement (Weeks 2-4, 12-15 dev days)
 
-### Not Started
-- [ ] **T1: Enhance Collaboration Diagram Skill with Boundary Support** 
-  - **Priority**: High | **Effort**: 3-4 days
-  - **Dependencies**: None (starting task)
-  - **Requirements**: R-302, R-303
+### Completed
+- [x] **T1: Enhance Collaboration Diagram Skill with Boundary Support** 
+  - **Priority**: High | **Effort**: 3-4 days | **Completed**: March 14, 2026
+  - Enhanced SKILL.md with `box` syntax, hierarchical decomposition mode, boundary detection rules
+  - All Mermaid diagrams validated; test cases created
   - **File**: [T1-enhance-collaboration-skill.md](T1-enhance-collaboration-skill.md)
 
-- [ ] **T2: Implement Participant Stereotype Classification**
+### Not Started
   - **Priority**: High | **Effort**: 2-3 days
   - **Dependencies**: T1
   - **Requirements**: R-310
@@ -156,7 +156,7 @@ T1 ──┬──► T2 ──┐
 
 | Milestone | Target Date | Criteria | Status |
 |-----------|------------|----------|--------|
-| M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | Not Started |
+| M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | In Progress (1/4) |
 | M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | Not Started |
 | M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | Not Started |
 | M4: Project Complete | End Week 12 | T13-T17 complete, OrgModel updated | Not Started |
@@ -171,3 +171,14 @@ T1 ──┬──► T2 ──┐
 - 17 task files created covering all 4 phases
 - Task tracking initialized
 - **Next Step**: Begin T1 - Enhance Collaboration Diagram Skill with Boundary Support
+
+### March 14, 2026 - T1 Completed
+- Enhanced `diagram-generatecollaboration` SKILL.md with hierarchical boundary support
+  - Added `box` syntax generation rules, hierarchical decomposition mode, boundary input parameters
+  - Updated processing workflow, quality guidelines, and usage patterns
+- Fixed Mermaid syntax issue: `@{...} as` alias not supported; migrated to `@{..., "label": ...}` format
+- Updated `boundary-concepts.md` with validated Mermaid syntax (all 4 pattern diagrams passing)
+- Created T1-test-cases.md with 5 test scenarios (backward compat, auto/manual boundaries, validation)
+- All 8 Mermaid diagrams validated and passing
+- T2, T3, T4 are now unblocked
+- **Next Step**: Begin T2 (Participant Stereotype Classification) or T3 (Mermaid Box Syntax Generation)

@@ -198,9 +198,9 @@ This project enhances Project 1's AI agent skills to support hierarchical proces
 
 ## Next Steps
 
-1. **Immediate**: Begin Phase 1 with T1 (Enhance Collaboration Diagram Skill)
-2. **Week 2**: Complete boundary detection and validation implementation
-3. **Week 3**: Start Phase 2 hierarchy management development
+1. **Immediate**: Begin T2 (Participant Stereotype Classification) and/or T3 (Mermaid Box Syntax Generation) — both unblocked by T1 completion
+2. **Week 2-3**: Complete T2, T3, T4 to finish Phase 1 (Boundary Diagrams milestone)
+3. **Week 4**: Start Phase 2 hierarchy management development
 4. **Ongoing**: Regular validation against EDPS methodology requirements
 
 **Project Sponsor Approval Required For:**

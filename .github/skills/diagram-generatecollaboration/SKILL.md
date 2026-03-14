@@ -125,6 +125,33 @@ sequenceDiagram
 
 ### [Additional System-System Diagrams...]
 
+## Hierarchical Collaboration Diagrams
+
+### System Boundary View *(Diagram D-005)*
+**Source Requirements**: [R-010]
+**Decomposition**: `01-ECommerce-Platform/collaboration.md`
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    
+    box E-commerce Platform
+        participant ECommerce as E-commerce Platform
+    end
+    
+    box Payment System
+        participant Payment as Payment System
+    end
+    
+    box Shipping System
+        participant Shipping as Shipping System
+    end
+    
+    User->>ECommerce: Place Order
+    ECommerce->>Payment: Process Payment
+    ECommerce->>Shipping: Schedule Delivery
+```
+
 ## Process Workflows
 
 ### [Business Process Diagrams...]
@@ -182,6 +209,11 @@ sequenceDiagram
 - Identify user journeys and system flows
 - Extract temporal sequences and decision points
 
+**For Hierarchical Diagrams (Optional):**
+- Identify participant stereotypes (`<<Actor>>`, `<<System>>`, `<<UI>>`, `<<Entity>>`) from domain concepts
+- Detect boundary definitions from configuration or automatic analysis
+- Map decomposition links between parent and child diagrams
+
 ### 2. Diagram Type Selection
 **Domain Class Models:**
 - Use class diagrams to visualize entity relationships and domain structure
@@ -203,6 +235,12 @@ sequenceDiagram
 - Use flowcharts for decision trees and branching logic
 - Include parallel processes and synchronization points
 - Show approval workflows and state transitions
+
+**Hierarchical Diagrams:**
+- Use `box` syntax to represent system boundaries
+- Generate Level 0 diagrams showing high-level system interactions
+- Decompose `<<System>>` participants into Level 1+ diagrams
+- Follow EDPS decomposition rules for participant stereotypes
 
 ### 3. Mermaid Generation Rules
 
@@ -257,6 +295,27 @@ end
 - Notes: Clarify business rules, timeouts, constraints
 - Alt blocks: Show error handling and edge cases
 
+**Hierarchical Sequence Diagrams (with Boundaries):**
+```
+sequenceDiagram
+    participant [ActorName]@{ "type": "actor", "label": "[Full Actor Name]" }
+    
+    box [BoundaryName]
+        participant [ParticipantName]@{ "type": "[boundary|control|entity]", "label": "[Full Participant Name]" }
+        ...
+    end
+    
+    [Actor]->>[Participant]: [Interaction]
+```
+
+**Naming and Stereotype Conventions:**
+- Use `@{ "type" : "..." }` syntax to define participant stereotypes
+- **actor**: External participants, cannot be decomposed
+- **boundary**: Entry point to a boundary (e.g., UI, API Gateway)
+- **control**: Decomposable system/service component
+- **entity**: Stable data store or resource
+- Boundary names should reflect the encapsulated capability
+
 ### 4. Traceability Integration
 **Requirement References:**
 - Link each diagram to source requirements using `[R-XXX]` format
@@ -270,11 +329,17 @@ end
 - Set maintenance priority based on business criticality
 - Category classification: domain-model, user-system, system-system, process-workflow
 
+**For Hierarchical Diagrams:**
+- Add `decomposition` field in diagram metadata to link to child diagrams
+- Ensure participant names are consistent across hierarchy levels
+- Propagate requirement traceability down the decomposition chain
+
 ## Quality Guidelines
 
 ### Readability Standards
 - **Class diagrams**: Limit to 10-15 entities maximum for clarity
 - **Sequence diagrams**: Limit to 8-10 participants maximum  
+- For hierarchical diagrams, Level 0 should have 2-5 boundaries
 - Use meaningful, business-friendly entity names
 - Include essential attributes and methods only
 - Include notes for non-obvious business rules
@@ -289,6 +354,7 @@ end
 - Consistent participant naming across related diagrams
 - Appropriate use of activation boxes for long-running operations
 - Clear distinction between synchronous and asynchronous calls
+- For hierarchical diagrams, validate against EDPS boundary rules (e.g., single external interface)
 
 ### Business Value
 - **Class diagrams**: Focus on core business entities and critical relationships
@@ -297,17 +363,44 @@ end
 - Include compliance and security-related flows
 - Show cross-system dependencies that affect architecture decisions
 - Ensure domain models align with organizational standards and terminology
+- Use boundaries to model complex systems and hide internal details, improving clarity for different stakeholders
 
 ## Usage Pattern
 ```
 1. Call after domain-extractconcepts skill completion
-2. Load domain-concepts.json and requirements.json  
-3. Review existing orgModel domain models for class diagram context
-4. Generate domain class diagrams showing entity relationships and structure
-5. Generate collaboration diagrams for key interaction patterns
-6. Output markdown file with embedded Mermaid diagrams and JSON metadata
-7. Update project documentation with visual collaboration and domain models
-8. For domain model integration: Update orgModel/**/domain-model.md with generated class diagrams
+2. Load domain-concepts.json and requirements.json
+3. **Optional**: Provide boundary configuration for hierarchical diagrams
+4. Review existing orgModel domain models for class diagram context
+5. Generate domain class diagrams showing entity relationships and structure
+6. Generate collaboration diagrams for key interaction patterns
+   - For hierarchical, generate Level 0 and decomposed child diagrams
+7. Output markdown file with embedded Mermaid diagrams and JSON metadata
+8. Update project documentation with visual collaboration and domain models
+9. For domain model integration: Update orgModel/**/domain-model.md with generated class diagrams
+```
+
+## Hierarchical Decomposition Mode
+When called with `hierarchical_decomposition: true`, this skill:
+
+1. **Analyzes participant stereotypes** and interaction patterns to detect boundaries
+2. **Generates a Level 0 diagram** with high-level system boundaries
+3. **Decomposes each `<<System>>` participant** into a separate Level 1 collaboration diagram in a corresponding subfolder
+4. **Creates a folder structure** that mirrors the decomposition hierarchy
+5. **Maintains traceability** and context across all levels
+
+### Hierarchical Input Parameters
+```json
+{
+  "hierarchical_decomposition": true,
+  "root_diagram_name": "SystemOverview",
+  "auto_boundary_detection": true,
+  "manual_boundaries": [
+    {
+      "name": "Payment Gateway",
+      "participants": ["PaymentAPI", "TransactionProcessor"]
+    }
+  ]
+}
 ```
 
 ## Domain Model Integration Mode
