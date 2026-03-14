@@ -8,11 +8,11 @@
 
 | Phase | Tasks | Status | Progress |
 |-------|-------|--------|----------|
-| Phase 1: Foundation Enhancement | T1-T4 | In Progress | 1/4 |
+| Phase 1: Foundation Enhancement | T1-T4 | In Progress | 2/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Not Started | 0/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Not Started | 0/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **1/17** |
+| **Total** | **17 tasks** | **In Progress** | **2/17** |
 
 ---
 
@@ -25,11 +25,13 @@
   - All Mermaid diagrams validated; test cases created
   - **File**: [T1-enhance-collaboration-skill.md](T1-enhance-collaboration-skill.md)
 
-### Not Started
-  - **Priority**: High | **Effort**: 2-3 days
-  - **Dependencies**: T1
-  - **Requirements**: R-310
+- [x] **T2: Implement Participant Stereotype Classification**
+  - **Priority**: High | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Added Participant Stereotype Classification section to SKILL.md with type inference rules, decomposition enforcement, boundary-first reception validation
+  - Created 20 test cases covering inference, overrides, decomposition rules, boundary rules, and integration
   - **File**: [T2-participant-stereotype-classification.md](T2-participant-stereotype-classification.md)
+
+### Not Started
 
 - [ ] **T3: Add Mermaid Box Syntax Generation**
   - **Priority**: High | **Effort**: 2-3 days
@@ -182,3 +184,18 @@ T1 ──┬──► T2 ──┐
 - All 8 Mermaid diagrams validated and passing
 - T2, T3, T4 are now unblocked
 - **Next Step**: Begin T2 (Participant Stereotype Classification) or T3 (Mermaid Box Syntax Generation)
+
+### March 14, 2026 - T2 Completed
+- Added comprehensive **Participant Stereotype Classification** section to `diagram-generatecollaboration` SKILL.md
+  - Stereotype definitions table (actor, boundary, control, entity) with decomposition eligibility
+  - Automatic type inference rules with ordered heuristics (actor → boundary → entity → control fallback)
+  - Manual type override mechanism with conflict metadata tracking
+  - Mermaid `@{ "type": "...", "label": "..." }` annotation generation rules
+  - Decomposition rule enforcement: control-only decomposition, boundary-first reception, actor externality, entity stability
+  - Type consistency validation across hierarchy levels
+  - Participant type summary generation in diagram metadata
+  - Classification input parameters schema
+- Updated processing workflow and diagram type selection to reference stereotype classification
+- Created T2-test-cases.md with 20 test cases across 8 categories
+- T3, T4 remain unblocked; T4 can now leverage stereotype validation rules
+- **Next Step**: Begin T3 (Mermaid Box Syntax Generation) or T4 (Boundary Validation Rules)
