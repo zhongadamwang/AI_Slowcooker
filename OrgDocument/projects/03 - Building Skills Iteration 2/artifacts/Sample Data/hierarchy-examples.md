@@ -12,14 +12,14 @@
 
 ```mermaid
 sequenceDiagram
-    participant User as External User
-    participant Computer as Computer System
+    participant User@{ "type" : "actor" } as External User
+    participant Computer@{ "type" : "control" } as Computer System
     
     User->>Computer: Execute Program
     Computer->>User: Return Results
 ```
 
-**Boundary Analysis**: Computer System is a single boundary containing all internal components.
+**Analysis**: Computer System is a control type, eligible for decomposition into sub-processes.
 
 ### Level 1: Computer System Boundary
 **Scope**: Internal computer system components  
@@ -27,16 +27,17 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant User as External User
+    participant User@{ "type" : "actor" } as External User
     
     box Computer System Boundary
-        participant CPU as Central Processing Unit
-        participant Memory as System Memory
-        participant Storage as Storage Device
-        participant IO as I/O Controller
+        participant CPU@{ "type" : "control" } as Central Processing Unit
+        participant Memory@{ "type" : "entity" } as System Memory
+        participant Storage@{ "type" : "entity" } as Storage Device
+        participant IO@{ "type" : "boundary" } as I/O Controller
     end
     
-    User->>CPU: Execute Program Request
+    User->>IO: Execute Program Request
+    IO->>CPU: Forward Program Request
     
     Note over CPU,IO: Internal hardware collaboration
     CPU->>Memory: Load Program Instructions
@@ -48,9 +49,10 @@ sequenceDiagram
 ```
 
 **Boundary Rules Applied:**
-- Single external interface: User → CPU
-- Internal collaboration: CPU ↔ Memory ↔ Storage
-- Encapsulated complexity: User doesn't interact with Memory directly
+- **Single external interface**: User → I/O Controller (boundary type first recipient)
+- **System decomposition**: Only CPU (control type) can be further decomposed
+- **Entity stability**: Memory and Storage (entity type) represent stable resources
+- **UI mediation**: I/O Controller (boundary type) mediates between actor and internal systems
 
 ### Level 2: CPU Boundary (Sub-process)
 **Scope**: Internal CPU operations  
@@ -58,13 +60,13 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant System as Computer System
+    participant System@{ "type" : "control" } as Computer System
     
     box CPU Boundary
-        participant Control as Control Unit
-        participant ALU as Arithmetic Logic Unit  
-        participant Registers as CPU Registers
-        participant Cache as CPU Cache
+        participant Control@{ "type" : "boundary" } as Control Unit
+        participant ALU@{ "type" : "control" } as Arithmetic Logic Unit  
+        participant Registers@{ "type" : "entity" } as CPU Registers
+        participant Cache@{ "type" : "entity" } as CPU Cache
     end
     
     System->>Control: Execute Instruction
@@ -101,10 +103,10 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant Customer as Customer
-    participant ECommerce as E-commerce Platform
-    participant Payment as Payment Provider
-    participant Fulfillment as Fulfillment Center
+    participant Customer@{ "type" : "actor" } as Customer
+    participant ECommerce@{ "type" : "control" } as E-commerce Platform
+    participant Payment@{ "type" : "control" } as Payment Provider
+    participant Fulfillment@{ "type" : "control" } as Fulfillment Center
     
     Customer->>ECommerce: Browse & Select Items
     Customer->>ECommerce: Place Order
@@ -113,27 +115,30 @@ sequenceDiagram
     Fulfillment->>Customer: Deliver Product
 ```
 
+**Analysis**: All three systems (E-commerce Platform, Payment Provider, Fulfillment Center) are control types and can be decomposed into sub-processes.
+
 ### Level 1: E-commerce Platform Boundary
 **Scope**: Internal platform services
 **Focus**: Service orchestration and workflow
 
 ```mermaid
 sequenceDiagram
-    participant Customer as Customer
+    participant Customer@{ "type" : "actor" } as Customer
     
     box E-commerce Platform Boundary
-        participant Web as Web Frontend
-        participant Cart as Shopping Cart Service
-        participant Order as Order Management Service
-        participant Inventory as Inventory Service
-        participant Customer_Service as Customer Service
+        participant Web@{ "type" : "boundary" } as Web Frontend
+        participant Cart@{ "type" : "control" } as Shopping Cart Service
+        participant Order@{ "type" : "control" } as Order Management Service
+        participant Inventory@{ "type" : "control" } as Inventory Service
+        participant Customer_Service@{ "type" : "entity" } as Customer Service
     end
     
-    participant Payment as External Payment Provider
+    participant Payment@{ "type" : "control" } as External Payment Provider
     
     Customer->>Web: Browse Products
     Web->>Inventory: Check Product Availability
-    Customer->>Cart: Add Items to Cart
+    Customer->>Web: Add Items to Cart
+    Web->>Cart: Update Shopping Cart
     Customer->>Web: Proceed to Checkout
     Web->>Order: Create Order
     Order->>Customer_Service: Validate Customer
@@ -141,20 +146,26 @@ sequenceDiagram
     Order->>Payment: Process Payment Request
 ```
 
+**Participant Type Analysis:**
+- **Web Frontend (boundary)**: First recipient of customer interactions, mediates all customer-system communication
+- **Services (control) - Cart, Order, Inventory**: Can be decomposed into detailed sub-processes
+- **Customer Service (entity)**: Data/resource component, typically stable
+- **Decomposition Candidates**: Cart Service, Order Management Service, Inventory Service
+
 ### Level 2: Order Management Service Boundary
 **Scope**: Internal order processing logic
 **Focus**: Order lifecycle management
 
 ```mermaid
 sequenceDiagram
-    participant Platform as E-commerce Platform
+    participant Platform@{ "type" : "control" } as E-commerce Platform
     
     box Order Management Service Boundary
-        participant API as Order API
-        participant Validator as Order Validator
-        participant Engine as Order Processing Engine
-        participant Repository as Order Repository
-        participant Events as Event Publisher
+        participant API@{ "type" : "boundary" } as Order API
+        participant Validator@{ "type" : "control" } as Order Validator
+        participant Engine@{ "type" : "control" } as Order Processing Engine
+        participant Repository@{ "type" : "entity" } as Order Repository
+        participant Events@{ "type" : "control" } as Event Publisher
     end
     
     Platform->>API: Create New Order
@@ -163,7 +174,7 @@ sequenceDiagram
     API->>Validator: Validate Order Data
     Validator->>Engine: Process Valid Order
     Engine->>Repository: Store Order Record
-    Repository->>Events: Publish Order Created Event
+    Repository->>Events: Trigger Order Events
     Events->>Engine: Confirm Event Published
     Engine->>API: Order Processing Complete
 ```
@@ -174,18 +185,18 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant OrderService as Order Management Service
+    participant OrderService@{ "type" : "control" } as Order Management Service
     
     box Order Processing Engine Boundary
-        participant Rules as Business Rules Engine
-        participant State as Order State Manager
-        participant Calculator as Price Calculator
-        participant Workflow as Workflow Orchestrator
+        participant Workflow@{ "type" : "boundary" } as Workflow Orchestrator
+        participant Rules@{ "type" : "control" } as Business Rules Engine
+        participant State@{ "type" : "entity" } as Order State Manager
+        participant Calculator@{ "type" : "control" } as Price Calculator
     end
     
     OrderService->>Workflow: Process Order Request
     
-    Note over Rules,Workflow: Business logic execution
+    Note over Workflow,Calculator: Business logic execution
     Workflow->>Rules: Validate Business Rules
     Rules->>Calculator: Calculate Order Total
     Calculator->>State: Update Order State
@@ -193,7 +204,11 @@ sequenceDiagram
     Workflow->>Rules: Apply Approval Logic
 ```
 
-## Example 3: Software Development Workflow
+**Stereotype Analysis:**
+- **<<UI>> Workflow Orchestrator**: Entry point for order processing requests
+- **<<System>> Components (Rules Engine, Calculator)**: Can be further decomposed if needed
+- **<<Entity>> Order State Manager**: Persistent state storage, typically stable
+- **Deep Decomposition**: Demonstrates 3-level hierarchy with consistent stereotype application
 
 ### Level 0: Development Team Process
 **Scope**: Team interaction with development tools
@@ -262,6 +277,50 @@ sequenceDiagram
     Tester->>Quality: Validate Quality Metrics
     Quality->>Publisher: Publish Build Artifacts
 ```
+
+## Participant Type Summary
+
+### Participant Type Usage in Hierarchical Modeling
+
+#### **Actor Type** (`@{ "type" : "actor" }`)
+- **Purpose**: External entities that initiate interactions
+- **Characteristics**: Remain outside all boundaries, cannot be decomposed  
+- **Examples**: Customer, User, External User, Client Application, Team Member
+- **Rule**: Always external, never within boundaries
+
+#### **Boundary Type** (`@{ "type" : "boundary" }`)
+- **Purpose**: Interface components that mediate actor-system communication
+- **Characteristics**: Always first recipients within boundaries, cannot be decomposed
+- **Examples**: Web Frontend, API Gateway, Control Unit, Order API, I/O Controller  
+- **Rule**: Must be first recipient of actor messages within any boundary
+
+#### **Control Type** (`@{ "type" : "control" }`)
+- **Purpose**: Complex components with business logic
+- **Characteristics**: Only type that can be decomposed into sub-processes
+- **Examples**: Order Management Service, Query Engine, CPU, E-commerce Platform
+- **Rule**: Eligible for hierarchical decomposition into sub-boundaries
+
+#### **Entity Type** (`@{ "type" : "entity" }`)
+- **Purpose**: Data storage, resources, or passive components  
+- **Characteristics**: Typically stable, rarely decomposed
+- **Examples**: Database, Order Repository, CPU Registers, System Memory
+- **Rule**: Represent stable resources without internal process decomposition
+
+### Decomposition Decision Matrix
+
+| From Type | To Type | Decomposition Allowed | Positioning Rule |
+|-----------|---------|----------------------|------------------|
+| actor | Any | ❌ No | External only |
+| boundary | Any | ❌ No | First recipient in boundary |
+| control | boundary, control, entity | ✅ Yes | Business logic decomposition |
+| entity | Any | ⚠️ Rare | Only if complex data processing |
+
+### Implementation Guidelines for Skills
+
+1. **Boundary Detection**: Look for control type participants as decomposition candidates
+2. **UI Positioning**: Ensure boundary type participants receive first actor messages  
+3. **Validation**: Check that only control type participants are marked for decomposition
+4. **Consistency**: Maintain participant type patterns across all hierarchy levels
 
 ## Boundary Detection Patterns
 

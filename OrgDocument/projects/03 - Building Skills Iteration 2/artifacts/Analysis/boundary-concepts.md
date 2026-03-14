@@ -15,27 +15,52 @@ A **boundary** in EDPS methodology represents a cohesive unit of functionality w
 4. **Responsibility Cohesion**: Boundary encapsulates related functionality or capability
 5. **Decomposable**: Can be further broken down into sub-boundaries
 
+### Participant Stereotypes
+Participants are classified using standardized stereotypes that determine their behavior and decomposition rules:
+
+- **Actor (<<Actor>>)**: External entities that initiate interactions and remain outside system boundaries
+  - **Participant Type**: `@{ "type" : "actor" }`
+- **System (<<System>>)**: Complex components that encapsulate business logic and can be decomposed into sub-processes
+  - **Participant Type**: `@{ "type" : "control" }`
+- **Entity (<<Entity>>)**: Data storage, resources, or passive components that don't typically decompose  
+  - **Participant Type**: `@{ "type" : "entity" }`
+- **UI (<<UI>>)**: Interface components that mediate between actors and systems
+  - **Participant Type**: `@{ "type" : "boundary" }`
+
+### Decomposition Rules
+1. **System-Only Decomposition**: Only <<System>> participants can be decomposed into sub-processes
+2. **UI First Reception**: <<UI>> participants must be the first to receive messages from external actors within boundaries
+3. **Actor Externality**: <<Actor>> participants remain external and cannot be decomposed
+4. **Entity Stability**: <<Entity>> participants represent stable resources without internal process decomposition
+
 ### Mermaid Implementation
 
-Since Mermaid sequence diagrams don't have a native "boundary" element, we use the `box` syntax:
+Since Mermaid sequence diagrams don't have a native "boundary" element, we use the `box` syntax with participant stereotypes and type definitions:
 
 ```mermaid
 sequenceDiagram
-    participant External as External Actor
+    participant External@{ "type" : "actor" } as External Actor
     
     box Boundary Name
-        participant Internal1
-        participant Internal2
-        participant Internal3
+        participant UI@{ "type" : "boundary" } as User Interface
+        participant System1@{ "type" : "control" } as Business System
+        participant Entity1@{ "type" : "entity" } as Data Store
     end
     
-    External->>Internal1: Single interface point
+    External->>UI: Single interface point
+    UI->>System1: Mediated interaction
     
-    Note over Internal1,Internal3: Internal collaborations
-    Internal1->>Internal2: Internal message
-    Internal2->>Internal3: Internal message
-    Internal3->>Internal1: Internal response
+    Note over UI,Entity1: Internal collaborations
+    System1->>Entity1: Data operation
+    Entity1->>System1: Data response
+    System1->>UI: Process result
 ```
+
+**Participant Type Usage:**
+- **Actor**: External participants that initiate interactions (`@{ "type" : "actor" }`)
+- **UI/Boundary**: First recipient within boundary, mediates actor-system communication (`@{ "type" : "boundary" }`)
+- **System/Control**: Can be decomposed into sub-processes (`@{ "type" : "control" }`)
+- **Entity**: Data/resource components, typically stable (`@{ "type" : "entity" }`)
 
 ## Boundary Patterns
 
@@ -44,12 +69,12 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant User as User
+    participant User@{ "type" : "actor" } as User
     
     box Database System
-        participant API as Database API
-        participant Engine as Query Engine
-        participant Storage as Storage Layer
+        participant API@{ "type" : "boundary" } as Database API
+        participant Engine@{ "type" : "control" } as Query Engine
+        participant Storage@{ "type" : "entity" } as Storage Layer
     end
     
     User->>API: Execute Query
@@ -61,8 +86,9 @@ sequenceDiagram
 ```
 
 **Characteristics:**
-- Clear external interface (Database API)
-- Internal processing pipeline
+- **Database API (boundary)**: First recipient, mediates user-system communication
+- **Query Engine (control)**: Can be decomposed into sub-processes (parsing, optimization, execution)
+- **Storage Layer (entity)**: Data persistence, typically stable without decomposition
 - Hidden complexity from user perspective
 
 ### Pattern 2: Service Layer Boundary  
@@ -70,13 +96,13 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant Client as Client Application
+    participant Client@{ "type" : "actor" } as Client Application
     
     box Order Processing Service
-        participant Gateway as API Gateway
-        participant Validator as Order Validator
-        participant Repository as Order Repository
-        participant EventBus as Event Bus
+        participant Gateway@{ "type" : "boundary" } as API Gateway
+        participant Validator@{ "type" : "control" } as Order Validator
+        participant Repository@{ "type" : "entity" } as Order Repository
+        participant EventBus@{ "type" : "control" } as Event Bus
     end
     
     Client->>Gateway: Submit Order
@@ -88,22 +114,23 @@ sequenceDiagram
 ```
 
 **Characteristics:**
-- Service encapsulation
-- Internal workflow management
-- Event-driven internal communication
+- **API Gateway (boundary)**: First recipient, handles client interface
+- **Order Validator & Event Bus (control)**: Can be decomposed (validation rules, event routing)
+- **Order Repository (entity)**: Data persistence layer
+- Event-driven internal communication between systems
 
 ### Pattern 3: Process Boundary
 **Use Case**: Modeling business processes
 
 ```mermaid
 sequenceDiagram
-    participant Customer as Customer
+    participant Customer@{ "type" : "actor" } as <<Actor>> Customer
     
     box Loan Approval Process
-        participant Application as Application Handler
-        participant CreditCheck as Credit Checker
-        participant Underwriter as Underwriter
-        participant DecisionEngine as Decision Engine
+        participant Application@{ "type" : "boundary" } as <<UI>> Application Handler
+        participant CreditCheck@{ "type" : "control" } as <<System>> Credit Checker
+        participant Underwriter@{ "type" : "control" } as <<System>> Underwriter
+        participant DecisionEngine@{ "type" : "control" } as <<System>> Decision Engine
     end
     
     Customer->>Application: Submit Loan Application
@@ -115,9 +142,10 @@ sequenceDiagram
 ```
 
 **Characteristics:**
-- Business process encapsulation
-- Sequential workflow steps
-- Single customer touchpoint
+- **Application Handler (boundary)**: Single customer touchpoint, first recipient
+- **Credit Checker, Underwriter, Decision Engine (control)**: Each can be decomposed into detailed sub-processes
+- Sequential workflow orchestration between systems
+- Clear business process encapsulation
 
 ## Hierarchy Implementation
 

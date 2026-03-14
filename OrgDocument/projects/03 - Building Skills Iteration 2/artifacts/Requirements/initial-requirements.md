@@ -37,35 +37,69 @@ The system must support hierarchical process modeling where:
 **Priority**: High  
 **Type**: Functional
 
-The system must implement boundary concepts where:
+The system must implement boundary concepts with participant stereotypes where:
 - Only one external actor interacts with a target participant (boundary)
 - Sub-level collaborations occur within the boundary using Mermaid `box` syntax
 - Boundaries encapsulate specific responsibilities or capabilities
 - Clear separation between external interactions and internal collaborations
+- **Participant types distinguish different types of system components**
+
+**Participant Types and Mappings:**
+- **Actor**: External entities that initiate interactions → `@{ "type" : "actor" }`
+- **Control**: Complex components that can be decomposed into sub-processes → `@{ "type" : "control" }`
+- **Entity**: Data or resource components → `@{ "type" : "entity" }`
+- **Boundary**: User interface components, always first to receive actor messages in boundaries → `@{ "type" : "boundary" }`
+
+**Decomposition Rules:**
+- **Only actions towards Control participants can be broken down into sub-processes**
+- **Boundary participants are always the first participant within a boundary to receive messages from actors**
+- **Entity participants represent data/resources and typically don't decompose further**
+- **Actor participants remain external and don't have internal decomposition**
 
 **Acceptance Criteria:**
 - Use Mermaid sequence diagram `box` syntax for boundary representation
 - Enforce single-actor-to-boundary interaction patterns
 - Generate sub-process diagrams within appropriate boxes
 - Validate boundary consistency across hierarchy levels
+- **Implement participant stereotypes (Actor, System, Entity, UI) in diagram generation**
+- **Apply decomposition rules: only System participants can be decomposed into sub-processes**
+- **Ensure UI participants are positioned as first recipients of actor messages within boundaries**
 
-**Example Implementation:**
+**Example Implementation with Stereotypes:**
 ```mermaid
 sequenceDiagram
-    participant User as External User
+    participant User@{ "type" : "actor" } as External User
     
-    box Computer System Boundary
-        participant CPU
-        participant Memory  
-        participant Storage
+    box E-commerce System Boundary
+        participant WebUI@{ "type" : "boundary" } as Web Interface
+        participant OrderService@{ "type" : "control" } as Order Service
+        participant CustomerDB@{ "type" : "entity" } as Customer Database
     end
     
-    User->>CPU: Execute Program
+    User->>WebUI: Place Order Request
+    WebUI->>OrderService: Process Order
+    OrderService->>CustomerDB: Validate Customer
     
-    Note over CPU,Storage: Internal collaborations within boundary
-    CPU->>Memory: Request Data
-    Memory->>CPU: Return Data
-    CPU->>Storage: Write Results
+    Note over WebUI: UI always receives actor messages first
+    Note over OrderService: Only System can be decomposed further
+```
+
+**Sub-process Decomposition Example (OrderService):**
+```mermaid
+sequenceDiagram
+    participant ECommerceSystem@{ "type" : "control" } as E-commerce System
+    
+    box Order Service Boundary  
+        participant OrderAPI@{ "type" : "boundary" } as Order API Interface
+        participant OrderProcessor@{ "type" : "control" } as Order Processor
+        participant ValidationEngine@{ "type" : "control" } as Validation Engine
+        participant OrderDB@{ "type" : "entity" } as Order Database
+    end
+    
+    ECommerceSystem->>OrderAPI: Process Order Request
+    OrderAPI->>OrderProcessor: Initialize Order Processing
+    OrderProcessor->>ValidationEngine: Validate Order Data
+    ValidationEngine->>OrderDB: Store Validated Order
 ```
 
 ### R-303: Enhanced Collaboration Diagram Generation
@@ -195,6 +229,40 @@ Maintain compatibility with Project 1 outputs:
 - Optional enhancement to hierarchical format
 - Preserve all existing requirement links and metadata
 - No breaking changes to existing skill interfaces
+
+### R-310: Participant Types and Decomposition Rules
+**Priority**: High  
+**Type**: Functional
+
+The system must implement participant types and enforce decomposition rules to ensure consistent hierarchical modeling:
+- Classify all participants using defined types (actor, boundary, control, entity)
+- Apply decomposition rules based on participant types
+- Maintain type consistency across hierarchy levels
+- Validate type usage in boundary implementations
+
+**Participant Type Definitions:**
+- **Actor**: External entities that initiate interactions and remain outside system boundaries
+  - **Participant Type**: `@{ "type" : "actor" }`
+- **Control**: Complex components that encapsulate business logic and can be decomposed into sub-processes  
+  - **Participant Type**: `@{ "type" : "control" }`
+- **Entity**: Data storage, resources, or passive components that don't typically decompose
+  - **Participant Type**: `@{ "type" : "entity" }`
+- **Boundary**: Interface components that mediate between actors and systems, always positioned as first recipients within boundaries
+  - **Participant Type**: `@{ "type" : "boundary" }`
+
+**Decomposition Rules:**
+1. **Control-Only Decomposition**: Only participants with control type can be decomposed into sub-processes
+2. **Boundary First Reception**: Within any boundary, boundary type participants must be the first to receive messages from external actors
+3. **Actor Externality**: Actor type participants remain external and cannot be decomposed
+4. **Entity Stability**: Entity type participants typically represent stable data/resources without internal processes
+
+**Acceptance Criteria:**
+- Generate Mermaid diagrams with participant type definitions (@{ "type" : "participant_type" })
+- Use participant type icons instead of stereotype text in participant names
+- Enforce decomposition rules during sub-process generation
+- Validate UI positioning as first recipient within boundaries
+- Maintain participant type consistency when creating hierarchy levels
+- Provide clear error messages for participant type rule violations
 
 ## Technical Constraints
 
