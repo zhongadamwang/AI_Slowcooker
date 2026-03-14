@@ -39,6 +39,8 @@
 - [x] **T4: Create Boundary Validation Rules**
   - **Priority**: High | **Effort**: 2-3 days | **Completed**: March 14, 2026
   - Added Boundary Validation section to SKILL.md with four rules (VR-1 through VR-4), strict/advisory modes, machine-readable JSON report, and markdown summary format
+  - Created 28 test cases covering all four rules, both validation modes, report structure, and pipeline integration
+  - All 28 test cases executed and passed (March 14, 2026)
   - **File**: [T4-boundary-validation.md](T4-boundary-validation.md)
 
 ---

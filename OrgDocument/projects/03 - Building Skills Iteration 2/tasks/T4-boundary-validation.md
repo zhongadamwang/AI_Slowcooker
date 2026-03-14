@@ -93,3 +93,5 @@ Implement boundary validation rules ensuring correctness of generated hierarchic
 **Related Documents**:
 - [Initial Requirements - R-302, R-310](../artifacts/Requirements/initial-requirements.md)
 - [Boundary Concepts Analysis - Validation Rules](../artifacts/Analysis/boundary-concepts.md)
+- [Test Cases](../artifacts/Testing/T4-test-cases.md)
+- [Test Results](../artifacts/Testing/T4-test-results.md)
