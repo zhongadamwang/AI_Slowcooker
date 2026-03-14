@@ -18,7 +18,10 @@ Decompose control-type participants into sub-process diagrams and manage the ful
 
 - `[process-folder]/[NN]-[ParticipantName]Boundary/collaboration.md` — new Level N+1 diagram
 - `[process-folder]/[NN]-[ParticipantName]Boundary/main.md` — sub-process overview with parent/child navigation links
+- `[process-folder]/[NN]-[ParticipantName]Boundary/process.md` — activity/workflow diagram for the sub-process
+- `[process-folder]/[NN]-[ParticipantName]Boundary/domain-model.md` — class diagram with entities and relationships
 - `[process-folder]/hierarchy-metadata.json` — updated hierarchy metadata (created if absent)
+- `[process-folder]/folder-creation.log` — audit log appended with each sub-folder created
 - Updated navigation links in parent `main.md` and `collaboration.md`
 
 ## Workflow
@@ -50,6 +53,29 @@ Before creating anything:
 - Folder name pattern: `[NN]-[ParticipantNamePascalCase]Boundary`
 
 Example: decomposing `OrderService` at Level 1 → `01-OrderServiceBoundary/`
+
+#### 2a. Special Character Sanitization
+
+Before building the folder name, sanitize the participant name:
+
+| Rule | Input Example | Sanitized Output |
+|------|--------------|-----------------|
+| Remove spaces (PascalCase join) | `Order Service` | `OrderService` |
+| Remove or replace `/` `\` `:` `*` `?` `"` `<` `>` `\|` | `Order/Service` | `OrderService` |
+| Remove leading/trailing hyphens and dots | `.OrderService.` | `OrderService` |
+| Collapse consecutive non-alphanumeric sequences to single hyphen | `Order--Service` | `OrderService` |
+| Preserve existing PascalCase casing | `OrderServiceBoundary` | `OrderServiceBoundary` |
+
+The final folder name must match the regex `^\d{2}-[A-Za-z][A-Za-z0-9]*Boundary$`.
+
+#### 2b. Naming Collision Resolution
+
+Before creating the folder, check whether `[NN]-[ParticipantName]Boundary/` already exists **in the same parent directory**:
+
+1. **Exact match exists** (same ordinal + same name): the decomposition was already performed.
+   - Stop and ask the user: "Sub-folder `[NN]-[ParticipantName]Boundary/` already exists. Do you want to (a) skip creation and reuse the existing folder, (b) overwrite its generated files, or (c) cancel?"
+2. **Name match but different ordinal** (e.g., user renamed the folder): treat as a new decomposition — assign the next available ordinal.
+3. **Ordinal conflict only** (different name, same number): increment the proposed ordinal until a free slot is found.
 
 ### 3. Generate the Level N+1 Collaboration Diagram
 
@@ -110,6 +136,14 @@ Infer participant names, labels, and interactions from:
 
 See [collaboration.md](collaboration.md)
 
+## Process Flow
+
+See [process.md](process.md)
+
+## Domain Model
+
+See [domain-model.md](domain-model.md)
+
 ## Sub-Processes
 
 _None yet — decompose a control-type participant to create a sub-process._
@@ -121,11 +155,154 @@ _None yet — decompose a control-type participant to create a sub-process._
 | [ControlParticipant1] | control | Available |
 ```
 
+### 4b. Generate `process.md` for the Sub-Process
+
+Infer the primary activities from the message exchanges in the new `collaboration.md`. Map each message send/receive pair to a step in the activity diagram.
+
+**Template:**
+
+```markdown
+<!-- Identifier: P-[NN] -->
+
+# [ParticipantName] Boundary — Process Flow
+
+**Parent Process**: [[ParentProcessName]](../process.md)  
+**Hierarchy Level**: [N+1]
+
+```mermaid
+flowchart TD
+    A[Receive [InitialRequest] from [ParentParticipant]] --> B[[EntryPoint]: Validate Request]
+    B --> C{Valid?}
+    C -->|Yes| D[[Logic1]: Process Request]
+    C -->|No| E[Return Error to [ParentParticipant]]
+    D --> F[[DataStore]: Persist Data]
+    F --> G[[Logic1]: Build Response]
+    G --> H[[EntryPoint]: Return Result]
+    H --> I[Send Response to [ParentParticipant]]
+```
+
+## Process Description
+
+### 1. Receive Request
+- [ParentParticipant] sends [InitialRequest] to [EntryPoint]
+- [EntryPoint] validates the incoming request
+
+### 2. Process
+- [Logic1] executes the core logic
+- [DataStore] is queried or updated as required
+
+### 3. Respond
+- Result is assembled and returned to [ParentParticipant]
+
+## Boundary Rules Applied
+
+- **VR-1** (Single External Interface): All external interaction passes through `[EntryPoint]`
+- **VR-2** (Boundary-first Reception): First message recipient inside the box is the boundary participant
+```
+
+Populate `[InitialRequest]`, `[EntryPoint]`, `[Logic1]`, `[DataStore]`, and `[ParentParticipant]` from the generated `collaboration.md`.
+
+### 4c. Generate `domain-model.md` for the Sub-Process
+
+Infer entities from control and entity participants in the `collaboration.md`. Each entity-type participant becomes a class; each control-type participant also becomes a class representing its behavioral contract.
+
+**Template:**
+
+```markdown
+<!-- Identifier: D-[NN] -->
+
+# [ParticipantName] Boundary — Domain Model
+
+**Parent Process**: [[ParentProcessName]](../domain-model.md)  
+**Hierarchy Level**: [N+1]
+
+## Domain Class Diagram
+
+```mermaid
+classDiagram
+    %% Actors
+    class [ParentParticipantShort]:::actor {
+        +[key_attribute]: String
+        +[primary_operation]()
+    }
+
+    %% Boundary
+    class [EntryPoint]:::boundary {
+        +[request_type]: String
+        +receive[RequestName]()
+        +return[ResponseName]()
+    }
+
+    %% Controls
+    class [Logic1]:::control {
+        +[state_attribute]: String
+        +process[RequestName]()
+    }
+
+    %% Entities
+    class [DataStore]:::entity {
+        +[id_attribute]: String
+        +[data_attribute]: String
+        +persist()
+        +retrieve()
+    }
+
+    %% Relationships
+    [ParentParticipantShort] --> [EntryPoint] : sends [InitialRequest]
+    [EntryPoint] --> [Logic1] : delegates processing
+    [Logic1] --> [DataStore] : reads/writes data
+    [Logic1] --> [EntryPoint] : returns result
+    [EntryPoint] --> [ParentParticipantShort] : responds
+```
+
+## Key Domain Concepts
+
+| Term | Type | Description |
+|------|------|-------------|
+| [EntryPoint] | boundary | Entry point for [ParticipantName] boundary |
+| [Logic1] | control | Core processing logic |
+| [DataStore] | entity | Persistent data store |
+
+## Relationships to Parent Domain
+
+- Inherits context from [[ParentProcessName] Domain Model](../domain-model.md)
+- `[ParentParticipantShort]` maps to the decomposed participant in the parent diagram
+```
+
+Populate class names, attributes, and relationships using participant names and message labels from `collaboration.md`.
+
+### 4d. Folder Creation Audit Log
+
+After all files are written, **append** a log entry to `[process-folder]/folder-creation.log` (create if absent):
+
+```
+[ISO-8601 timestamp] CREATED  [NN]-[ParticipantName]Boundary/
+  Level:      [N+1]
+  Parent:     [ParentProcessName] ([process-folder]/)
+  Files:      collaboration.md, main.md, process.md, domain-model.md
+  Decomposed: [ParticipantName] (type: control)
+  Ordinal:    [NN] (sibling count before: [count])
+```
+
+If a collision was resolved (see §2b), also append:
+```
+  Collision:  resolved — [description of resolution]
+```
+
 ### 5. Update Parent Navigation
 
 Add a **Sub-Processes** section (or entry) to:
 
-1. Parent `main.md` — add a link to the new sub-folder's `main.md`
+1. Parent `main.md` — add a link to the new sub-folder's `main.md` (including process and domain-model links):
+
+```markdown
+## Sub-Processes
+
+| Sub-Process | Collaboration | Process Flow | Domain Model |
+|-------------|--------------|--------------|-------------|
+| [[NN]-[ParticipantName]Boundary]([NN]-[ParticipantName]Boundary/main.md) | [diagram]([NN]-[ParticipantName]Boundary/collaboration.md) | [flow]([NN]-[ParticipantName]Boundary/process.md) | [model]([NN]-[ParticipantName]Boundary/domain-model.md) |
+```
+
 2. Parent `collaboration.md` — add a `decomposition` comment after the participant declaration:
 
 ```
@@ -175,12 +352,18 @@ Node colors by level:
 
 When the user requests a rollback of a decomposition:
 
-1. Remove the sub-folder and its contents (ask for confirmation first)
+1. Remove the sub-folder and its contents (`collaboration.md`, `main.md`, `process.md`, `domain-model.md`, `hierarchy-metadata.json`) (ask for confirmation first)
 2. Revert parent participant's `status` in `hierarchy-metadata.json` to `"available"`
 3. Remove the `%% Decomposition:` comment from parent `collaboration.md`
-4. Remove the sub-process navigation link from parent `main.md`
+4. Remove the sub-process navigation link row from parent `main.md`'s Sub-Processes table
 5. Remove the node from `hierarchy-metadata.json`
-6. Report: participant name, folder removed, parent updated
+6. Append a `REMOVED` entry to `folder-creation.log`:
+   ```
+   [ISO-8601 timestamp] REMOVED  [NN]-[ParticipantName]Boundary/
+     Reason:   user-requested rollback
+     Restored: [ParticipantName] status → available
+   ```
+7. Report: participant name, folder removed, parent updated
 
 ## Hierarchy Statistics
 
@@ -203,14 +386,21 @@ When decomposing a participant that is already at Level 2 or deeper, apply the s
 [ProcessRoot]/
 ├── main.md
 ├── collaboration.md
+├── process.md
+├── domain-model.md
 ├── hierarchy-metadata.json
+├── folder-creation.log
 └── 01-ServiceABoundary/
     ├── main.md
     ├── collaboration.md
+    ├── process.md
+    ├── domain-model.md
     ├── hierarchy-metadata.json
     └── 01-LogicEngineBoundary/
         ├── main.md
         ├── collaboration.md
+        ├── process.md
+        ├── domain-model.md
         └── hierarchy-metadata.json
 ```
 

@@ -9,10 +9,10 @@
 | Phase | Tasks | Status | Progress |
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
-| Phase 2: Hierarchy Management | T5-T8 | In Progress | 1/4 |
+| Phase 2: Hierarchy Management | T5-T8 | In Progress | 2/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Not Started | 0/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **5/17** |
+| **Total** | **17 tasks** | **In Progress** | **6/17** |
 
 ---
 
@@ -57,13 +57,14 @@
   - Registered in `INDEX.md` under Domain Modeling
   - **File**: [T5-hierarchy-management.md](T5-hierarchy-management.md)
 
-### Not Started
-
-- [ ] **T6: Implement Sub-Folder Generation**
-  - **Priority**: Medium | **Effort**: 2-3 days
-  - **Dependencies**: T5
-  - **Requirements**: R-304
+- [x] **T6: Implement Sub-Folder Generation**
+  - **Priority**: Medium | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Extended `hierarchy-management` SKILL.md with sub-folder generation: `process.md` and `domain-model.md` templates (Steps 4b/4c), special character sanitization (§2a), naming collision resolution (§2b), folder audit log (§4d, `folder-creation.log`)
+  - Updated parent navigation to four-column Sub-Processes table; updated Rollback procedure; updated multi-level folder tree example
+  - Created 24 test cases across 7 categories in `T6-test-cases.md`; all 24 passing
   - **File**: [T6-subfolder-generation.md](T6-subfolder-generation.md)
+
+### Not Started
 
 - [ ] **T7: Build Cross-Reference Navigation**
   - **Priority**: Medium | **Effort**: 2-3 days
