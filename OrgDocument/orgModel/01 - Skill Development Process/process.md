@@ -39,6 +39,18 @@ flowchart TD
     V --> W{Requirements Met?}
     W -->|Yes| G
     W -->|No| B
+
+    %% GitHub integration
+    I --> X[Sync to GitHub Issues]
+    X --> Y[github-issue-create-update]
+    Y --> Z[github-issue-sync-status]
+    Z --> I
+
+    %% Hierarchical diagram generation
+    S --> AA[Generate Hierarchical Diagrams]
+    AA --> AB[Classify Participant Stereotypes]
+    AB --> AC[Apply Boundary Validation Rules]
+    AC --> T
 ```
 
 ## Process Description
@@ -100,3 +112,28 @@ flowchart TD
 - **Traceability Maintenance**: Connect skill development to specific requirement sources
 - **Progressive Enhancement**: Build skills incrementally as requirements evolve
 - **Validation Cycles**: Verify skill adequacy against changing requirements
+
+### 12. GitHub Integration Workflow
+- **Task Synchronization**: Create and update GitHub Issues from local task markdown files using `github-issue-create-update` skill
+- **Status Synchronization**: Pull GitHub Issue state changes back to local task files using `github-issue-sync-status` skill
+- **Format Preservation**: Maintain existing local task file format and frontmatter metadata during sync
+- **Authentication**: Personal Access Token with `repo` scope for GitHub REST API v3
+
+### 13. Requirements Merging
+- **Multi-Source Ingestion**: Combine multiple requirement documents using `requirements-merge` skill
+- **Conflict Resolution**: Identify and resolve redundancies and contradictions across sources
+- **Traceability Preservation**: Maintain source-requirement mapping in merged specification
+- **Stakeholder Review**: Route merged specification for stakeholder review and approval
+
+### 14. Hierarchical Diagram Generation
+- **Stereotype Classification**: Classify all diagram participants as actor, boundary, control, or entity using inference rules; manual overrides take precedence; a `participant_type_summary` is generated
+- **Boundary Naming & Coloring**: Auto-derive boundary names from domain concepts (manual → domain concept → participant name → functional role → generic ordinal); optional round-robin color palette
+- **Boundary Summary Comments**: Inject structured `%% BOUNDARY SUMMARY` header into Mermaid output listing participants, decomposable controls, and external actors per boundary
+- **EDPS Boundary Validation (pre-render)**: Four rules applied before diagram output — VR-1 Single External Interface (error), VR-2 Boundary-First Reception (error), VR-3 Control-Only Decomposition (error), VR-4 Cohesive Responsibility (warning)
+- **Validation Mode**: Strict mode blocks generation on VR-1/VR-2/VR-3 errors; advisory mode (default) generates diagram with inline violation comments
+- **Multi-Level Diagrams**: Generate Level 0 (high-level) and Level N (detailed) diagrams; only `control`-type participants may produce sub-process child diagrams
+
+### 15. Project Documentation Management
+- **Structure Initialization**: Use `project-document-management` skill to initialize consistent documentation folder trees
+- **Milestone Tracking**: Apply `project-planning-tracking` skill to plan phases and track progress
+- **Status Reporting**: Generate executive dashboards and stakeholder reports with `project-status-reporting` skill

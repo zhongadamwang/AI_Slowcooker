@@ -124,6 +124,56 @@ classDiagram
         +manageReferences()
     }
 
+    class GitHubIntegration:::ai {
+        +integration_id: String
+        +repository: String
+        +auth_token: String
+        +sync_direction: SyncDirection
+        +createIssue()
+        +updateIssue()
+        +syncStatus()
+    }
+
+    class BoundaryValidator:::ai {
+        +validator_id: String
+        +rules: ValidationRule[]
+        +validation_mode: String
+        +validation_report: Report
+        +validateSingleExternalInterface()
+        +validateBoundaryFirstReception()
+        +validateControlOnlyDecomposition()
+        +validateCohesiveResponsibility()
+    }
+
+    class ProjectManagementSkill:::ai {
+        +skill_id: String
+        +documentation_structure: Template[]
+        +schedule_templates: Template[]
+        +report_templates: Template[]
+        +initializeProjectDocs()
+        +trackMilestones()
+        +generateStatusReport()
+    }
+
+    class RequirementsMerger:::ai {
+        +merger_id: String
+        +source_requirements: RequirementSet[]
+        +conflict_resolution: Strategy
+        +traceability_map: Map
+        +mergeRequirements()
+        +resolveConflicts()
+        +generateMergedSpec()
+    }
+
+    class SkillCreator:::entity {
+        +creator_id: String
+        +skill_template: Template
+        +validation_checklist: Check[]
+        +quality_criteria: Criterion[]
+        +scaffoldSkill()
+        +validateSkill()
+    }
+
     %% Enums
     class SkillCategory:::enum {
         <<enumeration>>
@@ -145,6 +195,21 @@ classDiagram
         MANUAL
         SEMI_AUTOMATED
         FULLY_AUTOMATED
+    }
+
+    class ParticipantStereotype:::enum {
+        <<enumeration>>
+        ACTOR
+        BOUNDARY
+        CONTROL
+        ENTITY
+    }
+
+    class SyncDirection:::enum {
+        <<enumeration>>
+        LOCAL_TO_GITHUB
+        GITHUB_TO_LOCAL
+        BIDIRECTIONAL
     }
 
     class ProficiencyLevel:::enum {
@@ -171,6 +236,15 @@ classDiagram
     ChangeManagementProcess --> Assessment : tracks
     Assessment --> Mentor : conducted_by
     LearningPath --> TeamMember : assigned_to
+    GitHubIntegration --> ChangeManagementProcess : syncs_with
+    BoundaryValidator --> SkillFramework : validates_within
+    ProjectManagementSkill --|> AIAgentSkill : extends
+    RequirementsMerger --|> AIAgentSkill : extends
+    GitHubIntegration --|> AIAgentSkill : extends
+    BoundaryValidator --|> AIAgentSkill : extends
+    SkillCreator --> SkillFramework : supports
+    ParticipantStereotype --> BoundaryValidator : classifies_for
+    SyncDirection --> GitHubIntegration : configures
 
     %% Styling
     classDef actor fill:#e1f5fe
@@ -263,6 +337,45 @@ classDiagram
 - **Impact Assessment**: Stakeholder analysis, effort estimation, risk evaluation
 - **Integration Points**: OrgModel updates, task dependencies, requirement traceability
 
+### GitHubIntegration
+- **Integration ID**: Unique identifier
+- **Repository**: Target GitHub repository (owner/repo)
+- **Auth Token**: Personal Access Token for authentication
+- **Sync Direction**: Local-to-GitHub, GitHub-to-local, or bidirectional
+- **Skills**: `github-issue-create-update` (create/update issues from local tasks), `github-issue-sync-status` (sync issue state back to local tasks)
+- **API Version**: GitHub REST API v3 with exponential backoff rate limiting
+- **Format**: Extracts title, description, labels, and state from task markdown frontmatter
+
+### BoundaryValidator
+- **Validator ID**: Unique identifier
+- **Rules**: Four validation rules — VR-1: Single External Interface (one actor per boundary, error), VR-2: Boundary-First Reception (actor hits boundary type first, error), VR-3: Control-Only Decomposition (only control eligible for decomposition, error), VR-4: Cohesive Responsibility (participants share functional domain, warning)
+- **Strict Mode**: Errors block diagram generation; advisory mode (default) annotates output with inline `%% [VR-n ERROR]` comments and continues generation
+- **Validation Report**: Machine-readable `boundary_validation_report` JSON with `overall_status` (PASS / PASS_WITH_WARNINGS / FAIL / BLOCKED) and per-rule results; markdown summary table embedded in `collaboration-diagrams.md`
+- **Skill**: Part of `diagram-generatecollaboration` skill (Iteration 2 T4 — Boundary Validation Rules)
+- **Pipeline position**: Runs as pre-render check after Participant Classification and Box Syntax Generation
+
+### ProjectManagementSkill
+- **Skill ID**: Unique identifier (extends AIAgentSkill)
+- **Skills Included**: `project-document-management`, `project-planning-tracking`, `project-status-reporting`
+- **Documentation Structure**: Hierarchical folder guidelines and consistent project trees
+- **Schedule Templates**: Gantt representations, critical path analysis, milestone tracking
+- **Report Templates**: Executive dashboards, automatic data aggregation from project docs
+
+### RequirementsMerger
+- **Merger ID**: Unique identifier (extends AIAgentSkill)
+- **Skill**: `requirements-merge`
+- **Source Requirements**: Multiple requirement documents to be combined
+- **Conflict Resolution**: Identifies and resolves redundancies and contradictions
+- **Traceability Map**: Maintains source traceability for all merged requirements
+- **Output**: Single coherent specification with stakeholder review workflow support
+
+### SkillCreator
+- **Creator ID**: Unique identifier
+- **Skill**: `skill-creator`
+- **Skill Template**: Standardized SKILL.md scaffold with required sections
+- **Validation Checklist**: Quality gates for skill completeness and correctness
+- **Quality Criteria**: Intent, inputs, outputs, processing workflow, usage examples
+
 ## Key Relationships
 
 - Team Member **has** Skill Profile
@@ -281,6 +394,12 @@ classDiagram
 - ChangeManagementProcess **tracks** all modifications to Skills, Learning Paths, and Assessments
 - ChangeManagementProcess **integrates** with SkillFramework for systematic capability evolution
 - Project Owner **governs** ChangeManagementProcess through approval workflows
+- GitHubIntegration **syncs** local task state with remote GitHub Issues bidirectionally
+- BoundaryValidator **classifies** diagram participants using ParticipantStereotype rules and **validates** hierarchy integrity
+- ProjectManagementSkill **extends** AIAgentSkill with project documentation, schedule, and reporting capabilities
+- RequirementsMerger **combines** multiple requirement sources into a unified specification with conflict resolution
+- SkillCreator **supports** consistent new skill development through templates and quality checklists
+- BoundaryValidator **enforces** decomposition rules: only control-type participants may generate sub-process diagrams
 
 ## Business Rules
 
@@ -298,3 +417,10 @@ classDiagram
 12. All AIAgentSkill integrations must support SkillNavigator orchestration patterns
 13. Requirements incremental updates must maintain traceability through ChangeManagementProcess
 14. SkillNavigator recommendations must consider organizational constraints and priorities
+15. GitHubIntegration must preserve local task file format when syncing state from GitHub Issues
+16. BoundaryValidator VR-1 requires exactly one external actor communicating directly into each boundary; multiple actors must be routed through a shared gateway
+17. BoundaryValidator VR-2 mandates boundary-type participants as first recipients of actor messages within any box boundary; actors must not bypass the boundary entry point
+18. BoundaryValidator VR-3 prohibits decomposition of actor, boundary, and entity stereotypes; only control-type participants may be decomposed into sub-process diagrams
+19. ProjectManagementSkill outputs must be compatible with the hierarchical project documentation folder structure
+20. RequirementsMerger must maintain source traceability for all requirements in the merged specification
+21. SkillCreator templates must enforce the standard EDPS SKILL.md schema across all new skills

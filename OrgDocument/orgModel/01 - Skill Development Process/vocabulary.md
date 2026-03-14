@@ -26,6 +26,7 @@
 | **Mentoring** | One-on-one guidance relationship for skill development | Coaching, Skill Guidance | Pairs experienced with developing practitioners |
 | **Learning Activity** | Specific action taken to develop skills | Training Activity, Development Exercise | Can be formal or informal |
 | **Requirements Ingest** | Process of normalizing requirements from various formats into consistent, chunked representation with traceability | Requirements Processing, Requirements Import | Project-specific process for requirements management |
+| **Requirements Merge** | Process of combining multiple requirement documents into a single coherent specification with conflict resolution | Requirements Consolidation, Spec Merge | `requirements-merge` skill; maintains source traceability across all merged requirements |
 | **Change Management** | Systematic approach to tracking, documenting, and managing changes to requirements and project scope | Change Control, Change Tracking | Standard industry practice for project governance |
 | **W5H Analysis** | Framework examining Who, What, When, Where, Why, and How aspects of requirements | Five W and H Analysis, Requirements Analysis Framework | Valuable analysis framework for comprehensive understanding |
 
@@ -57,6 +58,11 @@
 | **Skill Registry** | Catalog of available AI skills with capabilities and metadata | Skill Catalog, Capability Index | Maintained by SkillNavigator for intelligent recommendations |
 | **Workflow Template** | Predefined sequence of skills for common development patterns | Skill Chain, Process Template | Reusable patterns for efficient workflow execution |
 | **Context Awareness** | System ability to consider project state and user history in recommendations | Situational Intelligence, Adaptive Guidance | Key capability for intelligent skill orchestration |
+| **GitHub Issue Sync** | Bidirectional synchronization between local task markdown files and GitHub Issues | Issue Sync, Task-Issue Bridge | Enabled by `github-issue-create-update` and `github-issue-sync-status` skills |
+| **Participant Stereotype** | Classification of diagram participants into exactly one of four roles: actor, boundary, control, or entity | UML Stereotype, Participant Type | Drives decomposition eligibility and message routing validation in hierarchical diagrams |
+| **Box Boundary** | Mermaid `box ... end` syntax block grouping related participants under a named system boundary | Boundary Group, System Box | Actors must be declared outside all boxes; boundary participants must be listed first inside a box |
+| **Boundary Validator** | Component enforcing four EDPS hierarchy rules run as a pre-render check after box syntax generation: VR-1 Single External Interface (error), VR-2 Boundary-First Reception (error), VR-3 Control-Only Decomposition (error), VR-4 Cohesive Responsibility (warning) | Hierarchy Validator, Stereotype Enforcer | Outputs machine-readable `boundary_validation_report` JSON and markdown summary table; supports strict (blocks on errors) and advisory (annotates inline) modes |
+| **Skill Creator** | Framework for building and validating new EDPS skills following a standardized SKILL.md schema | Skill Scaffold, Skill Framework | `skill-creator` skill; ensures consistency across all skills in the ecosystem |
 
 ### Change Management Terms
 
@@ -66,6 +72,14 @@
 | **Impact Assessment** | Analysis of change effects on stakeholders, processes, and systems | Change Impact Analysis, Effect Evaluation | Required for all significant organizational changes |
 | **Reference Management** | Automated maintenance of cross-references and dependencies | Link Management, Dependency Tracking | Ensures organizational model consistency during evolution |
 | **Incremental Requirement Updates** | Process for integrating new requirements without disrupting existing analysis | Progressive Requirements Integration, Delta Updates | Supports continuous evolution while maintaining traceability |
+
+### Project Management Terms
+
+| Term | Definition | Synonyms | Notes |
+|------|------------|----------|-------|
+| **Project Document Management** | Skill for initializing and maintaining consistent project documentation folder structures | Doc Structure, Project Scaffold | `project-document-management` skill; creates hierarchical trees with requirements, artifacts, and org modeling docs |
+| **Project Planning Tracking** | Skill for planning project phases, tracking milestones, and managing tasks using structured templates | Milestone Tracking, Phase Management | `project-planning-tracking` skill; integrates with document tree organization |
+| **Project Status Reporting** | Skill for generating executive dashboards, status summaries, and stakeholder communications | Status Dashboard, Progress Report | `project-status-reporting` skill; auto-aggregates data from project documentation structure |
 
 ## Naming Standards
 

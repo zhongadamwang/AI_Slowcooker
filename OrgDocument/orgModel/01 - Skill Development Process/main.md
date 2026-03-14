@@ -16,12 +16,20 @@ The Skill Development Process represents our organizational approach to building
 
 **Knowledge Orchestration**: Meta-capabilities that intelligently coordinate skill utilization, guide workflow execution, and optimize competency development paths through automated navigation and recommendation systems.
 
+**GitHub Integration**: Bidirectional synchronization between local task management and GitHub Issues, enabling distributed team collaboration with preserved local file formats and full change traceability.
+
+**Hierarchical Collaboration Modeling**: Advanced diagram generation with participant stereotype classification (actor, boundary, control, entity), boundary grouping with Mermaid `box` syntax, and four-rule boundary validation for EDPS-compliant hierarchy representation.
+
+**Project Lifecycle Support**: End-to-end project management capabilities covering documentation initialization, milestone tracking, and executive status reporting through integrated project management skills.
+
 ### Business Value Proposition
 
 1. **Accelerated Capability Building**: Reduces time-to-competency through structured learning paths and AI-assisted skill development
 2. **Adaptive Organizational Learning**: Enables rapid response to changing project requirements through continuous skill evolution
 3. **Intelligent Workflow Automation**: Leverages AI skills to automate routine development tasks and guide complex process execution
 4. **Comprehensive Change Management**: Maintains organizational coherence during capability evolution through systematic change tracking
+5. **Distributed Team Collaboration**: GitHub integration enables synchronization across distributed teams without disrupting local workflows
+6. **EDPS-Compliant Diagrams**: Hierarchical collaboration diagrams with validated boundary rules ensure structural correctness and support incremental decomposition
 
 ### Strategic Alignment
 
@@ -50,3 +58,5 @@ See [test-case-list.md](test-case-list.md) for verification test cases.
 - [SKILL-CHG-004](../../projects/01%20-%20Building%20Skills/artifacts/Changes/2026-02-17-SKILL-CHG-004-add-edps-skill-navigator.md) - Integrated EDPS Skill Navigator for intelligent workflow orchestration
 - [PROC-CHG-005](../../projects/01%20-%20Building%20Skills/artifacts/Changes/2026-02-17-PROC-CHG-005-requirements-incremental-update.md) - Enhanced process for incremental requirements analysis
 - [INFO-CHG-006](../../projects/01%20-%20Building%20Skills/artifacts/Changes/2026-02-18-INFO-CHG-006-clarify-main-md-purpose.md) - Focused business model content over documentation conventions
+- SKILL-CHG-007 (2026-02-24) - Added GitHub integration skills (github-issue-create-update, github-issue-sync-status) for bidirectional task-issue synchronization
+- SKILL-CHG-008 (2026-03-14) - Enhanced diagram-generatecollaboration with participant stereotype classification, box boundary syntax, and four-rule boundary validation (Iteration 2 T1–T4)
