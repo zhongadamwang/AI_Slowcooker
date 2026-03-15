@@ -99,6 +99,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **model-integration** | Integrate new domain models into existing organizational structures | [Individual skill docs](.github/skills/model-integration/SKILL.md) |
 | **hierarchy-management** | Decompose control-type participants into sub-processes, track parent-child hierarchy, manage folder structure and metadata | [Individual skill docs](.github/skills/hierarchy-management/SKILL.md) |
 | **documentation-automation** | Auto-generate main.md, process.md, collaboration.md, and domain-model.md for each process hierarchy level with level-appropriate content, EDPS-compliant diagrams, boundary rule status, and participant summary | [Individual skill docs](.github/skills/documentation-automation/SKILL.md) |
+| **migration-tools** | Non-destructively migrate flat (Project 1) collaboration diagrams to hierarchical boundary format — applies stereotype inference and boundary grouping detection, generates enhanced counterpart files and migration log while preserving all requirement traceability | [Individual skill docs](.github/skills/migration-tools/SKILL.md) |
 
 ### ✅ Compliance & Validation
 | Skill | Purpose | Documentation |

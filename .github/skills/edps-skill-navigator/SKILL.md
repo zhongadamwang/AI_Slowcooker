@@ -86,6 +86,8 @@ Navigator: Analyzes current project state and suggests:
 "merge requirements" → requirements-merge
 "understand domain" → domain-extractconcepts + domain-alignentities  
 "create diagrams" → diagram-generatecollaboration
+"create hierarchical diagrams" → diagram-generatecollaboration (--mode hierarchical) + hierarchy-management
+"add boundaries to diagrams" → diagram-generatecollaboration (--mode boundary-detection)
 "plan project" → plan-derivetasks + plan-estimateeffort + plan-buildschedule
 "estimate effort" → plan-estimateeffort
 "create tasks" → plan-derivetasks
@@ -97,6 +99,15 @@ Navigator: Analyzes current project state and suggests:
 "update top requirements" → process-findtopandupdate
 "test integration" → integration-testing
 "validate workflows" → integration-testing
+"decompose process" → hierarchy-management
+"generate documentation" → documentation-automation
+"validate hierarchy" → hierarchy-validation
+"check compliance" → edps-compliance
+"analyze change impact" → change-impact-analysis
+"migrate diagrams" → migration-tools
+"upgrade legacy diagrams" → migration-tools
+"validate compliance" → hierarchy-validation + edps-compliance
+"full hierarchy workflow" → diagram-generatecollaboration → hierarchy-management → documentation-automation → hierarchy-validation → edps-compliance
 ```
 
 ### Conversational Flows
@@ -164,13 +175,23 @@ Process & Planning:
 └── project-status-reporting # Generate status reports
 
 Visualization & Documentation:
-├── diagram-generatecollaboration # Create Mermaid collaboration diagrams  
-├── project-document-management   # Manage project documentation structure
-└── change-management            # Track and document changes
+├── diagram-generatecollaboration  # Create Mermaid collaboration diagrams with boundary support (authoritative VR-1–VR-4 source)
+├── documentation-automation       # Auto-generate main.md, process.md, collaboration.md, domain-model.md per hierarchy level
+├── project-document-management    # Manage project documentation structure
+└── change-management              # Track and document changes
+
+Hierarchy Management:
+├── hierarchy-management    # Decompose control participants into sub-processes; manage folder structure, metadata, and cross-reference navigation
+└── migration-tools         # Non-destructively migrate flat (Project 1) collaboration diagrams to hierarchical boundary format
+
+Compliance & Validation:
+├── edps-compliance         # Validate EDPS methodology compliance (VR-1–VR-4, HR-2/6, EP-1–EP-4); generates scored reports
+├── hierarchy-validation    # Validate hierarchy structural integrity (HV-1–HV-5, HX-1–HX-5, HN-1–HN-4); authoritative structural source
+└── change-impact-analysis  # Trace change propagation across hierarchy levels (CI-1–CI-5, CR-1–CR-3); risk classification
 
 Model & Integration Management:
 ├── model-integration       # Integrate new models into existing structures
-├── orgmodel-update        # Update organizational model documents
+├── orgmodel-update        # Update organizational model documents (with EDPS-Hierarchy Guard)
 └── integration-testing     # Validate end-to-end skill workflows
 
 Quality & Development:
@@ -195,15 +216,33 @@ Process Integration Workflow:
 process-merge → process-findtopandupdate → model-integration → orgmodel-update
 
 Change Management Cycle:
-change-management → [affected skill execution] → orgmodel-update → project-status-reporting
+change-management → change-impact-analysis → [affected skill execution] → orgmodel-update → project-status-reporting
 
 End-to-End Organization Integration:
 requirements-ingest → domain-extractconcepts → model-integration → orgmodel-update → integration-testing
 
-Complete Development Lifecycle:
+Hierarchical Diagram Workflow (New — EDPS v2):
+diagram-generatecollaboration (--mode hierarchical) →
+hierarchy-management (decompose control participants) →
+documentation-automation (generate level docs) →
+hierarchy-validation (structural integrity check) →
+edps-compliance (full methodology check)
+
+Legacy Migration Workflow:
+migration-tools (--mode preview) → [human review of LOW-confidence participants] →
+migration-tools (--mode apply) →
+hierarchy-management (optional: decompose enhanced diagrams) →
+edps-compliance (validate migrated diagrams)
+
+Change Impact Analysis Workflow:
+change-impact-analysis (--mode what-if) → [review risk report] →
+change-impact-analysis (--mode apply) → orgmodel-update → hierarchy-validation
+
+Complete Development Lifecycle (with Hierarchy):
 project-document-management → requirements-ingest → goals-extract → process-w5h → 
 domain-extractconcepts → plan-derivetasks → plan-estimateeffort → plan-buildschedule → 
-diagram-generatecollaboration → integration-testing
+diagram-generatecollaboration → hierarchy-management → documentation-automation →
+hierarchy-validation → edps-compliance → integration-testing
 ```
 
 ## Implementation Guidelines
@@ -248,7 +287,15 @@ diagram-generatecollaboration → integration-testing
 
 ---
 
-**Version**: 1.1.0
-**Last Updated**: 2026-02-21
-**Compatibility**: GitHub Copilot, VS Code, EDPS v1.x
+**Version**: 1.2.0
+**Last Updated**: 2026-03-15
+**Compatibility**: GitHub Copilot, VS Code, EDPS v1.x, EDPS v2.x (hierarchical boundary format)
 **Maintainer**: EDPS Development Team
+
+### New Skills Registered (Project 3 — March 2026)
+- `hierarchy-management` — Hierarchy Management category
+- `documentation-automation` — Visualization & Documentation category
+- `edps-compliance` — Compliance & Validation category
+- `hierarchy-validation` — Compliance & Validation category (authoritative structural integrity source)
+- `change-impact-analysis` — Compliance & Validation category
+- `migration-tools` — Hierarchy Management category (legacy migration)
