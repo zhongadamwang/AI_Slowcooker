@@ -130,8 +130,12 @@ For each `collaboration.md`:
 - **FAIL** if none found.
 
 #### EP-2 Check
-- Build a participant name set for each hierarchy level.
-- **FAIL** if any participant name in a parent `collaboration.md` matches the name of a boundary sub-folder at a child level (indicating direct leakage of child-level participants into the parent).
+- For each child sub-folder within the target scope:
+  1. Read the child's `collaboration.md` and collect its declared participant names.
+  2. Identify the **boundary entry-point participant** (the `boundary`-type participant that serves as the interface to the parent). This participant is exempt — it may legitimately appear in the parent diagram as the decomposed control point.
+  3. For all **remaining internal participants** (controls, entities, additional boundary types within the child scope), check whether any appear by name in the parent `collaboration.md`.
+- **FAIL** if any internal child participant name is found in the parent diagram, indicating direct leakage of child-level detail into a higher abstraction level.
+- **Do NOT flag** the decomposed control participant (whose name matches the child sub-folder after stripping ordinal prefix and `Boundary` suffix) — its presence in the parent is expected and valid.
 
 #### EP-3 Check
 - Scan each `main.md` for `**Status**:` and either `**Last Updated**:` or `<!-- Last Updated:`.
@@ -144,17 +148,22 @@ For each `collaboration.md`:
 ### Step 5 — Score and Aggregate
 
 ```
+# SKIPPED rules are excluded from both total_checks and passed_checks.
+# Record SKIPPED count separately in summary.skipped_checks.
 compliance_score = (passed_checks / total_checks) × 100
+  where total_checks = count of rules with status PASS or FAIL (not SKIPPED)
 
 severity_counts:
   errors   = count of FAIL results on ERROR-severity rules
   warnings = count of FAIL results on WARNING-severity rules
 
-overall_status:
-  COMPLIANT     → errors = 0 and compliance_score ≥ 90
-  MOSTLY_COMPLIANT → errors = 0 and compliance_score ≥ 70
-  NEEDS_ATTENTION  → errors > 0 and errors ≤ 3
+overall_status (evaluated top-to-bottom; first match wins):
+  COMPLIANT        → errors = 0 AND compliance_score ≥ 90
+  MOSTLY_COMPLIANT → errors = 0 AND compliance_score ≥ 70
   NON_COMPLIANT    → errors > 3
+  NEEDS_ATTENTION  → all other cases
+                     (covers: errors > 0 AND errors ≤ 3;
+                              errors = 0 AND compliance_score < 70)
 ```
 
 ### Step 6 — Generate Reports
@@ -174,6 +183,7 @@ overall_status:
     "compliance_score": 0.0,
     "total_checks": 0,
     "passed": 0,
+    "skipped_checks": 0,
     "failed_errors": 0,
     "failed_warnings": 0,
     "levels_scanned": 0,

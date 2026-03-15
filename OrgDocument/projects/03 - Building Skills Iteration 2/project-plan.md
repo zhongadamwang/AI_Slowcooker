@@ -198,15 +198,15 @@ This project enhances Project 1's AI agent skills to support hierarchical proces
 
 ## Next Steps
 
-1. **Immediate**: Begin T7 (Cross-Reference Navigation) — unblocked by T5 + T6 completion
-2. **Also unblocked**: T8 (Process Level Tracking and Scale Management) — depends on T5 only, can run in parallel with T7
-3. **End of Phase 2**: Complete T7 + T8 to reach Milestone M2 (Full Hierarchy)
+1. **Immediate**: Begin T10 (Hierarchy Validation Tools) — unblocked by T5 + T4 completion
+2. **Also unblocked**: T11 (Change Impact Analysis) — depends on T5 + T7, both complete
+3. **End of Phase 3**: Complete T10 + T11 + T12 to reach Milestone M3 (EDPS Compliance & Validation)
 4. **Ongoing**: Regular validation against EDPS methodology requirements
 
 ### Completed
 - T1–T4 (Phase 1): Enhanced collaboration skill, stereotype classification, box syntax, boundary validation
-- T5 (Phase 2): Hierarchy management skill
-- T6 (Phase 2): Sub-folder generation — 4 standard files per folder, naming sanitization, collision resolution, audit log; all 24 test cases passed (March 14, 2026)
+- T5–T8 (Phase 2): Hierarchy management skill, sub-folder generation, cross-reference navigation, process level tracking
+- T9 (Phase 3): EDPS compliance checking skill — 11 rules across 3 groups, strict/relaxed modes, scored reports; 33/33 test cases passed (March 14, 2026)
 
 **Project Sponsor Approval Required For:**
 - Resource allocation commitment

@@ -46,6 +46,13 @@ Implement EDPS methodology compliance validation for all generated hierarchical 
 - [x] Compliance trend tracking across project lifetime
 - [x] Auto-remediation suggestions for common violations
 
+## Test Results
+
+- **Test Cases**: 33 cases across 12 categories covering all 11 compliance rules (VR-1 to VR-4, HR-1 to HR-6, EP-1 to EP-4), scoring formula, and mode behavior
+- **Result**: 33/33 PASS after 3 defects found and fixed
+- **Defects Fixed**: D-T9-01 (EP-2 false-positive on decomposed participants), D-T9-02 (SKIPPED rules not excluded from scoring), D-T9-03 (status classification gap for errors=0 / score<70%)
+- **Test Files**: [T9-test-cases.md](../artifacts/Testing/T9-test-cases.md), [T9-test-results.md](../artifacts/Testing/T9-test-results.md)
+
 ## Dependencies
 
 ### Prerequisites
@@ -57,15 +64,7 @@ Implement EDPS methodology compliance validation for all generated hierarchical 
 
 ## Test Cases
 
-### Test Case 1: Full EDPS Compliance
-**Given**: Properly structured 3-level hierarchy with typed participants and traceability
-**When**: EDPS compliance check runs
-**Then**: 100% pass rate on all compliance rules
-
-### Test Case 2: Missing Traceability
-**Given**: Hierarchy level without requirement traceability links
-**When**: EDPS compliance check runs
-**Then**: Failure on traceability rule with specific location of violation
+See full test suite (33 test cases) in [T9-test-cases.md](../artifacts/Testing/T9-test-cases.md) and full execution results in [T9-test-results.md](../artifacts/Testing/T9-test-results.md).
 
 ---
 

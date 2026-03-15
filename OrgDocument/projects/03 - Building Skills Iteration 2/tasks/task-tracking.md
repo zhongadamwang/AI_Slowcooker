@@ -99,6 +99,8 @@
   - Generates per-rule JSON report (`edps-compliance-report.json`) and scored Markdown report (`edps-compliance-report.md`) with remediation suggestions
   - Supports `strict` and `relaxed` modes with configurable severity behavior
   - Includes compliance scoring, overall status classification, trend delta comparison, and remediation priority guidance
+  - **Test results**: 33/33 test cases passed; 3 defects found and fixed (EP-2 false-positive, SKIPPED scoring gap, status classification gap)
+  - **Test files**: [T9-test-cases.md](../artifacts/Testing/T9-test-cases.md), [T9-test-results.md](../artifacts/Testing/T9-test-results.md)
   - **File**: [T9-edps-compliance.md](T9-edps-compliance.md)
 
 ### Not Started
