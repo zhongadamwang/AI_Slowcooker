@@ -9,10 +9,10 @@
 | Phase | Tasks | Status | Progress |
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
-| Phase 2: Hierarchy Management | T5-T8 | In Progress | 2/4 |
+| Phase 2: Hierarchy Management | T5-T8 | In Progress | 3/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Not Started | 0/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **6/17** |
+| **Total** | **17 tasks** | **In Progress** | **7/17** |
 
 ---
 
@@ -74,12 +74,15 @@
   - All 26 test cases executed and passed (March 14, 2026); full results in `artifacts/Testing/T7-test-results.md`
   - **File**: [T7-cross-reference-navigation.md](T7-cross-reference-navigation.md)
 
-### Not Started
-
-- [ ] **T8: Add Process Level Tracking and Scale Management**
-  - **Priority**: Medium | **Effort**: 2-3 days
-  - **Dependencies**: T5
-  - **Requirements**: R-305
+- [x] **T8: Add Process Level Tracking and Scale Management**
+  - **Priority**: Medium | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Extended `hierarchy-management` SKILL.md with a new **Process Level Tracking and Scale Management** section covering:
+    - Complexity metrics calculation (`interaction_count`, `participant_count`, `nesting_depth`) per diagram (FR-T8.1)
+    - Warning levels (`none`/`advisory`/`critical`) with Level 0 threshold (7) and Level N threshold (12), plus 80 % advisory trigger (FR-T8.2)
+    - Decomposition candidate identification for control-type participants exceeding `decomposition_candidate_min_interactions` (FR-T8.3)
+    - Hierarchy depth/breadth summary report including `boundary_count`, `nodes_by_level`, and `scale_management` aggregates (FR-T8.4)
+  - Updated `references/hierarchy-metadata-schema.md` (schema_version 1.1): added `complexity_thresholds` top-level block (TR-T8.2), `complexity_metrics` object per node, `boundary_count` and `scale_management` in `hierarchy_statistics`, updated example document (TR-T8.1)
+  - Added trigger in §6 (Update hierarchy-metadata.json) to run scale analysis automatically after each decomposition
   - **File**: [T8-process-level-tracking.md](T8-process-level-tracking.md)
 
 ---

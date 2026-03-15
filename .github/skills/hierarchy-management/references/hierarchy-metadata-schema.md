@@ -20,7 +20,7 @@
 
 ```json
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "root_process": {
     "id": "string — unique process identifier (slug, e.g. 'customer-order-journey')",
     "name": "string — human-readable process name",
@@ -29,10 +29,21 @@
   },
   "generated_at": "ISO8601 timestamp",
   "last_updated": "ISO8601 timestamp",
+  "complexity_thresholds": {
+    "level_0_max_interactions": 7,
+    "level_n_max_interactions": 12,
+    "decomposition_candidate_min_interactions": 5,
+    "note": "Override any value to customise warning thresholds for this hierarchy."
+  },
   "nodes": { },
   "hierarchy_statistics": { }
 }
 ```
+
+> **`complexity_thresholds`** (optional, defaults applied when absent):  
+> - `level_0_max_interactions` — interaction count above which a Level 0 diagram triggers a complexity warning (default: 7)  
+> - `level_n_max_interactions` — interaction count above which a Level N (N ≥ 1) diagram triggers a complexity warning (default: 12)  
+> - `decomposition_candidate_min_interactions` — minimum interactions for a control-type participant to be flagged as a decomposition candidate (default: 5)
 
 ---
 
@@ -51,7 +62,14 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
   "parent_id": "string | null — id of parent node (null for root)",
   "children": ["array of child node ids"],
   "source_diagram": "string — relative path to the collaboration.md where this participant is defined",
-  "decomposition_link": "string | null — relative path to child collaboration.md (set when status=decomposed)"
+  "decomposition_link": "string | null — relative path to child collaboration.md (set when status=decomposed)",
+  "complexity_metrics": {
+    "interaction_count": "number — total message sends/receives in this node's source_diagram",
+    "participant_count": "number — total participants in this node's source_diagram",
+    "nesting_depth": "number — number of nested box levels in this node's source_diagram",
+    "complexity_warning": "none | advisory | critical",
+    "decomposition_candidates": ["array of participant ids that exceed decomposition_candidate_min_interactions threshold"]
+  }
 }
 ```
 
@@ -59,6 +77,11 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
 - `available` — control-type, not yet decomposed; eligible for decomposition
 - `decomposed` — decomposed into a child sub-process
 - `leaf` — non-control type (actor, boundary, entity) or a control that will not be further decomposed
+
+**`complexity_metrics.complexity_warning` values:**
+- `none` — interaction count is within threshold
+- `advisory` — interaction count exceeds 80 % of the threshold (early warning)
+- `critical` — interaction count exceeds the threshold (action recommended)
 
 ---
 
@@ -72,12 +95,22 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
     "leaf_count": "number — nodes with no children",
     "decomposed_count": "number — nodes with status='decomposed'",
     "available_count": "number — control nodes with status='available'",
+    "boundary_count": "number — nodes with type='boundary'",
     "nodes_by_level": {
       "0": "number",
       "1": "number",
       "2": "number"
     },
-    "breadth_at_deepest_level": "number"
+    "breadth_at_deepest_level": "number",
+    "scale_management": {
+      "critical_warnings": ["array of node ids with complexity_warning='critical'"],
+      "advisory_warnings": ["array of node ids with complexity_warning='advisory'"],
+      "decomposition_candidates": ["array of node ids flagged across all levels"],
+      "total_interactions_by_level": {
+        "0": "number",
+        "1": "number"
+      }
+    }
   }
 }
 ```
@@ -88,7 +121,7 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
 
 ```json
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "root_process": {
     "id": "customer-order-journey",
     "name": "Customer Order Journey",
@@ -97,6 +130,11 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
   },
   "generated_at": "2026-03-14T10:00:00Z",
   "last_updated": "2026-03-14T12:30:00Z",
+  "complexity_thresholds": {
+    "level_0_max_interactions": 7,
+    "level_n_max_interactions": 12,
+    "decomposition_candidate_min_interactions": 5
+  },
   "nodes": {
     "Customer": {
       "id": "Customer",
@@ -108,7 +146,8 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
       "parent_id": null,
       "children": [],
       "source_diagram": "collaboration.md",
-      "decomposition_link": null
+      "decomposition_link": null,
+      "complexity_metrics": null
     },
     "ECommercePlatform": {
       "id": "ECommercePlatform",
@@ -120,7 +159,14 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
       "parent_id": null,
       "children": ["WebFrontend", "CartService", "OrderService", "InventoryService"],
       "source_diagram": "collaboration.md",
-      "decomposition_link": "01-EcommercePlatformBoundary/collaboration.md"
+      "decomposition_link": "01-EcommercePlatformBoundary/collaboration.md",
+      "complexity_metrics": {
+        "interaction_count": 6,
+        "participant_count": 5,
+        "nesting_depth": 1,
+        "complexity_warning": "advisory",
+        "decomposition_candidates": []
+      }
     },
     "WebFrontend": {
       "id": "WebFrontend",
@@ -132,7 +178,8 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
       "parent_id": "ECommercePlatform",
       "children": [],
       "source_diagram": "01-EcommercePlatformBoundary/collaboration.md",
-      "decomposition_link": null
+      "decomposition_link": null,
+      "complexity_metrics": null
     },
     "OrderService": {
       "id": "OrderService",
@@ -144,7 +191,14 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
       "parent_id": "ECommercePlatform",
       "children": ["OrderAPI", "OrderValidator", "OrderEngine", "OrderRepository"],
       "source_diagram": "01-EcommercePlatformBoundary/collaboration.md",
-      "decomposition_link": "01-EcommercePlatformBoundary/01-OrderManagementBoundary/collaboration.md"
+      "decomposition_link": "01-EcommercePlatformBoundary/01-OrderManagementBoundary/collaboration.md",
+      "complexity_metrics": {
+        "interaction_count": 14,
+        "participant_count": 4,
+        "nesting_depth": 1,
+        "complexity_warning": "critical",
+        "decomposition_candidates": ["OrderEngine"]
+      }
     },
     "CartService": {
       "id": "CartService",
@@ -156,7 +210,14 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
       "parent_id": "ECommercePlatform",
       "children": [],
       "source_diagram": "01-EcommercePlatformBoundary/collaboration.md",
-      "decomposition_link": null
+      "decomposition_link": null,
+      "complexity_metrics": {
+        "interaction_count": 8,
+        "participant_count": 3,
+        "nesting_depth": 1,
+        "complexity_warning": "none",
+        "decomposition_candidates": []
+      }
     },
     "OrderAPI": {
       "id": "OrderAPI",
@@ -168,7 +229,8 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
       "parent_id": "OrderService",
       "children": [],
       "source_diagram": "01-EcommercePlatformBoundary/01-OrderManagementBoundary/collaboration.md",
-      "decomposition_link": null
+      "decomposition_link": null,
+      "complexity_metrics": null
     },
     "OrderEngine": {
       "id": "OrderEngine",
@@ -180,7 +242,14 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
       "parent_id": "OrderService",
       "children": [],
       "source_diagram": "01-EcommercePlatformBoundary/01-OrderManagementBoundary/collaboration.md",
-      "decomposition_link": null
+      "decomposition_link": null,
+      "complexity_metrics": {
+        "interaction_count": 9,
+        "participant_count": 4,
+        "nesting_depth": 1,
+        "complexity_warning": "none",
+        "decomposition_candidates": []
+      }
     }
   },
   "hierarchy_statistics": {
@@ -189,12 +258,23 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
     "leaf_count": 4,
     "decomposed_count": 2,
     "available_count": 2,
+    "boundary_count": 2,
     "nodes_by_level": {
       "0": 2,
       "1": 4,
       "2": 4
     },
-    "breadth_at_deepest_level": 4
+    "breadth_at_deepest_level": 4,
+    "scale_management": {
+      "critical_warnings": ["OrderService"],
+      "advisory_warnings": ["ECommercePlatform"],
+      "decomposition_candidates": ["OrderEngine"],
+      "total_interactions_by_level": {
+        "0": 6,
+        "1": 22,
+        "2": 9
+      }
+    }
   }
 }
 ```
@@ -207,11 +287,12 @@ When a decomposition is performed, update `hierarchy-metadata.json` as follows:
 
 1. **Parent node**: set `status` → `"decomposed"`, set `folder`, set `decomposition_link`, append child IDs to `children`
 2. **New child nodes**: add one node entry per participant in the new sub-process diagram (using stereotype classification to assign `type`)
-3. **Statistics**: recompute all `hierarchy_statistics` fields from the updated `nodes` map
-4. **`last_updated`**: set to current ISO8601 timestamp
+3. **Statistics**: recompute all `hierarchy_statistics` fields from the updated `nodes` map, including `scale_management` aggregates
+4. **`complexity_metrics`**: calculate for all new control-type nodes; set `null` for actor/boundary/entity leaf nodes
+5. **`last_updated`**: set to current ISO8601 timestamp
 
 When a rollback is performed:
 1. Remove all child node entries that were added by the decomposition
 2. Reset parent node: `status` → `"available"`, `folder` → `null`, `decomposition_link` → `null`, `children` → `[]`
-3. Recompute `hierarchy_statistics`
+3. Recompute `hierarchy_statistics` (including `scale_management`)
 4. Update `last_updated`
