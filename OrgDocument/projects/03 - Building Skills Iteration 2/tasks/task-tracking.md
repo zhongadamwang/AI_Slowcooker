@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 3.5 - Conflict Resolution (Not Started)  
+**Current Phase**: Phase 3.5 - Conflict Resolution (In Progress — 1/5 complete)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (22 tasks across 5 phases)
 
 ## Overall Progress
@@ -11,9 +11,9 @@
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
-| Phase 3.5: Conflict Resolution | T18-T22 | Not Started | 0/5 |
+| Phase 3.5: Conflict Resolution | T18-T22 | In Progress | 1/5 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **22 tasks** | **In Progress** | **12/22** |
+| **Total** | **22 tasks** | **In Progress** | **13/22** |
 
 ---
 
@@ -141,14 +141,17 @@
 
 Skill conflict review (March 14, 2026) identified 5 conflicts between new Project 3 skills and the existing skill ecosystem. All must be resolved before Phase 4 migration work begins. See [EDPS_Skills_Validation_Report.md](../../../../EDPS_Skills_Validation_Report.md) for the full architectural review findings.
 
-### Not Started
-- [ ] **T18: Resolve C-1 — VR Rule Delegation to diagram-generatecollaboration**
-  - **Priority**: High | **Effort**: 1-2 days
+### Completed
+- [x] **T18: Resolve C-1 — VR Rule Delegation to diagram-generatecollaboration**
+  - **Priority**: High | **Effort**: 1-2 days | **Completed**: March 14, 2026
   - **Dependencies**: T1, T4, T9
   - **Conflict**: VR-1–VR-4 algorithms duplicated in `edps-compliance` and `diagram-generatecollaboration` (single-source-of-truth violation)
-  - **Resolution**: Remove VR algorithm blocks from `edps-compliance`; add delegation step that reads from or invokes `diagram-generatecollaboration` boundary validation
+  - **Resolution**: Removed VR-1–VR-4 algorithm blocks from `edps-compliance/SKILL.md` Step 2; replaced with delegation step (read pre-existing report or auto-invoke `diagram-generatecollaboration --mode boundary-validation-only`); added `boundary-validation-report.json` as optional input; added Group A Delegation Contract note; updated `diagram-generatecollaboration` description as authoritative VR source; created 7 test cases in `artifacts/Testing/T18-test-cases.md`
+  - **Test Results**: 7/7 PASS (March 14, 2026) — static analysis + specification verification; 1 minor gap found (console notice for delegation failure) patched during test run
+  - **Test File**: [T18-test-cases.md](../artifacts/Testing/T18-test-cases.md)
   - **File**: [T18-resolve-c1-vr-rule-delegation.md](T18-resolve-c1-vr-rule-delegation.md)
 
+### Not Started
 - [ ] **T19: Resolve C-2 — Structural Validation Scope Segregation**
   - **Priority**: High | **Effort**: 1-2 days
   - **Dependencies**: T18, T10, T9

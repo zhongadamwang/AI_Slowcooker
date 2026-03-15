@@ -1,6 +1,6 @@
 ---
 name: diagram-generatecollaboration
-description: Generate Mermaid collaboration diagrams embedded in markdown, visualizing system interactions and workflows from domain concepts and requirements. Creates sequence diagrams, flowcharts, class diagrams, and interaction patterns with traceability links to source requirements.
+description: Generate Mermaid collaboration diagrams embedded in markdown, visualizing system interactions and workflows from domain concepts and requirements. Creates sequence diagrams, flowcharts, class diagrams, and interaction patterns with traceability links to source requirements. This skill is the single authoritative source for boundary validation rules VR-1 through VR-4 and their check algorithms; other skills (e.g., edps-compliance) delegate VR checking to this skill rather than reimplementing it.
 license: MIT
 ---
 
