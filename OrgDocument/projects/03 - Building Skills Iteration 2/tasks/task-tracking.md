@@ -10,9 +10,9 @@
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
-| Phase 3: EDPS Compliance & Validation | T9-T12 | In Progress | 1/4 |
+| Phase 3: EDPS Compliance & Validation | T9-T12 | In Progress | 2/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **9/17** |
+| **Total** | **17 tasks** | **In Progress** | **10/17** |
 
 ---
 
@@ -103,13 +103,19 @@
   - **Test files**: [T9-test-cases.md](../artifacts/Testing/T9-test-cases.md), [T9-test-results.md](../artifacts/Testing/T9-test-results.md)
   - **File**: [T9-edps-compliance.md](T9-edps-compliance.md)
 
-### Not Started
-
-- [ ] **T10: Create Hierarchy Validation Tools**
-  - **Priority**: High | **Effort**: 2-3 days
-  - **Dependencies**: T5, T4
-  - **Requirements**: R-306
+- [x] **T10: Create Hierarchy Validation Tools**
+  - **Priority**: High | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Created new `hierarchy-validation` skill at `.github/skills/hierarchy-validation/SKILL.md`
+  - Implements 14 validation rules across 3 groups: Group HV (HV-1 through HV-5, cross-level type consistency), Group HX (HX-1 through HX-5, cross-reference integrity), Group HN (HN-1 through HN-4, naming and structure rules)
+  - Supports full-tree and incremental (`--mode incremental`) single-branch validation
+  - Auto-fix (`--fix`) for path-reconstruction and metadata issues (HX-1/2/3/4/5, HN-4); structural ERRORs (HV-*, HN-1/2/3) require human review
+  - Generates per-rule JSON report (`hierarchy-validation-report.json`) and scored Markdown report (`hierarchy-validation-report.md`) with severity classification and remediation guidance
+  - Registered in `INDEX.md` under Compliance & Validation
+  - **Test results**: 34/34 test cases passed; 1 defect found and fixed (D-T10-01: HX-1/2 auto-fix contradiction in exclusion note)
+  - **Test files**: [T10-test-cases.md](../artifacts/Testing/T10-test-cases.md), [T10-test-results.md](../artifacts/Testing/T10-test-results.md)
   - **File**: [T10-hierarchy-validation.md](T10-hierarchy-validation.md)
+
+### Not Started
 
 - [ ] **T11: Add Change Impact Analysis Across Levels**
   - **Priority**: Medium | **Effort**: 2-3 days
@@ -258,3 +264,18 @@ T1 ──┬──► T2 ──┐
 - **Milestone M2 complete** — Phase 2 (T5–T8) all done; full hierarchy management including sub-folders, cross-reference navigation, and scale tracking operational
 - **Next Step**: Begin Phase 3 — T9 (EDPS Compliance Checking)
 - **Next Step**: Begin T6 (Sub-Folder Generation)
+
+### March 14, 2026 - T10 Completed
+- Created new skill `hierarchy-validation` at `.github/skills/hierarchy-validation/SKILL.md`
+  - 14 validation rules across 3 groups: Group HV (HV-1–HV-5, cross-level type consistency), Group HX (HX-1–HX-5, cross-reference integrity), Group HN (HN-1–HN-4, naming and structure)
+  - Full-tree and incremental (`--mode incremental`) single-branch validation modes
+  - Auto-fix (`--fix`) for path-reconstruction and metadata issues (HX-1/2/3/4/5, HN-4); structural ERRORs (HV-*, HN-1/2/3) generate remediation guidance requiring human review
+  - Scoring formula and four-status classification (VALID / MOSTLY_VALID / NEEDS_ATTENTION / INVALID)
+  - JSON and Markdown report generation with per-level, per-rule results
+- Created `artifacts/Testing/T10-test-cases.md` with 34 test cases across 17 categories (2 cases per rule, 4 scoring cases, incremental mode, and auto-fix boundary tests)
+- Executed all 34 T10 test cases against `hierarchy-validation` SKILL.md — **34/34 PASS** (100%)
+- 1 defect found and fixed during execution:
+  - **D-T10-01**: Auto-fix table included HX-1 and HX-2 but exclusion note listed them as non-auto-fixable. Since HX-1/2 are path-reconstruction fixes (safe, no structural change), removed them from the exclusion note. Note now reads "structural ERROR-severity rules (HV-*, HN-1/2/3)".
+- Results documented in `artifacts/Testing/T10-test-results.md`
+- Registered `hierarchy-validation` in `INDEX.md` Compliance & Validation table
+- **Next Step**: Begin T11 (Change Impact Analysis) or T12 (Documentation Automation)
