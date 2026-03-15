@@ -8,6 +8,26 @@ description: Automate generation of process documentation at each hierarchy leve
 
 Generate rich, level-appropriate process documentation for every folder in an EDPS process hierarchy.
 
+## Scope and Pipeline Position
+
+**Trigger**: Hierarchy decomposition events — invoked after `hierarchy-management` creates a new process folder, or when existing docs need regeneration from `collaboration.md`.
+
+**Primary input**: `[process-folder]/collaboration.md` (participant list, stereotypes, and message flows).
+
+**Operates at**: Each individual EDPS hierarchy node folder (e.g., `orgModel/.../01-OrderServiceBoundary/`). Generates per-node process documentation.
+
+### Relative to `orgmodel-update`
+
+| Skill | Trigger | Primary Input | Owns |
+|-------|---------|---------------|------|
+| `documentation-automation` *(this skill)* | Hierarchy decomposition event | `[folder]/collaboration.md` | `main.md`, `process.md`, `collaboration.md`, `domain-model.md` at each EDPS hierarchy node |
+| `orgmodel-update` | Project analysis outputs | `domain-alignment.json`, `domain-concepts.json` | `vocabulary.md`, `test-case-list.md` (always); shared files only in non-hierarchy-managed folders |
+
+**Ordering rule**: Within a single process:
+- `documentation-automation` always runs **after** `hierarchy-management` decomposition.
+- `orgmodel-update` runs from project analysis outputs. If both skills target the same folder, **`documentation-automation` takes precedence** for the four shared files. `orgmodel-update` detects this via `hierarchy-metadata.json` and writes to `pending-orgmodel-updates.md` instead of overwriting.
+- `documentation-automation` does **not** generate `vocabulary.md` or `test-case-list.md`; those are owned by `orgmodel-update`.
+
 ## Inputs
 
 - **Primary**: `[process-folder]/collaboration.md` — participant list, stereotypes, and message flows
@@ -274,7 +294,7 @@ To override the default templates for an organization:
 |-------|-------------|
 | `hierarchy-management` | Creates folder structure and hierarchy-metadata.json; documentation-automation populates file content |
 | `diagram-generatecollaboration` | Validates EDPS boundary rules used in Step 5; apply its stereotype classification rules when adding annotations |
-| `orgmodel-update` | Consumes completed docs to update the root OrgModel; run after documentation-automation completes |
+| `orgmodel-update` | **Downstream / lower precedence for shared files**. Consumes completed per-node docs to update root-level OrgModel analysis. Must be run after `documentation-automation` completes for hierarchy-managed folders. When `hierarchy-metadata.json` is present, `orgmodel-update` defers to this skill for `main.md`, `process.md`, `collaboration.md`, `domain-model.md` and writes proposed changes to `pending-orgmodel-updates.md` instead. See `orgmodel-update/SKILL.md §Scope and Pipeline Position` for details. |
 
 ---
 

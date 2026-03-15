@@ -4,10 +4,10 @@
 **Phase**: Phase 3.5 - Conflict Resolution  
 **Priority**: Low  
 **Estimated Effort**: 1 day  
-**Status**: Not Started  
+**Status**: Completed  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
-**Last Updated**: March 14, 2026
+**Last Updated**: March 15, 2026
 
 ## Description
 
@@ -52,17 +52,17 @@ This task establishes a pipeline ordering contract between the two skills and ad
 ## Acceptance Criteria
 
 ### Must Have
-- [ ] Scope and Pipeline Position section added to both `documentation-automation/SKILL.md` and `orgmodel-update/SKILL.md`
-- [ ] EDPS-Hierarchy Guard added to `orgmodel-update/SKILL.md` Workflow as first step
-- [ ] `vocabulary.md` and `test-case-list.md` explicitly exempt from the guard (always updated)
-- [ ] `pending-orgmodel-updates.md` format documented in `orgmodel-update/SKILL.md`
+- [x] Scope and Pipeline Position section added to both `documentation-automation/SKILL.md` and `orgmodel-update/SKILL.md`
+- [x] EDPS-Hierarchy Guard added to `orgmodel-update/SKILL.md` Workflow as first step
+- [x] `vocabulary.md` and `test-case-list.md` explicitly exempt from the guard (always updated)
+- [x] `pending-orgmodel-updates.md` format documented in `orgmodel-update/SKILL.md`
 
 ### Should Have
-- [ ] Related Skills cross-reference section in both SKILL.md files
-- [ ] Guard search depth (3 ancestor levels) documented
+- [x] Related Skills cross-reference section in both SKILL.md files
+- [x] Guard search depth (3 ancestor levels) documented
 
 ### Could Have
-- [ ] A `--force-overwrite` flag documented to bypass the guard for deliberate full regeneration
+- [x] A `--force-overwrite` flag documented to bypass the guard for deliberate full regeneration
 
 ## Implementation Approach
 

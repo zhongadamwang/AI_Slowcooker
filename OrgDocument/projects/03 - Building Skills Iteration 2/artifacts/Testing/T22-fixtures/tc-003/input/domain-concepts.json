@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "source_project": "03 - Building Skills Iteration 2",
+  "generated": "2026-03-15T09:00:00Z",
+  "target_process": "Skill Pipeline Execution",
+  "entities": [
+    {
+      "name": "SkillInvocationLog",
+      "definition": "Audit record capturing who invoked a skill, when, with what inputs, and what outputs were produced.",
+      "attributes": ["log_id: String", "skill_name: String", "invoked_by: String", "timestamp: DateTime", "outcome: Enum(success,failure)"],
+      "relationships": ["references SkillOutputEntity", "linked to PractitionerActor"],
+      "domain_area": "Audit and Traceability",
+      "source_requirement": "R-44"
+    }
+  ],
+  "vocabulary_terms": [
+    {
+      "term": "Skill Invocation Log",
+      "definition": "Audit record capturing the full context of a single skill invocation",
+      "aliases": ["Invocation Audit", "Skill Audit Record"],
+      "context": "Audit trail, traceability, compliance"
+    },
+    {
+      "term": "Outcome Status",
+      "definition": "Enumerated result of a skill invocation: success, failure, or skip",
+      "aliases": ["Invocation Outcome", "Execution Status"],
+      "context": "Pipeline monitoring, reporting"
+    }
+  ]
+}
