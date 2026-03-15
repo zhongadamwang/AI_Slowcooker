@@ -62,9 +62,10 @@ A **boundary** represents a cohesive unit where:
 - **Enhanced organizational process models with multi-level decomposition capabilities**
 
 ## Status
-- **Phase**: Phase 2 - Hierarchy Management (In Progress, 2/4 tasks complete)
+- **Phase**: Phase 4 - Migration & Integration (In Progress, 4/5 tasks complete)
 - **Started**: March 13, 2026
 - **Analysis Completed**: March 14, 2026
+- **T16 Completed**: March 15, 2026 — Performance benchmarks; all ≤30 s per step; 7/7 VS Code rendering pass; schema v1.2 with regression baseline; D-T16-01 fixed
 - **T1 Completed**: March 14, 2026 — Enhanced collaboration skill with boundary support
 - **T2 Completed**: March 14, 2026 — Participant stereotype classification
 - **T3 Completed**: March 14, 2026 — Mermaid box syntax generation

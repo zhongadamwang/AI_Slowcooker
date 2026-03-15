@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 15, 2026  
-**Current Phase**: Phase 4 - Migration & Integration (In Progress — 3/5)  
+**Current Phase**: Phase 4 - Migration & Integration (In Progress — 4/5)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (22 tasks across 5 phases)
 
 ## Overall Progress
@@ -12,8 +12,8 @@
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
 | Phase 3.5: Conflict Resolution | T18-T22 | Completed | 5/5 |
-| Phase 4: Migration & Integration | T13-T17 | In Progress | 3/5 |
-| **Total** | **22 tasks** | **In Progress** | **20/22** |
+| Phase 4: Migration & Integration | T13-T17 | In Progress | 4/5 |
+| **Total** | **22 tasks** | **In Progress** | **21/22** |
 
 ---
 
@@ -231,10 +231,19 @@ Skill conflict review (March 14, 2026) identified 5 conflicts between new Projec
   - **File**: [T15-orgmodel-enhancement.md](T15-orgmodel-enhancement.md)
 
 ### Not Started
-- [ ] **T16: Performance Testing & Optimization**
-  - **Priority**: Medium | **Effort**: 1-2 days
-  - **Dependencies**: T15
-  - **Requirements**: TC-301, TC-302
+- [x] **T16: Performance Testing & Optimization** ✅ Done (March 15, 2026)
+  - **Priority**: Medium | **Effort**: 1-2 days | **Completed**: March 15, 2026
+  - **Dependencies**: T15 (satisfied)
+  - **Requirements**: TC-301, TC-302, TC-303
+  - All Level 1–5 per-step generation times ≤30 s (median 11 s, worst case 14 s for 12-participant diagram)
+  - Level 5 cascade total 58 s; inter-level time variance 8.7% (below 20% budget)
+  - VS Code rendering: 7/7 diagram types PASS; no syntax errors or timeouts
+  - File generation steps account for 79% of elapsed time; 4 optimization recommendations documented (OPT-1–OPT-4)
+  - Defect fixed: D-T16-01 — `hierarchy-metadata-schema.md` bumped to v1.2 with `performance_baseline` block
+  - Regression baseline established: 11 s/decomp median, 20% threshold
+  - **Test results**: 22/22 test cases passed; 1 defect found and fixed
+  - **Test files**: [T16-test-cases.md](../artifacts/Testing/T16-test-cases.md), [T16-test-results.md](../artifacts/Testing/T16-test-results.md)
+  - **Benchmark doc**: [T16-performance-benchmarks.md](../artifacts/Analysis/T16-performance-benchmarks.md)
   - **File**: [T16-performance-optimization.md](T16-performance-optimization.md)
 
 - [ ] **T17: Create User Documentation**
@@ -268,7 +277,7 @@ T1 ──┬──► T2 ──┐
 | M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | ✅ Complete |
 | M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | ✅ Complete |
 | M3.5: Conflicts Resolved | End Week 10 | T18-T22 complete, no cross-skill conflicts, safe to begin Phase 4 | ✅ Complete (March 15, 2026) |
-| M4: Project Complete | End Week 13 | T13-T17 complete, OrgModel updated | In Progress (T13 ✅, T14 ✅, T15 ✅; T16-T17 pending) |
+| M4: Project Complete | End Week 13 | T13-T17 complete, OrgModel updated | In Progress (T13 ✅, T14 ✅, T15 ✅, T16 ✅; T17 pending) |
 
 ## Progress Log
 

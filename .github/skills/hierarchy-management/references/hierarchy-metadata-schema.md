@@ -20,7 +20,7 @@
 
 ```json
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "root_process": {
     "id": "string — unique process identifier (slug, e.g. 'customer-order-journey')",
     "name": "string — human-readable process name",
@@ -36,7 +36,18 @@
     "note": "Override any value to customise warning thresholds for this hierarchy."
   },
   "nodes": { },
-  "hierarchy_statistics": { }
+  "hierarchy_statistics": { },
+  "performance_baseline": {
+    "last_benchmarked": "ISO8601 date — date of most recent T16 benchmark run",
+    "schema_version": "string — schema version at time of benchmark",
+    "median_decomp_time_s": "number — median single-decomposition elapsed time in seconds",
+    "worst_case_decomp_time_s": "number — worst observed single-decomposition time in seconds",
+    "level_5_cascade_total_s": "number — total elapsed time for 5-level cascade in seconds",
+    "link_integrity_20_nodes_s": "number — link-integrity check time for a 20-node tree in seconds",
+    "vs_code_render_pass_rate": "string — fraction of VS Code rendering tests that passed (e.g. '7/7')",
+    "regression_threshold_pct": "number — percentage increase above baseline that triggers a regression alert (default: 20)",
+    "note": "Optional. Populate after running performance benchmarks (T16). Used for regression detection."
+  }
 }
 ```
 
@@ -121,7 +132,7 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
 
 ```json
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "root_process": {
     "id": "customer-order-journey",
     "name": "Customer Order Journey",
@@ -275,6 +286,16 @@ Each key in `nodes` is the participant's identifier (PascalCase slug). Each valu
         "2": 9
       }
     }
+  },
+  "performance_baseline": {
+    "last_benchmarked": "2026-03-15",
+    "schema_version": "1.2",
+    "median_decomp_time_s": 11,
+    "worst_case_decomp_time_s": 14,
+    "level_5_cascade_total_s": 58,
+    "link_integrity_20_nodes_s": 18,
+    "vs_code_render_pass_rate": "7/7",
+    "regression_threshold_pct": 20
   }
 }
 ```
