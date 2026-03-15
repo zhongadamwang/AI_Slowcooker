@@ -10,9 +10,9 @@
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
-| Phase 3: EDPS Compliance & Validation | T9-T12 | In Progress | 2/4 |
+| Phase 3: EDPS Compliance & Validation | T9-T12 | In Progress | 3/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **10/17** |
+| **Total** | **17 tasks** | **In Progress** | **11/17** |
 
 ---
 
@@ -115,13 +115,17 @@
   - **Test files**: [T10-test-cases.md](../artifacts/Testing/T10-test-cases.md), [T10-test-results.md](../artifacts/Testing/T10-test-results.md)
   - **File**: [T10-hierarchy-validation.md](T10-hierarchy-validation.md)
 
-### Not Started
-
-- [ ] **T11: Add Change Impact Analysis Across Levels**
-  - **Priority**: Medium | **Effort**: 2-3 days
-  - **Dependencies**: T5, T7
-  - **Requirements**: R-306
+- [x] **T11: Add Change Impact Analysis Across Levels**
+  - **Priority**: Medium | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Created new `change-impact-analysis` skill at `.github/skills/change-impact-analysis/SKILL.md`
+  - Implements 8 rules across 2 groups: Group CI (CI-1–CI-5, artifact-level impact tracing) and Group CR (CR-1–CR-3, requirement change tracing)
+  - Supports `--mode what-if` (default) and `--mode apply` (auto-repairs navigational artifacts); 5-level risk classification (NONE/LOW/MEDIUM/HIGH/CRITICAL)
+  - Output `change-impact-report.json` is directly compatible with `change-management` skill's `affected_documents` format
+  - **Test results**: 28/28 test cases passed; 2 defects found and fixed (D-T11-01: comment auto-fix scope; D-T11-02: depth-limit metadata omission)
+  - **Test files**: [T11-test-cases.md](../artifacts/Testing/T11-test-cases.md), [T11-test-results.md](../artifacts/Testing/T11-test-results.md)
   - **File**: [T11-change-impact-analysis.md](T11-change-impact-analysis.md)
+
+### Not Started
 
 - [ ] **T12: Build Documentation Automation**
   - **Priority**: Medium | **Effort**: 2-3 days

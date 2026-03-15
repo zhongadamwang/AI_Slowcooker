@@ -4,7 +4,7 @@
 **Phase**: Phase 3 - EDPS Compliance & Validation  
 **Priority**: Medium  
 **Estimated Effort**: 2-3 days  
-**Status**: Not Started  
+**Status**: Done  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
 **Last Updated**: March 14, 2026
@@ -35,10 +35,23 @@ Implement change impact analysis that traces how changes at one hierarchy level 
 ## Acceptance Criteria
 
 ### Must Have
-- [ ] Identify impacted levels when a boundary changes
-- [ ] Trace requirement changes to affected process levels
-- [ ] Generate change impact report with affected artifacts
-- [ ] Support what-if analysis for proposed changes
+- [x] Identify impacted levels when a boundary changes
+- [x] Trace requirement changes to affected process levels
+- [x] Generate change impact report with affected artifacts
+- [x] Support what-if analysis for proposed changes
+
+## Implementation Summary
+
+- Created new `change-impact-analysis` skill at `.github/skills/change-impact-analysis/SKILL.md`
+- Implements 8 impact rules across 2 groups:
+  - **Group CI** (CI-1 through CI-5): Artifact-level impact tracing — parent reference impact (CI-1), child navigation cascade (CI-2), participant propagation (CI-3), hierarchy index impact (CI-4), and side-document impact (CI-5)
+  - **Group CR** (CR-1 through CR-3): Requirement change tracing — artifact mapping (CR-1), boundary impact identification (CR-2), downstream propagation (CR-3)
+- Supports `--mode what-if` (default, no file modifications) and `--mode apply` (auto-fixes navigational artifacts)
+- Generates `change-impact-report.json` (machine-readable) and `change-impact-report.md` (human-readable) with 5-level risk classification (NONE/LOW/MEDIUM/HIGH/CRITICAL)
+- `--depth N` option limits traversal scope for targeted analysis
+- Output `change-impact-report.json` is directly compatible with `change-management` skill's `affected_documents` format
+- **Test results**: 28/28 test cases passed; 2 defects found and fixed (D-T11-01: comment auto-fix scope; D-T11-02: depth-limit missing from report metadata)
+- **Test files**: [T11-test-cases.md](../artifacts/Testing/T11-test-cases.md), [T11-test-results.md](../artifacts/Testing/T11-test-results.md)
 
 ## Dependencies
 

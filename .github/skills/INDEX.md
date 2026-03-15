@@ -104,6 +104,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 |-------|---------|---------------|
 | **edps-compliance** | Validate EDPS methodology compliance across process hierarchies — checks boundary rules (VR-1–VR-4), hierarchy structural rules (HR-1–HR-6), and evolutionary principles (EP-1–EP-4); generates scored JSON and Markdown reports with remediation guidance | [Individual skill docs](.github/skills/edps-compliance/SKILL.md) |
 | **hierarchy-validation** | Validate hierarchy structural integrity and cross-level consistency — checks cross-level participant type consistency (HV-1–HV-5), cross-reference link integrity (HX-1–HX-5), and naming/structure rules (HN-1–HN-4); supports full-tree and incremental single-branch validation with auto-fix capability | [Individual skill docs](.github/skills/hierarchy-validation/SKILL.md) |
+| **change-impact-analysis** | Trace how changes at one EDPS hierarchy level propagate to parent and child levels — covers artifact-level impact (CI-1–CI-5: parent references, child navigation cascades, participant propagation, hierarchy index, side documents) and requirement change tracing (CR-1–CR-3); supports what-if pre-flight and apply auto-repair modes with 5-level risk classification | [Individual skill docs](.github/skills/change-impact-analysis/SKILL.md) |
 
 ### 📊 Planning & Management  
 | Skill | Purpose | Documentation |
