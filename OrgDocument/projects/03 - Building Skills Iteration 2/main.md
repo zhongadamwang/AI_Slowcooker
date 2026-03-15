@@ -62,10 +62,11 @@ A **boundary** represents a cohesive unit where:
 - **Enhanced organizational process models with multi-level decomposition capabilities**
 
 ## Status
-- **Phase**: Phase 4 - Migration & Integration (In Progress, 4/5 tasks complete)
+- **Phase**: Phase 4 - Migration & Integration (Complete)
 - **Started**: March 13, 2026
 - **Analysis Completed**: March 14, 2026
 - **T16 Completed**: March 15, 2026 — Performance benchmarks; all ≤30 s per step; 7/7 VS Code rendering pass; schema v1.2 with regression baseline; D-T16-01 fixed
+- **T17 Completed**: March 15, 2026 — User documentation: user guide, participant type reference, migration guide, example walkthroughs, quick-start tutorial, FAQ, video walkthrough scripts
 - **T1 Completed**: March 14, 2026 — Enhanced collaboration skill with boundary support
 - **T2 Completed**: March 14, 2026 — Participant stereotype classification
 - **T3 Completed**: March 14, 2026 — Mermaid box syntax generation
@@ -74,7 +75,7 @@ A **boundary** represents a cohesive unit where:
 - **T6 Completed**: March 14, 2026 — Sub-folder generation (process.md + domain-model.md templates, sanitization, collision resolution, audit log); 24/24 test cases passed
 - **Milestone M1 Complete**: Boundary-enhanced diagrams generating (T1–T4)
 - **Next Milestone**: M2 - Full Hierarchy (End Week 7)
-- **Next Task**: T7 (Cross-Reference Navigation)
+- **Next Task**: None — Phase 4 complete
 - **Dependencies**: Project 1 skills (requirements-ingest, domain concepts, collaboration generation)
 
 ---
