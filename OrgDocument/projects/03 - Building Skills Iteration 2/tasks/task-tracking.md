@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 15, 2026  
-**Current Phase**: Phase 3.5 - Conflict Resolution (In Progress — 3/5 complete)  
+**Current Phase**: Phase 3.5 - Conflict Resolution (Complete — 5/5) → Phase 4 Ready  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (22 tasks across 5 phases)
 
 ## Overall Progress
@@ -11,9 +11,9 @@
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
-| Phase 3.5: Conflict Resolution | T18-T22 | In Progress | 3/5 |
+| Phase 3.5: Conflict Resolution | T18-T22 | Completed | 5/5 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **22 tasks** | **In Progress** | **15/22** |
+| **Total** | **22 tasks** | **In Progress** | **17/22** |
 
 ---
 
@@ -170,19 +170,21 @@ Skill conflict review (March 14, 2026) identified 5 conflicts between new Projec
   - **Test Results File**: [T20-test-results.md](../artifacts/Testing/T20-test-results.md)
   - **File**: [T20-resolve-c3-file-generation-ownership.md](T20-resolve-c3-file-generation-ownership.md)
 
-### Not Started
+### Completed
 - [x] **T21: Resolve C-4 — Impact Analysis Risk Scale Normalization** ✅ Done (March 15, 2026)
-  - **Priority**: Medium | **Effort**: 1 day
+  - **Priority**: Medium | **Effort**: 1 day | **Completed**: March 15, 2026
   - **Dependencies**: T11
   - **Conflict**: `change-impact-analysis` uses 5-level severity scale; `change-management` uses 3-level — `CRITICAL` and `NONE` have no mapping, breaking the stated compatibility
-  - **Resolution**: Add `normalized_risk_level` and `critical_flag` fields to `change-impact-analysis` JSON output with documented mapping table
+  - **Resolution**: Added `normalized_risk_level` and `critical_flag` fields to `change-impact-analysis` JSON output with explicit mapping table; added `summary.critical_count`; updated compatibility claim and human-readable report template with Critical Impacts section
+  - **Test Results**: All acceptance criteria passed
   - **File**: [T21-resolve-c4-risk-scale-normalization.md](T21-resolve-c4-risk-scale-normalization.md)
 
-- [ ] **T22: Resolve C-5 — OrgModel Pipeline Ordering Contract**
-  - **Priority**: Low | **Effort**: 1 day
+- [x] **T22: Resolve C-5 — OrgModel Pipeline Ordering Contract** ✅ Done (March 15, 2026)
+  - **Priority**: Low | **Effort**: 1 day | **Completed**: March 15, 2026
   - **Dependencies**: T12, T5, T20
   - **Conflict**: `documentation-automation` and `orgmodel-update` write the same orgModel files from different inputs with no sequencing contract; `orgmodel-update` can overwrite hierarchy-aware diagrams
-  - **Resolution**: Add EDPS-Hierarchy Guard to `orgmodel-update`; document pipeline ordering; add Scope sections to both SKILL.md files
+  - **Resolution**: Added EDPS-Hierarchy Guard to `orgmodel-update/SKILL.md` as Workflow Step 0 (checks for `hierarchy-metadata.json` up to 3 ancestor levels); added `pending-orgmodel-updates.md` mechanism; added Scope and Pipeline Position sections to both SKILL.md files; exempted `vocabulary.md` and `test-case-list.md` from guard; documented `--force-overwrite` flag
+  - **Test Results**: 3 test cases defined and passing per task file acceptance criteria
   - **File**: [T22-resolve-c5-orgmodel-pipeline-ordering.md](T22-resolve-c5-orgmodel-pipeline-ordering.md)
 
 ---
@@ -244,7 +246,7 @@ T1 ──┬──► T2 ──┐
 | M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | ✅ Complete |
 | M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | ✅ Complete |
 | M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | ✅ Complete |
-| M3.5: Conflicts Resolved | End Week 10 | T18-T22 complete, no cross-skill conflicts, safe to begin Phase 4 | Not Started |
+| M3.5: Conflicts Resolved | End Week 10 | T18-T22 complete, no cross-skill conflicts, safe to begin Phase 4 | ✅ Complete (March 15, 2026) |
 | M4: Project Complete | End Week 13 | T13-T17 complete, OrgModel updated | Not Started |
 
 ## Progress Log
