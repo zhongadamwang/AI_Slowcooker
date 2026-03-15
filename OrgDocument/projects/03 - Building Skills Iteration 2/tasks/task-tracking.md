@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 3 - EDPS Compliance & Validation (Not Started)  
+**Current Phase**: Phase 3 - EDPS Compliance & Validation (In Progress)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (17 tasks across 4 phases)
 
 ## Overall Progress
@@ -10,9 +10,9 @@
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
-| Phase 3: EDPS Compliance & Validation | T9-T12 | Not Started | 0/4 |
+| Phase 3: EDPS Compliance & Validation | T9-T12 | In Progress | 1/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **8/17** |
+| **Total** | **17 tasks** | **In Progress** | **9/17** |
 
 ---
 
@@ -91,12 +91,17 @@
 
 ## Phase 3: EDPS Compliance & Validation (Weeks 8-9, 8-10 dev days)
 
-### Not Started
-- [ ] **T9: Implement EDPS Compliance Checking**
-  - **Priority**: High | **Effort**: 2-3 days
-  - **Dependencies**: T5
-  - **Requirements**: R-306
+### Completed
+- [x] **T9: Implement EDPS Compliance Checking**
+  - **Priority**: High | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Created new `edps-compliance` skill at `.github/skills/edps-compliance/SKILL.md`
+  - Implements 11 compliance rules across 3 groups: Group A (VR-1 through VR-4, boundary diagram rules), Group B (HR-1 through HR-6, hierarchy structural rules), Group C (EP-1 through EP-4, EDPS evolutionary principles)
+  - Generates per-rule JSON report (`edps-compliance-report.json`) and scored Markdown report (`edps-compliance-report.md`) with remediation suggestions
+  - Supports `strict` and `relaxed` modes with configurable severity behavior
+  - Includes compliance scoring, overall status classification, trend delta comparison, and remediation priority guidance
   - **File**: [T9-edps-compliance.md](T9-edps-compliance.md)
+
+### Not Started
 
 - [ ] **T10: Create Hierarchy Validation Tools**
   - **Priority**: High | **Effort**: 2-3 days

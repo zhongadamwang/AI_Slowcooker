@@ -99,6 +99,11 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **model-integration** | Integrate new domain models into existing organizational structures | [Individual skill docs](.github/skills/model-integration/SKILL.md) |
 | **hierarchy-management** | Decompose control-type participants into sub-processes, track parent-child hierarchy, manage folder structure and metadata | [Individual skill docs](.github/skills/hierarchy-management/SKILL.md) |
 
+### ✅ Compliance & Validation
+| Skill | Purpose | Documentation |
+|-------|---------|---------------|
+| **edps-compliance** | Validate EDPS methodology compliance across process hierarchies — checks boundary rules (VR-1–VR-4), hierarchy structural rules (HR-1–HR-6), and evolutionary principles (EP-1–EP-4); generates scored JSON and Markdown reports with remediation guidance | [Individual skill docs](.github/skills/edps-compliance/SKILL.md) |
+
 ### 📊 Planning & Management  
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
