@@ -64,13 +64,17 @@
   - Created 24 test cases across 7 categories in `artifacts/Testing/T6-test-cases.md`; all 24 passing
   - **File**: [T6-subfolder-generation.md](T6-subfolder-generation.md)
 
-### Not Started
-
-- [ ] **T7: Build Cross-Reference Navigation**
-  - **Priority**: Medium | **Effort**: 2-3 days
-  - **Dependencies**: T5, T6
-  - **Requirements**: R-304
+- [x] **T7: Build Cross-Reference Navigation**
+  - **Priority**: Medium | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Extended `hierarchy-management` SKILL.md with bi-directional navigation and hierarchy index:
+    - Updated §4 `main.md` template: added `## Navigation` section with breadcrumb trail (relative `../` paths to all ancestors) and **Parent Process** link; defined breadcrumb construction rules for any depth (FR-T7.1)
+    - Added §7 Cross-Reference Navigation Maintenance: §7a parent→child Sub-Processes table updates (FR-T7.2); §7b child→parent link verification; §7c Link Integrity Check (resolves all `main.md` navigation links, auto-fixes renamed paths, logs to `folder-creation.log`) (FR-T7.4); §7d rollback cleanup
+    - Added top-level §Cross-Reference Navigation section: rebuild-all-links pass for existing hierarchies; **Hierarchy Index at Root Level** — generates `hierarchy-index.md` with flat breadth-first table, Mermaid `flowchart TD` with `click` directives, and statistics table; regenerated on every decomposition and rollback (FR-T7.3)
+  - Created 26 test cases across 7 categories in `artifacts/Testing/T7-test-cases.md`; covers FR-T7.1–FR-T7.4, breadcrumb depth, index regeneration, auto-fix, rollback cleanup, and idempotency
+  - All 26 test cases executed and passed (March 14, 2026); full results in `artifacts/Testing/T7-test-results.md`
   - **File**: [T7-cross-reference-navigation.md](T7-cross-reference-navigation.md)
+
+### Not Started
 
 - [ ] **T8: Add Process Level Tracking and Scale Management**
   - **Priority**: Medium | **Effort**: 2-3 days

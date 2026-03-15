@@ -4,10 +4,11 @@
 **Phase**: Phase 2 - Hierarchy Management  
 **Priority**: Medium  
 **Estimated Effort**: 2-3 days  
-**Status**: Not Started  
+**Status**: Done  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
-**Last Updated**: March 14, 2026
+**Last Updated**: March 14, 2026  
+**Completed**: March 14, 2026
 
 ## Description
 
@@ -35,14 +36,14 @@ Implement bi-directional navigation between hierarchy levels. Each process level
 ## Acceptance Criteria
 
 ### Must Have
-- [ ] Parent process links in sub-process main.md
-- [ ] Sub-process links in parent main.md
-- [ ] Link integrity maintained when hierarchy changes
-- [ ] Process hierarchy index at root level
+- [x] Parent process links in sub-process main.md
+- [x] Sub-process links in parent main.md
+- [x] Link integrity maintained when hierarchy changes
+- [x] Process hierarchy index at root level
 
 ### Should Have
-- [ ] Breadcrumb trail showing full path from root to current level
-- [ ] Visual hierarchy tree in index using markdown
+- [x] Breadcrumb trail showing full path from root to current level
+- [x] Visual hierarchy tree in index using markdown
 
 ## Dependencies
 
@@ -65,8 +66,24 @@ Implement bi-directional navigation between hierarchy levels. Each process level
 **When**: Index is generated at root
 **Then**: Full tree structure displayed with working links to all levels
 
+## Implementation Notes
+
+- Extended `.github/skills/hierarchy-management/SKILL.md` with:
+  - **§4 `main.md` template**: Added `## Navigation` section containing breadcrumb trail, **Parent Process** link, and a **Sub-Processes** notice (FR-T7.1). Breadcrumb construction rules specify how to walk the folder hierarchy and build relative `../` paths to all ancestor levels.
+  - **§7 Cross-Reference Navigation Maintenance** (new workflow step): 
+    - §7a — parent → child links: ensures `## Sub-Processes` table in parent `main.md` is complete and de-duplicated (FR-T7.2)
+    - §7b — child → parent links: verifies parent link and breadcrumb depth match actual folder nesting (FR-T7.1)
+    - §7c — Link Integrity Check: walks all `main.md` files, resolves every navigation link, reports broken links, and auto-fixes renamed paths; logs changes to `folder-creation.log` (FR-T7.4)
+    - §7d — rollback cross-reference cleanup
+  - **§Cross-Reference Navigation** (new top-level section):
+    - Rebuild-all-links pass for pre-existing hierarchies without navigation
+    - **Hierarchy Index at Root Level** (`hierarchy-index.md`): flat table (sorted breadth-first), Mermaid `flowchart TD` with `click` directives, and summary statistics table (FR-T7.3); regenerated after every decomposition and rollback
+- 24 test cases written and passing (see artifacts/Testing/T7-test-cases.md)
+
 ---
 
 **Related Documents**:
 - [Initial Requirements - R-304](../artifacts/Requirements/initial-requirements.md)
 - [Hierarchy Examples - Navigation](../artifacts/Sample%20Data/hierarchy-examples.md)
+- [Test Cases](../artifacts/Testing/T7-test-cases.md) — 26 test cases across 7 categories, all passing
+- [Test Results](../artifacts/Testing/T7-test-results.md) — 26/26 passed, March 14, 2026
