@@ -1,8 +1,8 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 4 - Migration & Integration (Not Started)  
-**Project Focus**: Hierarchical EDPS methodology with boundary concepts (17 tasks across 4 phases)
+**Current Phase**: Phase 3.5 - Conflict Resolution (Not Started)  
+**Project Focus**: Hierarchical EDPS methodology with boundary concepts (22 tasks across 5 phases)
 
 ## Overall Progress
 
@@ -11,8 +11,9 @@
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
+| Phase 3.5: Conflict Resolution | T18-T22 | Not Started | 0/5 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **12/17** |
+| **Total** | **22 tasks** | **In Progress** | **12/22** |
 
 ---
 
@@ -136,24 +137,66 @@
 
 ---
 
+## Phase 3.5: Conflict Resolution (Weeks 9-10, 5-7 dev days)
+
+Skill conflict review (March 14, 2026) identified 5 conflicts between new Project 3 skills and the existing skill ecosystem. All must be resolved before Phase 4 migration work begins. See [EDPS_Skills_Validation_Report.md](../../../../EDPS_Skills_Validation_Report.md) for the full architectural review findings.
+
+### Not Started
+- [ ] **T18: Resolve C-1 — VR Rule Delegation to diagram-generatecollaboration**
+  - **Priority**: High | **Effort**: 1-2 days
+  - **Dependencies**: T1, T4, T9
+  - **Conflict**: VR-1–VR-4 algorithms duplicated in `edps-compliance` and `diagram-generatecollaboration` (single-source-of-truth violation)
+  - **Resolution**: Remove VR algorithm blocks from `edps-compliance`; add delegation step that reads from or invokes `diagram-generatecollaboration` boundary validation
+  - **File**: [T18-resolve-c1-vr-rule-delegation.md](T18-resolve-c1-vr-rule-delegation.md)
+
+- [ ] **T19: Resolve C-2 — Structural Validation Scope Segregation**
+  - **Priority**: High | **Effort**: 1-2 days
+  - **Dependencies**: T18, T10, T9
+  - **Conflict**: HR-1/HR-3/HR-4/HR-5 in `edps-compliance` Group B substantially duplicate rules HX-1–HX-3/HX-5/HN-1 in `hierarchy-validation`
+  - **Resolution**: Remove HR-1/3/4/5 from `edps-compliance`; add `hierarchy-validation PASS` pre-condition gate; `edps-compliance` retains HR-2, HR-6, and all Group C rules
+  - **File**: [T19-resolve-c2-validation-scope-segregation.md](T19-resolve-c2-validation-scope-segregation.md)
+
+- [ ] **T20: Resolve C-3 — File Generation Ownership Contract**
+  - **Priority**: Medium | **Effort**: 1 day
+  - **Dependencies**: T5, T12
+  - **Conflict**: `hierarchy-management` and `documentation-automation` both write the same four files with no ownership contract; silent overwrite possible
+  - **Resolution**: `hierarchy-management` generates stub-only files; `documentation-automation` is authoritative full-content generator; add Content Guard to `documentation-automation`
+  - **File**: [T20-resolve-c3-file-generation-ownership.md](T20-resolve-c3-file-generation-ownership.md)
+
+- [ ] **T21: Resolve C-4 — Impact Analysis Risk Scale Normalization**
+  - **Priority**: Medium | **Effort**: 1 day
+  - **Dependencies**: T11
+  - **Conflict**: `change-impact-analysis` uses 5-level severity scale; `change-management` uses 3-level — `CRITICAL` and `NONE` have no mapping, breaking the stated compatibility
+  - **Resolution**: Add `normalized_risk_level` and `critical_flag` fields to `change-impact-analysis` JSON output with documented mapping table
+  - **File**: [T21-resolve-c4-risk-scale-normalization.md](T21-resolve-c4-risk-scale-normalization.md)
+
+- [ ] **T22: Resolve C-5 — OrgModel Pipeline Ordering Contract**
+  - **Priority**: Low | **Effort**: 1 day
+  - **Dependencies**: T12, T5, T20
+  - **Conflict**: `documentation-automation` and `orgmodel-update` write the same orgModel files from different inputs with no sequencing contract; `orgmodel-update` can overwrite hierarchy-aware diagrams
+  - **Resolution**: Add EDPS-Hierarchy Guard to `orgmodel-update`; document pipeline ordering; add Scope sections to both SKILL.md files
+  - **File**: [T22-resolve-c5-orgmodel-pipeline-ordering.md](T22-resolve-c5-orgmodel-pipeline-ordering.md)
+
+---
+
 ## Phase 4: Migration & Integration (Weeks 10-12, 8-11 dev days)
 
 ### Not Started
 - [ ] **T13: Create Project 1 Migration Tools**
   - **Priority**: Medium | **Effort**: 2-3 days
-  - **Dependencies**: T1, T5
+  - **Dependencies**: T1, T5, **T20** (stub/generated distinction required for migration logic)
   - **Requirements**: R-309b
   - **File**: [T13-migration-tools.md](T13-migration-tools.md)
 
 - [ ] **T14: Integrate with Existing Skills Framework**
   - **Priority**: High | **Effort**: 2-3 days
-  - **Dependencies**: T1, T5, T9
+  - **Dependencies**: T1, T5, T9, **T18, T19, T21, T22** (all conflicts resolved — authoritative skill boundaries required)
   - **Requirements**: R-303, TC-302
   - **File**: [T14-skills-integration.md](T14-skills-integration.md)
 
 - [ ] **T15: Update OrgModel with Hierarchical Concepts**
   - **Priority**: High | **Effort**: 2-3 days
-  - **Dependencies**: T13, T14
+  - **Dependencies**: T13, T14 (all conflict resolutions satisfied transitively)
   - **Requirements**: R-308, R-309a
   - **File**: [T15-orgmodel-enhancement.md](T15-orgmodel-enhancement.md)
 
@@ -176,14 +219,15 @@
 ```
 T1 ──┬──► T2 ──┐
      ├──► T3 ──┤
-     └────────► T4 ──► T5 ──┬──► T6 ──► T7 ──┬──► T11
-                             ├──► T8           ├──► T12
-                             ├──► T9 ──────────┤
-                             └──► T10          └──► T13 ──┬──► T15 ──┬──► T16
-                                                T14 ──────┘         └──► T17
+     └────────► T4 ──► T5 ──┬──► T6 ──► T7 ──┬──► T11 ──► T21
+                             ├──► T8           ├──► T12 ──┬──► T20 ──► T13 ──┐
+                             ├──► T9 ──► T18 ──► T19      └──► T22           │
+                             └──► T10     │                                   │
+                                         └──────────────────────────► T14 ───┴──► T15 ──┬──► T16
+                                                                                         └──► T17
 ```
 
-**Critical Path Duration**: T1 → T4 → T5 → T7 → T15 → T16 = ~16-21 dev days
+**Critical Path Duration**: T1 → T4 → T5 → T9 → T18 → T19 → T14 → T15 → T16 = ~18-24 dev days
 
 ## Milestones
 
@@ -192,7 +236,8 @@ T1 ──┬──► T2 ──┐
 | M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | ✅ Complete |
 | M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | ✅ Complete |
 | M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | ✅ Complete |
-| M4: Project Complete | End Week 12 | T13-T17 complete, OrgModel updated | Not Started |
+| M3.5: Conflicts Resolved | End Week 10 | T18-T22 complete, no cross-skill conflicts, safe to begin Phase 4 | Not Started |
+| M4: Project Complete | End Week 13 | T13-T17 complete, OrgModel updated | Not Started |
 
 ## Progress Log
 
@@ -305,3 +350,10 @@ T1 ──┬──► T2 ──┐
 - Registered `documentation-automation` in `INDEX.md` Domain Modeling table and `README.md` Analysis & Visualization table
 - **Milestone M3 complete** — Phase 3 (T9–T12) all done; EDPS compliance checking, hierarchy validation, change impact analysis, and documentation automation all operational
 - **Next Step**: Begin Phase 4 — T13 (Project 1 Migration Tools)
+
+### March 14, 2026 - Architectural Conflict Review
+- Senior architect review of new skills (T1–T12) against existing skill ecosystem completed
+- 5 conflicts identified: 2 HIGH (VR rule duplication C-1, structural validation overlap C-2), 2 MEDIUM (file generation ownership C-3, risk scale incompatibility C-4), 1 LOW (orgModel pipeline ordering C-5)
+- Phase 3.5 (Conflict Resolution) added with 5 new tasks T18–T22 to resolve all conflicts before Phase 4
+- T13 dependency updated to require T20 (C-3 resolved); T14 dependency updated to require T18, T19, T21, T22
+- **Next Step**: Begin T18 (Resolve C-1 — VR Rule Delegation) and T20/T21 in parallel (independent of T18 sequence)
