@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 15, 2026  
-**Current Phase**: Phase 4 - Migration & Integration (In Progress — 2/5)  
+**Current Phase**: Phase 4 - Migration & Integration (In Progress — 3/5)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (22 tasks across 5 phases)
 
 ## Overall Progress
@@ -12,8 +12,8 @@
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
 | Phase 3.5: Conflict Resolution | T18-T22 | Completed | 5/5 |
-| Phase 4: Migration & Integration | T13-T17 | In Progress | 2/5 |
-| **Total** | **22 tasks** | **In Progress** | **19/22** |
+| Phase 4: Migration & Integration | T13-T17 | In Progress | 3/5 |
+| **Total** | **22 tasks** | **In Progress** | **20/22** |
 
 ---
 
@@ -217,12 +217,20 @@ Skill conflict review (March 14, 2026) identified 5 conflicts between new Projec
   - **File**: [T14-skills-integration.md](T14-skills-integration.md)
 
 ### Not Started
-- [ ] **T15: Update OrgModel with Hierarchical Concepts**
-  - **Priority**: High | **Effort**: 2-3 days
+- [x] **T15: Update OrgModel with Hierarchical Concepts** ✅ Done (March 15, 2026)
+  - **Priority**: High | **Effort**: 2-3 days | **Completed**: March 15, 2026
   - **Dependencies**: T13, T14 (all conflict resolutions satisfied transitively)
   - **Requirements**: R-308, R-309a
+  - **Completion Notes**:
+    - **main.md**: Added 6 new Business Capabilities (Hierarchical Process Management, EDPS Compliance Validation, Hierarchy Structural Validation, Change Impact Analysis, Documentation Automation, Legacy Migration), 3 new Business Value items, SKILL-CHG-009 change record
+    - **collaboration.md**: Added Hierarchical Process Decomposition Workflow and EDPS Compliance and Hierarchy Validation Workflow diagrams (box syntax, multi-level boundaries); added 7 new Key Interactions sections
+    - **domain-model.md**: Added 9 new classes, 3 new enumerations (ComplianceGroup, RiskLevel, ValidationGroup), 12 new relationships, 9 new entity descriptions, Business Rules 22–30
+    - **process.md**: Extended flowchart with hierarchy decomposition → EDPS compliance → remediation loop; added Process Steps 15 and 16; renumbered Step 15 → 17
+    - **test-case-list.md**: Added 5 new test case sections (25 new cases); updated Coverage Metrics with 5 new items; corrected tc-bv count to 14
+    - **vocabulary.md**: Added Hierarchical Process Management Terms section with 16 new standardized terms
   - **File**: [T15-orgmodel-enhancement.md](T15-orgmodel-enhancement.md)
 
+### Not Started
 - [ ] **T16: Performance Testing & Optimization**
   - **Priority**: Medium | **Effort**: 1-2 days
   - **Dependencies**: T15
@@ -260,7 +268,7 @@ T1 ──┬──► T2 ──┐
 | M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | ✅ Complete |
 | M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | ✅ Complete |
 | M3.5: Conflicts Resolved | End Week 10 | T18-T22 complete, no cross-skill conflicts, safe to begin Phase 4 | ✅ Complete (March 15, 2026) |
-| M4: Project Complete | End Week 13 | T13-T17 complete, OrgModel updated | In Progress (T13 ✅, T14 ✅; T15-T17 pending) |
+| M4: Project Complete | End Week 13 | T13-T17 complete, OrgModel updated | In Progress (T13 ✅, T14 ✅, T15 ✅; T16-T17 pending) |
 
 ## Progress Log
 
@@ -401,3 +409,15 @@ T1 ──┬──► T2 ──┐
 
 - T13 + T14 together satisfy all T15 dependencies (T13-T14 both complete)
 - **Next Step**: Begin T15 (Update OrgModel with Hierarchical Concepts)
+### March 15, 2026 — T15 Completed (OrgModel Updated)
+- **T15: Update OrgModel with Hierarchical Concepts** ✅
+  - Updated all 5 core OrgModel documents to reflect Project 3 T5–T14 skill additions and T18–T22 conflict resolution contracts:
+    - **main.md**: +6 Business Capabilities, +3 Business Value items, SKILL-CHG-009 change record
+    - **collaboration.md**: +2 new sequence diagrams (Hierarchical Process Decomposition, EDPS Compliance & Hierarchy Validation), +7 Key Interactions sections
+    - **domain-model.md**: +9 classes (7 AI skill, 2 entity), +3 enumerations, +12 relationships, +9 entity descriptions, Business Rules 22–30
+    - **process.md**: Flowchart extended with hierarchy decomposition → EDPS compliance → remediation loop; Steps 15–16 added; renumbered
+    - **test-case-list.md**: 5 new test case sections (25 new cases); Coverage Metrics updated
+    - **vocabulary.md**: New Hierarchical Process Management Terms section (16 terms)
+  - T15 unblocks T16 (Performance Testing) and T17 (User Documentation)
+- **Current Phase Progress**: Phase 4 — 3/5 tasks complete (T13, T14, T15)
+- **Next Step**: Begin T16 (Performance Testing & Optimization) and T17 (User Documentation)

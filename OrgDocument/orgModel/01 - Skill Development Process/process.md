@@ -50,7 +50,12 @@ flowchart TD
     S --> AA[Generate Hierarchical Diagrams]
     AA --> AB[Classify Participant Stereotypes]
     AB --> AC[Apply Boundary Validation Rules]
-    AC --> T
+    AC --> AD[Decompose Complex Processes]
+    AD --> AE[Run EDPS Compliance Check]
+    AE --> AF{Compliance Passed?}
+    AF -->|Yes| T
+    AF -->|No| AG[Remediate Compliance Issues]
+    AG --> AD
 ```
 
 ## Process Description
@@ -133,7 +138,21 @@ flowchart TD
 - **Validation Mode**: Strict mode blocks generation on VR-1/VR-2/VR-3 errors; advisory mode (default) generates diagram with inline violation comments
 - **Multi-Level Diagrams**: Generate Level 0 (high-level) and Level N (detailed) diagrams; only `control`-type participants may produce sub-process child diagrams
 
-### 15. Project Documentation Management
+### 15. Hierarchical Process Decomposition
+- **Eligibility Validation**: Use `hierarchy-management` skill to verify only control-type participants are decomposed; non-control requests rejected with structured error
+- **Sub-Folder Generation**: Create Level N+1 folder with sanitized process name; write machine-detectable stub files for `main.md`, `process.md`, `collaboration.md`, and `domain-model.md`
+- **Documentation Automation**: Invoke `documentation-automation` to generate level-calibrated content from parent diagram context; content guard prevents silent overwrite of manually-authored stubs
+- **Cross-Reference Navigation**: Inject breadcrumb trail in child `main.md`; update Sub-Processes table in parent; regenerate `hierarchy-index.md` with BFS Mermaid and flat table
+- **Scale Management**: Monitor complexity metrics per node; emit advisory warnings at 80% of threshold and critical warnings at threshold; identify decomposition candidates among control-type participants
+
+### 16. EDPS Compliance Validation
+- **Group A Delegation**: Invoke `diagram-generatecollaboration --mode boundary-validation-only` for VR-1–VR-4 boundary rule evaluation; consume resulting `boundary_validation_report.json`
+- **Group B Pre-Condition Gate**: Confirm `hierarchy-validation` PASS before evaluating HR-2, HR-6; on FAIL emit BLOCKED status and stop evaluation
+- **Group C Evolutionary Principles**: Evaluate EP-1 (iterative evolution), EP-2 (artifact traceability), EP-3 (feedback loops), EP-4 (minimal disruption) using `edps-compliance` skill
+- **Compliance Scoring**: Generate scored report (0–100) with COMPLIANT / MOSTLY_COMPLIANT / NEEDS_IMPROVEMENT / NON_COMPLIANT classification, trend delta, and prioritized remediation guidance
+- **Remediation Loop**: Address compliance violations and re-run decomposition if hierarchy structural issues are identified
+
+### 17. Project Documentation Management
 - **Structure Initialization**: Use `project-document-management` skill to initialize consistent documentation folder trees
 - **Milestone Tracking**: Apply `project-planning-tracking` skill to plan phases and track progress
 - **Status Reporting**: Generate executive dashboards and stakeholder reports with `project-status-reporting` skill

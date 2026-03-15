@@ -100,6 +100,56 @@ This document tracks all test cases for validating the skill development process
 | tc-merge-003 | Preserve source traceability in merged output | Data | Planned |
 | tc-merge-004 | Stakeholder review workflow triggered for merged spec | Process | Planned |
 
+### Hierarchy Management Test Cases
+
+| Test Case ID | Description | Type | Status |
+|-------------|-------------|------|--------|
+| tc-hierarchy-001 | Decompose control-type participant — sub-folder and stubs created at Level N+1 | Functional | Planned |
+| tc-hierarchy-002 | Reject decomposition of non-control participant (actor, boundary, entity) | Functional | Planned |
+| tc-hierarchy-003 | Breadcrumb trail injected in child main.md with correct ancestor links | Functional | Planned |
+| tc-hierarchy-004 | Parent Sub-Processes table updated after successful decomposition | Functional | Planned |
+| tc-hierarchy-005 | hierarchy-index.md regenerated with BFS Mermaid flowchart after decomposition | Functional | Planned |
+| tc-hierarchy-006 | hierarchy-metadata.json updated with new ProcessNode and complexity_metrics | Data | Planned |
+| tc-hierarchy-007 | Advisory complexity warning emitted when interaction count exceeds 80% of Level 0 threshold (7) | Functional | Planned |
+| tc-hierarchy-008 | Rollback removes sub-folder, restores parent files, and removes ProcessNode from metadata | Process | Planned |
+
+### EDPS Compliance Test Cases
+
+| Test Case ID | Description | Type | Status |
+|-------------|-------------|------|--------|
+| tc-compliance-001 | Group A delegation invokes diagram-generatecollaboration boundary-validation-only mode | Integration | Planned |
+| tc-compliance-002 | Group B/C evaluation blocked and status BLOCKED when hierarchy-validation returns INVALID | Functional | Planned |
+| tc-compliance-003 | Group C EP-2 traceability check passes when all hierarchy nodes have source requirement references | Functional | Planned |
+| tc-compliance-004 | Compliance score decreases proportionally per failed rule; classification matches score bands | Data | Planned |
+| tc-compliance-005 | Strict mode blocks compliance report generation on critical rule failure | Process | Planned |
+| tc-compliance-006 | Remediation guidance includes skill name and rule reference for each failed rule | Data | Planned |
+
+### Hierarchy Validation Test Cases
+
+| Test Case ID | Description | Type | Status |
+|-------------|-------------|------|--------|
+| tc-hv-001 | HV-group: detect control participant at Level N+1 parent that is entity type at Level N | Functional | Planned |
+| tc-hv-002 | HX-group: detect broken breadcrumb link and auto-fix with correct relative path | Functional | Planned |
+| tc-hv-003 | HN-group: detect missing required file (process.md) in sub-folder | Functional | Planned |
+| tc-hv-004 | Auto-fix for HN-4 metadata inconsistency applied; structural HV errors not auto-fixed | Process | Planned |
+
+### Documentation Automation Test Cases
+
+| Test Case ID | Description | Type | Status |
+|-------------|-------------|------|--------|
+| tc-docauto-001 | main.md generated with breadcrumb, participant summary, VR compliance table, and decomposition status | Functional | Planned |
+| tc-docauto-002 | Content guard detects manually-authored stub (>10 lines) and prompts before overwrite | Functional | Planned |
+| tc-docauto-003 | Level 0 domain-model.md correctly omits "Relationships to Parent Domain" section | Data | Planned |
+| tc-docauto-004 | Acronym-aware PascalCase expansion preserves consecutive uppercase (e.g., EDPS → EDPS, not Edps) | Functional | Planned |
+
+### Change Impact Analysis Test Cases
+
+| Test Case ID | Description | Type | Status |
+|-------------|-------------|------|--------|
+| tc-impact-001 | CRITICAL risk level emits critical_flag=true and normalized_risk_level=HIGH | Data | Planned |
+| tc-impact-002 | What-if mode returns impact report without modifying any hierarchy artifacts | Process | Planned |
+| tc-impact-003 | Apply mode auto-repairs broken navigational link identified in CI-group analysis | Functional | Planned |
+
 ## Test Case Categories
 
 ### Functional Tests
@@ -145,8 +195,13 @@ Track which process steps have test coverage:
 - [x] GitHub integration workflow (tc-github-001 to tc-github-006)
 - [ ] Requirements merging (tc-merge-001 to tc-merge-004)
 - [x] Hierarchical diagram generation (tc-diagram-001 to tc-diagram-008)
-- [x] Boundary validation rules (tc-bv-001 to tc-bv-010)
+- [x] Boundary validation rules (tc-bv-001 to tc-bv-014)
 - [ ] Project documentation management
+- [ ] Hierarchical process decomposition (tc-hierarchy-001 to tc-hierarchy-008)
+- [ ] EDPS compliance checking (tc-compliance-001 to tc-compliance-006)
+- [ ] Hierarchy structural validation (tc-hv-001 to tc-hv-004)
+- [ ] Documentation automation (tc-docauto-001 to tc-docauto-004)
+- [ ] Change impact analysis (tc-impact-001 to tc-impact-003)
 
 ### Role Coverage
 Ensure testing covers all key roles:

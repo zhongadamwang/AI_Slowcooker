@@ -333,6 +333,115 @@ sequenceDiagram
     Note over Validator: VR-4 is warning severity only
 ```
 
+## Hierarchical Process Decomposition Workflow
+
+```mermaid
+sequenceDiagram
+    %% ─────────────────────────────────────────────────────
+    %% BOUNDARY SUMMARY
+    %% ─────────────────────────────────────────────────────
+    %% [B-1] Hierarchy Management System
+    %%         Participants: HierarchyGateway (boundary), DecompositionEngine (control),
+    %%                       MetadataStore (entity), FolderOutput (entity)
+    %%         Decomposable: DecompositionEngine
+    %%         External actor: Developer
+    %% ─────────────────────────────────────────────────────
+
+    participant Dev@{ "type": "actor", "label": "Developer" }
+
+    box rgb(235, 245, 255) Hierarchy Management System
+        participant HierarchyGateway@{ "type": "boundary", "label": "Hierarchy Gateway" }
+        participant DecompEngine@{ "type": "control", "label": "Decomposition Engine" }
+        participant MetadataStore@{ "type": "entity", "label": "Hierarchy Metadata" }
+        participant FolderOut@{ "type": "entity", "label": "Sub-Folder Output" }
+    end
+
+    Dev->>HierarchyGateway: Request process decomposition (control participant name)
+
+    Note over DecompEngine: Step 1 - Eligibility Validation
+    HierarchyGateway->>DecompEngine: Forward decomposition request
+    DecompEngine->>MetadataStore: Check participant stereotype (VR-3 control-only rule)
+    MetadataStore-->>DecompEngine: Confirm control type, return current level N
+
+    Note over DecompEngine: Step 2 - Sub-Folder Generation
+    DecompEngine->>FolderOut: Create Level N+1 folder (sanitized name)
+    FolderOut->>FolderOut: Write stub main.md, process.md, collaboration.md, domain-model.md
+    FolderOut-->>DecompEngine: Stub files created with machine-detectable markers
+
+    Note over DecompEngine: Step 3 - Cross-Reference Navigation
+    DecompEngine->>FolderOut: Update parent main.md Sub-Processes table
+    DecompEngine->>FolderOut: Inject breadcrumb trail in child main.md
+    DecompEngine->>FolderOut: Regenerate hierarchy-index.md (BFS Mermaid + flat table)
+
+    Note over DecompEngine: Step 4 - Metadata Update and Scale Analysis
+    DecompEngine->>MetadataStore: Add ProcessNode (level, folder_path, parent_id, complexity_metrics)
+    MetadataStore->>MetadataStore: Recalculate scale_management aggregates
+    MetadataStore-->>DecompEngine: Updated hierarchy-metadata.json (schema v1.1)
+
+    DecompEngine-->>HierarchyGateway: Decomposition complete
+    HierarchyGateway-->>Dev: Sub-folder created, invoke documentation-automation for full docs
+```
+
+## EDPS Compliance and Hierarchy Validation Workflow
+
+```mermaid
+sequenceDiagram
+    %% ─────────────────────────────────────────────────────
+    %% BOUNDARY SUMMARY
+    %% ─────────────────────────────────────────────────────
+    %% [B-1] EDPS Compliance System
+    %%         Participants: ComplianceGateway (boundary), ComplianceChecker (control),
+    %%                       ComplianceReport (entity)
+    %%         Decomposable: ComplianceChecker
+    %%         External actors: Developer, DiagramGenerateSkill, HierarchyValidationSkill
+    %% [B-2] Delegation Layer
+    %%         Participants: DelegationRouter (boundary), DiagramGenerateSkill (control),
+    %%                       HierarchyValidationSkill (control)
+    %%         Decomposable: DiagramGenerateSkill, HierarchyValidationSkill
+    %%         External actor: Developer
+    %% ─────────────────────────────────────────────────────
+
+    participant Dev@{ "type": "actor", "label": "Developer" }
+
+    box rgb(235, 245, 255) EDPS Compliance System
+        participant CompGateway@{ "type": "boundary", "label": "Compliance Gateway" }
+        participant CompChecker@{ "type": "control", "label": "Compliance Checker" }
+        participant CompReport@{ "type": "entity", "label": "Compliance Report" }
+    end
+
+    box rgb(235, 255, 240) Delegation Layer
+        participant DelegRouter@{ "type": "boundary", "label": "Delegation Router" }
+        participant DiagramSkill@{ "type": "control", "label": "diagram-generatecollaboration" }
+        participant HierarchyVal@{ "type": "control", "label": "hierarchy-validation" }
+    end
+
+    Dev->>CompGateway: Run EDPS compliance check (--mode strict|relaxed)
+
+    Note over CompChecker: Pre-Condition Gate
+    CompGateway->>CompChecker: Start compliance pipeline
+    CompChecker->>DelegRouter: Delegate Group A (VR-1 to VR-4) to diagram-generatecollaboration
+    DelegRouter->>DiagramSkill: boundary-validation-only mode
+    DiagramSkill-->>DelegRouter: boundary_validation_report.json (PASS / FAIL / BLOCKED)
+    DelegRouter-->>CompChecker: Group A result
+
+    CompChecker->>DelegRouter: Delegate Group B structural rules (HR-1/3/4/5) to hierarchy-validation
+    DelegRouter->>HierarchyVal: Full-tree validation mode
+    HierarchyVal-->>DelegRouter: hierarchy-validation-report.json (VALID / INVALID)
+    DelegRouter-->>CompChecker: Group B structural gate result
+
+    alt hierarchy-validation FAILED
+        CompChecker->>CompReport: Emit overall_status BLOCKED, stop Group B/C evaluation
+    else hierarchy-validation PASSED
+        Note over CompChecker: Group B Native (HR-2, HR-6) + Group C (EP-1 to EP-4)
+        CompChecker->>CompChecker: Evaluate HR-2 (decomposition eligibility), HR-6 (scale limits)
+        CompChecker->>CompChecker: Evaluate EP-1 (iterative evolution), EP-2 (traceability)
+        CompChecker->>CompChecker: Evaluate EP-3 (feedback loops), EP-4 (minimal disruption)
+        CompChecker->>CompReport: Compile scored report (compliance_score 0-100, per-rule results)
+    end
+
+    CompReport-->>Dev: edps-compliance-report.json + edps-compliance-report.md (remediation guidance)
+```
+
 ## Key Interactions
 
 ### Team Member - Skill Manager
@@ -425,3 +534,37 @@ sequenceDiagram
 - **Documentation Initialization**: `project-document-management` creates consistent folder trees for new projects
 - **Milestone Management**: `project-planning-tracking` tracks phases, milestones, and task status
 - **Dashboard Generation**: `project-status-reporting` auto-aggregates data for executive and stakeholder reports
+
+### Hierarchical Process Decomposition
+- **Eligibility Validation**: `hierarchy-management` enforces control-only decomposition (VR-3) before creating any sub-process; non-control participants are rejected with an error
+- **Sub-Folder and Stub Generation**: Level N+1 folder created with machine-detectable stub files; practitioners invoke `documentation-automation` for full content (T20 ownership contract)
+- **Cross-Reference Maintenance**: Breadcrumb trails injected in child `main.md`, parent Sub-Processes table updated, and `hierarchy-index.md` regenerated breadth-first after every decomposition and rollback
+- **Scale Management**: Complexity metrics (`interaction_count`, `participant_count`, `nesting_depth`) computed per node; advisory and critical warnings emitted when thresholds exceeded; decomposition candidates identified for control-type participants
+
+### EDPS Compliance Checking
+- **Group A Delegation**: VR-1–VR-4 boundary diagram rules are authoritative in `diagram-generatecollaboration`; `edps-compliance` delegates by invoking boundary-validation-only mode and consuming the existing report
+- **Group B Pre-Condition Gate**: `hierarchy-validation` must PASS before Group B/C evaluation proceeds; on FAIL, overall status is BLOCKED and remediation references hierarchy-validation report
+- **Group C Evolutionary Principles**: EP-1 (iterative evolution), EP-2 (traceability), EP-3 (feedback loops), EP-4 (minimal disruption) evaluated natively by `edps-compliance`
+- **Scored Reporting**: Compliance score 0–100 with status classification (COMPLIANT / MOSTLY_COMPLIANT / NEEDS_IMPROVEMENT / NON_COMPLIANT), per-rule results, trend delta, and prioritized remediation guidance
+
+### Hierarchy Structural Validation
+- **Cross-Level Type Consistency (Group HV)**: Validates participant stereotypes are consistent across decomposition levels; only control-type participants may have child diagrams
+- **Cross-Reference Integrity (Group HX)**: Validates breadcrumb links, Sub-Processes table links, hierarchy-index entries, and hierarchy-metadata.json node references; auto-fix available for path-reconstruction issues
+- **Naming and Structure (Group HN)**: Validates folder naming conventions, file presence requirements, and SKILL.md format compliance; structural errors require human review
+
+### Change Impact Analysis
+- **Artifact-Level Impact Tracing (Group CI)**: Traces change effects through diagram participants, sub-folder hierarchies, cross-references, and documentation stubs
+- **Requirement Change Tracing (Group CR)**: Identifies requirement traceability gaps and propagates change notifications to all dependent hierarchy nodes
+- **Risk Classification**: Five-level risk (NONE/LOW/MEDIUM/HIGH/CRITICAL) with `normalized_risk_level` and `critical_flag` for `change-management` skill compatibility
+- **What-if and Apply Modes**: Default what-if mode previews impact without modification; apply mode auto-repairs navigational artifacts
+
+### Documentation Automation
+- **Level-Calibrated Content**: Level Content Guide calibrates scope, overview tone, and process detail depth across Level 0 (system overview) through Level 3+ (detailed subprocess)
+- **Participant Inventory**: Extracts aliases, stereotypes, labels, box assignments, and involvement counts from parent collaboration diagram
+- **Content Guard**: 10-line threshold check prevents silent overwrites of manually-authored content; `--force` flag bypasses when intentional overwrite is confirmed
+- **Template Customization**: `doc-templates/` directory with `{{variable_name}}` placeholder syntax for org-specific overrides of all four generated file types
+
+### Legacy Migration
+- **Non-Destructive Migration**: `migration-tools` leaves original diagrams unchanged; preview mode shows changes before apply mode writes enhanced output
+- **Stereotype Inference**: 6-priority rule chain delegates to `diagram-generatecollaboration` inference logic; boundary coloring aligned with box syntax palette
+- **Traceability Preservation**: Requirement trace IDs embedded in original diagrams preserved verbatim in enhanced output JSON

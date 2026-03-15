@@ -174,6 +174,99 @@ classDiagram
         +validateSkill()
     }
 
+    class HierarchyManagementSkill:::ai {
+        +skill_id: String
+        +decomposition_mode: String
+        +complexity_thresholds: Thresholds
+        +metadata_path: String
+        +decomposeProcess()
+        +generateSubFolder()
+        +buildCrossReferences()
+        +generateHierarchyIndex()
+        +trackComplexityMetrics()
+        +rollbackDecomposition()
+    }
+
+    class EDPSComplianceChecker:::ai {
+        +skill_id: String
+        +compliance_groups: ComplianceGroup[]
+        +mode: String
+        +compliance_score: Float
+        +overall_status: String
+        +checkGroupA()
+        +checkGroupB()
+        +checkGroupC()
+        +generateReport()
+    }
+
+    class HierarchyValidator:::ai {
+        +skill_id: String
+        +validation_groups: ValidationGroup[]
+        +mode: String
+        +auto_fix: Boolean
+        +validateTypeConsistency()
+        +validateCrossReferences()
+        +validateNamingStructure()
+        +generateReport()
+    }
+
+    class ChangeImpactAnalyzer:::ai {
+        +skill_id: String
+        +analysis_groups: String[]
+        +mode: String
+        +risk_level: RiskLevel
+        +normalized_risk_level: String
+        +analyzeArtifactImpact()
+        +analyzeRequirementImpact()
+        +generateReport()
+    }
+
+    class DocumentationAutomation:::ai {
+        +skill_id: String
+        +hierarchy_level: Integer
+        +template_directory: String
+        +content_guard_threshold: Integer
+        +generateMainDoc()
+        +generateProcessDoc()
+        +generateCollaborationDoc()
+        +generateDomainModel()
+    }
+
+    class MigrationTools:::ai {
+        +skill_id: String
+        +mode: String
+        +scope: String
+        +inferStereotypes()
+        +detectBoundaries()
+        +generateEnhancedDiagram()
+        +preserveTraceability()
+        +generateMigrationLog()
+    }
+
+    class HierarchyMetadata:::entity {
+        +root_process: String
+        +schema_version: String
+        +nodes: ProcessNode[]
+        +complexity_thresholds: Thresholds
+        +hierarchy_statistics: Statistics
+        +last_updated: Date
+        +update()
+        +rollback()
+    }
+
+    class ProcessNode:::entity {
+        +node_id: String
+        +name: String
+        +level: Integer
+        +folder_path: String
+        +participant_type: String
+        +parent_id: String
+        +children_ids: String[]
+        +complexity_metrics: Metrics
+        +getAncestors()
+        +getDescendants()
+    }
+
     %% Enums
     class SkillCategory:::enum {
         <<enumeration>>
@@ -212,6 +305,29 @@ classDiagram
         BIDIRECTIONAL
     }
 
+    class ComplianceGroup:::enum {
+        <<enumeration>>
+        GROUP_A_BOUNDARY
+        GROUP_B_HIERARCHY
+        GROUP_C_EVOLUTIONARY
+    }
+
+    class RiskLevel:::enum {
+        <<enumeration>>
+        NONE
+        LOW
+        MEDIUM
+        HIGH
+        CRITICAL
+    }
+
+    class ValidationGroup:::enum {
+        <<enumeration>>
+        HV_TYPE_CONSISTENCY
+        HX_CROSS_REFERENCE
+        HN_NAMING_STRUCTURE
+    }
+
     class ProficiencyLevel:::enum {
         <<enumeration>>
         BEGINNER
@@ -245,6 +361,26 @@ classDiagram
     SkillCreator --> SkillFramework : supports
     ParticipantStereotype --> BoundaryValidator : classifies_for
     SyncDirection --> GitHubIntegration : configures
+    HierarchyManagementSkill --|> AIAgentSkill : extends
+    HierarchyManagementSkill --> HierarchyMetadata : manages
+    HierarchyManagementSkill --> ProcessNode : creates
+    HierarchyMetadata --> ProcessNode : contains
+    ProcessNode --> ProcessNode : parent_of
+    EDPSComplianceChecker --|> AIAgentSkill : extends
+    EDPSComplianceChecker --> BoundaryValidator : delegates_group_a_to
+    EDPSComplianceChecker --> HierarchyValidator : delegates_group_b_to
+    EDPSComplianceChecker --> ComplianceGroup : evaluates
+    HierarchyValidator --|> AIAgentSkill : extends
+    HierarchyValidator --> HierarchyMetadata : reads
+    HierarchyValidator --> ValidationGroup : applies
+    ChangeImpactAnalyzer --|> AIAgentSkill : extends
+    ChangeImpactAnalyzer --> HierarchyMetadata : analyzes
+    ChangeImpactAnalyzer --> RiskLevel : classifies
+    DocumentationAutomation --|> AIAgentSkill : extends
+    DocumentationAutomation --> HierarchyMetadata : reads
+    DocumentationAutomation --> ProcessNode : generates_docs_for
+    MigrationTools --|> AIAgentSkill : extends
+    MigrationTools --> BoundaryValidator : invokes_for_inference
 
     %% Styling
     classDef actor fill:#e1f5fe
@@ -376,6 +512,73 @@ classDiagram
 - **Validation Checklist**: Quality gates for skill completeness and correctness
 - **Quality Criteria**: Intent, inputs, outputs, processing workflow, usage examples
 
+### HierarchyManagementSkill
+- **Skill ID**: Unique identifier (extends AIAgentSkill)
+- **Skill**: `hierarchy-management`
+- **Decomposition Mode**: Eligibility validation (control-only VR-3 enforcement) before creating sub-process
+- **Complexity Thresholds**: Level 0 max interactions (7), Level N max interactions (12); advisory at 80% of threshold
+- **Sub-Folder Generation**: Creates Level N+1 folder with sanitized name; writes stub `main.md`, `process.md`, `collaboration.md`, `domain-model.md` with machine-detectable `[TO BE GENERATED - invoke documentation-automation]` markers
+- **Cross-Reference Navigation**: Breadcrumb trail in child `main.md`; Sub-Processes table in parent; `hierarchy-index.md` regenerated breadth-first with Mermaid `flowchart TD` and click directives
+- **Metadata Management**: `hierarchy-metadata.json` (schema v1.1) per node: `complexity_metrics`, `scale_management`, `hierarchy_statistics`; supports rollback with full cleanup
+
+### EDPSComplianceChecker
+- **Skill ID**: Unique identifier (extends AIAgentSkill)
+- **Skill**: `edps-compliance`
+- **Group A**: VR-1–VR-4 boundary diagram rules; fully delegated to `diagram-generatecollaboration` via boundary-validation-only mode; consumes existing `boundary_validation_report.json`
+- **Group B**: HR-2 (decomposition eligibility only from control-type participants), HR-6 (hierarchy depth/scale limits) evaluated natively; HR-1/3/4/5 delegated to `hierarchy-validation`; pre-condition gate blocks Group B/C evaluation if `hierarchy-validation` FAILS
+- **Group C**: EP-1 (iterative evolution), EP-2 (artifact traceability), EP-3 (feedback loops), EP-4 (minimal disruption); evaluated natively
+- **Scoring**: 0–100 compliance score; statuses COMPLIANT / MOSTLY_COMPLIANT / NEEDS_IMPROVEMENT / NON_COMPLIANT; trend delta comparison; remediation priority guidance
+
+### HierarchyValidator
+- **Skill ID**: Unique identifier (extends AIAgentSkill)
+- **Skill**: `hierarchy-validation`
+- **Group HV (5 rules)**: Cross-level stereotype type consistency; structural ERRORs require human review
+- **Group HX (5 rules)**: Cross-reference integrity — breadcrumb links, Sub-Processes table, hierarchy-index entries, metadata node references; auto-fix available for path-reconstruction
+- **Group HN (4 rules)**: Naming conventions, required file presence, SKILL.md format compliance; HN-4 (metadata consistency) auto-fixable
+- **Modes**: Full-tree (default) and incremental (`--mode incremental`) single-branch validation
+- **Overall Status**: VALID / MOSTLY_VALID / NEEDS_ATTENTION / INVALID with scored report
+
+### ChangeImpactAnalyzer
+- **Skill ID**: Unique identifier (extends AIAgentSkill)
+- **Skill**: `change-impact-analysis`
+- **Group CI (5 rules)**: Artifact-level impact tracing through diagram participants, sub-folder hierarchies, cross-references, and documentation stubs
+- **Group CR (3 rules)**: Requirement change tracing — identifies traceability gaps, propagates notifications to dependent hierarchy nodes
+- **Risk Classification**: Five levels NONE/LOW/MEDIUM/HIGH/CRITICAL; includes `normalized_risk_level` (HIGH/MEDIUM/LOW) and `critical_flag` for `change-management` compatibility; `summary.critical_count` field
+- **Modes**: `--mode what-if` (default, preview-only) and `--mode apply` (auto-repair navigational artifacts)
+
+### DocumentationAutomation
+- **Skill ID**: Unique identifier (extends AIAgentSkill)
+- **Skill**: `documentation-automation`
+- **Level Detection**: From `hierarchy-metadata.json` or folder depth; PascalCase expansion with acronym-aware rule (consecutive uppercase preserved as single word unit)
+- **Content Guard**: 10-line threshold check prevents overwrite of manually-authored content; `--force` flag for intentional overwrite
+- **Level Content Guide**: Level 0 (system overview), Level 1 (subsystem detail), Level 2 (component flow), Level 3+ (operation-level detail)
+- **Template Customization**: `doc-templates/` directory with `{{variable_name}}` placeholder syntax for organization-specific overrides
+
+### MigrationTools
+- **Skill ID**: Unique identifier (extends AIAgentSkill)
+- **Skill**: `migration-tools`
+- **Migration Workflow**: 7-step non-destructive process: source loading → stereotype inference → boundary detection → enhanced diagram generation → traceability preservation → enhanced JSON generation → migration log
+- **Stereotype Inference**: 6-priority rule chain; delegates to `diagram-generatecollaboration` inference logic; boundary color palette aligned with box syntax palette
+- **Modes**: `--mode preview` (show changes without writing) and `--mode apply` (write enhanced output); `--scope batch|diagram=<id>`
+- **Traceability**: Requirement trace IDs from original diagrams preserved verbatim in enhanced JSON output
+
+### HierarchyMetadata
+- **Root Process**: Top-level process name for the hierarchy tree
+- **Schema Version**: Metadata schema version (current: 1.1)
+- **Nodes**: Collection of ProcessNode objects representing each decomposed process
+- **Complexity Thresholds**: Configurable thresholds for level 0 and level N warning/critical levels
+- **Hierarchy Statistics**: Aggregated counts — `decomposed_count`, `boundary_count`, `nodes_by_level`, `scale_management` with advisory/critical warnings
+- **File**: `hierarchy-metadata.json` co-located at hierarchy root; updated after every decomposition and rollback
+
+### ProcessNode
+- **Node ID**: Unique identifier within hierarchy
+- **Name**: Process name (PascalCase; acronym-expanded)
+- **Level**: Hierarchy depth (0 = root)
+- **Folder Path**: Relative path from hierarchy root
+- **Participant Type**: Stereotype of the parent diagram participant that was decomposed (always `control`)
+- **Complexity Metrics**: Per-node `interaction_count`, `participant_count`, `nesting_depth`; `complexity_warning` (none/advisory/critical)
+- **Relationships**: `parent_id` links to parent node; `children_ids` lists all direct child node IDs
+
 ## Key Relationships
 
 - Team Member **has** Skill Profile
@@ -400,6 +603,14 @@ classDiagram
 - RequirementsMerger **combines** multiple requirement sources into a unified specification with conflict resolution
 - SkillCreator **supports** consistent new skill development through templates and quality checklists
 - BoundaryValidator **enforces** decomposition rules: only control-type participants may generate sub-process diagrams
+- HierarchyManagementSkill **manages** HierarchyMetadata and **creates** ProcessNodes during decomposition
+- HierarchyMetadata **contains** ProcessNode objects forming the complete process hierarchy tree
+- ProcessNode **is parent of** child ProcessNodes through hierarchical decomposition
+- EDPSComplianceChecker **delegates Group A** to BoundaryValidator (diagram-generatecollaboration) and **delegates Group B structural rules** to HierarchyValidator
+- HierarchyValidator **validates structural integrity** of process hierarchies across 14 rules in three groups
+- ChangeImpactAnalyzer **analyzes** HierarchyMetadata and **classifies** risk using RiskLevel enumeration
+- DocumentationAutomation **reads** HierarchyMetadata and **generates level-calibrated docs** for ProcessNodes
+- MigrationTools **invokes** BoundaryValidator for stereotype inference and boundary detection
 
 ## Business Rules
 
@@ -424,3 +635,12 @@ classDiagram
 19. ProjectManagementSkill outputs must be compatible with the hierarchical project documentation folder structure
 20. RequirementsMerger must maintain source traceability for all requirements in the merged specification
 21. SkillCreator templates must enforce the standard EDPS SKILL.md schema across all new skills
+22. HierarchyManagementSkill may only decompose control-type participants; attempts to decompose actor, boundary, or entity stereotypes must be rejected with a structured error response
+23. ProcessNode hierarchy depth must not exceed the configured scale limit (HR-6); advisory warnings emitted at 80% of threshold before critical threshold is reached
+24. HierarchyMetadata (hierarchy-metadata.json) must be updated atomically after every decomposition and rollback; no partial state permitted
+25. Sub-folder stub files must include the machine-detectable marker `[TO BE GENERATED - invoke documentation-automation]`; `documentation-automation` must check for this marker before overwriting
+26. EDPSComplianceChecker must run `diagram-generatecollaboration --mode boundary-validation-only` for Group A if no pre-existing `boundary_validation_report.json` is available; consuming a stale report is not permitted
+27. EDPSComplianceChecker Group B/C evaluation is blocked if `hierarchy-validation` overall status is INVALID; `overall_status` must be set to BLOCKED in this case
+28. HierarchyValidator auto-fix is permitted only for safe path-reconstruction and metadata issues (Groups HX, HN-4); structural ERRORs (Groups HV, HN-1/2/3) require human review and must never be auto-fixed
+29. ChangeImpactAnalyzer must emit both the native five-level `risk_level` and the normalized three-level `normalized_risk_level` with `critical_flag` to ensure compatibility with `change-management` skill's `affected_documents` format
+30. MigrationTools must never modify original diagram files; `--mode preview` is the safe default and `--mode apply` writes only to new enhanced output files
