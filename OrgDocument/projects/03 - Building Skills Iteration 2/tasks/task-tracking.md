@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 2 - Hierarchy Management (In Progress)  
+**Current Phase**: Phase 3 - EDPS Compliance & Validation (Not Started)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (17 tasks across 4 phases)
 
 ## Overall Progress
@@ -9,10 +9,10 @@
 | Phase | Tasks | Status | Progress |
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
-| Phase 2: Hierarchy Management | T5-T8 | In Progress | 3/4 |
+| Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Not Started | 0/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **7/17** |
+| **Total** | **17 tasks** | **In Progress** | **8/17** |
 
 ---
 
@@ -45,7 +45,7 @@
 
 ---
 
-## Phase 2: Hierarchy Management (Weeks 5-7, 10-12 dev days)
+## Phase 2: Hierarchy Management ✅ (Weeks 5-7, 10-12 dev days)
 
 ### Completed
 - [x] **T5: Create Hierarchy Management Skill**
@@ -83,6 +83,8 @@
     - Hierarchy depth/breadth summary report including `boundary_count`, `nodes_by_level`, and `scale_management` aggregates (FR-T8.4)
   - Updated `references/hierarchy-metadata-schema.md` (schema_version 1.1): added `complexity_thresholds` top-level block (TR-T8.2), `complexity_metrics` object per node, `boundary_count` and `scale_management` in `hierarchy_statistics`, updated example document (TR-T8.1)
   - Added trigger in §6 (Update hierarchy-metadata.json) to run scale analysis automatically after each decomposition
+  - Created 30 test cases across 6 categories in `artifacts/Testing/T8-test-cases.md`; all 30 executed and passed (March 14, 2026); 7 defects found and fixed
+  - Full results in `artifacts/Testing/T8-test-results.md`
   - **File**: [T8-process-level-tracking.md](T8-process-level-tracking.md)
 
 ---
@@ -170,7 +172,7 @@ T1 ──┬──► T2 ──┐
 | Milestone | Target Date | Criteria | Status |
 |-----------|------------|----------|--------|
 | M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | ✅ Complete |
-| M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | In Progress (1/4) |
+| M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | ✅ Complete |
 | M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | Not Started |
 | M4: Project Complete | End Week 12 | T13-T17 complete, OrgModel updated | Not Started |
 
@@ -232,4 +234,20 @@ T1 ──┬──► T2 ──┐
   - **D-T5-03**: Test criteria expected `## Parent Process` section header; corrected to match bold front-matter format in template (TC 5.3)
 - TC 6.2 tree visualization Mermaid diagram validated using validator — no syntax errors
 - Results documented in `artifacts/Testing/T5-test-results.md`
+- **Next Step**: Begin T6 (Sub-Folder Generation)
+
+### March 14, 2026 - T8 Test Cases Executed
+- Created `artifacts/Testing/T8-test-cases.md` with 30 test cases across 6 categories
+- Executed all 30 T8 test cases against `hierarchy-management` SKILL.md §Process Level Tracking and Scale Management — **30/30 PASS** (100%)
+- 7 defects found and fixed during execution:
+  - **D-T8-01**: TC-T8-004 conflated `nesting_depth` (box nesting in diagram) with folder hierarchy depth; corrected test scenario to use nested `box` blocks
+  - **D-T8-02**: TC-T8-006 and TC-T8-009 expected `"none"` at the threshold value; advisory zone includes the threshold value itself (⌊7×0.8⌋=5..7; ⌊12×0.8⌋=9..12); corrected test input values to 4 and 8 respectively
+  - **D-T8-03**: Multiple tests referenced `warnings` array and severity `"warning"`; SKILL uses `complexity_warning` string (`none`/`advisory`/`critical`) and `critical_warnings`/`advisory_warnings` in `scale_management`; corrected all affected tests
+  - **D-T8-04**: TC-T8-024/025 used `scale_metrics`; schema uses `complexity_metrics`; updated field names and JSON examples to match schema
+  - **D-T8-05**: TC-T8-026 used `hierarchy_stats` (→ `hierarchy_statistics`) and misplaced `generated_at` inside the stats block (it belongs at root level as `last_updated`); corrected structure
+  - **D-T8-06**: TC-T8-019/020/022/023 used `total_boundaries` intending "number of decompositions"; schema uses `decomposed_count` for that; `boundary_count` is for boundary-type participant nodes; corrected field references throughout
+  - **D-T8-07**: TC-T8-028/029/030 used abbreviated config key names (`thresholds.level_0`); corrected to full schema keys (`complexity_thresholds.level_0_max_interactions`)
+- Results documented in `artifacts/Testing/T8-test-results.md`
+- **Milestone M2 complete** — Phase 2 (T5–T8) all done; full hierarchy management including sub-folders, cross-reference navigation, and scale tracking operational
+- **Next Step**: Begin Phase 3 — T9 (EDPS Compliance Checking)
 - **Next Step**: Begin T6 (Sub-Folder Generation)
