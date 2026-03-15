@@ -4,10 +4,11 @@
 **Phase**: Phase 3 - EDPS Compliance & Validation  
 **Priority**: Medium  
 **Estimated Effort**: 2-3 days  
-**Status**: Not Started  
+**Status**: Done  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
-**Last Updated**: March 14, 2026
+**Last Updated**: March 14, 2026  
+**Completed**: March 14, 2026
 
 ## Description
 
@@ -35,10 +36,10 @@ Automate generation of process documentation at each hierarchy level following o
 ## Acceptance Criteria
 
 ### Must Have
-- [ ] Auto-generate main.md with hierarchy context and navigation
-- [ ] Auto-generate process.md with level-appropriate detail
-- [ ] Include participant types, boundary rules, and decomposition status
-- [ ] Follow organizational documentation standards
+- [x] Auto-generate main.md with hierarchy context and navigation
+- [x] Auto-generate process.md with level-appropriate detail
+- [x] Include participant types, boundary rules, and decomposition status
+- [x] Follow organizational documentation standards
 
 ## Dependencies
 
@@ -55,6 +56,29 @@ Automate generation of process documentation at each hierarchy level following o
 **Given**: New Level 2 decomposition of "OrderProcessor"
 **When**: Documentation automation runs
 **Then**: main.md, process.md, collaboration.md, domain-model.md generated with correct hierarchy context
+
+**Full test suite**: 32 test cases across 8 categories — [T12-test-cases.md](../artifacts/Testing/T12-test-cases.md)  
+**Test results**: 32/32 passed — [T12-test-results.md](../artifacts/Testing/T12-test-results.md)
+
+---
+
+## Implementation Notes
+
+- Created `.github/skills/documentation-automation/SKILL.md` as a new standalone skill:
+  - **§1 Determine Hierarchy Level and Process Name**: detects level from `hierarchy-metadata.json` or folder-path depth; derives friendly process name from PascalCase folder name stripping ordinal prefix and `Boundary` suffix (FR-T12.1).
+  - **§2 Extract Participant Inventory**: parses `sequenceDiagram` block to build a participant registry with `alias`, `type`, `label`, `box_name`, and `involvement_count` per participant (FR-T12.1–FR-T12.4).
+  - **§3 Generate `main.md`**: template includes breadcrumb navigation, parent process link, participant summary table, boundary rule evaluation (VR-1, VR-2, VR-3 compliance), and decomposition status table per control-type participant (FR-T12.1).
+  - **§4 Generate `process.md`**: includes level identifier comment, parent process link, Mermaid `flowchart TD` inferred from collaboration.md message groups, loop/alt inference rules, boundary rules applied section, and error handling stubs (FR-T12.2).
+  - **§5 Generate/Annotate `collaboration.md`**: validates existing diagrams and adds missing `@{ "type": "..." }` stereotypes, `%% BOUNDARY SUMMARY` comment blocks, and level-appropriate `box rgb(...)` colors; synthesizes new diagrams from parent context when none exists (FR-T12.3).
+  - **§6 Generate `domain-model.md`**: class diagram with one class per participant (stereotype as CSS class), attributes inferred from message labels, relationships from arrow directions, key concepts table, and parent domain reference (FR-T12.4).
+  - **§Level Content Guide**: table mapping Level 0–3+ to scope, overview tone, and process detail depth — ensures level-appropriate content across all generated files (TR-T12.1).
+  - **§Template Customization**: describes `doc-templates/` override directory with `{{variable_name}}` placeholder syntax so organisations can provide their own templates (TR-T12.2).
+  - **§Integration with Related Skills**: cross-references `hierarchy-management` (folder structure), `diagram-generatecollaboration` (EDPS validation), and `orgmodel-update` (downstream consumer).
+  - **§Validation Checklist**: six post-generation checks to confirm correctness of all four output files.
+- Registered in `.github/skills/INDEX.md` under **🎯 Domain Modeling** alongside `hierarchy-management`.
+- **Post-test defect fixes** (2 defects found during test execution):
+  - **D-T12-01**: Added acronym-handling rule to §1 PascalCase expansion — consecutive uppercase sequences (e.g., `EDPS`) preserved as a single word unit.
+  - **D-T12-02**: Added `<!-- omit at Level 0 -->` to `## Relationships to Parent Domain` heading in §6 `domain-model.md` template, consistent with other Level 0 omissions.
 
 ---
 

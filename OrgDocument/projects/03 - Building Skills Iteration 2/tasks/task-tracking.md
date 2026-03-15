@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 3 - EDPS Compliance & Validation (In Progress)  
+**Current Phase**: Phase 4 - Migration & Integration (Not Started)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (17 tasks across 4 phases)
 
 ## Overall Progress
@@ -10,9 +10,9 @@
 |-------|-------|--------|----------|
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
-| Phase 3: EDPS Compliance & Validation | T9-T12 | In Progress | 3/4 |
+| Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **17 tasks** | **In Progress** | **11/17** |
+| **Total** | **17 tasks** | **In Progress** | **12/17** |
 
 ---
 
@@ -89,7 +89,7 @@
 
 ---
 
-## Phase 3: EDPS Compliance & Validation (Weeks 8-9, 8-10 dev days)
+## Phase 3: EDPS Compliance & Validation ✅ (Weeks 8-9, 8-10 dev days)
 
 ### Completed
 - [x] **T9: Implement EDPS Compliance Checking**
@@ -125,12 +125,13 @@
   - **Test files**: [T11-test-cases.md](../artifacts/Testing/T11-test-cases.md), [T11-test-results.md](../artifacts/Testing/T11-test-results.md)
   - **File**: [T11-change-impact-analysis.md](T11-change-impact-analysis.md)
 
-### Not Started
-
-- [ ] **T12: Build Documentation Automation**
-  - **Priority**: Medium | **Effort**: 2-3 days
-  - **Dependencies**: T6, T7
-  - **Requirements**: R-306
+- [x] **T12: Build Documentation Automation**
+  - **Priority**: Medium | **Effort**: 2-3 days | **Completed**: March 14, 2026
+  - Created new `documentation-automation` skill at `.github/skills/documentation-automation/SKILL.md`
+  - Implements 6 workflow steps: §1 hierarchy level/process name detection (metadata or folder depth; acronym-aware PascalCase expansion), §2 participant inventory extraction, §3 `main.md` generation (breadcrumb, participant summary, VR-1/2/3 compliance table, decomposition status), §4 `process.md` generation (level-appropriate flowchart from message groups; loop/alt inference rules), §5 `collaboration.md` annotation and synthesis (missing stereotypes, boundary summary comments, level-appropriate box colors, new diagram synthesis from parent context), §6 `domain-model.md` generation (one class per participant, attributes from message labels, relationship arrows)
+  - Includes Level Content Guide (calibrate depth by Level 0–3+), Template Customization (org-specific templates via `doc-templates/` with `{{placeholder}}` syntax), Integration table, and Validation Checklist
+  - **Test results**: 32/32 test cases passed; 2 defects found and fixed (D-T12-01: acronym PascalCase expansion rule; D-T12-02: Level 0 omission of Relationships to Parent Domain in domain-model.md)
+  - **Test files**: [T12-test-cases.md](../artifacts/Testing/T12-test-cases.md), [T12-test-results.md](../artifacts/Testing/T12-test-results.md)
   - **File**: [T12-documentation-automation.md](T12-documentation-automation.md)
 
 ---
@@ -190,7 +191,7 @@ T1 ──┬──► T2 ──┐
 |-----------|------------|----------|--------|
 | M1: Boundary Diagrams | End Week 4 | T1-T4 complete, boundary diagrams generating | ✅ Complete |
 | M2: Full Hierarchy | End Week 7 | T5-T8 complete, sub-folders and navigation working | ✅ Complete |
-| M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | Not Started |
+| M3: EDPS Validated | End Week 9 | T9-T12 complete, compliance checks passing | ✅ Complete |
 | M4: Project Complete | End Week 12 | T13-T17 complete, OrgModel updated | Not Started |
 
 ## Progress Log
@@ -283,3 +284,24 @@ T1 ──┬──► T2 ──┐
 - Results documented in `artifacts/Testing/T10-test-results.md`
 - Registered `hierarchy-validation` in `INDEX.md` Compliance & Validation table
 - **Next Step**: Begin T11 (Change Impact Analysis) or T12 (Documentation Automation)
+
+### March 14, 2026 - T12 Completed
+- Created new skill `documentation-automation` at `.github/skills/documentation-automation/SKILL.md`
+  - §1: Level and process name detection from `hierarchy-metadata.json` or folder path depth; acronym-aware PascalCase expansion (consecutive uppercase treated as single word unit)
+  - §2: Participant inventory extraction (alias, type, label, box_name, involvement_count; message list with async flag)
+  - §3: `main.md` generation with breadcrumb, participant summary table, VR-1/2/3 boundary rule compliance evaluation, decomposition status per control participant
+  - §4: `process.md` generation with `flowchart TD` inferred from message groups (`loop` → loop construct; `alt/else` → diamond decision; entry/terminal tied to actor-boundary edges); level-appropriate step detail
+  - §5: `collaboration.md` annotation (missing `@{ "type": "..." }` stereotypes via inference; `%% BOUNDARY SUMMARY` comment blocks; level-appropriate `box rgb(...)` colors) and fresh synthesis from parent context when no diagram exists
+  - §6: `domain-model.md` generation (one `class [Alias]:::[type]` per participant with 2–3 inferred attributes; `->>` → `-->` association; `-->>` → `..>` dependency)
+  - Level Content Guide: 4-level table (Level 0–3+) calibrating scope, overview tone, and process detail depth
+  - Template Customization: `doc-templates/` override directory with `{{variable_name}}` placeholder syntax for each of the four file types
+  - Validation Checklist: 6 post-generation verifications
+- Created `artifacts/Testing/T12-test-cases.md` with 32 test cases across 8 categories
+- Executed all 32 T12 test cases against `documentation-automation` SKILL.md — **32/32 PASS** (100%)
+- 2 defects found and fixed during execution:
+  - **D-T12-01**: §1 PascalCase expansion lacked acronym rule; added rule specifying consecutive uppercase sequences are preserved as a single word unit (e.g., `EDPS` not split letter-by-letter)
+  - **D-T12-02**: §6 `domain-model.md` template was missing `<!-- omit at Level 0 -->` on `## Relationships to Parent Domain`; added omission annotation consistent with other Level 0 exclusions
+- Results documented in `artifacts/Testing/T12-test-results.md`
+- Registered `documentation-automation` in `INDEX.md` Domain Modeling table and `README.md` Analysis & Visualization table
+- **Milestone M3 complete** — Phase 3 (T9–T12) all done; EDPS compliance checking, hierarchy validation, change impact analysis, and documentation automation all operational
+- **Next Step**: Begin Phase 4 — T13 (Project 1 Migration Tools)

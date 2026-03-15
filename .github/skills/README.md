@@ -34,6 +34,8 @@ Project ID: [YOUR-PROJECT-ID]
 |-------|---------|-------|---------|-----------|
 | `process-scopemin` | Define MVP and minimal scope | requirements.json | scope-analysis.json/md | → Planning |
 | `diagram-generatecollaboration` | Generate system interaction diagrams | domain artifacts | collaboration-diagrams.json/md | → Documentation |
+| `hierarchy-management` | Decompose control-type participants; manage folder structure and hierarchy metadata | collaboration.md | sub-folder + hierarchy-metadata.json | → `documentation-automation` |
+| `documentation-automation` | Auto-generate main.md, process.md, collaboration.md, domain-model.md for each hierarchy level | process folder + hierarchy-metadata.json | Four populated doc files per level | → `orgmodel-update` |
 
 ### 🔄 Process Management
 | Skill | Purpose | Input | Output | Next Step |
