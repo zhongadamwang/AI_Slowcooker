@@ -4,10 +4,10 @@
 **Phase**: Phase 3.5 - Conflict Resolution  
 **Priority**: Medium  
 **Estimated Effort**: 1 day  
-**Status**: Not Started  
+**Status**: Done  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
-**Last Updated**: March 14, 2026
+**Last Updated**: March 15, 2026
 
 ## Description
 
@@ -73,17 +73,17 @@ This task resolves the incompatibility by adding a normalized `risk_level` outpu
 ## Acceptance Criteria
 
 ### Must Have
-- [ ] Risk Level Mapping table added to `change-impact-analysis/SKILL.md`
-- [ ] `normalized_risk_level` and `critical_flag` fields added to `change-impact-report.json` schema in SKILL.md
-- [ ] `summary.critical_count` added to JSON summary schema
-- [ ] Compatibility claim in Outputs section updated (FR-T21.4)
-- [ ] Human-readable report template updated with Critical Impacts section (FR-T21.5)
+- [x] Risk Level Mapping table added to `change-impact-analysis/SKILL.md`
+- [x] `normalized_risk_level` and `critical_flag` fields added to `change-impact-report.json` schema in SKILL.md
+- [x] `summary.critical_count` added to JSON summary schema
+- [x] Compatibility claim in Outputs section updated (FR-T21.4)
+- [x] Human-readable report template updated with Critical Impacts section (FR-T21.5)
 
 ### Should Have
-- [ ] Example JSON snippet in SKILL.md showing a CRITICAL entry with `critical_flag: true` and `normalized_risk_level: "High"`
+- [x] Example JSON snippet in SKILL.md showing a CRITICAL entry with `critical_flag: true` and `normalized_risk_level: "High"`
 
 ### Could Have
-- [ ] Note in `change-management/SKILL.md` Inputs section suggesting `change-impact-analysis` as a compatible upstream source
+- [x] Note in `change-management/SKILL.md` Inputs section suggesting `change-impact-analysis` as a compatible upstream source
 
 ## Implementation Approach
 

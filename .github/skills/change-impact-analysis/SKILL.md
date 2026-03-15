@@ -32,6 +32,39 @@ Identify and report all artifacts affected when a change is made at any level of
 
 ---
 
+## Risk Level Mapping
+
+The `change-impact-analysis` skill uses a 5-level internal severity scale. When outputs are consumed by `change-management`, use the `normalized_risk_level` field (added to every artifact entry in `change-impact-report.json`) which maps to `change-management`'s 3-level `risk_level` scale.
+
+| Internal `severity` | `normalized_risk_level` (change-management compatible) | `critical_flag` | Rationale |
+|---|---|---|---|
+| `NONE` | `Low` | `false` | No impact — maps to minimum risk |
+| `LOW` | `Low` | `false` | Minor impact — within Low threshold |
+| `MEDIUM` | `Medium` | `false` | Moderate impact — maps directly |
+| `HIGH` | `High` | `false` | Significant impact — maps directly |
+| `CRITICAL` | `High` | `true` | Exceeds change-management's scale — capped at High with `critical_flag: true` to preserve visibility |
+
+**Example — CRITICAL entry with normalization:**
+
+```json
+{
+  "rule_id": "CI-1",
+  "rule_name": "Parent Reference Impact",
+  "direction": "upward",
+  "severity": "CRITICAL",
+  "normalized_risk_level": "High",
+  "critical_flag": true,
+  "affected_file": "path/to/parent/main.md",
+  "affected_level": 0,
+  "impact_description": "Boundary restructure cascades to 12+ parent artifacts",
+  "remediation": "Rebuild Sub-Processes table and all breadcrumbs in affected parents",
+  "remediation_required": true,
+  "auto_fixable": false
+}
+```
+
+---
+
 ## Impact Rule Catalogue
 
 ### Group CI — Artifact-Level Impact Rules
@@ -236,6 +269,7 @@ Change Impact Analysis — [change type]: [target]
     "high_impacts": 0,
     "medium_impacts": 0,
     "low_impacts": 0,
+    "critical_count": 0,
     "auto_fixed": 0,
     "change_point_level": 0
   },
@@ -245,6 +279,8 @@ Change Impact Analysis — [change type]: [target]
       "rule_name": "Parent Reference Impact",
       "direction": "upward",
       "severity": "HIGH",
+      "normalized_risk_level": "High",
+      "critical_flag": false,
       "affected_file": "path/to/parent/main.md",
       "affected_level": 0,
       "impact_description": "Sub-Processes table row for '01-OrderBoundary' contains a broken link after folder rename to '01-NewOrderBoundary'",
@@ -287,6 +323,16 @@ Change Impact Analysis — [change type]: [target]
 | Low Impacts | [n] |
 | Change Point Level | [n] |
 | Auto-Fixed | [n] |
+
+## Critical Impacts 🚨
+
+> This section is present only when one or more artifacts have `critical_flag: true` (i.e., `severity: CRITICAL`). CRITICAL impacts exceed `change-management`'s native risk scale and are capped at `normalized_risk_level: High` with `critical_flag: true` to prevent silent downgrading.
+
+| Rule | Affected File | Level | Description |
+|------|--------------|-------|-------------|
+| [rule] | [path] | [n] | [description] |
+
+---
 
 ## Impact Records
 
@@ -355,7 +401,7 @@ What-if mode (`--mode what-if`) is the default and is designed for pre-flight ev
 
 - Run **before** `hierarchy-management` decompositions or rollbacks to understand downstream impact.
 - Run **after** a hierarchy change in `--mode apply` to repair navigation links without running full `hierarchy-validation`.
-- Feeds into `change-management` skill — the `impact_records` array maps directly to `affected_documents` in a change management record.
+- Feeds into `change-management` skill — the `affected_documents` entries in `change-impact-report.json` are compatible with `change-management` skill's `affected_documents` format using the `normalized_risk_level` field. Use `critical_flag: true` to identify CRITICAL impacts that exceed `change-management`'s native scale.
 - Use `edps-compliance` for full EDPS rule validation after all impacts have been addressed.
 - Use `hierarchy-validation` for a structural integrity check once navigational repairs are complete.
 - Requirement change outputs (CR-1/CR-2/CR-3) can be forwarded to `process-findtopandupdate` to update top-level requirement documents.

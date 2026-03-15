@@ -13,6 +13,8 @@ Transforms AI conversation text and requirement discussions into structured chan
 **Input**: Conversation text + project context + change scope  
 **Output**: Structured change document + affected file list + reference updates
 
+> **Compatible upstream source**: Use the `change-impact-analysis` skill to generate `change-impact-report.json`. Pass each entry's `normalized_risk_level` field directly as `risk_level` in `affected_documents`. Entries with `critical_flag: true` indicate CRITICAL impacts that have been capped at `High` and should be reviewed with elevated priority.
+
 ## Usage
 
 **GitHub Copilot Integration (Recommended):**

@@ -171,7 +171,7 @@ Skill conflict review (March 14, 2026) identified 5 conflicts between new Projec
   - **File**: [T20-resolve-c3-file-generation-ownership.md](T20-resolve-c3-file-generation-ownership.md)
 
 ### Not Started
-- [ ] **T21: Resolve C-4 — Impact Analysis Risk Scale Normalization**
+- [x] **T21: Resolve C-4 — Impact Analysis Risk Scale Normalization** ✅ Done (March 15, 2026)
   - **Priority**: Medium | **Effort**: 1 day
   - **Dependencies**: T11
   - **Conflict**: `change-impact-analysis` uses 5-level severity scale; `change-management` uses 3-level — `CRITICAL` and `NONE` have no mapping, breaking the stated compatibility
