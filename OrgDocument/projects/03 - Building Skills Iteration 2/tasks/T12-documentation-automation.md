@@ -4,7 +4,7 @@
 **Phase**: Phase 3 - EDPS Compliance & Validation  
 **Priority**: Medium  
 **Estimated Effort**: 2-3 days  
-**Status**: Done  
+**Status**: Completed  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
 **Last Updated**: March 14, 2026  
@@ -41,6 +41,11 @@ Automate generation of process documentation at each hierarchy level following o
 - [x] Include participant types, boundary rules, and decomposition status
 - [x] Follow organizational documentation standards
 
+### Should Have
+- [x] Auto-generate collaboration.md with validated Mermaid diagrams, stereotypes, and boundary coloring
+- [x] Auto-generate domain-model.md with entities, attributes, and relationships inferred from collaboration diagrams
+- [x] Template customization per organization needs (`doc-templates/` override directory with `{{variable_name}}` placeholders)
+
 ## Dependencies
 
 ### Prerequisites
@@ -62,7 +67,7 @@ Automate generation of process documentation at each hierarchy level following o
 
 ---
 
-## Implementation Notes
+## Implementation Summary
 
 - Created `.github/skills/documentation-automation/SKILL.md` as a new standalone skill:
   - **§1 Determine Hierarchy Level and Process Name**: detects level from `hierarchy-metadata.json` or folder-path depth; derives friendly process name from PascalCase folder name stripping ordinal prefix and `Boundary` suffix (FR-T12.1).

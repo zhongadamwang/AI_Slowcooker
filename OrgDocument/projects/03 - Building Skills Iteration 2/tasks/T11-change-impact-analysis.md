@@ -4,10 +4,11 @@
 **Phase**: Phase 3 - EDPS Compliance & Validation  
 **Priority**: Medium  
 **Estimated Effort**: 2-3 days  
-**Status**: Done  
+**Status**: Completed  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
-**Last Updated**: March 14, 2026
+**Last Updated**: March 14, 2026  
+**Completed**: March 14, 2026
 
 ## Description
 
@@ -39,6 +40,11 @@ Implement change impact analysis that traces how changes at one hierarchy level 
 - [x] Trace requirement changes to affected process levels
 - [x] Generate change impact report with affected artifacts
 - [x] Support what-if analysis for proposed changes
+
+### Should Have
+- [x] Configurable traversal depth (`--depth N`) to limit analysis scope
+- [x] Machine-readable report format (JSON) compatible with `change-management` skill
+- [x] Risk classification levels (NONE / LOW / MEDIUM / HIGH / CRITICAL)
 
 ## Implementation Summary
 
