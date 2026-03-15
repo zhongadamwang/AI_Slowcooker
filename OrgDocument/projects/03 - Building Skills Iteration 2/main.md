@@ -62,7 +62,7 @@ A **boundary** represents a cohesive unit where:
 - **Enhanced organizational process models with multi-level decomposition capabilities**
 
 ## Status
-- **Phase**: Phase 2 - Hierarchy Management (In Progress, 1/4 tasks complete)
+- **Phase**: Phase 2 - Hierarchy Management (In Progress, 2/4 tasks complete)
 - **Started**: March 13, 2026
 - **Analysis Completed**: March 14, 2026
 - **T1 Completed**: March 14, 2026 — Enhanced collaboration skill with boundary support
@@ -70,9 +70,10 @@ A **boundary** represents a cohesive unit where:
 - **T3 Completed**: March 14, 2026 — Mermaid box syntax generation
 - **T4 Completed**: March 14, 2026 — Boundary validation rules (VR-1 through VR-4)
 - **T5 Completed**: March 14, 2026 — Hierarchy management skill created
+- **T6 Completed**: March 14, 2026 — Sub-folder generation (process.md + domain-model.md templates, sanitization, collision resolution, audit log); 24/24 test cases passed
 - **Milestone M1 Complete**: Boundary-enhanced diagrams generating (T1–T4)
 - **Next Milestone**: M2 - Full Hierarchy (End Week 7)
-- **Next Task**: T6 (Sub-Folder Generation)
+- **Next Task**: T7 (Cross-Reference Navigation)
 - **Dependencies**: Project 1 skills (requirements-ingest, domain concepts, collaboration generation)
 
 ---

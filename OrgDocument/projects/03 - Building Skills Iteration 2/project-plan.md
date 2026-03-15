@@ -198,10 +198,15 @@ This project enhances Project 1's AI agent skills to support hierarchical proces
 
 ## Next Steps
 
-1. **Immediate**: Begin T2 (Participant Stereotype Classification) and/or T3 (Mermaid Box Syntax Generation) — both unblocked by T1 completion
-2. **Week 2-3**: Complete T2, T3, T4 to finish Phase 1 (Boundary Diagrams milestone)
-3. **Week 4**: Start Phase 2 hierarchy management development
+1. **Immediate**: Begin T7 (Cross-Reference Navigation) — unblocked by T5 + T6 completion
+2. **Also unblocked**: T8 (Process Level Tracking and Scale Management) — depends on T5 only, can run in parallel with T7
+3. **End of Phase 2**: Complete T7 + T8 to reach Milestone M2 (Full Hierarchy)
 4. **Ongoing**: Regular validation against EDPS methodology requirements
+
+### Completed
+- T1–T4 (Phase 1): Enhanced collaboration skill, stereotype classification, box syntax, boundary validation
+- T5 (Phase 2): Hierarchy management skill
+- T6 (Phase 2): Sub-folder generation — 4 standard files per folder, naming sanitization, collision resolution, audit log; all 24 test cases passed (March 14, 2026)
 
 **Project Sponsor Approval Required For:**
 - Resource allocation commitment

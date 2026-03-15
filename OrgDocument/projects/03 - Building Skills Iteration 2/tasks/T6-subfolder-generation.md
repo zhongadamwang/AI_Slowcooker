@@ -73,7 +73,7 @@ Implement automatic folder structure creation for decomposed processes. Each tim
 **Related Documents**:
 - [Initial Requirements - R-304](../artifacts/Requirements/initial-requirements.md)
 - [Boundary Concepts - Folder Structure](../artifacts/Analysis/boundary-concepts.md)
-- [Test Cases](T6-test-cases.md) — 24 test cases, all passing
+- [Test Cases](../artifacts/Testing/T6-test-cases.md) — 24 test cases, all passing
 
 ## Implementation Notes
 

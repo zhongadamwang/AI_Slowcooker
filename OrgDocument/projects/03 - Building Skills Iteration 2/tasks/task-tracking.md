@@ -61,7 +61,7 @@
   - **Priority**: Medium | **Effort**: 2-3 days | **Completed**: March 14, 2026
   - Extended `hierarchy-management` SKILL.md with sub-folder generation: `process.md` and `domain-model.md` templates (Steps 4b/4c), special character sanitization (§2a), naming collision resolution (§2b), folder audit log (§4d, `folder-creation.log`)
   - Updated parent navigation to four-column Sub-Processes table; updated Rollback procedure; updated multi-level folder tree example
-  - Created 24 test cases across 7 categories in `T6-test-cases.md`; all 24 passing
+  - Created 24 test cases across 7 categories in `artifacts/Testing/T6-test-cases.md`; all 24 passing
   - **File**: [T6-subfolder-generation.md](T6-subfolder-generation.md)
 
 ### Not Started
