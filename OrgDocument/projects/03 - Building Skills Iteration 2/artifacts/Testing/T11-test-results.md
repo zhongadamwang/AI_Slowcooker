@@ -1,13 +1,23 @@
 # T11 — Change Impact Analysis: Test Results
 
 **Skill**: `change-impact-analysis`
-**Executed**: March 14, 2026
+**Executed**: March 14, 2026 (Rerun: March 14, 2026)
 **Executed By**: Copilot / Automated Skill Validation
 **Total Test Cases**: 28
 **Passed**: 28
 **Failed**: 0
 **Defects Found**: 2
 **Defects Fixed**: 2
+
+---
+
+## Rerun Notes (March 14, 2026)
+
+**Rerun Trigger**: Manual re-execution requested for Project 3 Phase 3 tasks (T9–T12).  
+**Skill Version**: Current `change-impact-analysis` SKILL.md (post all defect fixes: D-T11-01, D-T11-02).  
+**Rerun Result**: 28/28 PASS — no regressions detected. All previously fixed defects remain resolved.  
+**New Defects Found**: 0  
+**Conclusion**: Skill implementation is stable. No changes required.
 
 ---
 

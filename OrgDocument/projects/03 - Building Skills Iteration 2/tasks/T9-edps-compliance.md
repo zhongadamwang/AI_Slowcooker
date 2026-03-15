@@ -7,7 +7,7 @@
 **Status**: Completed  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
-**Last Updated**: March 14, 2026  
+**Last Updated**: March 14, 2026 (test rerun)  
 **Completed**: March 14, 2026
 
 ## Description
@@ -51,6 +51,7 @@ Implement EDPS methodology compliance validation for all generated hierarchical 
 
 - **Test Cases**: 33 cases across 12 categories covering all 11 compliance rules (VR-1 to VR-4, HR-1 to HR-6, EP-1 to EP-4), scoring formula, and mode behavior
 - **Result**: 33/33 PASS after 3 defects found and fixed
+- **Rerun (March 14, 2026)**: 33/33 PASS — no regressions detected, no new defects found
 - **Defects Fixed**: D-T9-01 (EP-2 false-positive on decomposed participants), D-T9-02 (SKIPPED rules not excluded from scoring), D-T9-03 (status classification gap for errors=0 / score<70%)
 - **Test Files**: [T9-test-cases.md](../artifacts/Testing/T9-test-cases.md), [T9-test-results.md](../artifacts/Testing/T9-test-results.md)
 
