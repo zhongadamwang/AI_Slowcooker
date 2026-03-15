@@ -50,6 +50,32 @@ Parse the `sequenceDiagram` block:
 2. Build a message list: each `->>`, `-->>`, `-x` arrow becomes `{ from, to, label, async: bool }`.
 3. For each participant, calculate `involvement_count` = number of messages where it is sender or receiver.
 
+### 2b. Content Guard Pre-Check
+
+Before writing any of the four files (`main.md`, `process.md`, `collaboration.md`, `domain-model.md`), evaluate each file's current state:
+
+**Stub detection**: A file is classified as a **stub** if it contains the exact substring `[TO BE GENERATED - invoke documentation-automation]` anywhere in its content.
+
+**Non-stub content threshold (FR-T20.5)**: A file is considered to contain non-stub content if it has more than **10 non-placeholder, non-header lines** of substantive text or diagram code. A line is excluded from this count if it:
+- Is blank
+- Begins with `#` (Markdown heading)
+- Contains `[TO BE GENERATED`
+- Is a front-matter key/value line (e.g., `**Level**: [N]`)
+- Contains only Mermaid comment markers (`%%`) or opening/closing code-block fences
+
+**Decision matrix for each file:**
+
+| File state | Action |
+|------------|--------|
+| File does not exist | Proceed with generation (no guard) |
+| File exists and is a stub (contains `[TO BE GENERATED - invoke documentation-automation]`) | Proceed with generation — replace stub |
+| File exists and non-stub line count ≤ 10 | Proceed with generation |
+| File exists and non-stub line count > 10 | Prompt user: **"[filename] already contains generated content. Overwrite? (y/N)"** |
+
+If the user responds `y` → overwrite. If the user responds `N` or provides no input → skip that file and preserve its content.
+
+**`--force` flag**: When `documentation-automation` is invoked with `--force`, skip all Content Guard prompts and overwrite all files unconditionally. Use this flag in CI/automated pipelines where interactive prompts are unavailable.
+
 ### 3. Generate `main.md`
 
 Use the **Level Content Guide** (§Level Content Guide) to calibrate description depth.

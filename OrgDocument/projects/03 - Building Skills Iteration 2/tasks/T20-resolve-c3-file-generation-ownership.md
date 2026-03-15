@@ -4,10 +4,10 @@
 **Phase**: Phase 3.5 - Conflict Resolution  
 **Priority**: Medium  
 **Estimated Effort**: 1 day  
-**Status**: Not Started  
+**Status**: Completed (Tested — 5/5 PASS)  
 **Assigned**: [Team Member]  
 **Created**: March 14, 2026  
-**Last Updated**: March 14, 2026
+**Last Updated**: March 15, 2026
 
 ## Description
 
@@ -49,17 +49,17 @@ This task establishes a clear ownership contract: `hierarchy-management` generat
 ## Acceptance Criteria
 
 ### Must Have
-- [ ] `hierarchy-management/SKILL.md` defines a Stub File Specification (FR-T20.1) for all four files
-- [ ] `hierarchy-management/SKILL.md` Steps 3/4 updated to describe stub-only output
-- [ ] `hierarchy-management/SKILL.md` includes Post-Creation Reminder (FR-T20.3)
-- [ ] `documentation-automation/SKILL.md` includes Content Guard check (FR-T20.4) with the threshold and overwrite prompt
+- [x] `hierarchy-management/SKILL.md` defines a Stub File Specification (FR-T20.1) for all four files
+- [x] `hierarchy-management/SKILL.md` Steps 3/4 updated to describe stub-only output
+- [x] `hierarchy-management/SKILL.md` includes Post-Creation Reminder (FR-T20.3)
+- [x] `documentation-automation/SKILL.md` includes Content Guard check (FR-T20.4) with the threshold and overwrite prompt
 
 ### Should Have
-- [ ] Stub file templates shown as literal examples in `hierarchy-management/SKILL.md`
-- [ ] Content Guard heuristic threshold documented (FR-T20.5)
+- [x] Stub file templates shown as literal examples in `hierarchy-management/SKILL.md`
+- [x] Content Guard heuristic threshold documented (FR-T20.5)
 
 ### Could Have
-- [ ] A `--force` flag documented for `documentation-automation` to skip Content Guard (for CI/automated use)
+- [x] A `--force` flag documented for `documentation-automation` to skip Content Guard (for CI/automated use)
 
 ## Implementation Approach
 
@@ -92,7 +92,9 @@ This task establishes a clear ownership contract: `hierarchy-management` generat
 - Updated `hierarchy-management/SKILL.md` (stub spec, post-creation reminder)
 - Updated `documentation-automation/SKILL.md` (content guard)
 - Test cases in `artifacts/Testing/T20-test-cases.md`
+- Test results in `artifacts/Testing/T20-test-results.md` — 5/5 PASS; 1 defect found and fixed (D-T20-1)
 
 ## Notes
 
 - The stub definition also benefits T13 (migration): existing Project 1 orgModel files will likely be classified as non-stub, directing the migration tool to preserve rather than overwrite them.
+- **D-T20-1 (fixed)**: `collaboration.md` and `domain-model.md` stub templates originally lacked the exact machine-detectable marker `[TO BE GENERATED - invoke documentation-automation]` outside the Mermaid code block. Fixed by adding `**Diagram Status**: [TO BE GENERATED - invoke documentation-automation]` front-matter field to both stub templates.

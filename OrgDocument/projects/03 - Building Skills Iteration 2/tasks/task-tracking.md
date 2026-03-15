@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
-**Last Updated**: March 14, 2026  
-**Current Phase**: Phase 3.5 - Conflict Resolution (In Progress — 2/5 complete)  
+**Last Updated**: March 15, 2026  
+**Current Phase**: Phase 3.5 - Conflict Resolution (In Progress — 3/5 complete)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (22 tasks across 5 phases)
 
 ## Overall Progress
@@ -11,9 +11,9 @@
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
-| Phase 3.5: Conflict Resolution | T18-T22 | In Progress | 2/5 |
+| Phase 3.5: Conflict Resolution | T18-T22 | In Progress | 3/5 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **22 tasks** | **In Progress** | **14/22** |
+| **Total** | **22 tasks** | **In Progress** | **15/22** |
 
 ---
 
@@ -160,14 +160,17 @@ Skill conflict review (March 14, 2026) identified 5 conflicts between new Projec
   - **Test File**: [T19-test-cases.md](../artifacts/Testing/T19-test-cases.md)
   - **File**: [T19-resolve-c2-validation-scope-segregation.md](T19-resolve-c2-validation-scope-segregation.md)
 
-### Not Started
-- [ ] **T20: Resolve C-3 — File Generation Ownership Contract**
-  - **Priority**: Medium | **Effort**: 1 day
+- [x] **T20: Resolve C-3 — File Generation Ownership Contract**
+  - **Priority**: Medium | **Effort**: 1 day | **Completed**: March 15, 2026
   - **Dependencies**: T5, T12
   - **Conflict**: `hierarchy-management` and `documentation-automation` both write the same four files with no ownership contract; silent overwrite possible
-  - **Resolution**: `hierarchy-management` generates stub-only files; `documentation-automation` is authoritative full-content generator; add Content Guard to `documentation-automation`
+  - **Resolution**: Added `## Stub File Specification` section to `hierarchy-management/SKILL.md` defining all four stub templates with machine-detectable `[TO BE GENERATED - invoke documentation-automation]` marker; updated Steps 3, 4, 4b, 4c as stub-only with "Stub Only" notices; added Post-Creation Reminder directing practitioners to invoke `documentation-automation`; added `### 2b. Content Guard Pre-Check` section to `documentation-automation/SKILL.md` with 10-line threshold, decision matrix, overwrite prompt, and `--force` flag
+  - **Test Results**: 5/5 PASS (March 15, 2026) — 1 defect found and fixed: D-T20-1 (`collaboration.md`/`domain-model.md` stubs missing exact machine-detectable marker; fixed by adding `**Diagram Status**: [TO BE GENERATED - invoke documentation-automation]` front-matter field); 3 low-severity output-format gaps logged (non-blocking)
+  - **Test File**: [T20-test-cases.md](../artifacts/Testing/T20-test-cases.md)
+  - **Test Results File**: [T20-test-results.md](../artifacts/Testing/T20-test-results.md)
   - **File**: [T20-resolve-c3-file-generation-ownership.md](T20-resolve-c3-file-generation-ownership.md)
 
+### Not Started
 - [ ] **T21: Resolve C-4 — Impact Analysis Risk Scale Normalization**
   - **Priority**: Medium | **Effort**: 1 day
   - **Dependencies**: T11
