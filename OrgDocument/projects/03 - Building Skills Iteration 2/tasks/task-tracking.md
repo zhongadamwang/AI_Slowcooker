@@ -1,7 +1,7 @@
 # Building Skills Iteration 2 - Task Tracking
 
 **Last Updated**: March 14, 2026  
-**Current Phase**: Phase 3.5 - Conflict Resolution (In Progress — 1/5 complete)  
+**Current Phase**: Phase 3.5 - Conflict Resolution (In Progress — 2/5 complete)  
 **Project Focus**: Hierarchical EDPS methodology with boundary concepts (22 tasks across 5 phases)
 
 ## Overall Progress
@@ -11,9 +11,9 @@
 | Phase 1: Foundation Enhancement | T1-T4 | Completed | 4/4 |
 | Phase 2: Hierarchy Management | T5-T8 | Completed | 4/4 |
 | Phase 3: EDPS Compliance & Validation | T9-T12 | Completed | 4/4 |
-| Phase 3.5: Conflict Resolution | T18-T22 | In Progress | 1/5 |
+| Phase 3.5: Conflict Resolution | T18-T22 | In Progress | 2/5 |
 | Phase 4: Migration & Integration | T13-T17 | Not Started | 0/5 |
-| **Total** | **22 tasks** | **In Progress** | **13/22** |
+| **Total** | **22 tasks** | **In Progress** | **14/22** |
 
 ---
 
@@ -151,14 +151,16 @@ Skill conflict review (March 14, 2026) identified 5 conflicts between new Projec
   - **Test File**: [T18-test-cases.md](../artifacts/Testing/T18-test-cases.md)
   - **File**: [T18-resolve-c1-vr-rule-delegation.md](T18-resolve-c1-vr-rule-delegation.md)
 
-### Not Started
-- [ ] **T19: Resolve C-2 — Structural Validation Scope Segregation**
-  - **Priority**: High | **Effort**: 1-2 days
+- [x] **T19: Resolve C-2 — Structural Validation Scope Segregation**
+  - **Priority**: High | **Effort**: 1-2 days | **Completed**: March 14, 2026
   - **Dependencies**: T18, T10, T9
   - **Conflict**: HR-1/HR-3/HR-4/HR-5 in `edps-compliance` Group B substantially duplicate rules HX-1–HX-3/HX-5/HN-1 in `hierarchy-validation`
-  - **Resolution**: Remove HR-1/3/4/5 from `edps-compliance`; add `hierarchy-validation PASS` pre-condition gate; `edps-compliance` retains HR-2, HR-6, and all Group C rules
+  - **Resolution**: Removed HR-1/3/4/5 rule definitions and algorithm blocks from `edps-compliance/SKILL.md` Group B; added delegation note in Group B table retaining HR-2 and HR-6 only; added Pre-Conditions section with `hierarchy-validation PASS` gate, `pre-condition-not-met` error schema, and scope-mismatch guard; added `hierarchy-validation-report.json` as optional input; added `BLOCKED` as overall_status in scoring formula and JSON report schema; updated remediation reference table to redirect HR-1/3/4/5 to `hierarchy-validation`; updated `hierarchy-validation/SKILL.md` description to assert authoritative structural integrity scope
+  - **Test Results**: 7/7 PASS (March 14, 2026) — static specification verification; all Must Have and Should Have criteria satisfied; no gaps or defects found
+  - **Test File**: [T19-test-cases.md](../artifacts/Testing/T19-test-cases.md)
   - **File**: [T19-resolve-c2-validation-scope-segregation.md](T19-resolve-c2-validation-scope-segregation.md)
 
+### Not Started
 - [ ] **T20: Resolve C-3 — File Generation Ownership Contract**
   - **Priority**: Medium | **Effort**: 1 day
   - **Dependencies**: T5, T12
