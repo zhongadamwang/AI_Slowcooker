@@ -1,13 +1,13 @@
 ---
 name: integration-testing
-description: Execute comprehensive integration testing of all EDPS skills working together, validate end-to-end workflows, and ensure seamless VS Code integration with performance and consistency validation.
+description: Execute comprehensive integration testing of all 30 EDPS skills working together across six categories (Requirements & Analysis, Domain Modeling, Compliance & Validation, Planning & Management, Integration & Automation, Meta Skills), validate end-to-end workflows, and ensure seamless VS Code integration with performance and consistency validation.
 license: MIT
 ---
 
 # Integration & Testing Skill
 
 ## Intent
-Orchestrate comprehensive testing and validation of the complete EDPS skill ecosystem, ensuring all 22 skills integrate seamlessly, maintain consistent markdown input/output formats, meet performance standards, and provide excellent user experience within VS Code. This skill validates end-to-end workflows, detects integration issues, and ensures system reliability.
+Orchestrate comprehensive testing and validation of the complete EDPS skill ecosystem, ensuring all 30 skills integrate seamlessly, maintain consistent markdown input/output formats, meet performance standards, and provide excellent user experience within VS Code. This skill validates end-to-end workflows across all six skill categories (Requirements & Analysis, Domain Modeling, Compliance & Validation, Planning & Management, Integration & Automation, and Meta Skills), detects integration issues, and ensures system reliability.
 
 ## Inputs
 - **Skill Definitions**: `.github/skills/*/SKILL.md` (all skill definitions)
@@ -32,7 +32,7 @@ Orchestrate comprehensive testing and validation of the complete EDPS skill ecos
   "test_execution": {
     "test_suite_id": "integration-test-v1.0",
     "execution_timestamp": "ISO8601",
-    "total_skills_tested": 22,
+    "total_skills_tested": 30,
     "test_environment": {
       "vscode_version": "string",
       "copilot_version": "string",
@@ -81,7 +81,7 @@ Orchestrate comprehensive testing and validation of the complete EDPS skill ecos
     {
       "workflow_name": "complete_requirements_to_schedule",
       "description": "Full pipeline from requirements ingestion to schedule generation",
-      "skill_chain": ["requirements-ingest", "goals-extract", "process-w5h", "domain-extractconcepts", "domain-alignentities", "domain-proposenewconcepts", "diagram-generatecollaboration", "process-scopemin", "plan-derivetasks", "plan-estimateeffort", "plan-buildschedule"],
+      "skill_chain": ["requirements-ingest", "requirements-merge", "goals-extract", "process-w5h", "process-merge", "process-findtopandupdate", "process-scopemin", "domain-extractconcepts", "domain-alignentities", "domain-proposenewconcepts", "diagram-generatecollaboration", "model-integration", "hierarchy-management", "hierarchy-validation", "documentation-automation", "migration-tools", "edps-compliance", "change-impact-analysis", "plan-derivetasks", "plan-estimateeffort", "plan-buildschedule", "project-document-management", "project-planning-tracking", "project-status-reporting", "change-management", "orgmodel-update", "github-issue-create-update", "github-issue-sync-status", "edps-skill-navigator", "skill-creator"],
       "test_status": "PASSED|FAILED|WARNING",
       "execution_time_total": "seconds",
       "data_flow_validation": {
@@ -107,7 +107,7 @@ Orchestrate comprehensive testing and validation of the complete EDPS skill ecos
   ],
   "performance_analysis": {
     "overall_performance_rating": "EXCELLENT|GOOD|ACCEPTABLE|POOR",
-    "skills_meeting_standards": 22,
+    "skills_meeting_standards": 30,
     "skills_exceeding_targets": 5,
     "performance_bottlenecks": [
       {
@@ -343,10 +343,18 @@ Integration_Test_Suite:
 ### Complete Integration Test
 ```markdown
 # Execute full integration test suite
-Use the integration-testing skill to run comprehensive validation of all EDPS skills with the Banking Transactions sample project.
+Use the integration-testing skill to run comprehensive validation of all 30 EDPS skills with the Banking Transactions sample project.
+
+Skills under test (all 30):
+- Requirements & Analysis: requirements-ingest, requirements-merge, goals-extract, process-w5h, process-merge, process-findtopandupdate, process-scopemin
+- Domain Modeling: domain-extractconcepts, domain-alignentities, domain-proposenewconcepts, diagram-generatecollaboration, model-integration, hierarchy-management, documentation-automation, migration-tools
+- Compliance & Validation: edps-compliance, hierarchy-validation, change-impact-analysis
+- Planning & Management: project-document-management, project-planning-tracking, project-status-reporting, plan-derivetasks, plan-estimateeffort, plan-buildschedule, change-management, orgmodel-update
+- Integration & Automation: github-issue-create-update, github-issue-sync-status
+- Meta Skills: edps-skill-navigator, skill-creator
 
 Expected outputs:
-- Complete test report with pass/fail status for all 22 skills
+- Complete test report with pass/fail status for all 30 skills
 - Performance analysis showing execution times and resource usage  
 - Integration validation results for all skill chains
 - VS Code compatibility assessment
@@ -355,14 +363,31 @@ Expected outputs:
 
 ### Workflow-Specific Testing
 ```markdown
-# Test specific workflow chain
-Run integration testing for the requirements-to-domain-model workflow using the AI Slowcooker project requirements.
+# Test specific workflow chains
+Run integration testing for the full EDPS skill ecosystem using the AI Slowcooker project requirements.
+
+**Requirements & Analysis chain:**
+requirements-ingest → requirements-merge → goals-extract → process-w5h → process-merge → process-findtopandupdate → process-scopemin
+
+**Domain Modeling chain:**
+domain-extractconcepts → domain-alignentities → domain-proposenewconcepts → diagram-generatecollaboration → model-integration → hierarchy-management → hierarchy-validation → documentation-automation → migration-tools
+
+**Compliance & Validation chain:**
+edps-compliance → hierarchy-validation → change-impact-analysis
+
+**Planning & Management chain:**
+project-document-management → project-planning-tracking → plan-derivetasks → plan-estimateeffort → plan-buildschedule → process-scopemin → change-management → project-status-reporting → orgmodel-update
+
+**Integration & Automation chain:**
+github-issue-create-update → github-issue-sync-status
+
+**Meta Skills:**
+edps-skill-navigator → skill-creator
 
 Focus areas:
-- requirements-ingest → goals-extract → process-w5h → domain-extractconcepts → domain-alignentities → domain-proposenewconcepts → diagram-generatecollaboration
-- Data flow consistency across all handoffs
-- Traceability preservation through the chain
-- Performance within acceptable standards
+- Data flow consistency across all handoffs within each category chain
+- Cross-chain traceability preservation (requirements IDs flow through to tasks and schedules)
+- Performance within acceptable standards for all 30 skills
 ```
 
 ### Performance Benchmarking

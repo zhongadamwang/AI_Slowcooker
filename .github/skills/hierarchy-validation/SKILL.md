@@ -1,4 +1,3 @@
-````skill
 ---
 name: hierarchy-validation
 description: "**Authoritative structural integrity checker for the EDPS skill suite.** Validate hierarchy consistency across all levels of an EDPS process hierarchy. Checks cross-level participant type consistency (control-type participants at Level N must appear as external actors at Level N+1), boundary rule compliance at every level, cross-reference link integrity through the full tree, and participant label/type propagation. All file/link integrity and structural naming rules for EDPS hierarchies are exclusively owned by this skill; other skills (e.g., edps-compliance) delegate these checks to hierarchy-validation via a mandatory pre-condition gate rather than re-implementing them. Supports both full-tree validation and incremental single-branch validation. Generates per-level, per-rule validation reports with severity classification and auto-fix suggestions. Use when a user wants to validate hierarchy structural integrity, check cross-level type consistency, verify navigation link integrity, or run a targeted validation on a specific branch of the hierarchy."
@@ -365,4 +364,3 @@ This enables fast validation after making changes to a single sub-tree without r
 - Feeds into `edps-compliance` — resolve all `hierarchy-validation` ERRORs before running full EDPS compliance.
 - Violations involving missing navigation links can be auto-reported to `change-management` for tracking.
 - Use `--fix` to automatically correct navigation and metadata issues before generating a `project-status-reporting` health snapshot.
-````

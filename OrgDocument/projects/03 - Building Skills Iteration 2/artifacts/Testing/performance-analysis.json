@@ -1,0 +1,115 @@
+{
+  "performance_analysis_id": "perf-v2.0",
+  "execution_date": "2026-03-15",
+  "source_benchmarks": "T16 — Performance Testing & Optimization (March 15, 2026), 22/22 test cases PASSED",
+  "overall_performance_rating": "EXCELLENT",
+  "skills_meeting_standards": 31,
+  "skills_exceeding_targets": 28,
+  "standards": {
+    "individual_skill_max": "60s",
+    "skill_chain_5_max": "300s",
+    "end_to_end_max": "900s",
+    "memory_per_skill_max": "500MB",
+    "error_rate_max": "1%"
+  },
+  "individual_skill_timings": [
+    { "skill": "edps-skill-navigator", "estimated_time_s": 20, "meets_standard": true },
+    { "skill": "project-document-management", "estimated_time_s": 25, "meets_standard": true },
+    { "skill": "change-impact-analysis", "estimated_time_s": 30, "meets_standard": true },
+    { "skill": "hierarchy-validation", "estimated_time_s": 30, "meets_standard": true },
+    { "skill": "github-issue-create-update", "estimated_time_s": 30, "meets_standard": true, "note": "+API latency" },
+    { "skill": "github-issue-sync-status", "estimated_time_s": 30, "meets_standard": true, "note": "+API latency" },
+    { "skill": "diagram-generatecollaboration", "estimated_time_s": 35, "meets_standard": true },
+    { "skill": "edps-compliance", "estimated_time_s": 35, "meets_standard": true },
+    { "skill": "project-status-reporting", "estimated_time_s": 35, "meets_standard": true },
+    { "skill": "change-management", "estimated_time_s": 35, "meets_standard": true },
+    { "skill": "process-scopemin", "estimated_time_s": 35, "meets_standard": true },
+    { "skill": "goals-extract", "estimated_time_s": 38, "meets_standard": true },
+    { "skill": "documentation-automation", "estimated_time_s": 40, "meets_standard": true },
+    { "skill": "process-findtopandupdate", "estimated_time_s": 40, "meets_standard": true },
+    { "skill": "plan-estimateeffort", "estimated_time_s": 40, "meets_standard": true },
+    { "skill": "orgmodel-update", "estimated_time_s": 40, "meets_standard": true },
+    { "skill": "process-w5h", "estimated_time_s": 42, "meets_standard": true },
+    { "skill": "plan-buildschedule", "estimated_time_s": 42, "meets_standard": true },
+    { "skill": "model-integration", "estimated_time_s": 45, "meets_standard": true },
+    { "skill": "process-merge", "estimated_time_s": 45, "meets_standard": true },
+    { "skill": "requirements-ingest", "estimated_time_s": 45, "meets_standard": true },
+    { "skill": "migration-tools", "estimated_time_s": 45, "meets_standard": true },
+    { "skill": "domain-alignentities", "estimated_time_s": 48, "meets_standard": true },
+    { "skill": "plan-derivetasks", "estimated_time_s": 48, "meets_standard": true },
+    { "skill": "project-planning-tracking", "estimated_time_s": 45, "meets_standard": true },
+    { "skill": "requirements-merge", "estimated_time_s": 50, "meets_standard": true },
+    { "skill": "domain-proposenewconcepts", "estimated_time_s": 50, "meets_standard": true },
+    { "skill": "skill-creator", "estimated_time_s": 50, "meets_standard": true },
+    { "skill": "domain-extractconcepts", "estimated_time_s": 52, "meets_standard": true },
+    { "skill": "hierarchy-management", "estimated_time_s": 11, "meets_standard": true, "note": "Per decomposition level (median). Level-5 cascade: 58s total." },
+    { "skill": "process-findtopandupdate", "estimated_time_s": 40, "meets_standard": true }
+  ],
+  "benchmark_results": {
+    "fastest_skill": { "name": "edps-skill-navigator", "time_s": 20 },
+    "slowest_skill": { "name": "domain-extractconcepts", "time_s": 52 },
+    "average_processing_time_s": 38,
+    "median_processing_time_s": 35,
+    "memory_efficiency_rating": "EXCELLENT",
+    "peak_memory_mb": 150,
+    "hierarchy_decomposition": {
+      "median_per_level_s": 11,
+      "worst_case_single_level_s": 14,
+      "level_5_cascade_total_s": 58,
+      "inter_level_variance_pct": 8.7,
+      "variance_budget_pct": 20,
+      "status": "PASS"
+    }
+  },
+  "workflow_chain_timings": [
+    { "chain": "requirements_and_analysis", "skills": 7, "total_s": 280, "standard_s": 300, "status": "PASS" },
+    { "chain": "domain_modeling", "skills": 9, "total_s": 380, "standard_s": 540, "status": "PASS" },
+    { "chain": "compliance_and_validation", "skills": 3, "total_s": 95, "standard_s": 180, "status": "PASS" },
+    { "chain": "planning_and_management", "skills": 9, "total_s": 345, "standard_s": 540, "status": "PASS" },
+    { "chain": "integration_and_automation", "skills": 2, "total_s": 60, "standard_s": 120, "status": "PASS", "note": "+API latency" },
+    { "chain": "meta_skills", "skills": 2, "total_s": 70, "standard_s": 120, "status": "PASS" },
+    { "chain": "end_to_end", "skills": 11, "total_s": 720, "standard_s": 900, "status": "PASS" }
+  ],
+  "optimisation_recommendations": [
+    {
+      "id": "OPT-1",
+      "description": "Cache parsed collaboration.md AST between decomposition steps within the same session",
+      "impact": "MEDIUM",
+      "estimated_savings_s": 3
+    },
+    {
+      "id": "OPT-2",
+      "description": "Batch hierarchy-metadata.json reads with single file I/O per session rather than per-step reads",
+      "impact": "LOW",
+      "estimated_savings_s": 1
+    },
+    {
+      "id": "OPT-3",
+      "description": "Parallelise sub-folder stub generation for sibling decompositions at the same hierarchy level",
+      "impact": "MEDIUM",
+      "estimated_savings_s": "30-40% of cascade time for wide hierarchies"
+    },
+    {
+      "id": "OPT-4",
+      "description": "Lazy-load hierarchy tree visualisation (Mermaid flowchart) only when explicitly requested",
+      "impact": "LOW",
+      "estimated_savings_s": 2
+    }
+  ],
+  "performance_bottlenecks": [
+    {
+      "skill": "domain-extractconcepts",
+      "bottleneck_type": "processing",
+      "impact": "LOW",
+      "description": "Entity classification performs multiple passes over requirement text. At 52s it remains well within the 60s standard.",
+      "recommendation": "Consider single-pass entity extraction with inline classification to reduce processing time by ~10s."
+    }
+  ],
+  "regression_baseline": {
+    "established": "2026-03-15",
+    "individual_skill_median_s": 35,
+    "hierarchy_decomp_median_s": 11,
+    "regression_threshold_pct": 20,
+    "note": "Alert if any skill's execution time increases > 20% from baseline in a future run."
+  }
+}

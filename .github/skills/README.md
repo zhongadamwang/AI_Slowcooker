@@ -15,49 +15,76 @@ Project ID: [YOUR-PROJECT-ID]
 
 ## Skills Overview
 
-### 📋 Requirements Processing
+### S1 — Project Initialization
+| Skill | Purpose | Input | Output | Next Step |
+|-------|---------|-------|---------|-----------|
+| `project-document-management` | Initialize project folder structure | Project details | Project folder tree | → `requirements-ingest` |
+| `project-planning-tracking` | Create project plans and track milestones | Project scope | project-plan.md, task-tracking.md | → Execution |
+| `project-status-reporting` | Generate status dashboards and reports | Project artifacts | Status reports | → Stakeholder review |
+
+### S2 — Requirements Processing
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `requirements-ingest` | Normalize any format to structured requirements | Raw docs (PDF/Word/MD) | requirements.json/md | → `goals-extract` |
+| `requirements-merge` | Combine multiple requirement sources with conflict resolution | Multiple requirement docs | unified-requirements.json/md | → `goals-extract` |
 | `goals-extract` | Extract business goals and success criteria | requirements.json | goals.json/md | → `process-w5h` |
-| `process-w5h` | WHO/What/When/Where/Why/How analysis | requirements.json | w5h-analysis.json/md | → `domain-extractconcepts` |
+| `process-w5h` | Who/What/When/Where/Why/How analysis | requirements.json | w5h-analysis.json/md | → `domain-extractconcepts` |
+| `process-scopemin` | Define MVP and minimal viable scope | requirements.json, goals.json | scope-analysis.json/md | → Planning |
 
-### 🎯 Domain Modeling
+### S3 — Domain Analysis
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `domain-extractconcepts` | Identify domain entities and concepts | requirements.json | domain-concepts.json/md | → `domain-alignentities` |
-| `domain-alignentities` | Align concepts with existing domain models | domain-concepts.json | domain-alignment.json/md | → `domain-proposenewconcepts` |
-| `domain-proposenewconcepts` | Propose new concepts for gaps | domain-alignment.json | domain-newconcepts.json/md | → `diagram-generatecollaboration` |
+| `domain-alignentities` | Align concepts with existing org domain models | domain-concepts.json | domain-alignment.json/md | → `domain-proposenewconcepts` |
+| `domain-proposenewconcepts` | Propose new concepts to fill domain gaps | domain-alignment.json | domain-newconcepts.json/md | → `diagram-generatecollaboration` |
 
-### 📊 Analysis & Visualization
+### S4 — Planning
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
-| `process-scopemin` | Define MVP and minimal scope | requirements.json | scope-analysis.json/md | → Planning |
-| `diagram-generatecollaboration` | Generate system interaction diagrams | domain artifacts | collaboration-diagrams.json/md | → Documentation |
-| `hierarchy-management` | Decompose control-type participants; manage folder structure and hierarchy metadata | collaboration.md | sub-folder + hierarchy-metadata.json | → `documentation-automation` |
-| `documentation-automation` | Auto-generate main.md, process.md, collaboration.md, domain-model.md for each hierarchy level | process folder + hierarchy-metadata.json | Four populated doc files per level | → `orgmodel-update` |
-
-### 🔄 Process Management
-| Skill | Purpose | Input | Output | Next Step |
-|-------|---------|-------|---------|-----------|
-| `process-merge` | Merge multiple requirement sources | Multiple requirement documents | Unified requirements.json/md | → Analysis |
-| `change-management` | Track and document requirement changes | Change requests | Change documentation | → Update artifacts |
-
-### 📁 Project Management
-| Skill | Purpose | Input | Output | Next Step |
-|-------|---------|-------|---------|-----------|
-| `project-document-management` | Initialize project structure | Project details | Project folder tree | → Requirements |
-| `project-planning-tracking` | Create project plans and timelines | Project scope | Project plans and tracking | → Execution |
-| `project-status-reporting` | Generate status reports | Project artifacts | Status reports and dashboards | → Stakeholder review |
 | `plan-derivetasks` | Convert requirements into actionable tasks | requirements.json, goals.json | task-breakdown.json/md | → `plan-estimateeffort` |
 | `plan-estimateeffort` | Generate effort estimates with confidence levels | task-breakdown.json | effort-estimates.json/md | → `plan-buildschedule` |
-| `plan-buildschedule` | Generate project schedules with dependencies | task-breakdown.json, effort-estimates.json | project-schedule.json/md | → Resource allocation |
+| `plan-buildschedule` | Generate project schedules with critical path | task-breakdown.json, effort-estimates.json | project-schedule.json/md | → Execution |
 
-### 🧠 Meta Skills
+### S5 — Design & Visualization
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
-| `edps-skill-navigator` | Navigate and orchestrate skills | Natural language task description | Skill execution plan | → Execute recommended skills |
-| `skill-creator` | Create new EDPS skills | Skill requirements | New skill structure | → Implement skill |
+| `diagram-generatecollaboration` | Generate EDPS collaboration diagrams with stereotype classification and boundary validation (VR-1–VR-4 authoritative source) | domain artifacts | collaboration-diagrams.json/md, boundary_validation_report.json | → `hierarchy-management` |
+| `hierarchy-management` | Decompose control-type participants into sub-processes; manage sub-folders, cross-references, hierarchy index, and scale metrics | collaboration.md | Level N+1 sub-folder, hierarchy-metadata.json, hierarchy-index.md | → `documentation-automation` |
+| `documentation-automation` | Auto-generate level-calibrated main.md, process.md, collaboration.md, domain-model.md stubs for each hierarchy level | hierarchy-metadata.json, parent collaboration.md | Four doc files per level | → `orgmodel-update` |
+| `migration-tools` | Non-destructively migrate flat Project 1 diagrams to hierarchical boundary format | Existing collaboration.md files | Enhanced diagrams, migration-log.md | → `hierarchy-management` |
+
+### S6 — Process & Change Management
+| Skill | Purpose | Input | Output | Next Step |
+|-------|---------|-------|---------|-----------|
+| `process-merge` | Merge process models with existing organizational models | Multiple process docs | process-merge.json/md | → `model-integration` |
+| `process-findtopandupdate` | Identify and update top-level requirements in hierarchies | Analysis files, hierarchy | top-requirements-update.json/md | → `orgmodel-update` |
+| `change-management` | Track, document, and manage requirement changes | Change requests (conversation) | Change documentation | → Update artifacts |
+| `change-impact-analysis` | Trace change propagation across hierarchy levels with risk classification | hierarchy-metadata.json, change inputs | change-impact-report.json/md | → `orgmodel-update` |
+
+### S7 — Model Integration
+| Skill | Purpose | Input | Output | Next Step |
+|-------|---------|-------|---------|-----------|
+| `model-integration` | Integrate new domain models into existing org structures | domain-alignment.json, domain-newconcepts.json | model-integration.json/md | → `orgmodel-update` |
+| `orgmodel-update` | Update organizational model documents (with EDPS-Hierarchy Guard preventing overwrite of hierarchy-aware files) | Model artifacts | orgModel document updates | → `integration-testing` |
+
+### S8 — Compliance & Validation
+| Skill | Purpose | Input | Output | Next Step |
+|-------|---------|-------|---------|-----------|
+| `hierarchy-validation` | Validate hierarchy structural integrity — 14 rules across cross-level consistency, cross-reference integrity, naming/structure (authoritative structural source) | hierarchy-metadata.json + orgModel folders | hierarchy-validation-report.json/md | → `edps-compliance` |
+| `edps-compliance` | Score EDPS methodology compliance — 11 rules (VR-1–4 delegated to `diagram-generatecollaboration`; HR-2/6 native; EP-1–4 native); gates on `hierarchy-validation` PASS | boundary_validation_report.json, hierarchy-validation-report.json | edps-compliance-report.json/md (0–100 score) | → `integration-testing` |
+| `integration-testing` | Validate end-to-end workflows across all skills | All skill artifacts | test-reports.json/md | → Production |
+
+### S9 — External Integration
+| Skill | Purpose | Input | Output | Next Step |
+|-------|---------|-------|---------|-----------|
+| `github-issue-create-update` | Create and update GitHub Issues from local task markdown files | Local task files | GitHub Issues (created/updated) | ⇄ `github-issue-sync-status` |
+| `github-issue-sync-status` | Sync local task status from GitHub Issue state changes | GitHub Issues | Updated local task files | ⇄ `github-issue-create-update` |
+
+### S10 — Orchestration & Meta
+| Skill | Purpose | Input | Output | Next Step |
+|-------|---------|-------|---------|-----------|
+| `edps-skill-navigator` | Intelligently orchestrate all EDPS skills from natural language requests (v1.2.0) | Natural language intent | Skill execution plan, workflow guidance | → Execute recommended skills |
+| `skill-creator` | Scaffold new EDPS-compliant skills following SKILL.md standard | Skill requirements | New SKILL.md + reference docs | → Implement skill |
 
 ## Common Workflows
 

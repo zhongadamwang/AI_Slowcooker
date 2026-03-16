@@ -1,4 +1,3 @@
-````skill
 ---
 name: change-impact-analysis
 description: Trace how changes at one EDPS hierarchy level propagate to parent and child levels. Given a boundary restructuring, participant rename, or requirement modification, this skill identifies all affected artifacts across the full hierarchy tree, generates a prioritised impact report, and supports what-if mode so proposed changes can be evaluated without being applied. Use when a user wants to understand the blast radius of a hierarchy or requirement change, trace a requirement to all implementing artifacts, or run a pre-flight check before executing a hierarchy modification.
@@ -420,4 +419,3 @@ What-if mode (`--mode what-if`) is the default and is designed for pre-flight ev
 | CR-1 | Review all flagged `collaboration.md` and `main.md` files to determine whether the requirement change affects the modelled constraints |
 | CR-2 | Update `boundary`-type participant annotations to reflect the changed requirement; validate boundary semantics remain correct |
 | CR-3 | Trace all downstream requirement annotations; update or remove derived sub-requirement references as appropriate; coordinate with requirement owners |
-````
