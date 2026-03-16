@@ -4,50 +4,67 @@
 **Project Manager**: [To be assigned]  
 **Start Date**: [To be defined]  
 **Target Completion**: [To be defined]  
-**Status**: Planning Phase - Awaiting Requirements
+**Status**: In Progress — Phase 2 (67%) | March 16, 2026
 
 ## Executive Summary
 
-Building Skills Iteration 3 represents the next evolution of the EDPS skills framework, building upon the solid foundation established in previous iterations. The specific scope and objectives will be determined based on requirements analysis and stakeholder input.
+Building Skills Iteration 3 enhances the EDPS skills framework with advanced workflow orchestration, skill completion gates, intelligent prompt recognition, and deep EDPS methodology enforcement. The project addresses gaps identified in Projects 01–03 and delivers the `edps-workflow-orchestrator` skill as its centrepiece deliverable.
+
+**Current Overall Status**: 42% Complete (5/12 tasks) — Phase 1 complete, Phase 2 in progress.
 
 ## Project Objectives
 
 ### Primary Objectives
-[To be defined based on requirements]
+- Deliver `edps-workflow-orchestrator` skill for end-to-end EDPS methodology management
+- Implement skill completion gates to enforce output quality at each workflow step
+- Enhance prompt pattern recognition to ≥95% accuracy for automatic skill routing
+- Update `project-document-management` and `diagram-generatecollaboration` for hierarchical EDPS structures
 
-### Secondary Objectives  
-[To be defined based on requirements]
+### Secondary Objectives
+- Validate backward compatibility with Projects 01–03 artifacts
+- Establish integration testing and performance benchmarking framework for all current and future skills
 
 ## Project Scope
 
 ### In Scope
-[To be defined based on requirements analysis]
+- Enhancement of: `diagram-generatecollaboration`, `project-document-management`, `edps-skill-navigator`
+- Creation of: `edps-workflow-orchestrator` skill
+- Implementation of: skill completion gate schemas for all 30 EDPS skills
+- Integration, performance, and regression testing
 
 ### Out of Scope
-[To be defined to manage project boundaries]
+- Modifications to Project 01 or Project 02 folder structures
+- New domain-modeling or requirements-ingestion skills (addressed in prior projects)
 
 ## Project Phases
 
-### Phase 0: Requirements Analysis and Planning
-**Duration**: [TBD]  
+### Phase 1: Immediate Workflow Fixes ✅ COMPLETE
+**Duration**: 1 day (March 16, 2026)  
 **Deliverables**:
-- Requirements documentation
-- Technical analysis
-- Project planning refinement
-- Task breakdown structure
-- Resource allocation plan
+- T01: orgModel integration validation report
+- T02: Hierarchy validation report (JSON + Markdown)
+- T03: EDPS compliance verification report (JSON + Markdown)
 
-### Phase 1: [To be defined]
-**Duration**: [TBD]  
-**Deliverables**: [TBD]
+### Phase 2: Skill Integration Improvements 🔄 67% COMPLETE
+**Duration**: Estimated 2-3 days remaining  
+**Deliverables**:
+- T04 ✅: Enhanced `diagram-generatecollaboration` skill
+- T06 ✅: Enhanced `edps-skill-navigator` with NLP engine, orchestration system, performance optimisation
+- T05 ⭕: Updated `project-document-management` skill with hierarchical EDPS template support
 
-### Phase 2: [To be defined]  
-**Duration**: [TBD]  
-**Deliverables**: [TBD]
+### Phase 3: Advanced Methodology Enforcement ⏹️ NOT STARTED
+**Duration**: Estimated 8-11 days  
+**Deliverables**:
+- T07: `edps-workflow-orchestrator` SKILL.md + workflow archetype definitions
+- T08: Skill completion gate schemas (30 skills) + gate evaluation integration
+- T09: Enhanced prompt classifier (≥95% accuracy) + intent taxonomy
 
-### Phase 3: [To be defined]
-**Duration**: [TBD]  
-**Deliverables**: [TBD]
+### Phase 4: Integration and Testing ⏹️ NOT STARTED (Continuous)
+**Duration**: Estimated 7-10 days (overlaps Phase 3)  
+**Deliverables**:
+- T10: Integration test suite v2 + test fixtures
+- T11: Performance validation report
+- T12: Regression test report + updated `EDPS_Skills_Validation_Report.md`
 
 ### Phase 4: Integration and Testing
 **Duration**: [TBD]  
