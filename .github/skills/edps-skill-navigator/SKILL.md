@@ -8,6 +8,21 @@ license: MIT
 
 An intelligent assistant that seamlessly integrates with GitHub Copilot to provide natural language navigation, discovery, and orchestration of the Evolutionary Development Process System (EDPS) skills ecosystem.
 
+## Intent
+
+Translate natural language user intent into optimally sequenced EDPS skill invocations. Act as the single Copilot-facing entry point for the skill suite — discovering which skills to invoke, in what order, with what inputs — based on project context, available artifacts, and the canonical analysis-to-planning workflow sequence.
+
+## Inputs
+
+- **User intent**: Natural language request in Copilot chat (e.g., “help me process these requirements”, “decompose this participant”, “generate a project plan”)
+- **Optional**: Existing workspace artifacts (requirements files, collaboration diagrams, project folders) that provide context for skill selection
+
+## Outputs
+
+- **Skill recommendations**: Ordered list of skills to invoke with rationale and dependency graph
+- **Orchestrated workflow**: Sequenced multi-skill execution plan (references `workflow-templates.json` canonical pipeline)
+- **Guided prompts**: Ready-to-use Copilot prompt for each recommended skill step
+
 ## Core Function
 
 **Purpose**: Transform natural language requests into optimal skill invocation patterns and workflows
@@ -104,8 +119,8 @@ Navigator: Analyzes current project state and suggests:
 "validate hierarchy" → hierarchy-validation
 "check compliance" → edps-compliance
 "analyze change impact" → change-impact-analysis
-"migrate diagrams" → migration-tools
-"upgrade legacy diagrams" → migration-tools
+"migrate diagrams" → hierarchy-management --op migrate
+"upgrade legacy diagrams" → hierarchy-management --op migrate
 "validate compliance" → hierarchy-validation + edps-compliance
 "full hierarchy workflow" → diagram-generatecollaboration → hierarchy-management → documentation-automation → hierarchy-validation → edps-compliance
 ```
@@ -181,8 +196,8 @@ Visualization & Documentation:
 └── change-management              # Track and document changes
 
 Hierarchy Management:
-├── hierarchy-management    # Decompose control participants into sub-processes; manage folder structure, metadata, and cross-reference navigation
-└── migration-tools         # Non-destructively migrate flat (Project 1) collaboration diagrams to hierarchical boundary format
+├── hierarchy-management    # Decompose control participants into sub-processes; manage folder structure, metadata, and cross-reference navigation; --op migrate absorbs migration-tools
+└── migration-tools         # DEPRECATED (retained for backward compatibility) — use hierarchy-management --op migrate instead
 
 Compliance & Validation:
 ├── edps-compliance         # Validate EDPS methodology compliance (VR-1–VR-4, HR-2/6, EP-1–EP-4); generates scored reports
@@ -229,8 +244,8 @@ hierarchy-validation (structural integrity check) →
 edps-compliance (full methodology check)
 
 Legacy Migration Workflow:
-migration-tools (--mode preview) → [human review of LOW-confidence participants] →
-migration-tools (--mode apply) →
+hierarchy-management --op migrate (--mode preview) → [human review of LOW-confidence participants] →
+hierarchy-management --op migrate (--mode apply) →
 hierarchy-management (optional: decompose enhanced diagrams) →
 edps-compliance (validate migrated diagrams)
 
@@ -293,9 +308,9 @@ hierarchy-validation → edps-compliance → integration-testing
 **Maintainer**: EDPS Development Team
 
 ### New Skills Registered (Project 3 — March 2026)
-- `hierarchy-management` — Hierarchy Management category
+- `hierarchy-management` — Hierarchy Management category (now includes `--op migrate`, absorbing `migration-tools`)
 - `documentation-automation` — Visualization & Documentation category
 - `edps-compliance` — Compliance & Validation category
 - `hierarchy-validation` — Compliance & Validation category (authoritative structural integrity source)
 - `change-impact-analysis` — Compliance & Validation category
-- `migration-tools` — Hierarchy Management category (legacy migration)
+- `migration-tools` — Hierarchy Management category (DEPRECATED: superseded by `hierarchy-management --op migrate`)

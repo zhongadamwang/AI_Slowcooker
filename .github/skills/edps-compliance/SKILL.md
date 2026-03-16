@@ -1,4 +1,3 @@
-```skill
 ---
 name: edps-compliance
 description: Validate EDPS (Evolutionary Development Process System) methodology compliance across process hierarchies. Checks evolutionary decomposition patterns, boundary validation rules (VR-1 through VR-4), requirements traceability at each hierarchy level, change history metadata, and incremental model refinement adherence. Generates item-level pass/fail compliance reports in both JSON and Markdown formats. Use when a user wants to validate EDPS compliance, check hierarchy conformance, generate a compliance report, or get remediation suggestions for violations.
@@ -7,6 +6,10 @@ description: Validate EDPS (Evolutionary Development Process System) methodology
 # EDPS Compliance Checking
 
 Validate that process hierarchy artifacts conform to EDPS methodology principles and generate a scored compliance report with remediation guidance.
+
+## Intent
+
+Validate that process hierarchy artifacts conform to EDPS methodology principles. Delegates structural checks to `hierarchy-validation` (via mandatory pre-condition gate) and boundary validation to `diagram-generatecollaboration`, then applies evolutionary principle rules (EP-1 through EP-4) to produce a scored compliance report with per-rule remediation guidance.
 
 ## Inputs
 
@@ -328,4 +331,3 @@ overall_status (evaluated top-to-bottom; first match wins):
 - Run **before** `integration-testing` to ensure EDPS structure is sound before full test execution.
 - Violations reported by `edps-compliance` inform `change-management` entries when structural changes are required to remediate.
 - The compliance score trends feed into `project-status-reporting` health metrics.
-```

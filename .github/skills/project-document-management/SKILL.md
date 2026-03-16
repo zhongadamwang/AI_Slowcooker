@@ -8,6 +8,21 @@ license: MIT
 
 Creates and manages standardized project documentation structures using established hierarchical folder guidelines. Ensures consistency across projects and proper organization of requirements, artifacts, and modeling documents.
 
+## Intent
+
+Bootstrap and maintain a standardised EDPS project documentation tree — creating folder hierarchies, stub template files, and cross-reference structures that all downstream skills depend on.
+
+## Inputs
+
+- **Project name**: Human-readable project name
+- **Project number**: Sequential two-digit project number (e.g., `03`)
+- **Optional**: Initial requirements text to pre-populate `artifacts/Requirements/`
+
+## Outputs
+
+- `OrgDocument/projects/[NN] - [Project Name]/` — Full project folder tree with all standard sub-directories (`artifacts/Analysis/`, `artifacts/Requirements/`, `artifacts/Changes/`, `artifacts/Testing/`, `tasks/`)
+- Stubbed `main.md`, `README.md`, `project-plan.md`, `tasks/README.md`, `tasks/task-tracking.md`
+
 ## Core Function
 
 **Input**: Project name, type, initial requirements

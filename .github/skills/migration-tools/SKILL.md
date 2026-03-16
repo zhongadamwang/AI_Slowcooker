@@ -1,4 +1,3 @@
-```skill
 ---
 name: migration-tools
 description: "Migrate Project 1 flat collaboration diagrams to the Project 3 hierarchical format with boundary groupings and participant-type annotations. Supports non-destructive batch or individual migration: reads collaboration-diagrams.md and collaboration-diagrams.json produced by diagram-generatecollaboration (Project 1 mode), applies boundary-detection heuristics and stereotype-classification rules from diagram-generatecollaboration, and writes an enhanced counterpart file (collaboration-diagrams-enhanced.md / collaboration-diagrams-enhanced.json) alongside the originals. All existing requirement-traceability links and message sequences are preserved. Use when a user wants to upgrade legacy flat diagrams, batch-migrate all Project 1 diagrams, preview migration changes before applying, or add participant annotations to existing diagrams."
@@ -8,6 +7,12 @@ license: MIT
 # Migration Tools
 
 Convert existing flat (Project 1 style) collaboration diagrams into hierarchical, boundary-annotated (Project 3 style) collaboration diagrams, preserving 100 % of requirement traceability and message-flow content.
+
+## Intent
+
+Non-destructively upgrade pre-Project 3 flat `sequenceDiagram` EDPS collaboration diagrams to hierarchical, boundary-annotated format. Applies stereotype-classification rules from `diagram-generatecollaboration`, adds box boundaries, and annotates participant types — without modifying the original files.
+
+> **Deprecation notice (see C1)**: The `migrate` operation has been absorbed into `hierarchy-management --op migrate`. Prefer calling `hierarchy-management` directly. This skill is retained for backward compatibility during the transition period.
 
 ## Core Function
 
@@ -337,4 +342,7 @@ Source: OrgDocument/projects/01 - Building Skills/artifacts/Analysis/
 **Compatibility**: EDPS v1.x, Project 3 boundary-diagram format  
 **Depends On**: diagram-generatecollaboration (stereotype + box syntax rules)  
 **Unblocks**: hierarchy-management, documentation-automation, edps-compliance
-```
+
+---
+
+> **Migration path**: This skill is superseded by `hierarchy-management --op migrate` (see [hierarchy-management SKILL.md](../hierarchy-management/SKILL.md#migrate-operation-mode--op-migrate)). This skill file is retained for backward compatibility. New projects should use `hierarchy-management --op migrate` directly.

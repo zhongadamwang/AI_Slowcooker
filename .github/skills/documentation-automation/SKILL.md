@@ -7,6 +7,10 @@ description: Automate generation of process documentation at each hierarchy leve
 
 Generate rich, level-appropriate process documentation for every folder in an EDPS process hierarchy.
 
+## Intent
+
+Generate `main.md`, `process.md`, `collaboration.md`, and `domain-model.md` for every EDPS hierarchy node after decomposition events, or when regeneration from source `collaboration.md` is requested. Takes precedence over `orgmodel-update` for these four files in hierarchy-managed folders.
+
 ## Scope and Pipeline Position
 
 **Trigger**: Hierarchy decomposition events — invoked after `hierarchy-management` creates a new process folder, or when existing docs need regeneration from `collaboration.md`.

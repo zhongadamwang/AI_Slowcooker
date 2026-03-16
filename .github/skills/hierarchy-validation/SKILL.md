@@ -7,6 +7,10 @@ description: "**Authoritative structural integrity checker for the EDPS skill su
 
 Validate structural integrity and cross-level consistency across a process hierarchy tree.
 
+## Intent
+
+Authoritatively validate structural integrity, cross-level type consistency, navigation link integrity, and naming convention compliance across the full EDPS process hierarchy. All file/link integrity checks are exclusively owned here; other skills (`edps-compliance`, `documentation-automation`) delegate these checks via a pre-condition gate rather than re-implementing them.
+
 ## Inputs
 
 - **Target scope**: one of:

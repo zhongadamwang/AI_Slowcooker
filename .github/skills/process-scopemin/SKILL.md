@@ -8,6 +8,21 @@ license: MIT
 
 Transforms comprehensive requirements into minimum viable product (MVP) scope by analyzing business value, dependencies, and implementation complexity to identify core features and establish iterative development boundaries.
 
+## Intent
+
+Identify the minimum viable product (MVP) scope from a comprehensive requirements set by classifying features as `core`, `enhancing`, or `optional` based on business value, inter-feature dependencies, and implementation complexity. Produces scoped requirement sets for iterative delivery planning.
+
+## Inputs
+
+- **Requirements**: Raw requirements text, document, or `requirements.json`/`requirements.md` (from `requirements-ingest`)
+- **Project ID**: `project_id`
+- **Optional**: `goals.json` from `goals-extract` — used to weight business-value scoring
+
+## Outputs
+
+- `outputs/projects/{project_id}/Analysis/scope-analysis.md` — Scope analysis report with MVP recommendation (primary, for downstream skills)
+- `outputs/projects/{project_id}/Analysis/scope-analysis.json` — Structured scope classifications (machine processing)
+
 ## Core Function
 
 **Input**: Requirements documents + project_id + business context

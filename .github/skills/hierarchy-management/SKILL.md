@@ -7,6 +7,10 @@ description: Manage hierarchical process decomposition in EDPS collaboration dia
 
 Decompose control-type participants into sub-process diagrams and manage the full hierarchy tree across EDPS collaboration models.
 
+## Intent
+
+Decompose `control`-type participants into Level N+1 sub-process diagrams, manage the full EDPS hierarchy tree across unlimited decomposition depth, create and maintain folder structures, generate stub documentation files, update parent navigation links, and track hierarchy metadata. Also exposes a `--op migrate` mode that non-destructively upgrades pre-Project 3 flat diagrams to boundary-annotated format (absorbing the `migration-tools` skill).
+
 ## Inputs
 
 - **Parent diagram**: `[process-folder]/collaboration.md` — the diagram containing the participant to decompose
@@ -821,6 +825,47 @@ When decomposing a participant that is already at Level 2 or deeper, apply the s
 ```
 
 Each folder maintains its **own** `hierarchy-metadata.json` scoped to that sub-tree, while the root's metadata covers the full tree.
+
+---
+
+## Migrate Operation Mode (`--op migrate`)
+
+This operation mode absorbs the functionality of the `migration-tools` skill (retained for backward compatibility). Use `--op migrate` to non-destructively upgrade pre-Project 3 flat (Project 1 style) `collaboration-diagrams.md` / `collaboration-diagrams.json` files to the boundary-annotated (Project 3 style) format.
+
+### Invocation
+
+```
+hierarchy-management --op migrate
+  [--scope batch|diagram=<diagram-id>]
+  [--mode preview|apply]
+  [project-folder]/artifacts/Analysis/collaboration-diagrams.md
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--scope batch` | `batch` | Migrate all diagrams in the file |
+| `--scope diagram=<id>` | — | Migrate a single diagram by ID |
+| `--mode preview` | `preview` | Show proposed changes without writing files |
+| `--mode apply` | — | Write enhanced counterpart files |
+
+### What it Does
+
+1. **Load** `collaboration-diagrams.md` and/or `collaboration-diagrams.json`.
+2. **Classify** each participant using stereotype-classification rules from `diagram-generatecollaboration` (actor / boundary / control / entity heuristics).
+3. **Detect** logical boundary groups from message patterns and participant names.
+4. **Emit enhanced variants** with box annotations following Project 3 syntax:
+   - `box [BoundaryName]` … `end` wrapping
+   - `@{ "type": "[stereotype]", "label": "..." }` participant annotations
+5. **Write** output to `*-enhanced.md` / `*-enhanced.json` counterparts (originals **never modified**).
+6. **Write** `migration-log.md` summarising per-diagram changes, boundary inferences, and any warnings.
+
+### Non-Destructive Guarantee
+
+Original `collaboration-diagrams.md` and `collaboration-diagrams.json` are **never modified**. All changes are written to the `*-enhanced.*` counterparts.
+
+### After Migration
+
+Once migration is complete, run `diagram-generatecollaboration` boundary validation on the enhanced files, then proceed with `hierarchy-management --op decompose` to start creating Level N+1 sub-processes from the upgraded diagrams.
 
 ## References
 

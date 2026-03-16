@@ -365,6 +365,15 @@
       },
       {
         "step": 2,
+        "skill": "change-impact-analysis",
+        "purpose": "Trace impact of change across hierarchy artifacts",
+        "inputs": ["change-record.md", "hierarchy-root-folder"],
+        "outputs": ["change-impact-report.md", "change-impact-report.json"],
+        "flags": "--mode what-if (default); review output before switching to --mode apply",
+        "duration": "3-5 minutes"
+      },
+      {
+        "step": 3,
         "skill": "process-merge",
         "purpose": "Merge changes with existing requirements",
         "conditional": "if multiple requirement sources",
@@ -373,20 +382,11 @@
         "duration": "3-5 minutes"
       },
       {
-        "step": 3,
-        "skill": "impact_analysis", 
-        "purpose": "Analyze change impact on existing artifacts",
-        "note": "This step requires manual analysis of affected skills",
-        "inputs": ["change-record.md", "existing_artifacts"],
-        "outputs": ["impact-assessment.md"],
-        "duration": "5-10 minutes"
-      },
-      {
         "step": 4,
         "skill": "re_execute_affected_skills",
         "purpose": "Re-run skills affected by changes",
-        "note": "Variable depending on change scope",
-        "inputs": ["impact-assessment.md"],
+        "note": "Variable depending on change scope; use change-impact-report.json to identify affected skills",
+        "inputs": ["change-impact-report.json"],
         "outputs": ["updated_artifacts"],
         "duration": "Variable"
       },
@@ -394,7 +394,7 @@
         "step": 5,
         "skill": "project-status-reporting",
         "purpose": "Generate change impact summary",
-        "inputs": ["change-record.md", "impact-assessment.md"],
+        "inputs": ["change-record.md", "change-impact-report.md"],
         "outputs": ["change-summary.md"],
         "duration": "2-3 minutes"
       }
@@ -438,7 +438,378 @@ New templates can be added for:
 
 ---
 
-**Template Version**: 1.0.0
-**Last Updated**: 2026-02-17
-**Compatible With**: EDPS Skill Navigator v1.0.0
+**Template Version**: 2.0.0
+**Last Updated**: 2026-03-16
+**Compatible With**: EDPS Skill Navigator v1.2.0
 **Format**: JSON with embedded workflow logic
+
+## Template: Legacy Migration (C1 — hierarchy-management)
+
+```json
+{
+  "name": "legacy_migration_workflow",
+  "description": "Non-destructively upgrade flat (Project 1) collaboration diagrams to Project 3 hierarchical boundary format. Uses hierarchy-management --op migrate (migration-tools is deprecated).",
+  "trigger_patterns": [
+    "migrate diagrams",
+    "upgrade legacy diagrams",
+    "add boundaries to existing diagrams",
+    "convert flat diagrams"
+  ],
+  "prerequisites": {
+    "required": ["collaboration-diagrams.md"],
+    "optional": ["collaboration-diagrams.json"]
+  },
+  "workflow": {
+    "steps": [
+      {
+        "step": 1,
+        "skill": "hierarchy-management",
+        "op": "--op migrate --mode preview",
+        "purpose": "Preview boundary and stereotype inferences without writing files",
+        "inputs": ["collaboration-diagrams.md"],
+        "outputs": ["migration-log.md (preview)"],
+        "duration": "2-3 minutes",
+        "critical": true
+      },
+      {
+        "step": 2,
+        "skill": "human-review",
+        "purpose": "Review LOW-confidence participant stereotype assignments in migration-log.md",
+        "note": "Manual step — approve or correct LOW-confidence participant type inferences",
+        "duration": "5-15 minutes",
+        "critical": true
+      },
+      {
+        "step": 3,
+        "skill": "hierarchy-management",
+        "op": "--op migrate --mode apply",
+        "purpose": "Write enhanced counterpart files",
+        "inputs": ["collaboration-diagrams.md", "reviewed migration-log.md"],
+        "outputs": ["collaboration-diagrams-enhanced.md", "collaboration-diagrams-enhanced.json", "migration-log.md"],
+        "duration": "2-3 minutes",
+        "critical": true
+      },
+      {
+        "step": 4,
+        "skill": "diagram-generatecollaboration",
+        "op": "--mode boundary-validate",
+        "purpose": "Validate VR-1 through VR-4 on enhanced diagrams",
+        "inputs": ["collaboration-diagrams-enhanced.md"],
+        "outputs": ["boundary-validation-report.json"],
+        "duration": "2-3 minutes",
+        "critical": false
+      },
+      {
+        "step": 5,
+        "skill": "hierarchy-management",
+        "op": "--op decompose",
+        "purpose": "Optionally decompose control-type participants in enhanced diagrams",
+        "conditional": "if user wants to create Level N+1 sub-processes",
+        "inputs": ["collaboration-diagrams-enhanced.md"],
+        "outputs": ["[NN]-[Name]Boundary/ sub-process folders"],
+        "duration": "3-5 minutes per participant",
+        "critical": false
+      }
+    ]
+  },
+  "success_criteria": [
+    "Flat diagrams upgraded to boundary-annotated format",
+    "All participant types assigned (HIGH or MEDIUM confidence)",
+    "VR-1 through VR-4 boundary validation passes",
+    "Original files unchanged"
+  ],
+  "estimated_total_duration": "15-25 minutes"
+}
+```
+
+## Template: Full Analysis-to-Planning Pipeline
+
+```json
+{
+  "name": "full_analysis_to_planning_pipeline",
+  "description": "Canonical end-to-end EDPS workflow from raw requirements through to an approved project schedule. Sequence is phase-locked; phases 1-3 must complete before phase 4 begins.",
+  "trigger_patterns": [
+    "full pipeline",
+    "analysis to planning",
+    "end-to-end workflow",
+    "complete EDPS workflow",
+    "run everything"
+  ],
+  "prerequisites": {
+    "required": ["requirements_document"],
+    "optional": ["existing_orgModel"]
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Project Setup",
+      "steps": [
+        {
+          "step": 1,
+          "skill": "project-document-management",
+          "purpose": "Create standardized project folder tree",
+          "inputs": ["project_name", "project_number"],
+          "outputs": ["project-folder-tree"],
+          "critical": true
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Requirements Processing",
+      "steps": [
+        {
+          "step": 2,
+          "skill": "requirements-merge",
+          "purpose": "Merge multiple requirement sources into unified spec",
+          "conditional": "if more than one requirements source",
+          "inputs": ["requirements_documents"],
+          "outputs": ["unified-requirements.md"]
+        },
+        {
+          "step": 3,
+          "skill": "requirements-ingest",
+          "purpose": "Normalize requirements into atomic chunks with IDs",
+          "inputs": ["requirements_document OR unified-requirements.md"],
+          "outputs": ["requirements.md", "requirements.json"],
+          "critical": true
+        },
+        {
+          "step": 4,
+          "skill": "goals-extract",
+          "purpose": "Extract business goals, KPIs, constraints",
+          "inputs": ["requirements.md"],
+          "outputs": ["goals.md", "goals.json"],
+          "parallel_with": [5],
+          "critical": true
+        },
+        {
+          "step": 5,
+          "skill": "process-w5h",
+          "purpose": "W5H contextual analysis",
+          "inputs": ["requirements.md"],
+          "outputs": ["w5h-analysis.md", "w5h-analysis.json"],
+          "parallel_with": [4]
+        },
+        {
+          "step": 6,
+          "skill": "process-scopemin",
+          "purpose": "Identify MVP scope boundaries",
+          "inputs": ["requirements.md", "goals.json"],
+          "outputs": ["scope-analysis.md", "scope-analysis.json"]
+        }
+      ],
+      "parallel_opportunities": [
+        {
+          "steps": [4, 5],
+          "note": "goals-extract and process-w5h can run concurrently after requirements-ingest"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Domain Analysis",
+      "steps": [
+        {
+          "step": 7,
+          "skill": "domain-extractconcepts",
+          "purpose": "Identify domain entities and relationships",
+          "inputs": ["requirements.md", "w5h-analysis.md"],
+          "outputs": ["domain-concepts.md", "domain-concepts.json"],
+          "critical": true
+        },
+        {
+          "step": 8,
+          "skill": "domain-alignentities",
+          "purpose": "Align with organizational domain standards",
+          "inputs": ["domain-concepts.md"],
+          "outputs": ["domain-alignment.md", "domain-alignment.json"]
+        },
+        {
+          "step": 9,
+          "skill": "domain-proposenewconcepts",
+          "purpose": "Propose domain extensions for coverage gaps",
+          "inputs": ["domain-alignment.md"],
+          "outputs": ["domain-newconcepts.md"]
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Design & Visualization",
+      "steps": [
+        {
+          "step": 10,
+          "skill": "diagram-generatecollaboration",
+          "purpose": "Generate EDPS collaboration diagrams with boundary syntax",
+          "inputs": ["domain-concepts.json", "requirements.json"],
+          "outputs": ["collaboration-diagrams.md", "collaboration-diagrams.json", "boundary-validation-report.json"],
+          "critical": true
+        },
+        {
+          "step": 11,
+          "skill": "hierarchy-management",
+          "op": "--op decompose",
+          "purpose": "Decompose control-type participants into Level N+1 sub-processes",
+          "inputs": ["collaboration-diagrams.md"],
+          "outputs": ["[NN]-[Name]Boundary/ stub sub-process folders", "hierarchy-metadata.json"]
+        },
+        {
+          "step": 12,
+          "skill": "documentation-automation",
+          "purpose": "Generate content-complete docs for each hierarchy node",
+          "inputs": ["[process-folder]/collaboration.md per node"],
+          "outputs": ["main.md", "process.md", "collaboration.md", "domain-model.md (per node)"]
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "Process & Change Management",
+      "steps": [
+        {
+          "step": 13,
+          "skill": "process-merge",
+          "purpose": "Merge new process model with org process models",
+          "inputs": ["collaboration-diagrams.md"],
+          "outputs": ["merged-process-model.md"]
+        },
+        {
+          "step": 14,
+          "skill": "process-findtopandupdate",
+          "purpose": "Update top-level requirements from analysis insights",
+          "inputs": ["merged-process-model.md", "domain-alignment.md"],
+          "outputs": ["updated-top-requirements.md"]
+        },
+        {
+          "step": 15,
+          "skill": "change-impact-analysis",
+          "purpose": "Assess blast radius of proposed model changes",
+          "inputs": ["change description", "hierarchy-root-folder"],
+          "outputs": ["change-impact-report.md", "change-impact-report.json"],
+          "parallel_with": [14],
+          "conditional": "if changes detected"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "Model Integration",
+      "steps": [
+        {
+          "step": 16,
+          "skill": "model-integration",
+          "purpose": "Integrate new domain models into org model structure",
+          "inputs": ["domain-alignment.json", "domain-concepts.json", "orgModel root"],
+          "outputs": ["integrated-model-update.md"]
+        },
+        {
+          "step": 17,
+          "skill": "orgmodel-update",
+          "purpose": "Update orgModel documents (EDPS-Hierarchy Guard applies)",
+          "inputs": ["integrated-model-update.md"],
+          "outputs": ["vocabulary.md", "test-case-list.md (updated)"]
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "Planning",
+      "steps": [
+        {
+          "step": 18,
+          "skill": "plan-derivetasks",
+          "purpose": "Convert requirements into actionable tasks",
+          "inputs": ["requirements.md", "scope-analysis.md"],
+          "outputs": ["task-breakdown.md", "task-breakdown.json"],
+          "critical": true
+        },
+        {
+          "step": 19,
+          "skill": "plan-estimateeffort",
+          "purpose": "PERT-based effort estimation per task",
+          "inputs": ["task-breakdown.json"],
+          "outputs": ["effort-estimates.md", "effort-estimates.json"]
+        },
+        {
+          "step": 20,
+          "skill": "plan-buildschedule",
+          "purpose": "Build Gantt schedule with critical path",
+          "inputs": ["task-breakdown.json", "effort-estimates.json"],
+          "outputs": ["project-schedule.md", "project-schedule.json"]
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "Validation & Reporting",
+      "steps": [
+        {
+          "step": 21,
+          "skill": "hierarchy-validation",
+          "purpose": "Authoritative structural integrity check (pre-condition for edps-compliance)",
+          "inputs": ["orgModel root"],
+          "outputs": ["hierarchy-validation-report.md", "hierarchy-validation-report.json"],
+          "critical": true
+        },
+        {
+          "step": 22,
+          "skill": "edps-compliance",
+          "purpose": "Full EDPS methodology compliance check (VR-1-4, HR-2/6, EP-1-4)",
+          "inputs": ["orgModel root", "hierarchy-validation-report.json"],
+          "outputs": ["edps-compliance-report.md", "edps-compliance-report.json"]
+        },
+        {
+          "step": 23,
+          "skill": "integration-testing",
+          "purpose": "End-to-end skill workflow validation",
+          "inputs": ["all project artifacts"],
+          "outputs": ["integration-test-report.md"]
+        },
+        {
+          "step": 24,
+          "skill": "project-status-reporting",
+          "purpose": "Generate executive / engineering status dashboard",
+          "inputs": ["tasks/task-tracking.md", "project-plan.md"],
+          "outputs": ["status-report.md"]
+        }
+      ],
+      "parallel_opportunities": [
+        {
+          "steps": [22, 23],
+          "note": "edps-compliance and integration-testing can run concurrently after hierarchy-validation passes"
+        }
+      ]
+    }
+  ],
+  "global_parallel_opportunities": [
+    {
+      "steps": [4, 5],
+      "phase": 2,
+      "note": "goals-extract || process-w5h after requirements-ingest"
+    },
+    {
+      "steps": [14, 15],
+      "phase": 5,
+      "note": "process-findtopandupdate || change-impact-analysis (if changes detected)"
+    },
+    {
+      "steps": [22, 23],
+      "phase": 8,
+      "note": "edps-compliance || integration-testing (after hierarchy-validation)"
+    }
+  ],
+  "success_criteria": [
+    "Project structure initialised",
+    "Requirements atomised with IDs and traceability",
+    "Domain model complete and aligned",
+    "EDPS collaboration diagrams with boundary annotations generated",
+    "Hierarchy decomposed and documented",
+    "Org model updated without hierarchy conflicts",
+    "Task breakdown, effort estimates, and schedule approved",
+    "hierarchy-validation exits VALID or MOSTLY_VALID",
+    "edps-compliance score ≥ 80 %"
+  ],
+  "estimated_total_duration": "2-4 hours (with human review gates)"
+}
+```

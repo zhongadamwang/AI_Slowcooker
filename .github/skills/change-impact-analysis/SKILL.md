@@ -7,6 +7,10 @@ description: Trace how changes at one EDPS hierarchy level propagate to parent a
 
 Identify and report all artifacts affected when a change is made at any level of an EDPS process hierarchy.
 
+## Intent
+
+Trace and enumerate all artifacts impacted by a boundary rename, boundary restructure, participant change, or requirement modification at any EDPS hierarchy level. Supports `--mode what-if` (safe preview, no writes) and `--mode apply` (auto-fix navigational links). Emits `change-impact-report.json` with a `normalized_risk_level` field directly consumable by `change-management`.
+
 ## Inputs
 
 - **Change type**: one of:

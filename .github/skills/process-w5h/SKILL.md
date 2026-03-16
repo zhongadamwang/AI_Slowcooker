@@ -8,6 +8,20 @@ license: MIT
 
 Transforms requirements into comprehensive W5H analysis (Who, What, When, Where, Why, How) providing stakeholder identification, functional analysis, timeline extraction, context understanding, purpose clarification, and implementation approach definition.
 
+## Intent
+
+Apply the W5H analytical framework to requirements to systematically extract: stakeholder roles and responsibilities (Who), functional scope (What), timeline and trigger conditions (When), operational context (Where), business rationale and success criteria (Why), and implementation approaches (How).
+
+## Inputs
+
+- **Requirements**: Raw requirements text, document, or `requirements.json`/`requirements.md` (from `requirements-ingest`)
+- **Project ID**: `project_id`
+
+## Outputs
+
+- `outputs/projects/{project_id}/Analysis/w5h-analysis.md` — W5H analysis report (primary, for downstream skills)
+- `outputs/projects/{project_id}/Analysis/w5h-analysis.json` — Structured W5H data for machine processing
+
 ## Core Function
 
 **Input**: Requirements documents + project_id

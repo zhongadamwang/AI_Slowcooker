@@ -2,6 +2,10 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
+**Version**: 2.0.0 | **Last Updated**: 2026-03-16 | **Skill Count**: 31 (1 deprecated)
+
+> **Consolidation Note (March 2026)**: Following the Project 1 + Project 3 integration review, all skills now include canonical `## Intent`, `## Inputs`, and `## Outputs` sections. `hierarchy-management` absorbs `migration-tools` via `--op migrate`. `change-impact-analysis → change-management` contract is formalised via `normalized_risk_level`. See [EDPS_Skills_Validation_Report.md](../../EDPS_Skills_Validation_Report.md) for full details.
+
 ## 📚 Documentation Structure
 
 ### 🚀 Getting Started
@@ -97,16 +101,16 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **domain-proposenewconcepts** | Propose new concepts for gaps | [Individual skill docs](.github/skills/domain-proposenewconcepts/SKILL.md) |
 | **diagram-generatecollaboration** | Generate system interaction diagrams | [Individual skill docs](.github/skills/diagram-generatecollaboration/SKILL.md) |
 | **model-integration** | Integrate new domain models into existing organizational structures | [Individual skill docs](.github/skills/model-integration/SKILL.md) |
-| **hierarchy-management** | Decompose control-type participants into sub-processes, track parent-child hierarchy, manage folder structure and metadata | [Individual skill docs](.github/skills/hierarchy-management/SKILL.md) |
-| **documentation-automation** | Auto-generate main.md, process.md, collaboration.md, and domain-model.md for each process hierarchy level with level-appropriate content, EDPS-compliant diagrams, boundary rule status, and participant summary | [Individual skill docs](.github/skills/documentation-automation/SKILL.md) |
-| **migration-tools** | Non-destructively migrate flat (Project 1) collaboration diagrams to hierarchical boundary format — applies stereotype inference and boundary grouping detection, generates enhanced counterpart files and migration log while preserving all requirement traceability | [Individual skill docs](.github/skills/migration-tools/SKILL.md) |
+| **hierarchy-management** | Decompose control-type participants into sub-processes; manage folder structure, metadata, and cross-reference navigation; `--op migrate` absorbs `migration-tools` for non-destructive P1→P3 upgrades | [Individual skill docs](.github/skills/hierarchy-management/SKILL.md) |
+| **documentation-automation** | Auto-generate `main.md`, `process.md`, `collaboration.md`, and `domain-model.md` for each process hierarchy level with level-appropriate content; takes precedence over `orgmodel-update` for the four shared files in hierarchy-managed folders | [Individual skill docs](.github/skills/documentation-automation/SKILL.md) |
+| **migration-tools** | ~~DEPRECATED~~ — superseded by `hierarchy-management --op migrate`; retained for backward compatibility during transition | [Individual skill docs](.github/skills/migration-tools/SKILL.md) |
 
 ### ✅ Compliance & Validation
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
-| **edps-compliance** | Validate EDPS methodology compliance across process hierarchies — checks boundary rules (VR-1–VR-4), hierarchy structural rules (HR-1–HR-6), and evolutionary principles (EP-1–EP-4); generates scored JSON and Markdown reports with remediation guidance | [Individual skill docs](.github/skills/edps-compliance/SKILL.md) |
-| **hierarchy-validation** | Validate hierarchy structural integrity and cross-level consistency — checks cross-level participant type consistency (HV-1–HV-5), cross-reference link integrity (HX-1–HX-5), and naming/structure rules (HN-1–HN-4); supports full-tree and incremental single-branch validation with auto-fix capability | [Individual skill docs](.github/skills/hierarchy-validation/SKILL.md) |
-| **change-impact-analysis** | Trace how changes at one EDPS hierarchy level propagate to parent and child levels — covers artifact-level impact (CI-1–CI-5: parent references, child navigation cascades, participant propagation, hierarchy index, side documents) and requirement change tracing (CR-1–CR-3); supports what-if pre-flight and apply auto-repair modes with 5-level risk classification | [Individual skill docs](.github/skills/change-impact-analysis/SKILL.md) |
+| **edps-compliance** | Validate EDPS methodology compliance (VR-1–4 delegated to `diagram-generatecollaboration`, structural checks delegated to `hierarchy-validation` via pre-condition gate); own rules: HR-2/HR-6 and EP-1–4; generates scored reports with remediation guidance | [Individual skill docs](.github/skills/edps-compliance/SKILL.md) |
+| **hierarchy-validation** | **Authoritative structural integrity checker.** Validates cross-level type consistency (HV-1–5), cross-reference link integrity (HX-1–5), and naming/structure rules (HN-1–4). All other skills delegate file/link integrity checks here. Supports full-tree and incremental single-branch modes with `--fix` auto-repair | [Individual skill docs](.github/skills/hierarchy-validation/SKILL.md) |
+| **change-impact-analysis** | Trace change propagation across hierarchy levels (CI-1–5, CR-1–3); emits `change-impact-report.json` with `normalized_risk_level` field directly consumable by `change-management`; supports `--mode what-if` (safe preview) and `--mode apply` (auto-fix navigational links) | [Individual skill docs](.github/skills/change-impact-analysis/SKILL.md) |
 
 ### 📊 Planning & Management  
 | Skill | Purpose | Documentation |
@@ -118,7 +122,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | **plan-estimateeffort** | Generate effort estimates using multiple methodologies | [Individual skill docs](.github/skills/plan-estimateeffort/SKILL.md) |
 | **plan-buildschedule** | Generate project schedules with dependencies and critical path | [Individual skill docs](.github/skills/plan-buildschedule/SKILL.md) |
 | **process-scopemin** | Define MVP and scope boundaries | [Individual skill docs](.github/skills/process-scopemin/SKILL.md) |
-| **change-management** | Track and manage changes | [Individual skill docs](.github/skills/change-management/SKILL.md) |
+| **change-management** | Track and manage changes; accepts `change-impact-report.json` with `normalized_risk_level` from `change-impact-analysis` directly as `risk_level` in `affected_documents` | [Individual skill docs](.github/skills/change-management/SKILL.md) |
 
 ### 🔗 Integration & Automation
 | Skill | Purpose | Documentation |
@@ -177,6 +181,25 @@ Input: projects/[PROJECT-ID]/artifacts/Analysis/
 ```markdown
 @workspace Execute complete analysis pipeline:
 requirements-ingest → goals-extract → process-w5h → domain-extractconcepts → domain-alignentities → diagram-generatecollaboration → process-scopemin
+
+Project: [PROJECT-NAME] ([PROJECT-ID])
+[Input requirements document]
+```
+
+### 🚀 Full Analysis-to-Planning Pipeline (End-to-End)
+```markdown
+@workspace Execute full EDPS analysis-to-planning pipeline:
+
+Phase 1 — Setup:    project-document-management
+Phase 2 — Ingest:   requirements-ingest → goals-extract ‖ process-w5h → process-scopemin
+Phase 3 — Domain:   domain-extractconcepts → domain-alignentities → domain-proposenewconcepts
+Phase 4 — Design:   diagram-generatecollaboration → hierarchy-management → documentation-automation
+Phase 5 — Process:  process-merge → process-findtopandupdate ‖ change-impact-analysis
+Phase 6 — Model:    model-integration → orgmodel-update
+Phase 7 — Plan:     plan-derivetasks → plan-estimateeffort → plan-buildschedule
+Phase 8 — Validate: hierarchy-validation → edps-compliance ‖ integration-testing → project-status-reporting
+
+(‖ = parallel steps; see workflow-templates.json for full parallel opportunity map)
 
 Project: [PROJECT-NAME] ([PROJECT-ID])
 [Input requirements document]

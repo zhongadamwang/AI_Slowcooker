@@ -8,6 +8,22 @@ license: MIT
 
 Intelligently merges requirements from multiple sources and formats into a unified, coherent specification while identifying conflicts, eliminating redundancies, preserving important variations, and maintaining complete source traceability throughout stakeholder review processes.
 
+## Intent
+
+Merge requirements from two or more heterogeneous sources into one unified, coherent specification. Detect conflicts and redundancies, resolve them per the chosen strategy, and maintain full source traceability for stakeholder review and compliance audit.
+
+## Inputs
+
+- **Source documents**: Two or more requirements files (PDF, DOCX, Markdown, or `requirements.json` from `requirements-ingest`)
+- **Project ID**: `project_id`
+- **Optional**: `merge_strategy` — `conservative` (manual review for all conflicts) | `comprehensive` (auto-resolve low-confidence conflicts, default)
+
+## Outputs
+
+- `outputs/projects/{project_id}/Analysis/unified-requirements.md` — Merged specification (primary, for downstream skills)
+- `outputs/projects/{project_id}/Analysis/merge-analysis.json` — Detailed merge trace with source traceability
+- `outputs/projects/{project_id}/Analysis/merge-conflicts.md` — Conflict log for stakeholder review
+
 ## Core Function
 
 **Input**: Multiple requirements documents + project_id + merge_strategy + conflict_resolution_rules

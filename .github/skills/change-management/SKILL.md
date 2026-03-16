@@ -8,6 +8,21 @@ license: MIT
 
 Transforms AI conversation text and requirement discussions into structured change documents with automatic classification, impact analysis, and reference updates.
 
+## Intent
+
+Convert AI conversation text and requirement discussions into structured change documents, automatically classify change types, score impact using `change-impact-analysis` outputs, and produce reference-update instructions for all affected files.
+
+## Inputs
+
+- **Conversation text**: Raw AI conversation or discussion text that contains requirement changes
+- **Project ID**: `project_id` string
+- **Optional**: `change-impact-report.json` from `change-impact-analysis` — the `normalized_risk_level` field maps directly to `risk_level` in each `affected_documents` entry; entries with `critical_flag: true` represent CRITICAL severity capped at `High` and require elevated review (see `change-impact-analysis` `## Risk Level Mapping` for the full scale)
+
+## Outputs
+
+- `artifacts/Changes/[date]-[change_id]-[title].md` — Structured change document (Markdown)
+- JSON response following the `## Output Schema`: `changes_identified`, `reference_updates`, `next_actions`
+
 ## Core Function
 
 **Input**: Conversation text + project context + change scope  

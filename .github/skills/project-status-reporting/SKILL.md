@@ -8,6 +8,22 @@ license: MIT
 
 Generates standardized status reports, executive dashboards, and stakeholder communications by aggregating data from project documentation structures and tracking artifacts.
 
+## Intent
+
+Aggregate status data from EDPS project documentation artifacts (task tracking, project plans, milestone data) and generate audience-appropriate reports — executive dashboards, engineering detail, or stakeholder briefings — with minimal manual data entry.
+
+## Inputs
+
+- **Project root**: Path to `OrgDocument/projects/[NN] - [Project Name]/`
+- **Optional**: `tasks/task-tracking.md` — task completion data
+- **Optional**: `project-plan.md` — milestone schedule baseline
+- **Report type**: `executive` | `engineering` | `stakeholder` | `full` (default: `full`)
+
+## Outputs
+
+- Formatted status report Markdown file appropriate for the requested audience
+- Console summary: overall completion percentage, count of blocked items, and upcoming milestones
+
 ## Core Function
 
 **Input**: Project data from document tree, tracking files, milestone status
