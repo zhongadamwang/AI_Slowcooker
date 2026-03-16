@@ -1,0 +1,190 @@
+{
+  "report_metadata": {
+    "generated": "2026-03-16T15:30:00Z",
+    "scope": "orgModel/01 - Skill Development Process/",
+    "mode": "full",
+    "schema_version": "1.0",
+    "validator": "hierarchy-validation (EDPS)",
+    "target_type": "single-level-organizational-process"
+  },
+  "summary": {
+    "overall_status": "VALID",
+    "validation_score": 100.0,
+    "total_checks": 3,
+    "passed": 3,
+    "skipped": 11,
+    "failed_errors": 0,
+    "failed_warnings": 0,
+    "auto_fixed": 0,
+    "levels_scanned": 1,
+    "folders_scanned": 1,
+    "process_type": "single-level-organizational",
+    "hierarchy_depth": 0
+  },
+  "rule_results": [
+    {
+      "rule_id": "HV-1",
+      "rule_name": "Decomposed-Participant Is Control",
+      "group": "HV",
+      "severity": "ERROR", 
+      "status": "SKIPPED",
+      "reason": "No sub-process folders found - single-level organizational process",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HV-2", 
+      "rule_name": "Parent Actor Appearance",
+      "group": "HV",
+      "severity": "ERROR",
+      "status": "SKIPPED", 
+      "reason": "No child collaborations exist - single-level process",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HV-3",
+      "rule_name": "Actor Label Consistency", 
+      "group": "HV",
+      "severity": "WARNING",
+      "status": "SKIPPED",
+      "reason": "No cross-level actor-label consistency to validate",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HV-4",
+      "rule_name": "Entry-Point Type Integrity",
+      "group": "HV", 
+      "severity": "ERROR",
+      "status": "SKIPPED",
+      "reason": "No child-level entry points exist",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HV-5",
+      "rule_name": "No Internal Leakage",
+      "group": "HV",
+      "severity": "ERROR", 
+      "status": "SKIPPED",
+      "reason": "No internal participants to check for leakage", 
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HX-1",
+      "rule_name": "Parent Link Resolves",
+      "group": "HX",
+      "severity": "ERROR",
+      "status": "SKIPPED", 
+      "reason": "Root-level organizational process - no parent links to validate",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HX-2", 
+      "rule_name": "Child Links Resolve",
+      "group": "HX",
+      "severity": "ERROR",
+      "status": "SKIPPED",
+      "reason": "No Sub-Processes section exists - single-level process",
+      "checked_folders": [], 
+      "violations": []
+    },
+    {
+      "rule_id": "HX-3",
+      "rule_name": "Breadcrumb Path Integrity",
+      "group": "HX",
+      "severity": "WARNING", 
+      "status": "SKIPPED",
+      "reason": "Root-level process - no breadcrumb trails to validate",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HX-4", 
+      "rule_name": "Decomposition Comment Matches Folder",
+      "group": "HX",
+      "severity": "WARNING",
+      "status": "SKIPPED",
+      "reason": "No decomposition comments expected in single-level process", 
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HX-5",
+      "rule_name": "Hierarchy Index Currency", 
+      "group": "HX",
+      "severity": "WARNING",
+      "status": "SKIPPED",
+      "reason": "No hierarchy-index.md required for single-level process",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HN-1",
+      "rule_name": "Folder Name Convention",
+      "group": "HN", 
+      "severity": "ERROR",
+      "status": "SKIPPED",
+      "reason": "No sub-process folders to validate naming convention", 
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HN-2",
+      "rule_name": "Required Files Present",
+      "group": "HN",
+      "severity": "ERROR",
+      "status": "PASS",
+      "reason": "All required files present and validated",
+      "checked_folders": ["orgModel/01 - Skill Development Process/"],
+      "violations": [],
+      "details": {
+        "required_files": ["main.md", "collaboration.md"],
+        "found_files": ["main.md", "collaboration.md", "process.md", "domain-model.md", "vocabulary.md", "test-case-list.md"],
+        "additional_files": ["process.md", "domain-model.md", "vocabulary.md", "test-case-list.md"],
+        "completeness": "100% - All required + recommended files present"
+      }
+    },
+    {
+      "rule_id": "HN-3", 
+      "rule_name": "Ordinal Uniqueness",
+      "group": "HN",
+      "severity": "ERROR",
+      "status": "SKIPPED",
+      "reason": "No sibling sub-process folders to check ordinal uniqueness",
+      "checked_folders": [],
+      "violations": []
+    },
+    {
+      "rule_id": "HN-4",
+      "rule_name": "Level Number Consistency", 
+      "group": "HN", 
+      "severity": "WARNING",
+      "status": "PASS",
+      "reason": "Root organizational process at Level 0 - no explicit level declaration required",
+      "checked_folders": ["orgModel/01 - Skill Development Process/"],
+      "violations": [],
+      "details": {
+        "expected_level": 0,
+        "actual_level": "implicit 0 (root organizational process)",
+        "level_declaration": "not required for root level",
+        "hierarchy_depth": 0
+      }
+    }
+  ],
+  "auto_fixes_applied": [],
+  "validation_notes": [
+    "Single-level organizational process detected - most hierarchy rules not applicable",
+    "File structure excellent - all required and recommended EDPS files present", 
+    "Process appears to be correctly scoped as organizational-level (not requiring decomposition)",
+    "No structural integrity issues found"
+  ],
+  "recommendations": [
+    "Consider decomposition if workflow complexity grows beyond current manageable scope",
+    "Maintain current excellent file structure and documentation completeness",
+    "Current structure is appropriate for organizational-level process modeling"
+  ]
+}
