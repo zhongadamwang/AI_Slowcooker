@@ -2,7 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.0.1 | **Last Updated**: 2026-03-17 | **Skill Count**: 32 (1 deprecated)
+**Version**: 3.0.0 | **Last Updated**: 2026-03-18 | **Skill Count**: 35 (1 deprecated)
+
+> **Iteration 3 Note (March 2026)**: Three new meta-skills added — `edps-workflow-orchestrator`, `edps-quality-gates`, and `edps-enhanced-nlp`. Together they provide intelligent multi-skill workflow orchestration, automated quality gate enforcement, and >90% intent-accuracy NLP. All three integrate with the existing 30-skill ecosystem without breaking changes. See [T12-release-notes.md](../OrgDocument/projects/04%20-%20Building%20Skills%20Iteration%203/artifacts/Documentation/T12-release-notes.md) for full release details.
 
 > **Consolidation Note (March 2026)**: Following the Project 1 + Project 3 integration review, all skills now include canonical `## Intent`, `## Inputs`, and `## Outputs` sections. `hierarchy-management` absorbs `migration-tools` via `--op migrate`. `change-impact-analysis → change-management` contract is formalised via `normalized_risk_level`. See [EDPS_Skills_Validation_Report.md](../../EDPS_Skills_Validation_Report.md) for full details.
 
@@ -136,6 +138,8 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 |-------|---------|---------------|
 | **edps-skill-navigator** | Navigate and orchestrate skills | [Individual skill docs](.github/skills/edps-skill-navigator/SKILL.md) |
 | **edps-workflow-orchestrator** | Dynamic workflow generation, selection, and execution with advanced coordination, monitoring, and adaptation capabilities | [Individual skill docs](.github/skills/edps-workflow-orchestrator/SKILL.md) |
+| **edps-quality-gates** | Automated quality checkpoints with plain-English remediation; enforces gate sets (light / standard / comprehensive) within orchestrated workflows | [Individual skill docs](.github/skills/edps-quality-gates/SKILL.md) |
+| **edps-enhanced-nlp** | Enhanced NLP with >90% intent classification accuracy across 7 categories, entity extraction, context-aware skill & workflow recommendations, and session memory | [Individual skill docs](.github/skills/edps-enhanced-nlp/SKILL.md) |
 | **skill-creator** | Create new EDPS skills | [Individual skill docs](.github/skills/skill-creator/SKILL.md) |
 | **integration-testing** | Comprehensive testing and validation of all EDPS skills | [Individual skill docs](.github/skills/integration-testing/SKILL.md) |
 | **orgmodel-update** | Update organizational model documents and folder structures | [Individual skill docs](.github/skills/orgmodel-update/SKILL.md) |
