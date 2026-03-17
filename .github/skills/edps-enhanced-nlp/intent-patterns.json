@@ -1,0 +1,665 @@
+{
+  "pattern_library_version": "1.0.0",
+  "name": "EDPS Enhanced NLP - Intent Pattern Library",
+  "description": "Comprehensive pattern library for EDPS user intent recognition with domain-specific vocabulary and contextual indicators",
+
+  "intent_categories": {
+    "analysis": {
+      "id": "analysis",
+      "name": "Analysis and Review",
+      "description": "User wants to analyze, review, or examine existing artifacts or requirements",
+      "base_confidence": 0.8,
+      "primary_patterns": [
+        "\\b(analyze|analyse|review|examine|assess|evaluate|inspect|check|audit|study)\\b",
+        "\\b(what are|identify|find|discover|detect|understand|explore)\\b",
+        "\\b(look at|go through|scan|survey|investigate|read through)\\b",
+        "\\b(tell me about|show me|explain|describe|summarize)\\b"
+      ],
+      "negative_patterns": [
+        "\\b(create|build|generate|make|produce|fix|update|change)\\b"
+      ],
+      "subcategories": {
+        "requirements_analysis": {
+          "id": "requirements_analysis",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(requirement[s]?|specification[s]?|constraint[s]?|need[s]?|feature[s]?)\\b",
+            "\\b(fr-|nfr-|req-|user stor)\\b",
+            "\\b(what does|what should|expected behavior|functional|non-functional)\\b"
+          ],
+          "recommended_skills": ["requirements-ingest", "process-w5h", "goals-extract", "process-scopemin"],
+          "workflow_patterns": ["requirements_analysis_workflow"]
+        },
+        "domain_analysis": {
+          "id": "domain_analysis",
+          "weight": 0.85,
+          "patterns": [
+            "\\b(domain|concept[s]?|entity|entities|terminology|vocabulary|glossar)\\b",
+            "\\b(business term|subject matter|domain model|ontolog)\\b",
+            "\\b(what entities|which concepts|domain concept)\\b"
+          ],
+          "recommended_skills": ["domain-extractconcepts", "domain-alignentities", "domain-proposenewconcepts"],
+          "workflow_patterns": ["domain_modeling_workflow"]
+        },
+        "compliance_analysis": {
+          "id": "compliance_analysis",
+          "weight": 1.0,
+          "patterns": [
+            "\\b(edps|compliance|compliant|conform|adherence|methodology)\\b",
+            "\\b(boundary|vr-[1-4]|vr[1-4]|boundary rule|boundary validation)\\b",
+            "\\b(participant type|message flow|hierarchy structure|decomposition)\\b",
+            "\\b(check.*complianc|valid.*edps|edps.*valid)\\b"
+          ],
+          "recommended_skills": ["edps-compliance", "hierarchy-validation", "diagram-generatecollaboration"],
+          "workflow_patterns": ["edps_compliance_workflow"]
+        },
+        "quality_analysis": {
+          "id": "quality_analysis",
+          "weight": 0.8,
+          "patterns": [
+            "\\b(quality|completeness|thoroughness|accuracy)\\b",
+            "\\b(standard|threshold|metric[s]?|score|measure)\\b",
+            "\\b(how good|quality of|assess quality)\\b"
+          ],
+          "recommended_skills": ["edps-quality-gates", "edps-compliance"],
+          "workflow_patterns": ["quality_assessment_workflow"]
+        },
+        "hierarchy_analysis": {
+          "id": "hierarchy_analysis",
+          "weight": 0.95,
+          "patterns": [
+            "\\b(hierarchy|hierarchical|decomposition|level [0-9]+|parent|child)\\b",
+            "\\b(sub-?process|sub-?activity|breakdown|structure)\\b",
+            "\\b(cross.?level|level consistency|structural integrity)\\b"
+          ],
+          "recommended_skills": ["hierarchy-validation", "hierarchy-management"],
+          "workflow_patterns": ["hierarchy_validation_workflow"]
+        }
+      }
+    },
+
+    "creation": {
+      "id": "creation",
+      "name": "Creation and Generation",
+      "description": "User wants to create, build, or generate new artifacts",
+      "base_confidence": 0.85,
+      "primary_patterns": [
+        "\\b(create|build|generate|produce|make|develop|design|construct|draft)\\b",
+        "\\b(set up|initialize|bootstrap|start|begin|initiate|establish)\\b",
+        "\\b(new|fresh|from scratch|initial)\\b",
+        "\\b(write|author|compose|define|specify)\\b"
+      ],
+      "negative_patterns": [
+        "\\b(update|modify|change|fix|correct|enhance|improve)\\b.*\\b(existing|current)\\b"
+      ],
+      "subcategories": {
+        "diagram_creation": {
+          "id": "diagram_creation",
+          "weight": 1.0,
+          "patterns": [
+            "\\b(diagram|collaboration diagram|sequence diagram|flow chart|chart)\\b",
+            "\\b(mermaid|uml|visual|visualize)\\b",
+            "\\b(participant[s]?|actor[s]?|interaction[s]?|sequence)\\b.*\\b(diagram|visual)\\b"
+          ],
+          "recommended_skills": ["diagram-generatecollaboration"],
+          "workflow_patterns": ["diagram_creation_workflow"]
+        },
+        "documentation_creation": {
+          "id": "documentation_creation",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(document[s]?|documentation|readme|guide|manual|wiki)\\b",
+            "\\b(main\\.md|process\\.md|collaboration\\.md|domain-model\\.md)\\b",
+            "\\b(write|author|generate)\\b.*\\b(document|doc|readme)\\b"
+          ],
+          "recommended_skills": ["documentation-automation", "project-document-management"],
+          "workflow_patterns": ["documentation_generation_workflow"]
+        },
+        "workflow_creation": {
+          "id": "workflow_creation",
+          "weight": 0.95,
+          "patterns": [
+            "\\b(workflow|process flow|pipeline|automation|end.?to.?end)\\b",
+            "\\b(sequence of|series of|multi.?step|step.?by.?step)\\b.*\\b(skill|task|operation)\\b",
+            "\\b(orchestrat|coordinat|orchestrat)\\b"
+          ],
+          "recommended_skills": ["edps-workflow-orchestrator", "plan-derivetasks"],
+          "workflow_patterns": ["custom_workflow_creation"]
+        },
+        "project_creation": {
+          "id": "project_creation",
+          "weight": 0.85,
+          "patterns": [
+            "\\b(project|project structure|folder structure|document tree)\\b",
+            "\\b(org ?model|orgmodel|organization ?model)\\b",
+            "\\b(new project|start.*project|initialize.*project)\\b"
+          ],
+          "recommended_skills": ["project-document-management", "orgmodel-update"],
+          "workflow_patterns": ["project_initialization_workflow"]
+        },
+        "domain_model_creation": {
+          "id": "domain_model_creation",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(domain model|entity model|concept model|domain diagram)\\b",
+            "\\b(model.*domain|create.*model|build.*model)\\b"
+          ],
+          "recommended_skills": ["domain-extractconcepts", "domain-alignentities", "domain-proposenewconcepts"],
+          "workflow_patterns": ["domain_modeling_workflow"]
+        }
+      }
+    },
+
+    "validation": {
+      "id": "validation",
+      "name": "Validation and Compliance",
+      "description": "User wants to validate, verify, or check correctness and compliance",
+      "base_confidence": 0.85,
+      "primary_patterns": [
+        "\\b(validate|verify|check|ensure|confirm|test|assert|certify)\\b",
+        "\\b(is.*valid|is.*correct|is.*compliant|does.*comply|meet[s]?.*requirement)\\b",
+        "\\b(correct\\?|valid\\?|compliant\\?|conform[s]?\\?)\\b",
+        "\\b(pass.*gate|pass.*validation|validation.*pass)\\b"
+      ],
+      "negative_patterns": [
+        "\\b(create|generate|build|make|produce)\\b"
+      ],
+      "subcategories": {
+        "edps_validation": {
+          "id": "edps_validation",
+          "weight": 1.0,
+          "patterns": [
+            "\\b(edps|boundary|vr-[1-4]|vr[1-4]|methodology)\\b",
+            "\\b(participant (type|class)|message flow|hierarchy (rule|structure))\\b",
+            "\\b(edps compliance|edps standard|edps rule)\\b"
+          ],
+          "recommended_skills": ["edps-compliance", "hierarchy-validation", "diagram-generatecollaboration"],
+          "workflow_patterns": ["edps_compliance_workflow"]
+        },
+        "hierarchy_validation": {
+          "id": "hierarchy_validation",
+          "weight": 0.95,
+          "patterns": [
+            "\\b(hierarchy|hierarchical|cross-?level|parent-?child|structural)\\b",
+            "\\b(decomposition|level [0-9]+|sub-?process)\\b",
+            "\\b(link[s]?|navigation|breadcrumb|reference)\\b.*\\b(valid|correct|broken)\\b"
+          ],
+          "recommended_skills": ["hierarchy-validation"],
+          "workflow_patterns": ["hierarchy_validation_workflow"]
+        },
+        "quality_validation": {
+          "id": "quality_validation",
+          "weight": 0.85,
+          "patterns": [
+            "\\b(quality gate|quality check|quality standard|quality threshold)\\b",
+            "\\b(good enough|meet[s]? (standard|criteria|threshold))\\b",
+            "\\b(completeness|accuracy|clarity|usefulness)\\b.*\\b(check|valid|verify)\\b"
+          ],
+          "recommended_skills": ["edps-quality-gates"],
+          "workflow_patterns": ["quality_gate_workflow"]
+        },
+        "traceability_validation": {
+          "id": "traceability_validation",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(traceab|traceable|trace|linked|referenced|tracked)\\b",
+            "\\b(requirement.*implement|implement.*requirement)\\b",
+            "\\b(change.*impact|impact.*change|change tracking)\\b"
+          ],
+          "recommended_skills": ["hierarchy-validation", "edps-compliance", "change-impact-analysis"],
+          "workflow_patterns": ["traceability_workflow"]
+        }
+      }
+    },
+
+    "integration": {
+      "id": "integration",
+      "name": "Integration and Merging",
+      "description": "User wants to integrate, merge, combine, or update existing artifacts",
+      "base_confidence": 0.8,
+      "primary_patterns": [
+        "\\b(integrat|merge|merging|combine|consolidate|unify|reconcile|blend)\\b",
+        "\\b(update|modify|change|revise|refactor|restructure|rework)\\b",
+        "\\b(add.*to|include.*in|incorporate|embed|insert|attach)\\b",
+        "\\b(sync|synchronize|align|harmonize|reconcile)\\b"
+      ],
+      "negative_patterns": [
+        "\\b(create new|brand new|from scratch|new project)\\b"
+      ],
+      "subcategories": {
+        "requirement_integration": {
+          "id": "requirement_integration",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(requirement[s]?|specification[s]?|source[s]?)\\b",
+            "\\b(merge.*requirement|combine.*requirement|requirement.*merge)\\b",
+            "\\b(multiple source|different source|several source|various source)\\b"
+          ],
+          "recommended_skills": ["requirements-merge", "process-merge"],
+          "workflow_patterns": ["requirements_merge_workflow"]
+        },
+        "model_integration": {
+          "id": "model_integration",
+          "weight": 0.95,
+          "patterns": [
+            "\\b(model|org ?model|orgmodel|organizational model)\\b",
+            "\\b(update.*model|modify.*model|change.*model|model.*update)\\b",
+            "\\b(integrate.*process|process.*integrate|add.*process)\\b"
+          ],
+          "recommended_skills": ["model-integration", "orgmodel-update", "process-findtopandupdate"],
+          "workflow_patterns": ["model_update_workflow"]
+        },
+        "change_integration": {
+          "id": "change_integration",
+          "weight": 0.85,
+          "patterns": [
+            "\\b(change|impact|effect|consequence|ripple|cascade)\\b",
+            "\\b(change (management|request|order|control))\\b",
+            "\\b(what.*affected|impact.*analysis|blast radius)\\b"
+          ],
+          "recommended_skills": ["change-management", "change-impact-analysis"],
+          "workflow_patterns": ["change_management_workflow"]
+        },
+        "hierarchy_restructure": {
+          "id": "hierarchy_restructure",
+          "weight": 0.95,
+          "patterns": [
+            "\\b(restructure|refactor|reorganize|move|rename)\\b.*\\b(hierarchy|process|level)\\b",
+            "\\b(hierarchy.*change|change.*hierarchy)\\b",
+            "\\b(decompose|decomposition|break.*down)\\b.*\\b(further|more)\\b"
+          ],
+          "recommended_skills": ["hierarchy-management", "change-impact-analysis"],
+          "workflow_patterns": ["hierarchy_restructure_workflow"]
+        }
+      }
+    },
+
+    "planning": {
+      "id": "planning",
+      "name": "Planning and Scheduling",
+      "description": "User wants to plan, schedule, estimate, or track project work",
+      "base_confidence": 0.8,
+      "primary_patterns": [
+        "\\b(plan|planning|schedule|estimate|prioritize|roadmap|timeline)\\b",
+        "\\b(task[s]?|milestone[s]?|deadline|delivery|sprint|iteration|phase)\\b",
+        "\\b(effort|duration|workload|capacity|resource|staffing)\\b",
+        "\\b(track|monitor|progress|status|report|dashboard)\\b"
+      ],
+      "subcategories": {
+        "task_planning": {
+          "id": "task_planning",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(task[s]?|user stor|backlog|work item|action item|to.?do)\\b",
+            "\\b(derive.*task|break.*down|breakdown|decompose.*task)\\b",
+            "\\b(what.*to do|next step[s]?|action[s]?)\\b"
+          ],
+          "recommended_skills": ["plan-derivetasks", "project-planning-tracking"],
+          "workflow_patterns": ["task_derivation_workflow"]
+        },
+        "schedule_planning": {
+          "id": "schedule_planning",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(schedule|gantt|timeline|sprint plan|iteration plan)\\b",
+            "\\b(when|by when|deadline|due date|delivery date)\\b",
+            "\\b(critical path|dependency|predecessor|successor)\\b"
+          ],
+          "recommended_skills": ["plan-buildschedule"],
+          "workflow_patterns": ["schedule_planning_workflow"]
+        },
+        "effort_estimation": {
+          "id": "effort_estimation",
+          "weight": 0.85,
+          "patterns": [
+            "\\b(estimate|estimation|effort|size|complexity|point[s]?|hour[s]?)\\b",
+            "\\b(how long|how much.*effort|how many.*day|time.*needed)\\b",
+            "\\b(pert|planning poker|story point|t-shirt size)\\b"
+          ],
+          "recommended_skills": ["plan-estimateeffort"],
+          "workflow_patterns": ["effort_estimation_workflow"]
+        },
+        "status_reporting": {
+          "id": "status_reporting",
+          "weight": 0.8,
+          "patterns": [
+            "\\b(status|report|dashboard|progress|metric|kpi)\\b",
+            "\\b(how are we doing|where are we|what.*complete|overall progress)\\b",
+            "\\b(executive|stakeholder|management)\\b.*\\b(report|summary|update)\\b"
+          ],
+          "recommended_skills": ["project-status-reporting"],
+          "workflow_patterns": ["status_reporting_workflow"]
+        }
+      }
+    },
+
+    "troubleshooting": {
+      "id": "troubleshooting",
+      "name": "Troubleshooting and Problem Resolution",
+      "description": "User wants to diagnose problems, fix issues, or resolve conflicts",
+      "base_confidence": 0.8,
+      "primary_patterns": [
+        "\\b(fix|solve|resolve|debug|troubleshoot|diagnose|repair|correct)\\b",
+        "\\b(issue[s]?|problem[s]?|error[s]?|conflict[s]?|inconsistency|violation[s]?)\\b",
+        "\\b(why|what went wrong|not working|failing|broken|invalid)\\b",
+        "\\b(investigate|root cause|finding out|figuring out)\\b"
+      ],
+      "subcategories": {
+        "compliance_issues": {
+          "id": "compliance_issues",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(edps.*issue|compliance.*issue|boundary.*violation|rule.*violation)\\b",
+            "\\b(vr[1-4]|vr-[1-4])\\b.*\\b(fail|violat|issue|problem)\\b",
+            "\\b(fix.*compliance|resolve.*violation|correct.*boundary)\\b"
+          ],
+          "recommended_skills": ["edps-compliance", "hierarchy-validation", "diagram-generatecollaboration"],
+          "workflow_patterns": ["compliance_repair_workflow"]
+        },
+        "hierarchy_issues": {
+          "id": "hierarchy_issues",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(hierarchy.*issue|hierarchy.*problem|hierarchy.*broken)\\b",
+            "\\b(link.*broken|broken.*link|dead.*link|invalid.*reference)\\b",
+            "\\b(cross.?level.*inconsistency|level.*mismatch)\\b"
+          ],
+          "recommended_skills": ["hierarchy-validation", "hierarchy-management"],
+          "workflow_patterns": ["hierarchy_repair_workflow"]
+        },
+        "integration_conflicts": {
+          "id": "integration_conflicts",
+          "weight": 0.85,
+          "patterns": [
+            "\\b(conflict|inconsistency|mismatch|contradiction|overlap)\\b",
+            "\\b(requirement.*conflict|conflicting.*requirement)\\b",
+            "\\b(merge.*conflict|integration.*issue)\\b"
+          ],
+          "recommended_skills": ["change-impact-analysis", "requirements-merge"],
+          "workflow_patterns": ["conflict_resolution_workflow"]
+        }
+      }
+    },
+
+    "documentation": {
+      "id": "documentation",
+      "name": "Documentation and Reporting",
+      "description": "User wants to document, describe, explain, or report on EDPS work",
+      "base_confidence": 0.75,
+      "primary_patterns": [
+        "\\b(document|documenting|documentation|describe|explain|report)\\b",
+        "\\b(write up|write.*about|summarize|overview|summary)\\b",
+        "\\b(guide|manual|instruction|tutorial|how.?to|reference)\\b",
+        "\\b(communicate|present|share|publish|export)\\b"
+      ],
+      "subcategories": {
+        "process_documentation": {
+          "id": "process_documentation",
+          "weight": 0.9,
+          "patterns": [
+            "\\b(process|workflow|procedure|step.?by.?step|activity)\\b.*\\b(document|describe|explain)\\b",
+            "\\b(document.*process|process.*document)\\b",
+            "\\b(main\\.md|process\\.md|collaboration\\.md)\\b"
+          ],
+          "recommended_skills": ["documentation-automation"],
+          "workflow_patterns": ["documentation_generation_workflow"]
+        },
+        "project_documentation": {
+          "id": "project_documentation",
+          "weight": 0.85,
+          "patterns": [
+            "\\b(project (status|report|update|summary|overview))\\b",
+            "\\b(progress|achievement|delivered|milestone)\\b",
+            "\\b(executive summary|board update|stakeholder report)\\b"
+          ],
+          "recommended_skills": ["project-status-reporting", "project-document-management"],
+          "workflow_patterns": ["project_reporting_workflow"]
+        }
+      }
+    }
+  },
+
+  "entity_patterns": {
+    "edps_components": {
+      "boundary_indicators": [
+        "\\b(boundary|scope|context boundary|system boundary)\\b",
+        "\\b(vr-?[1-4]|boundary rule|boundary validation)\\b",
+        "\\b(in scope|out of scope|within boundary|outside boundary)\\b"
+      ],
+      "hierarchy_indicators": [
+        "\\b(level [0-9]+|l[0-9]+|hierarchy level|process level)\\b",
+        "\\b(parent (process|level)|child (process|level|subprocess))\\b",
+        "\\b(decompose|decomposition|sub-?process|breakdown)\\b"
+      ],
+      "participant_types": [
+        "\\b(actor|control|entity|boundary|external|internal)\\b.*\\b(participant|type|stereotype)\\b",
+        "\\b(human|system|service|database|store)\\b.*\\b(actor|participant)\\b",
+        "\\b(<<actor>>|<<control>>|<<entity>>|<<boundary>>)\\b"
+      ],
+      "edps_skills": [
+        "\\b(requirements-ingest|goals-extract|process-w5h)\\b",
+        "\\b(domain-extractconcepts|domain-alignentities|domain-proposenewconcepts)\\b",
+        "\\b(diagram-generatecollaboration|hierarchy-management|hierarchy-validation)\\b",
+        "\\b(edps-compliance|edps-quality-gates|edps-workflow-orchestrator)\\b",
+        "\\b(plan-derivetasks|plan-estimateeffort|plan-buildschedule)\\b",
+        "\\b(change-management|change-impact-analysis|model-integration)\\b",
+        "\\b(requirements-merge|process-merge|process-findtopandupdate)\\b",
+        "\\b(documentation-automation|project-document-management)\\b",
+        "\\b(project-planning-tracking|project-status-reporting)\\b",
+        "\\b(process-scopemin|orgmodel-update|edps-skill-navigator)\\b"
+      ]
+    },
+
+    "project_context": {
+      "phase_indicators": {
+        "early": ["\\b(early|initial|starting|beginning|kick.?off|inception)\\b"],
+        "analysis": ["\\b(analysis|analyzing|requirements phase|understand)\\b.*\\b(phase|stage)\\b"],
+        "design": ["\\b(design|designing|architecture|modelling|structure)\\b.*\\b(phase|stage)\\b"],
+        "development": ["\\b(development|developing|implementation|build)\\b.*\\b(phase|stage)\\b"],
+        "testing": ["\\b(testing|validation|verification|qa)\\b.*\\b(phase|stage)\\b"],
+        "completion": ["\\b(final|completion|closing|wrap.?up|finishing)\\b.*\\b(phase|stage)\\b"]
+      },
+      "artifact_references": [
+        "\\b(main\\.md|process\\.md|collaboration\\.md|domain-model\\.md|vocabulary\\.md)\\b",
+        "\\b(requirement[s]? doc|specification|brd|prd|srs)\\b",
+        "\\b(diagram|model|orgmodel|test.?case|task.?list)\\b"
+      ],
+      "project_scale": {
+        "small": ["\\b(small|simple|basic|single|one|quick)\\b.*\\b(project|process|task)\\b"],
+        "medium": ["\\b(medium|moderate|standard|typical|regular)\\b.*\\b(project|process)\\b"],
+        "large": ["\\b(large|complex|enterprise|comprehensive|big|major)\\b.*\\b(project|process)\\b"]
+      }
+    },
+
+    "quality_requirements": {
+      "quality_level": {
+        "high": [
+          "\\b(high quality|comprehensive|thorough|detailed|complete|exhaustive)\\b",
+          "\\b(production.?grade|enterprise.?grade|full compliance)\\b",
+          "\\b(everything|all|100%)\\b.*\\b(validate|check|verify|document)\\b"
+        ],
+        "standard": [
+          "\\b(standard|normal|typical|regular|moderate|balanced)\\b",
+          "\\b(reasonable|adequate|sufficient|acceptable)\\b"
+        ],
+        "expedited": [
+          "\\b(fast|quick|rapid|expedited|minimal|basic|lightweight|lean)\\b",
+          "\\b(mvp|minimum viable|essential|core only|just enough)\\b",
+          "\\b(skip.*validation|no.*review|bypass.*gate|fast.?track)\\b"
+        ]
+      },
+      "urgency_indicators": {
+        "high": [
+          "\\b(urgent|urgently|asap|as soon as possible|immediately|right now|critical)\\b",
+          "\\b(deadline|due today|overdue|past due|blocking)\\b",
+          "\\b(priority [0-1]|p0|p1|highest priority|critical priority)\\b"
+        ],
+        "medium": [
+          "\\b(this week|soon|shortly|in [0-9]+ day|by [a-z]+day)\\b",
+          "\\b(moderate priority|standard priority|normal priority|priority [2-3])\\b"
+        ],
+        "low": [
+          "\\b(no rush|whenever|eventually|at some point|backlog|low priority)\\b",
+          "\\b(nice to have|when you get a chance|future|p4|p5)\\b"
+        ]
+      }
+    },
+
+    "constraints": {
+      "technical_constraints": [
+        "\\b(must use|required to use|need to use|only.*tool|specific.*skill)\\b",
+        "\\b(cannot|must not|should not|do not|avoid|exclude)\\b",
+        "\\b(compatible with|integration with|work with|alongside)\\b"
+      ],
+      "resource_constraints": [
+        "\\b(limited.*time|only.*day|by.*date|resource.*constrain)\\b",
+        "\\b(single person|team of [0-9]+|solo|one person)\\b"
+      ],
+      "scope_constraints": [
+        "\\b(only|just|focus.*on|limit.*to|restrict.*to|scope.*to)\\b",
+        "\\b(not including|excluding|without|apart from|except)\\b"
+      ]
+    }
+  },
+
+  "workflow_pattern_keywords": {
+    "end_to_end": {
+      "patterns": [
+        "\\b(end.?to.?end|full workflow|complete.*workflow|entire.*process)\\b",
+        "\\b(from.*to|start.*finish|beginning.*end)\\b"
+      ],
+      "matched_workflows": ["comprehensive_analysis_workflow", "full_edps_workflow"]
+    },
+    "requirements_to_diagram": {
+      "patterns": [
+        "\\b(requirement[s]?.*diagram|from.*requirement.*to.*diagram)\\b",
+        "\\b(ingest.*requirement|take.*requirement.*create.*diagram)\\b"
+      ],
+      "matched_workflows": ["requirements_to_collaboration_workflow"]
+    },
+    "validation_focus": {
+      "patterns": [
+        "\\b(validate.*everything|check.*all|full.*validation|comprehensive.*check)\\b",
+        "\\b(validate.*hierarchy.*compliance|compliance.*check.*all)\\b"
+      ],
+      "matched_workflows": ["comprehensive_validation_workflow"]
+    },
+    "documentation_focus": {
+      "patterns": [
+        "\\b(generate.*all.*doc|auto.?generate.*doc|documentation.*all.*level|document.*hierarch)\\b"
+      ],
+      "matched_workflows": ["documentation_generation_workflow"]
+    },
+    "quick_analysis": {
+      "patterns": [
+        "\\b(quick.*look|fast.*analysis|brief.*review|short.*check|just.*review)\\b"
+      ],
+      "matched_workflows": ["quick_analysis_workflow"]
+    }
+  },
+
+  "contextual_adaptors": {
+    "project_phase_adaptations": {
+      "early_phase": {
+        "boost_skills": ["requirements-ingest", "goals-extract", "process-w5h", "domain-extractconcepts"],
+        "suppress_skills": ["change-management", "plant-buildschedule"],
+        "quality_default": "standard"
+      },
+      "design_phase": {
+        "boost_skills": ["diagram-generatecollaboration", "domain-alignentities", "hierarchy-management"],
+        "suppress_skills": [],
+        "quality_default": "high"
+      },
+      "implementation_phase": {
+        "boost_skills": ["hierarchy-validation", "edps-compliance", "edps-quality-gates"],
+        "suppress_skills": ["process-w5h", "goals-extract"],
+        "quality_default": "standard"
+      },
+      "completion_phase": {
+        "boost_skills": ["documentation-automation", "project-status-reporting", "edps-compliance"],
+        "suppress_skills": ["requirements-ingest"],
+        "quality_default": "high"
+      }
+    },
+    "quality_level_adaptations": {
+      "high": {
+        "recommended_gates": ["content_completeness_gate", "format_validation_gate", "quality_scoring_gate", "vr1_boundary_compliance_gate", "quality_threshold_gate"],
+        "workflow_modifiers": ["add_validation_steps", "add_documentation_steps"],
+        "default_timeout": 60000
+      },
+      "standard": {
+        "recommended_gates": ["content_completeness_gate", "format_validation_gate", "quality_scoring_gate"],
+        "workflow_modifiers": [],
+        "default_timeout": 30000
+      },
+      "expedited": {
+        "recommended_gates": ["content_completeness_gate"],
+        "workflow_modifiers": ["skip_optional_steps", "parallel_where_possible"],
+        "default_timeout": 15000
+      }
+    },
+    "urgency_adaptations": {
+      "high": {
+        "workflow_optimizations": ["maximum_parallelism", "skip_optional_quality_gates", "fast_path_preferred"],
+        "max_clarification_questions": 1,
+        "confidence_threshold": 0.65
+      },
+      "medium": {
+        "workflow_optimizations": ["moderate_parallelism"],
+        "max_clarification_questions": 2,
+        "confidence_threshold": 0.75
+      },
+      "low": {
+        "workflow_optimizations": ["thorough_validation", "include_all_quality_gates"],
+        "max_clarification_questions": 3,
+        "confidence_threshold": 0.85
+      }
+    }
+  },
+
+  "clarification_templates": {
+    "intent_ambiguity": {
+      "multi_intent": "Your request could mean several things. Are you looking to:\n{options}\nWhich best describes what you need?",
+      "unclear_action": "What action would you like to take? (create / validate / update / analyze / document)",
+      "unclear_target": "What are you working with? Please specify the artifact, document, or project component."
+    },
+    "missing_entities": {
+      "missing_project_context": "Which project or process should I focus on?",
+      "missing_quality_requirements": "What quality level do you need? (comprehensive / standard / quick)",
+      "missing_scope": "What's the scope? (single step / selected skills / full workflow)",
+      "missing_starting_point": "What do you have to start with? (requirements doc / existing model / new project)"
+    },
+    "workflow_clarification": {
+      "multiple_workflows": "I found {count} workflow options that might work. Which best fits your goal?\n{workflow_descriptions}",
+      "custom_or_standard": "Do you want to use a standard EDPS workflow, or would you like a customized workflow for your specific needs?"
+    }
+  },
+
+  "confidence_thresholds": {
+    "skip_clarification": 0.85,
+    "show_top_recommendation_only": 0.90,
+    "require_single_clarification": 0.70,
+    "require_multiple_clarifications": 0.55,
+    "minimum_actionable": 0.40
+  },
+
+  "learning_configuration": {
+    "feedback_collection": {
+      "collect_acceptance_rejection": true,
+      "collect_rejection_reason": true,
+      "collect_correction_input": true
+    },
+    "model_update": {
+      "immediate_update_threshold": 0.8,
+      "batch_update_size": 10,
+      "pattern_boost_rate": 0.05,
+      "pattern_reduction_rate": 0.03
+    },
+    "performance_tracking": {
+      "track_intent_accuracy": true,
+      "track_recommendation_acceptance": true,
+      "track_workflow_success": true,
+      "accuracy_reporting_interval": 50
+    }
+  }
+}
