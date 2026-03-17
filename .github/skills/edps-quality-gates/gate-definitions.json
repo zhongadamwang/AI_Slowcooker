@@ -1,0 +1,908 @@
+{
+  "gate_system_version": "1.0.0",
+  "name": "EDPS Quality Gates Configuration",
+  "description": "Comprehensive gate definitions for quality validation in EDPS skill workflows",
+  "gate_categories": {
+    "quality_gates": {
+      "description": "Content and format validation gates",
+      "gates": {
+        "content_completeness": {
+          "id": "content_completeness_gate",
+          "name": "Content Completeness Validation",
+          "description": "Validates all required sections and fields are present and populated",
+          "category": "quality_gates",
+          "severity": "critical",
+          "timeout": 30000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "required_fields_check",
+              "description": "Verify all mandatory fields are populated",
+              "severity": "critical",
+              "check_function": "validateRequiredFields",
+              "parameters": {
+                "required_fields": ["title", "description", "objectives"],
+                "minimum_content_length": 10,
+                "check_nested_objects": true,
+                "null_value_detection": true,
+                "empty_string_detection": true
+              },
+              "success_criteria": {
+                "all_fields_present": true,
+                "minimum_content_threshold": 0.95,
+                "meaningful_content_ratio": 0.8
+              }
+            },
+            {
+              "rule_id": "content_depth_check", 
+              "description": "Assess content depth and meaningfulness",
+              "severity": "warning",
+              "check_function": "assessContentDepth",
+              "parameters": {
+                "minimum_word_count": 50,
+                "meaningful_content_ratio": 0.8,
+                "placeholder_detection": true,
+                "template_detection": true,
+                "specificity_analysis": true
+              },
+              "success_criteria": {
+                "content_depth_score": 0.7,
+                "specificity_threshold": 0.6,
+                "placeholder_percentage": 0.1
+              }
+            },
+            {
+              "rule_id": "section_organization_check",
+              "description": "Verify logical section organization and flow",
+              "severity": "moderate",
+              "check_function": "validateSectionOrganization",
+              "parameters": {
+                "required_section_order": ["overview", "details", "implementation"],
+                "section_coherence_check": true,
+                "logical_flow_validation": true
+              },
+              "success_criteria": {
+                "section_order_compliance": true,
+                "coherence_score": 0.7
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "incomplete_fields": {
+              "message": "Add missing content to required fields: {missing_fields}",
+              "severity": "critical",
+              "action_type": "parameter_adjustment",
+              "suggested_fixes": [
+                "Provide detailed content for missing fields",
+                "Ensure all mandatory sections are completed",
+                "Review field requirements for project context"
+              ]
+            },
+            "shallow_content": {
+              "message": "Expand content depth with detailed analysis and specific examples",
+              "severity": "warning", 
+              "action_type": "content_enhancement",
+              "suggested_fixes": [
+                "Add specific examples and detailed explanations",
+                "Include project-specific context and considerations",
+                "Expand analysis with deeper technical details"
+              ]
+            },
+            "placeholder_content": {
+              "message": "Replace placeholder text with meaningful project-specific content",
+              "severity": "moderate",
+              "action_type": "content_replacement",
+              "suggested_fixes": [
+                "Replace template placeholders with actual content",
+                "Customize generic content to project specifics",
+                "Add contextual details relevant to current project"
+              ]
+            }
+          },
+          "failure_actions": {
+            "critical": "retry_with_guidance",
+            "high": "refine_and_retry", 
+            "moderate": "adaptive_workflow",
+            "warning": "skip_with_warning"
+          },
+          "bypass_conditions": {
+            "manual_override": true,
+            "stakeholder_approval": true,
+            "emergency_workflow": false
+          }
+        },
+
+        "format_validation": {
+          "id": "format_validation_gate",
+          "name": "Format and Structure Validation",
+          "description": "Ensures outputs conform to expected schemas and formatting standards",
+          "category": "quality_gates",
+          "severity": "high",
+          "timeout": 20000,
+          "retry_count": 3,
+          "validation_rules": [
+            {
+              "rule_id": "schema_compliance",
+              "description": "Validate output structure against defined schema",
+              "severity": "critical",
+              "check_function": "validateSchema",
+              "parameters": {
+                "schema_file": "schemas/{skill_id}_output_schema.json",
+                "strict_validation": true,
+                "custom_validators": true,
+                "validation_mode": "comprehensive"
+              },
+              "success_criteria": {
+                "schema_compliance": true,
+                "validation_errors": 0,
+                "structure_completeness": 1.0
+              }
+            },
+            {
+              "rule_id": "format_consistency",
+              "description": "Check formatting consistency and standards compliance",
+              "severity": "moderate",
+              "check_function": "validateFormatting",
+              "parameters": {
+                "markdown_compliance": true,
+                "heading_structure": true,
+                "link_validation": true,
+                "image_accessibility": true,
+                "code_block_formatting": true,
+                "table_structure": true
+              },
+              "success_criteria": {
+                "format_compliance_score": 0.9,
+                "consistency_score": 0.85,
+                "accessibility_compliance": true
+              }
+            },
+            {
+              "rule_id": "cross_reference_validation",
+              "description": "Validate internal and external reference integrity",
+              "severity": "moderate",
+              "check_function": "validateCrossReferences",
+              "parameters": {
+                "internal_link_check": true,
+                "external_link_check": true,
+                "reference_consistency": true,
+                "anchor_validation": true
+              },
+              "success_criteria": {
+                "broken_links": 0,
+                "reference_accuracy": 0.95,
+                "anchor_completeness": true
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "schema_violation": {
+              "message": "Correct output structure to match schema: {schema_violations}",
+              "severity": "critical",
+              "action_type": "structure_correction",
+              "suggested_fixes": [
+                "Align output structure with defined schema",
+                "Add missing required fields and sections",
+                "Correct data type mismatches"
+              ]
+            },
+            "format_inconsistency": {
+              "message": "Apply consistent formatting according to standards: {format_issues}",
+              "severity": "moderate", 
+              "action_type": "format_standardization",
+              "suggested_fixes": [
+                "Standardize heading hierarchy and formatting",
+                "Apply consistent markdown syntax",
+                "Ensure proper code block and table formatting"
+              ]
+            },
+            "broken_links": {
+              "message": "Fix broken internal and external links: {broken_links}",
+              "severity": "moderate",
+              "action_type": "reference_correction",
+              "suggested_fixes": [
+                "Update broken link targets",
+                "Verify external link accessibility",
+                "Correct internal reference paths"
+              ]
+            }
+          }
+        },
+
+        "quality_scoring": {
+          "id": "quality_scoring_gate",
+          "name": "Content Quality Assessment",
+          "description": "Applies quality metrics to assess content depth, accuracy, and usefulness",
+          "category": "quality_gates",
+          "severity": "moderate",
+          "timeout": 45000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "content_quality_metrics",
+              "description": "Assess overall content quality using multiple metrics",
+              "severity": "moderate",
+              "check_function": "calculateQualityScore",
+              "parameters": {
+                "clarity_weight": 0.3,
+                "completeness_weight": 0.3,
+                "accuracy_weight": 0.2,
+                "usefulness_weight": 0.2,
+                "minimum_score": 0.75,
+                "quality_dimensions": ["clarity", "completeness", "accuracy", "usefulness", "coherence"]
+              },
+              "success_criteria": {
+                "overall_quality_score": 0.75,
+                "dimension_minimum": 0.6,
+                "consistency_score": 0.7
+              }
+            },
+            {
+              "rule_id": "stakeholder_value_assessment",
+              "description": "Evaluate content value for target stakeholders",
+              "severity": "advisory",
+              "check_function": "assessStakeholderValue", 
+              "parameters": {
+                "target_stakeholders": ["business_analysts", "developers", "project_managers"],
+                "value_dimensions": ["actionability", "clarity", "relevance", "practicality"],
+                "minimum_value_score": 0.7,
+                "stakeholder_weighting": {
+                  "business_analysts": 0.4,
+                  "developers": 0.35,
+                  "project_managers": 0.25
+                }
+              },
+              "success_criteria": {
+                "stakeholder_satisfaction": 0.7,
+                "actionability_score": 0.75,
+                "relevance_score": 0.8
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "low_quality_score": {
+              "message": "Improve content quality in areas: {improvement_areas}",
+              "severity": "moderate",
+              "action_type": "quality_enhancement",
+              "suggested_fixes": [
+                "Enhance content clarity with better examples",
+                "Improve completeness with additional details",
+                "Increase accuracy through verification steps"
+              ]
+            },
+            "low_stakeholder_value": {
+              "message": "Increase stakeholder value by focusing on: {value_gaps}",
+              "severity": "moderate",
+              "action_type": "stakeholder_optimization",
+              "suggested_fixes": [
+                "Add more actionable recommendations",
+                "Improve practical applicability",
+                "Enhance relevance to stakeholder needs"
+              ]
+            }
+          }
+        }
+      }
+    },
+
+    "edps_methodology_gates": {
+      "description": "EDPS methodology compliance validation gates",
+      "gates": {
+        "vr1_boundary_compliance": {
+          "id": "vr1_boundary_compliance_gate",
+          "name": "VR-1 Boundary Scope Validation",
+          "description": "Validates boundary scope and definition according to EDPS VR-1 rules",
+          "category": "edps_methodology_gates",
+          "severity": "critical",
+          "timeout": 30000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "boundary_scope_definition",
+              "description": "Verify boundary scope is clearly defined and appropriate",
+              "severity": "critical",
+              "check_function": "validateBoundaryScope",
+              "parameters": {
+                "delegation_partner": "diagram-generatecollaboration",
+                "use_t04_validation": true,
+                "vr1_specific_checks": {
+                  "scope_clarity": true,
+                  "boundary_completeness": true,
+                  "stakeholder_coverage": true,
+                  "interaction_definition": true
+                },
+                "validation_accuracy_target": 0.97
+              },
+              "success_criteria": {
+                "boundary_clarity": true,
+                "scope_completeness": 1.0,
+                "validation_accuracy": 0.97
+              }
+            }
+          ],
+          "integration": {
+            "delegate_to_skill": "diagram-generatecollaboration",
+            "use_t04_validation_results": true,
+            "additional_checks": ["boundary_documentation", "scope_traceability"]
+          },
+          "remediation_guidance": {
+            "unclear_boundary": {
+              "message": "Clarify boundary definition with specific scope details: {boundary_issues}",
+              "severity": "critical",
+              "action_type": "boundary_refinement",
+              "suggested_fixes": [
+                "Define clear boundary limits and interfaces",
+                "Specify included and excluded elements",
+                "Document boundary rationale and constraints"
+              ]
+            }
+          }
+        },
+
+        "vr2_participant_classification": {
+          "id": "vr2_participant_classification_gate",
+          "name": "VR-2 Participant Type Classification",
+          "description": "Validates participant type classification accuracy according to EDPS VR-2 rules",
+          "category": "edps_methodology_gates",
+          "severity": "critical", 
+          "timeout": 25000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "participant_type_accuracy",
+              "description": "Verify participant types are correctly classified",
+              "severity": "critical",
+              "check_function": "validateParticipantClassification",
+              "parameters": {
+                "delegation_partner": "diagram-generatecollaboration",
+                "use_t04_validation": true,
+                "classification_accuracy_threshold": 0.97,
+                "vr2_specific_checks": {
+                  "type_consistency": true,
+                  "stereotype_accuracy": true,
+                  "role_definition": true,
+                  "interaction_appropriateness": true
+                }
+              },
+              "success_criteria": {
+                "classification_accuracy": 0.97,
+                "type_consistency": true,
+                "stereotype_correctness": true
+              }
+            }
+          ],
+          "integration": {
+            "delegate_to_skill": "diagram-generatecollaboration",
+            "leverage_t04_97_percent_accuracy": true
+          },
+          "remediation_guidance": {
+            "misclassified_participants": {
+              "message": "Correct participant classifications: {misclassifications}",
+              "severity": "critical",
+              "action_type": "classification_correction",
+              "suggested_fixes": [
+                "Review participant roles and responsibilities",
+                "Apply correct stereotypes based on behavior",
+                "Ensure type consistency across interactions"
+              ]
+            }
+          }
+        },
+
+        "vr3_message_flow_validation": {
+          "id": "vr3_message_flow_validation_gate",
+          "name": "VR-3 Message Flow and Interaction Validation",
+          "description": "Validates message flow and interaction patterns according to EDPS VR-3 rules",
+          "category": "edps_methodology_gates",
+          "severity": "critical",
+          "timeout": 35000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "message_flow_completeness",
+              "description": "Verify message flows are complete and consistent",
+              "severity": "critical",
+              "check_function": "validateMessageFlow",
+              "parameters": {
+                "delegation_partner": "diagram-generatecollaboration",
+                "use_t04_validation": true,
+                "flow_completeness_check": true,
+                "interaction_consistency": true,
+                "sequence_validation": true,
+                "timing_constraints": true
+              },
+              "success_criteria": {
+                "flow_completeness": true,
+                "sequence_correctness": true,
+                "interaction_consistency": 0.95
+              }
+            }
+          ],
+          "integration": {
+            "delegate_to_skill": "diagram-generatecollaboration",
+            "use_vr3_specific_validation": true
+          },
+          "remediation_guidance": {
+            "incomplete_flows": {
+              "message": "Complete missing message flows: {flow_gaps}",
+              "severity": "critical",
+              "action_type": "flow_completion",
+              "suggested_fixes": [
+                "Add missing interaction sequences",
+                "Verify message flow completeness",
+                "Ensure proper sequence ordering"
+              ]
+            }
+          }
+        },
+
+        "vr4_hierarchy_structure": {
+          "id": "vr4_hierarchy_structure_gate",
+          "name": "VR-4 Hierarchy and Decomposition Structure",
+          "description": "Validates hierarchy and decomposition structure according to EDPS VR-4 rules",
+          "category": "edps_methodology_gates",
+          "severity": "critical",
+          "timeout": 40000,
+          "retry_count": 1,
+          "validation_rules": [
+            {
+              "rule_id": "hierarchy_structural_integrity",
+              "description": "Verify hierarchy structure meets EDPS requirements",
+              "severity": "critical", 
+              "check_function": "validateHierarchyStructure",
+              "parameters": {
+                "delegation_partner": "hierarchy-validation",
+                "use_structural_authority": true,
+                "cross_level_consistency": true,
+                "decomposition_completeness": true,
+                "parent_child_relationships": true,
+                "boundary_inheritance": true
+              },
+              "success_criteria": {
+                "structural_integrity": true,
+                "cross_level_consistency": true,
+                "decomposition_completeness": 1.0
+              }
+            }
+          ],
+          "integration": {
+            "delegate_to_skill": "hierarchy-validation",
+            "authoritative_structural_checker": true
+          },
+          "remediation_guidance": {
+            "structural_violations": {
+              "message": "Fix hierarchy structural violations: {structural_issues}",
+              "severity": "critical",
+              "action_type": "structural_correction",
+              "suggested_fixes": [
+                "Correct parent-child relationships",
+                "Ensure boundary consistency across levels",
+                "Complete missing decomposition elements"
+              ]
+            }
+          }
+        },
+
+        "traceability_validation": {
+          "id": "traceability_validation_gate",
+          "name": "Requirements Traceability Validation",
+          "description": "Validates requirements linkage and change tracking throughout the hierarchy",
+          "category": "edps_methodology_gates",
+          "severity": "high",
+          "timeout": 30000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "traceability_completeness",
+              "description": "Verify traceability links are complete and accurate",
+              "severity": "high",
+              "check_function": "validateTraceability",
+              "parameters": {
+                "forward_traceability": true,
+                "backward_traceability": true,
+                "change_impact_tracking": true,
+                "link_integrity": true,
+                "coverage_analysis": true
+              },
+              "success_criteria": {
+                "traceability_coverage": 0.95,
+                "link_integrity": 1.0,
+                "change_tracking_completeness": 0.9
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "missing_traceability": {
+              "message": "Add missing traceability links: {missing_links}",
+              "severity": "high",
+              "action_type": "traceability_enhancement",
+              "suggested_fixes": [
+                "Establish forward and backward traceability",
+                "Document change impact relationships",
+                "Verify link accuracy and completeness"
+              ]
+            }
+          }
+        }
+      }
+    },
+
+    "process_gates": {
+      "description": "Workflow and process coordination gates",
+      "gates": {
+        "dependency_satisfaction": {
+          "id": "dependency_satisfaction_gate",
+          "name": "Prerequisite Dependencies Check",
+          "description": "Ensures prerequisite skills have completed successfully before proceeding",
+          "category": "process_gates",
+          "severity": "critical",
+          "timeout": 15000,
+          "retry_count": 1,
+          "validation_rules": [
+            {
+              "rule_id": "prerequisite_completion",
+              "description": "Verify all prerequisite skills completed successfully",
+              "severity": "critical",
+              "check_function": "checkPrerequisites",
+              "parameters": {
+                "check_completion_status": true,
+                "verify_output_quality": true,
+                "validate_dependencies": true,
+                "dependency_chain_validation": true
+              },
+              "success_criteria": {
+                "all_prerequisites_complete": true,
+                "output_quality_acceptable": true,
+                "dependency_chain_valid": true
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "incomplete_prerequisites": {
+              "message": "Complete prerequisite dependencies: {incomplete_dependencies}",
+              "severity": "critical",
+              "action_type": "dependency_completion",
+              "suggested_fixes": [
+                "Execute missing prerequisite skills",
+                "Verify prerequisite output quality",
+                "Resolve dependency chain issues"
+              ]
+            }
+          }
+        },
+
+        "execution_order_validation": {
+          "id": "execution_order_validation_gate",
+          "name": "Skill Execution Order Validation",
+          "description": "Validates skills execute in appropriate sequence according to workflow design",
+          "category": "process_gates",
+          "severity": "high",
+          "timeout": 10000,
+          "retry_count": 1,
+          "validation_rules": [
+            {
+              "rule_id": "execution_sequence",
+              "description": "Verify execution follows defined workflow sequence",
+              "severity": "high", 
+              "check_function": "validateExecutionOrder",
+              "parameters": {
+                "workflow_pattern_compliance": true,
+                "parallel_execution_safety": true,
+                "resource_conflict_detection": true,
+                "timing_constraints": true
+              },
+              "success_criteria": {
+                "sequence_compliance": true,
+                "parallel_execution_safe": true,
+                "no_resource_conflicts": true
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "sequence_violation": {
+              "message": "Correct execution sequence: {sequence_issues}",
+              "severity": "high",
+              "action_type": "sequence_correction",
+              "suggested_fixes": [
+                "Reorder skill execution sequence",
+                "Resolve parallel execution conflicts",
+                "Address timing constraint violations"
+              ]
+            }
+          }
+        },
+
+        "resource_availability": {
+          "id": "resource_availability_gate",
+          "name": "Required Resource Availability Check",
+          "description": "Checks required inputs and resources are available before skill execution",
+          "category": "process_gates",
+          "severity": "critical",
+          "timeout": 10000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "resource_readiness",
+              "description": "Verify all required resources and inputs are available",
+              "severity": "critical",
+              "check_function": "checkResourceAvailability",
+              "parameters": {
+                "input_file_verification": true,
+                "resource_lock_checking": true,
+                "capacity_validation": true,
+                "permission_verification": true
+              },
+              "success_criteria": {
+                "all_resources_available": true,
+                "no_resource_locks": true,
+                "sufficient_capacity": true,
+                "permissions_adequate": true
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "missing_resources": {
+              "message": "Ensure required resources are available: {missing_resources}",
+              "severity": "critical",
+              "action_type": "resource_procurement",
+              "suggested_fixes": [
+                "Provide missing input files or data",
+                "Release resource locks if appropriate",
+                "Ensure sufficient system capacity"
+              ]
+            }
+          }
+        }
+      }
+    },
+
+    "business_gates": {
+      "description": "Business and stakeholder governance gates",
+      "gates": {
+        "stakeholder_approval": {
+          "id": "stakeholder_approval_gate",
+          "name": "Stakeholder Approval Checkpoint",
+          "description": "Requires explicit approval for sensitive or high-impact outputs",
+          "category": "business_gates",
+          "severity": "critical",
+          "timeout": 86400000,
+          "retry_count": 0,
+          "validation_rules": [
+            {
+              "rule_id": "approval_requirement",
+              "description": "Verify required stakeholder approvals are obtained",
+              "severity": "critical",
+              "check_function": "verifyStakeholderApproval",
+              "parameters": {
+                "required_approvers": ["business_owner", "technical_lead"],
+                "approval_criteria": ["impact_acceptable", "quality_adequate", "compliance_verified"],
+                "approval_timeout": 86400000,
+                "escalation_enabled": true
+              },
+              "success_criteria": {
+                "all_approvals_obtained": true,
+                "approval_criteria_met": true,
+                "approval_within_timeout": true
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "missing_approval": {
+              "message": "Obtain required stakeholder approvals: {pending_approvers}",
+              "severity": "critical",
+              "action_type": "approval_procurement",
+              "suggested_fixes": [
+                "Contact pending approvers for review",
+                "Provide additional context or justification",
+                "Address stakeholder concerns or feedback"
+              ]
+            }
+          }
+        },
+
+        "milestone_achievement": {
+          "id": "milestone_achievement_gate",
+          "name": "Project Milestone Validation",
+          "description": "Validates project progression against defined milestones",
+          "category": "business_gates",
+          "severity": "high",
+          "timeout": 30000,
+          "retry_count": 1,
+          "validation_rules": [
+            {
+              "rule_id": "milestone_compliance",
+              "description": "Verify milestone criteria are met",
+              "severity": "high",
+              "check_function": "validateMilestone",
+              "parameters": {
+                "milestone_criteria_check": true,
+                "deliverable_completeness": true,
+                "quality_threshold": true,
+                "timeline_compliance": true
+              },
+              "success_criteria": {
+                "milestone_criteria_met": true,
+                "deliverables_complete": 1.0,
+                "quality_threshold_met": true,
+                "timeline_compliant": true
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "milestone_not_achieved": {
+              "message": "Address milestone gaps: {milestone_gaps}",
+              "severity": "high",
+              "action_type": "milestone_completion",
+              "suggested_fixes": [
+                "Complete missing deliverables",
+                "Address quality threshold gaps",
+                "Adjust timeline if appropriate"
+              ]
+            }
+          }
+        },
+
+        "quality_threshold_enforcement": {
+          "id": "quality_threshold_gate",
+          "name": "Minimum Quality Standards Enforcement",
+          "description": "Enforces minimum quality standards for deliverables",
+          "category": "business_gates",
+          "severity": "critical",
+          "timeout": 25000,
+          "retry_count": 2,
+          "validation_rules": [
+            {
+              "rule_id": "minimum_quality_enforcement",
+              "description": "Verify outputs meet minimum quality thresholds",
+              "severity": "critical",
+              "check_function": "enforceQualityThreshold",
+              "parameters": {
+                "minimum_quality_score": 0.7,
+                "quality_dimensions": ["completeness", "accuracy", "clarity", "usefulness"],
+                "stakeholder_specific_requirements": true,
+                "industry_standards_compliance": true
+              },
+              "success_criteria": {
+                "overall_quality_score": 0.7,
+                "all_dimensions_above_minimum": true,
+                "stakeholder_requirements_met": true,
+                "standards_compliant": true
+              }
+            }
+          ],
+          "remediation_guidance": {
+            "quality_below_threshold": {
+              "message": "Improve quality to meet minimum standards: {quality_gaps}",
+              "severity": "critical",
+              "action_type": "quality_improvement",
+              "suggested_fixes": [
+                "Address identified quality gaps",
+                "Enhance content depth and accuracy",
+                "Ensure stakeholder requirement compliance"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "gate_orchestration": {
+    "workflows": {
+      "standard_skill_execution": {
+        "description": "Standard gate sequence for individual skill execution",
+        "gate_sequence": [
+          "resource_availability",
+          "dependency_satisfaction",
+          "content_completeness",
+          "format_validation",
+          "quality_scoring"
+        ],
+        "parallel_gates": [
+          ["content_completeness", "format_validation"],
+          ["quality_scoring"]
+        ]
+      },
+
+      "edps_methodology_workflow": {
+        "description": "Comprehensive gate sequence for EDPS methodology compliance",
+        "gate_sequence": [
+          "resource_availability",
+          "dependency_satisfaction",
+          "vr1_boundary_compliance",
+          "vr2_participant_classification", 
+          "vr3_message_flow_validation",
+          "vr4_hierarchy_structure",
+          "traceability_validation",
+          "content_completeness",
+          "format_validation",
+          "quality_scoring"
+        ],
+        "parallel_gates": [
+          ["vr1_boundary_compliance", "vr2_participant_classification"],
+          ["vr3_message_flow_validation", "content_completeness"],
+          ["format_validation", "quality_scoring"]
+        ]
+      },
+
+      "high_impact_deliverable": {
+        "description": "Enhanced gate sequence for high-impact deliverables requiring approval",
+        "gate_sequence": [
+          "resource_availability",
+          "dependency_satisfaction", 
+          "execution_order_validation",
+          "content_completeness",
+          "format_validation",
+          "quality_scoring",
+          "quality_threshold_enforcement",
+          "milestone_achievement",
+          "stakeholder_approval"
+        ],
+        "parallel_gates": [
+          ["content_completeness", "format_validation"],
+          ["quality_scoring", "quality_threshold_enforcement"]
+        ]
+      }
+    },
+
+    "gate_selection": {
+      "skill_based_selection": {
+        "diagram-generatecollaboration": ["vr1_boundary_compliance", "vr2_participant_classification", "vr3_message_flow_validation"],
+        "hierarchy-validation": ["vr4_hierarchy_structure"],
+        "requirements-ingest": ["content_completeness", "format_validation"],
+        "domain-extractconcepts": ["content_completeness", "quality_scoring"],
+        "edps-workflow-orchestrator": ["dependency_satisfaction", "execution_order_validation"]
+      },
+
+      "context_based_selection": {
+        "development_phase": {
+          "analysis": ["content_completeness", "quality_scoring"],
+          "design": ["vr1_boundary_compliance", "vr2_participant_classification", "format_validation"],
+          "implementation": ["dependency_satisfaction", "execution_order_validation", "resource_availability"],
+          "validation": ["quality_threshold_enforcement", "traceability_validation"]
+        },
+
+        "deliverable_impact": {
+          "low": ["content_completeness", "format_validation"],
+          "medium": ["content_completeness", "format_validation", "quality_scoring"],
+          "high": ["content_completeness", "format_validation", "quality_scoring", "quality_threshold_enforcement"],
+          "critical": ["content_completeness", "format_validation", "quality_scoring", "quality_threshold_enforcement", "stakeholder_approval"]
+        }
+      }
+    }
+  },
+
+  "execution_configuration": {
+    "default_timeouts": {
+      "critical": 30000,
+      "high": 25000,
+      "moderate": 20000,
+      "advisory": 15000
+    },
+
+    "default_retry_counts": {
+      "critical": 2,
+      "high": 2,
+      "moderate": 3,
+      "advisory": 1
+    },
+
+    "failure_escalation": {
+      "enabled": true,
+      "escalation_levels": ["retry", "refine", "adapt", "manual", "abort"],
+      "escalation_criteria": {
+        "retry_exhausted": "refine",
+        "refinement_failed": "adapt",
+        "adaptation_failed": "manual",
+        "manual_timeout": "abort"
+      }
+    },
+
+    "monitoring": {
+      "performance_tracking": true,
+      "effectiveness_analysis": true,
+      "failure_pattern_detection": true,
+      "optimization_recommendations": true
+    }
+  }
+}
