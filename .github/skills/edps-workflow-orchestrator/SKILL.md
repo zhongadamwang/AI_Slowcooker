@@ -409,6 +409,172 @@ requirements-ingest [S01] ✅
 
 ---
 
+## Skill Completion Gates (T08 Integration)
+
+The orchestrator integrates with skill completion gates to validate output quality before marking skills as completed and advancing the workflow. This ensures EDPS methodology standards are met at each step.
+
+### Gate evaluation process
+
+When `orchestrate complete [skill]` is invoked, the orchestrator:
+
+1. **Locates gate configuration**: Reads `.github/skills/[skill-name]/gate.json`
+2. **Evaluates gate checks**: Runs all validation checks defined in the gate schema
+3. **Computes quality score**: Aggregates weighted scores from successful checks
+4. **Determines transition**: Based on severity levels and workflow archetype
+
+### Gate evaluation implementation
+
+```javascript
+async function evaluateSkillGate(skillName, workflowArchetype) {
+  const gatePath = `.github/skills/${skillName}/gate.json`;
+  if (!fs.existsSync(gatePath)) {
+    return { status: "no_gate", allowed: true };
+  }
+
+  const gateConfig = JSON.parse(fs.readFileSync(gatePath));
+  const archetypeSeverity = gateConfig.workflow_archetypes[workflowArchetype];
+  
+  if (archetypeSeverity === "bypass") {
+    return { status: "bypassed", allowed: true, reason: "Archetype allows bypass" };
+  }
+
+  let results = { passed: [], failed: [], score: 0 };
+  
+  for (const check of gateConfig.checks) {
+    const result = await runGateCheck(check);
+    if (result.passed) {
+      results.passed.push(result);
+      results.score += gateConfig.quality_score_weight;
+    } else {
+      results.failed.push(result);
+      
+      // Hard failures block progression unless bypass is allowed
+      if (check.severity === "hard" && !gateConfig.bypass_allowed) {
+        return {
+          status: "failed",
+          allowed: false,
+          check: check.id,
+          remediation: check.remediation,
+          results: results
+        };
+      }
+    }
+  }
+  
+  const totalScore = results.score;
+  const qualityThreshold = workflowArchetype === "compliance" ? 0.95 : 0.80;
+  
+  return {
+    status: totalScore >= qualityThreshold ? "passed" : "partial",
+    allowed: true,
+    quality_score: totalScore,
+    results: results
+  };
+}
+
+async function runGateCheck(check) {
+  switch (check.type) {
+    case "artifact_existence":
+      return checkArtifactExists(check);
+    case "content_pattern":
+      return checkContentPattern(check);
+    case "json_schema":
+      return validateJsonSchema(check);
+    default:
+      return { passed: false, reason: `Unknown check type: ${check.type}` };
+  }
+}
+```
+
+### Gate check types
+
+**Artifact existence**: Verifies required output files exist
+```javascript
+function checkArtifactExists(check) {
+  const missing = check.artifacts.filter(path => !fs.existsSync(path));
+  return {
+    passed: missing.length === 0,
+    missing_artifacts: missing,
+    remediation: missing.length > 0 ? check.remediation : null
+  };
+}
+```
+
+**Content pattern**: Validates file contents match required patterns
+```javascript
+function checkContentPattern(check) {
+  if (!fs.existsSync(check.file)) {
+    return { passed: false, reason: `File not found: ${check.file}` };
+  }
+  
+  const content = fs.readFileSync(check.file, 'utf8');
+  
+  // Check required content
+  const missingContent = check.must_contain.filter(text => !content.includes(text));
+  const forbiddenContent = check.must_not_contain.filter(text => content.includes(text));
+  
+  // Pattern matching with minimum count
+  let patternMatches = 0;
+  if (check.must_contain_pattern) {
+    const regex = new RegExp(check.must_contain_pattern, 'g');
+    patternMatches = (content.match(regex) || []).length;
+  }
+  
+  const passed = missingContent.length === 0 && 
+                forbiddenContent.length === 0 && 
+                patternMatches >= (check.min_matches || 0);
+  
+  return {
+    passed: passed,
+    missing_content: missingContent,
+    forbidden_content: forbiddenContent,
+    pattern_matches: patternMatches,
+    remediation: !passed ? check.remediation : null
+  };
+}
+```
+
+### Workflow transition behavior
+
+| Gate Result | Standard | Rapid | Compliance |
+|------------|----------|-------|------------|
+| **Hard Failure** | ❌ Block | ⚠️ Warn + Continue | ❌ Block |
+| **Soft Failure** | ⚠️ Warn + Continue | ✅ Continue | ⚠️ Warn + Continue |
+| **Quality < 80%** | ⚠️ Warn + Continue | ✅ Continue | ❌ Block |
+| **Quality < 95%** | ✅ Continue | ✅ Continue | ⚠️ Warn + Continue |
+
+### Gate evaluation output
+
+```json
+{
+  "gate_evaluation": {
+    "skill": "requirements-ingest",
+    "status": "passed",
+    "quality_score": 0.92,
+    "workflow_impact": "continue",
+    "checks": {
+      "passed": [
+        {
+          "check_id": "requirements_exist",
+          "type": "artifact_existence",
+          "artifacts_found": ["artifacts/Requirements/requirements.md"]
+        }
+      ],
+      "failed": [
+        {
+          "check_id": "traceability_complete",
+          "type": "content_pattern",
+          "severity": "soft", 
+          "remediation": "Add requirement IDs for full traceability"
+        }
+      ]
+    }
+  }
+}
+```
+
+---
+
 ## Quick Commands
 
 All commands are invoked by addressing `edps-workflow-orchestrator` in a Copilot prompt.
@@ -439,13 +605,38 @@ All commands are invoked by addressing `edps-workflow-orchestrator` in a Copilot
 3. Display resumption summary + compact dashboard
 
 ### `orchestrate complete [skill-id-or-name]`
-**Purpose**: Mark a skill as completed and emit its completion event.  
+**Purpose**: Mark a skill as completed after running gate validation checks.  
 **Flow**:
-1. Validate the skill was `available` (not blocked)
-2. Update `project-state.json`
-3. Emit `skill_completed` event (→ consumed by `skill-completion-gates`)
-4. Recompute available skills
-5. Display updated dashboard + next prompt
+1. Validate the skill was `available` (not blocked by prerequisites)
+2. **Run gate evaluation** using `evaluateSkillGate()` function
+3. **Gate decision logic**:
+   - If gate fails with hard errors → block completion, display remediation steps
+   - If gate passes → continue to step 4
+   - If gate has soft failures → warn user, offer to continue or remediate
+4. Update skill state to `completed` in `project-state.json`
+5. Emit `skill_completed` event with gate results
+6. Recompute available skills based on updated DAG
+7. Display updated dashboard + next available skills
+
+**Gate integration example**:
+```bash
+> orchestrate complete requirements-ingest
+
+⏳ Evaluating skill completion gates...
+
+✅ Gate evaluation passed (quality score: 92%)
+   • Artifact exists: artifacts/Requirements/requirements.md ✅
+   • Content structure: Basic sections present ✅  
+   • Traceability links: Missing REQ-IDs ⚠️ (soft failure)
+
+❗ Remediation available: Add requirement IDs for full traceability
+
+Continue with completion? (Y/n) y
+
+🎯 requirements-ingest marked complete
+📊 Dashboard: 1/12 skills complete (8% progress)
+🔄 Next available: goals-extract, process-w5h (can run in parallel)
+```
 
 ### `orchestrate skip [skill-id-or-name] --justification "..."`
 **Purpose**: Skip an optional or non-critical skill with a recorded justification.  
