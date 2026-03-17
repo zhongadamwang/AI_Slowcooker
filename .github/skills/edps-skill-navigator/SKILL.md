@@ -97,6 +97,11 @@ Navigator: Analyzes current project state and suggests:
 ### Natural Language Processing
 ```copilot-pattern
 # User Intent Recognition
+"orchestrate workflow" → edps-workflow-orchestrator
+"start edps workflow" → edps-workflow-orchestrator
+"what should I do next" → edps-workflow-orchestrator
+"resume my workflow" → edps-workflow-orchestrator
+"show workflow progress" → edps-workflow-orchestrator
 "analyze requirements" → requirements-ingest + goals-extract
 "merge requirements" → requirements-merge
 "understand domain" → domain-extractconcepts + domain-alignentities  
@@ -209,6 +214,9 @@ Model & Integration Management:
 ├── orgmodel-update        # Update organizational model documents (with EDPS-Hierarchy Guard)
 └── integration-testing     # Validate end-to-end skill workflows
 
+Orchestration:
+└── edps-workflow-orchestrator  # End-to-end EDPS workflow lifecycle management; DAG prerequisite engine; persistent project state across sessions; completion event emitter for skill-completion-gates (T08)
+
 Quality & Development:
 └── skill-creator          # Create new skills when needed
 ```
@@ -302,12 +310,13 @@ hierarchy-validation → edps-compliance → integration-testing
 
 ---
 
-**Version**: 1.2.0
-**Last Updated**: 2026-03-15
+**Version**: 1.3.0
+**Last Updated**: 2026-03-16
 **Compatibility**: GitHub Copilot, VS Code, EDPS v1.x, EDPS v2.x (hierarchical boundary format)
 **Maintainer**: EDPS Development Team
 
-### New Skills Registered (Project 3 — March 2026)
+### New Skills Registered (Project 4 — March 2026)
+- `edps-workflow-orchestrator` — Orchestration category (T07 — end-to-end lifecycle management, DAG engine, project state)
 - `hierarchy-management` — Hierarchy Management category (now includes `--op migrate`, absorbing `migration-tools`)
 - `documentation-automation` — Visualization & Documentation category
 - `edps-compliance` — Compliance & Validation category
