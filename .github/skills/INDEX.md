@@ -2,7 +2,7 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.0.0 | **Last Updated**: 2026-03-16 | **Skill Count**: 31 (1 deprecated)
+**Version**: 2.0.1 | **Last Updated**: 2026-03-17 | **Skill Count**: 32 (1 deprecated)
 
 > **Consolidation Note (March 2026)**: Following the Project 1 + Project 3 integration review, all skills now include canonical `## Intent`, `## Inputs`, and `## Outputs` sections. `hierarchy-management` absorbs `migration-tools` via `--op migrate`. `change-impact-analysis → change-management` contract is formalised via `normalized_risk_level`. See [EDPS_Skills_Validation_Report.md](../../EDPS_Skills_Validation_Report.md) for full details.
 
@@ -64,6 +64,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 **Go to**: [Workflow Integration Examples](examples/workflow-integration-examples.md)
 
 **Key patterns**:
+- Dynamic workflow orchestration with `edps-workflow-orchestrator`
 - Full project lifecycle (90+ minutes)
 - MVP definition workflows  
 - Change impact assessment
@@ -134,6 +135,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
 | **edps-skill-navigator** | Navigate and orchestrate skills | [Individual skill docs](.github/skills/edps-skill-navigator/SKILL.md) |
+| **edps-workflow-orchestrator** | Dynamic workflow generation, selection, and execution with advanced coordination, monitoring, and adaptation capabilities | [Individual skill docs](.github/skills/edps-workflow-orchestrator/SKILL.md) |
 | **skill-creator** | Create new EDPS skills | [Individual skill docs](.github/skills/skill-creator/SKILL.md) |
 | **integration-testing** | Comprehensive testing and validation of all EDPS skills | [Individual skill docs](.github/skills/integration-testing/SKILL.md) |
 | **orgmodel-update** | Update organizational model documents and folder structures | [Individual skill docs](.github/skills/orgmodel-update/SKILL.md) |

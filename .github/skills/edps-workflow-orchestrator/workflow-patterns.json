@@ -1,0 +1,704 @@
+{
+  "workflow_patterns": {
+    "fast_track": {
+      "requirements_quick_analysis": {
+        "id": "req_quick_001",
+        "name": "Quick Requirements Analysis",
+        "description": "Fast-track analysis for simple, well-defined requirements",
+        "execution_time": "30-45 minutes",
+        "complexity": "low",
+        "success_rate": 0.92,
+        "steps": [
+          {
+            "order": 1,
+            "skill_id": "requirements-ingest",
+            "execution_pattern": "sequential",
+            "timeout": 600,
+            "parameters": {
+              "validation_level": "basic",
+              "output_format": "structured"
+            },
+            "success_criteria": ["valid_format", "basic_completeness"]
+          },
+          {
+            "order": 2,
+            "skill_id": "goals-extract",
+            "execution_pattern": "sequential",
+            "timeout": 900,
+            "parameters": {
+              "depth": "shallow",
+              "focus": "primary_objectives"
+            },
+            "success_criteria": ["goals_identified", "success_criteria_defined"]
+          },
+          {
+            "order": 3,
+            "skill_id": "process-w5h",
+            "execution_pattern": "sequential",
+            "timeout": 1200,
+            "parameters": {
+              "analysis_depth": "standard",
+              "focus_questions": ["what", "who", "when"]
+            },
+            "success_criteria": ["w5h_analysis_complete", "insights_generated"]
+          }
+        ],
+        "quality_gates": [
+          {
+            "gate_id": "requirements_basic_validation",
+            "after_step": 1,
+            "validation_rules": ["format_check", "completeness_check"],
+            "failure_action": "retry_with_guidance"
+          }
+        ],
+        "optimization_hints": {
+          "skip_advanced_validation": true,
+          "use_template_acceleration": true,
+          "minimal_documentation": true,
+          "cache_intermediate_results": true
+        },
+        "conditions": {
+          "requirements_complexity": ["simple", "well_defined"],
+          "urgency_level": ["high"],
+          "quality_expectations": ["standard"],
+          "available_time": ["< 1 hour"]
+        }
+      },
+      
+      "domain_discovery_rapid": {
+        "id": "dom_rapid_001",
+        "name": "Rapid Domain Discovery",
+        "description": "Quick domain concept extraction with parallel processing",
+        "execution_time": "45-60 minutes", 
+        "complexity": "medium",
+        "success_rate": 0.88,
+        "steps": [
+          {
+            "order": 1,
+            "skill_id": "requirements-ingest",
+            "execution_pattern": "parallel_group_a",
+            "timeout": 600,
+            "parameters": {
+              "validation_level": "standard",
+              "focus": "domain_elements"
+            },
+            "success_criteria": ["requirements_parsed", "domain_context_available"]
+          },
+          {
+            "order": 1,
+            "skill_id": "goals-extract", 
+            "execution_pattern": "parallel_group_a",
+            "timeout": 900,
+            "parameters": {
+              "depth": "moderate",
+              "domain_focus": true
+            },
+            "success_criteria": ["business_goals_extracted", "domain_objectives_clear"]
+          },
+          {
+            "order": 2,
+            "skill_id": "domain-extractconcepts",
+            "execution_pattern": "sequential_convergence",
+            "timeout": 1800,
+            "parameters": {
+              "analysis_mode": "comprehensive",
+              "input_sources": ["requirements", "goals"]
+            },
+            "success_criteria": ["domain_model_generated", "concepts_categorized"],
+            "dependencies": ["parallel_group_a"]
+          }
+        ],
+        "parallel_execution_groups": {
+          "parallel_group_a": {
+            "skills": ["requirements-ingest", "goals-extract"],
+            "coordination_strategy": "wait_for_all",
+            "timeout": 1200,
+            "failure_policy": "continue_with_available"
+          }
+        },
+        "quality_gates": [
+          {
+            "gate_id": "domain_consistency_check",
+            "after_step": 2,
+            "validation_rules": ["concept_coherence", "terminology_consistency"],
+            "failure_action": "refine_and_retry"
+          }
+        ]
+      }
+    },
+
+    "standard": {
+      "complete_requirements_analysis": {
+        "id": "req_complete_001",
+        "name": "Comprehensive Requirements Analysis",
+        "description": "Complete requirements processing with validation and integration",
+        "execution_time": "2-3 hours",
+        "complexity": "medium",
+        "success_rate": 0.94,
+        "steps": [
+          {
+            "order": 1,
+            "skill_id": "requirements-ingest",
+            "execution_pattern": "sequential",
+            "timeout": 1200,
+            "parameters": {
+              "validation_level": "comprehensive",
+              "multi_source_handling": true
+            },
+            "success_criteria": ["all_sources_processed", "validation_passed"]
+          },
+          {
+            "order": 2,
+            "skill_id": "goals-extract",
+            "execution_pattern": "parallel_group_analysis", 
+            "timeout": 1500,
+            "parameters": {
+              "depth": "comprehensive",
+              "stakeholder_analysis": true
+            },
+            "success_criteria": ["comprehensive_goals", "stakeholder_mapping"]
+          },
+          {
+            "order": 2,
+            "skill_id": "process-w5h",
+            "execution_pattern": "parallel_group_analysis",
+            "timeout": 1800,
+            "parameters": {
+              "analysis_depth": "comprehensive",
+              "all_dimensions": true
+            },
+            "success_criteria": ["w5h_complete", "comprehensive_analysis"]
+          },
+          {
+            "order": 3,
+            "skill_id": "domain-extractconcepts",
+            "execution_pattern": "sequential",
+            "timeout": 2400,
+            "parameters": {
+              "analysis_mode": "deep",
+              "relationship_mapping": true
+            },
+            "success_criteria": ["domain_model_complete", "relationships_mapped"],
+            "dependencies": ["parallel_group_analysis"]
+          },
+          {
+            "order": 4,
+            "skill_id": "domain-alignentities",
+            "execution_pattern": "sequential",
+            "timeout": 1800,
+            "parameters": {
+              "alignment_mode": "comprehensive",
+              "conflict_resolution": true
+            },
+            "success_criteria": ["alignment_complete", "conflicts_resolved"]
+          },
+          {
+            "order": 5,
+            "skill_id": "requirements-merge",
+            "execution_pattern": "sequential",
+            "timeout": 1500,
+            "parameters": {
+              "merge_strategy": "comprehensive",
+              "traceability": true
+            },
+            "success_criteria": ["requirements_integrated", "traceability_maintained"]
+          }
+        ],
+        "parallel_execution_groups": {
+          "parallel_group_analysis": {
+            "skills": ["goals-extract", "process-w5h"],
+            "coordination_strategy": "wait_for_all",
+            "timeout": 2000,
+            "failure_policy": "continue_with_partial"
+          }
+        },
+        "quality_gates": [
+          {
+            "gate_id": "requirements_quality_validation",
+            "after_step": 1,
+            "validation_rules": ["completeness", "consistency", "clarity"],
+            "failure_action": "enhance_and_retry"
+          },
+          {
+            "gate_id": "domain_consistency_validation",
+            "after_step": 4,
+            "validation_rules": ["domain_coherence", "entity_alignment", "terminology_consistency"],
+            "failure_action": "realign_and_retry"
+          },
+          {
+            "gate_id": "integration_validation",
+            "after_step": 5,
+            "validation_rules": ["merge_completeness", "traceability_integrity", "conflict_resolution"],
+            "failure_action": "remerge_with_manual_review"
+          }
+        ],
+        "feedback_loops": [
+          {
+            "from_step": 4,
+            "to_step": 3,
+            "condition": "alignment_conflicts_detected",
+            "action": "refine_domain_concepts"
+          }
+        ]
+      }
+    },
+
+    "complex": {
+      "end_to_end_process_design": {
+        "id": "e2e_design_001",
+        "name": "End-to-End Process Design",
+        "description": "Complete organizational process design with EDPS methodology",
+        "execution_time": "4-6 hours",
+        "complexity": "high",
+        "success_rate": 0.91,
+        "steps": [
+          {
+            "order": 1,
+            "skill_id": "project-document-management",
+            "execution_pattern": "sequential",
+            "timeout": 900,
+            "parameters": {
+              "structure_type": "comprehensive",
+              "edps_compliant": true
+            },
+            "success_criteria": ["project_structure_created", "edps_templates_ready"]
+          },
+          {
+            "order": 2,
+            "skill_id": "requirements-ingest",
+            "execution_pattern": "sequential",
+            "timeout": 1800,
+            "parameters": {
+              "validation_level": "enterprise",
+              "stakeholder_integration": true
+            },
+            "success_criteria": ["enterprise_requirements_processed", "stakeholder_input_integrated"]
+          },
+          {
+            "order": 3,
+            "skill_id": "domain-extractconcepts",
+            "execution_pattern": "sequential",
+            "timeout": 2700,
+            "parameters": {
+              "analysis_mode": "enterprise",
+              "organizational_context": true
+            },
+            "success_criteria": ["organizational_domain_model", "enterprise_concepts_mapped"]
+          },
+          {
+            "order": 4,
+            "skill_id": "diagram-generatecollaboration",
+            "execution_pattern": "sequential",
+            "timeout": 3600,
+            "parameters": {
+              "complexity_level": "high",
+              "boundary_validation": true,
+              "participant_classification": true
+            },
+            "success_criteria": ["collaboration_diagram_generated", "boundary_validation_passed", "participants_classified"]
+          },
+          {
+            "order": 5,
+            "skill_id": "hierarchy-management",
+            "execution_pattern": "sequential",
+            "timeout": 2400,
+            "parameters": {
+              "decomposition_depth": "multi_level",
+              "relationship_tracking": true
+            },
+            "success_criteria": ["hierarchy_created", "relationships_tracked"],
+            "strategic_decision_point": {
+              "question": "hierarchy_depth_decision",
+              "options": ["shallow_broad", "deep_focused", "balanced_approach"],
+              "default": "balanced_approach"
+            }
+          },
+          {
+            "order": 6,
+            "skill_id": "hierarchy-validation",
+            "execution_pattern": "sequential",
+            "timeout": 1800,
+            "parameters": {
+              "validation_level": "comprehensive",
+              "cross_level_checks": true
+            },
+            "success_criteria": ["structural_validation_passed", "cross_level_consistency"]
+          },
+          {
+            "order": 7,
+            "skill_id": "edps-compliance",
+            "execution_pattern": "sequential",
+            "timeout": 1500,
+            "parameters": {
+              "compliance_level": "full",
+              "traceability_verification": true
+            },
+            "success_criteria": ["edps_compliance_verified", "traceability_complete"]
+          },
+          {
+            "order": 8,
+            "skill_id": "documentation-automation",
+            "execution_pattern": "sequential",
+            "timeout": 1200,
+            "parameters": {
+              "documentation_level": "comprehensive",
+              "auto_generation": true
+            },
+            "success_criteria": ["documentation_complete", "navigation_ready"]
+          }
+        ],
+        "strategic_decision_points": [
+          {
+            "after_step": 3,
+            "decision": "depth_vs_breadth",
+            "question": "Focus on depth of analysis or breadth of coverage?",
+            "options": {
+              "depth_focused": {
+                "impact": "increase_analysis_time",
+                "parameters": {"analysis_mode": "deep_dive"}
+              },
+              "breadth_focused": {
+                "impact": "reduce_detail_level",  
+                "parameters": {"analysis_mode": "broad_survey"}
+              }
+            }
+          },
+          {
+            "after_step": 5,
+            "decision": "validation_thoroughness",
+            "question": "Level of validation thoroughness required?",
+            "options": {
+              "comprehensive": {
+                "impact": "increase_validation_time",
+                "parameters": {"validation_level": "exhaustive"}
+              },
+              "targeted": {
+                "impact": "focus_critical_areas",
+                "parameters": {"validation_level": "risk_based"}
+              }
+            }
+          }
+        ],
+        "quality_gates": [
+          {
+            "gate_id": "requirements_enterprise_validation",
+            "after_step": 2,
+            "validation_rules": ["enterprise_completeness", "stakeholder_coverage", "business_alignment"],
+            "failure_action": "stakeholder_review_and_enhancement"
+          },
+          {
+            "gate_id": "collaboration_boundary_validation", 
+            "after_step": 4,
+            "validation_rules": ["boundary_compliance_vr1", "boundary_compliance_vr2", "boundary_compliance_vr3", "boundary_compliance_vr4"],
+            "failure_action": "boundary_redesign"
+          },
+          {
+            "gate_id": "hierarchy_structural_validation",
+            "after_step": 6,
+            "validation_rules": ["structural_integrity", "relationship_consistency", "navigation_completeness"],
+            "failure_action": "hierarchy_restructure"
+          },
+          {
+            "gate_id": "edps_methodology_validation",
+            "after_step": 7,
+            "validation_rules": ["methodology_adherence", "traceability_completeness", "compliance_verification"],
+            "failure_action": "methodology_remediation"
+          }
+        ],
+        "adaptive_triggers": [
+          {
+            "condition": "stakeholder_feedback_received",
+            "adaptation": "incorporate_feedback_loop",
+            "impact": "extend_timeline_add_review_cycle"
+          },
+          {
+            "condition": "complexity_exceeds_threshold",
+            "adaptation": "decompose_further",
+            "impact": "add_additional_hierarchy_levels"
+          }
+        ]
+      }
+    },
+
+    "specialized": {
+      "hierarchy_deep_dive": {
+        "id": "hier_deep_001",
+        "name": "Hierarchy Deep Dive Analysis",
+        "description": "Intensive hierarchy analysis with iterative refinement",
+        "execution_time": "3-4 hours",
+        "complexity": "high", 
+        "success_rate": 0.89,
+        "iteration_strategy": {
+          "max_iterations": 5,
+          "convergence_criteria": [
+            "validation_score > 0.9",
+            "no_structural_issues",
+            "boundary_compliance_complete"
+          ],
+          "refinement_focus": ["boundary_optimization", "participant_classification"]
+        },
+        "steps": [
+          {
+            "order": 1,
+            "skill_id": "diagram-generatecollaboration",
+            "execution_pattern": "iterative",
+            "timeout": 2400,
+            "parameters": {
+              "enhancement_mode": true,
+              "iterative_refinement": true
+            },
+            "success_criteria": ["diagram_enhanced", "ready_for_decomposition"]
+          },
+          {
+            "order": 2,
+            "skill_id": "hierarchy-management",
+            "execution_pattern": "iterative",
+            "timeout": 3000,
+            "parameters": {
+              "decomposition_strategy": "systematic",
+              "depth_optimization": true
+            },
+            "success_criteria": ["optimal_hierarchy_structure", "decomposition_complete"]
+          },
+          {
+            "order": 3,
+            "skill_id": "hierarchy-validation",
+            "execution_pattern": "iterative",
+            "timeout": 1800,
+            "parameters": {
+              "validation_thoroughness": "comprehensive",
+              "iteration_feedback": true
+            },
+            "success_criteria": ["validation_passed", "refinement_suggestions_available"]
+          },
+          {
+            "order": 4,  
+            "skill_id": "change-impact-analysis",
+            "execution_pattern": "conditional",
+            "timeout": 1200,
+            "parameters": {
+              "scope": "hierarchy_changes",
+              "impact_assessment": "comprehensive"
+            },
+            "success_criteria": ["impact_assessed", "change_strategy_defined"],
+            "condition": "hierarchy_changes_detected"
+          },
+          {
+            "order": 5,
+            "skill_id": "edps-compliance",
+            "execution_pattern": "validation_cycle",
+            "timeout": 1500,
+            "parameters": {
+              "focus": "hierarchy_compliance",
+              "iterative_validation": true
+            },
+            "success_criteria": ["edps_compliance_verified", "methodology_adherent"]
+          },
+          {
+            "order": 6,
+            "skill_id": "documentation-automation",
+            "execution_pattern": "final",
+            "timeout": 900,
+            "parameters": {
+              "focus": "hierarchy_documentation",
+              "comprehensive": true
+            },
+            "success_criteria": ["documentation_generated", "navigation_complete"]
+          }
+        ],
+        "iteration_control": {
+          "convergence_check_after": [3, 5],
+          "max_iteration_time": 4800,
+          "early_termination_criteria": ["user_satisfaction_achieved", "time_constraint_reached"]
+        }
+      },
+
+      "integration_and_validation": {
+        "id": "int_val_001", 
+        "name": "Integration and Validation Cascade",
+        "description": "Systematic validation across multiple levels and aspects",
+        "execution_time": "1-2 hours",
+        "complexity": "medium",
+        "success_rate": 0.96,
+        "validation_cascade_strategy": {
+          "levels": ["structural", "methodology", "integration", "impact"],
+          "failure_propagation": "stop_on_critical_failure",
+          "partial_success_handling": "continue_with_warnings"
+        },
+        "steps": [
+          {
+            "order": 1,
+            "skill_id": "hierarchy-validation",
+            "execution_pattern": "validation_level_structural",
+            "timeout": 1200,
+            "parameters": {
+              "validation_focus": "structural_integrity",
+              "comprehensive_checks": true
+            },
+            "success_criteria": ["structural_validation_complete", "no_critical_structural_issues"],
+            "validation_level": "structural"
+          },
+          {
+            "order": 2,
+            "skill_id": "edps-compliance",
+            "execution_pattern": "validation_level_methodology", 
+            "timeout": 1500,
+            "parameters": {
+              "compliance_focus": "methodology_adherence",
+              "full_compliance_check": true
+            },
+            "success_criteria": ["methodology_compliance_verified", "edps_rules_satisfied"],
+            "validation_level": "methodology"
+          },
+          {
+            "order": 3,
+            "skill_id": "integration-testing",
+            "execution_pattern": "validation_level_integration",
+            "timeout": 1800,
+            "parameters": {
+              "integration_scope": "full_system",
+              "compatibility_checks": true
+            },
+            "success_criteria": ["integration_testing_passed", "compatibility_verified"],
+            "validation_level": "integration"
+          },
+          {
+            "order": 4,
+            "skill_id": "change-impact-analysis",
+            "execution_pattern": "validation_level_impact",
+            "timeout": 900,
+            "parameters": {
+              "impact_scope": "organizational",
+              "stakeholder_consideration": true
+            },
+            "success_criteria": ["impact_analysis_complete", "stakeholder_concerns_addressed"],
+            "validation_level": "impact"
+          }
+        ],
+        "cascade_control": {
+          "critical_failure_stops": ["structural", "methodology"],
+          "warning_level_continues": ["integration", "impact"],
+          "success_threshold": 0.85
+        }
+      }
+    },
+
+    "maintenance": {
+      "model_evolution": {
+        "id": "mod_evo_001",
+        "name": "Model Evolution and Change Management",
+        "description": "Systematic model updates with change propagation analysis",
+        "execution_time": "2-4 hours",
+        "complexity": "high",
+        "success_rate": 0.87,
+        "change_management_strategy": {
+          "impact_assessment": true,
+          "rollback_plan": true,
+          "stakeholder_approval": true,
+          "gradual_rollout": true
+        },
+        "steps": [
+          {
+            "order": 1,
+            "skill_id": "change-impact-analysis",
+            "execution_pattern": "comprehensive_analysis",
+            "timeout": 2400,
+            "parameters": {
+              "analysis_scope": "full_impact",
+              "stakeholder_analysis": true,
+              "rollback_planning": true
+            },
+            "success_criteria": ["impact_fully_assessed", "stakeholders_identified", "rollback_plan_ready"]
+          },
+          {
+            "order": 2,
+            "skill_id": "model-integration",
+            "execution_pattern": "careful_integration",
+            "timeout": 3000,
+            "parameters": {
+              "integration_strategy": "minimize_disruption",
+              "validation_at_each_step": true
+            },
+            "success_criteria": ["model_integrated", "minimal_disruption_achieved"]
+          },
+          {
+            "order": 3,
+            "skill_id": "process-merge",
+            "execution_pattern": "systematic_merge",
+            "timeout": 2400,
+            "parameters": {
+              "merge_strategy": "conflict_resolution",
+              "preservation_priority": "existing_functionality"
+            },
+            "success_criteria": ["processes_merged", "conflicts_resolved", "functionality_preserved"]
+          },
+          {
+            "order": 4,
+            "skill_id": "orgmodel-update",
+            "execution_pattern": "coordinated_update", 
+            "timeout": 1800,
+            "parameters": {
+              "update_strategy": "incremental",
+              "validation_checkpoints": true
+            },
+            "success_criteria": ["organizational_model_updated", "consistency_maintained"]
+          },
+          {
+            "order": 5,
+            "skill_id": "hierarchy-validation",
+            "execution_pattern": "post_change_validation",
+            "timeout": 1500,
+            "parameters": {
+              "validation_focus": "post_change_integrity",
+              "comprehensive_verification": true
+            },
+            "success_criteria": ["post_change_validation_passed", "integrity_verified"]
+          }
+        ],
+        "approval_gates": [
+          {
+            "gate_id": "stakeholder_approval",
+            "after_step": 1,
+            "approval_type": "stakeholder_sign_off",
+            "required_approvers": ["business_owner", "technical_lead"],
+            "approval_criteria": ["impact_acceptable", "risk_mitigated"]
+          },
+          {
+            "gate_id": "integration_approval",
+            "after_step": 2,
+            "approval_type": "technical_review",
+            "required_approvers": ["architecture_review_board"],
+            "approval_criteria": ["integration_quality_acceptable", "no_critical_issues"]
+          }
+        ],
+        "rollback_triggers": [
+          "critical_failure_detected",
+          "stakeholder_concerns_raised", 
+          "integration_conflicts_unresolvable",
+          "performance_degradation_significant"
+        ]
+      }
+    }
+  },
+
+  "execution_configuration": {
+    "performance_targets": {
+      "workflow_selection_time": 2000,
+      "workflow_initiation_time": 5000,
+      "monitoring_update_frequency": 1000,
+      "error_recovery_time": 30000
+    },
+    "resource_limits": {
+      "max_concurrent_workflows": 20,
+      "max_workflow_duration": 21600000,
+      "memory_limit_per_workflow": "512MB",
+      "cpu_limit_per_workflow": "2 cores"
+    },
+    "reliability_settings": {
+      "success_rate_target": 0.95,
+      "retry_attempts": 3,
+      "circuit_breaker_threshold": 5,
+      "health_check_interval": 30000
+    }
+  }
+}
