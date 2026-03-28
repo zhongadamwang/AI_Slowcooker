@@ -41,13 +41,31 @@ Systematically identify and extract domain entities, business concepts, terminol
         {
           "name": "user_id",
           "type": "identifier",
-          "description": "Unique user identifier"
+          "description": "Unique user identifier",
+          "visibility": "public"
         },
         {
           "name": "role",
           "type": "enumeration",
           "description": "User access level",
-          "values": ["admin", "user", "guest"]
+          "values": ["admin", "user", "guest"],
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "authenticate",
+          "description": "Verify user credentials",
+          "parameters": ["username", "password"],
+          "return_type": "boolean",
+          "visibility": "public"
+        },
+        {
+          "name": "updateProfile",
+          "description": "Modify user profile data",
+          "parameters": ["profile_data"],
+          "return_type": "void",
+          "visibility": "public"
         }
       ],
       "domain_area": "Authentication",
@@ -123,9 +141,14 @@ Systematically identify and extract domain entities, business concepts, terminol
 **Description**: System user who interacts with the application
 
 **Attributes**:
-- `user_id` (identifier): Unique user identifier
-- `role` (enumeration): User access level [admin, user, guest]
-- `email` (string): User contact information
+- `user_id` (identifier): Unique user identifier [public]
+- `role` (enumeration): User access level [admin, user, guest] [public]
+- `email` (string): User contact information [public]
+
+**Operations**:
+- `authenticate(username, password)` → boolean: Verify user credentials [public]
+- `updateProfile(profile_data)` → void: Modify user profile data [public]
+- `validateSession()` → boolean: Check session validity [private]
 
 **Source References**: [R-001:section1], [R-003:section2]
 
@@ -210,8 +233,17 @@ Systematically identify and extract domain entities, business concepts, terminol
 ### Entity Extraction Rules
 1. **Focus on business-relevant nouns** that represent persistent data or active system participants
 2. **Abstract concrete implementations** - prefer "Payment" over "CreditCardPayment" for initial modeling
-3. **Prioritize entities with attributes** - standalone terms may be concepts rather than entities
-4. **Maintain traceability** to source requirements for validation and refinement
+3. **Prioritize entities with attributes and operations** - standalone terms may be concepts rather than entities
+4. **Extract behavioral aspects** - identify key operations/methods that entities perform
+5. **Capture visibility indicators** - distinguish between public and private attributes/operations
+6. **Maintain traceability** to source requirements for validation and refinement
+
+### Operation/Method Extraction
+1. **Identify entity behaviors** from action verbs in requirements (authenticate, validate, process)
+2. **Extract parameters** from context - what data does the operation need
+3. **Determine return types** based on expected outcomes
+4. **Infer visibility** from business context - public for external interactions, private for internal logic
+5. **Group related operations** to understand entity responsibilities
 
 ### Concept Classification
 1. **Business Concepts**: Domain-specific processes, rules, and workflows
@@ -230,9 +262,11 @@ Systematically identify and extract domain entities, business concepts, terminol
 ### Validation Checks
 - **Entity completeness**: All major business objects identified
 - **Attribute coverage**: Key properties captured for each entity
+- **Operation completeness**: Essential behaviors and methods identified
 - **Relationship consistency**: Bidirectional associations properly mapped
 - **Terminology accuracy**: Definitions align with business context
 - **Traceability integrity**: All extractions linked to source requirements
+- **Diagram readiness**: Entities structured for effective class diagram generation
 
 ### Confidence Scoring
 - **High (0.8-1.0)**: Explicitly stated in requirements with clear definitions
@@ -240,3 +274,57 @@ Systematically identify and extract domain entities, business concepts, terminol
 - **Low (0.2-0.49)**: Inferred from context or weakly supported
 
 For detailed extraction patterns and advanced analysis techniques, see [extraction-patterns.md](references/extraction-patterns.md).
+
+## Usage Pattern
+```
+1. Call after requirements-ingest skill completion
+2. Load requirements.json and optional goals.json
+3. Extract domain entities, concepts, terminology, and relationships
+4. Generate structured domain-concepts.json for programmatic use
+5. Create human-readable domain-concepts.md documentation
+6. Trigger diagram-generatecollaboration skill for visual domain modeling (optional)
+7. Feed results to domain-alignentities skill for organizational alignment
+```
+
+## Integration with Diagram Generation
+This skill can trigger automatic class diagram generation through integration with the diagram-generatecollaboration skill:
+
+### Diagram Integration Parameters
+```json
+{
+  "generate_class_diagram": true,
+  "update_domain_model": "orgModel/01-skill-dev/domain-model.md",
+  "diagram_style": "comprehensive|overview|focused",
+  "include_operations": true
+}
+```
+
+### Class Diagram Generation Flow
+1. **Extract entities with operations** - Capture both static and behavioral aspects
+2. **Generate domain-concepts.json** - Include detailed entity metadata
+3. **Call diagram-generatecollaboration** - Create class diagram from extracted concepts
+4. **Update domain-model.md** - Embed generated diagram in organizational model
+5. **Maintain traceability** - Link diagram elements back to source requirements
+
+## Cross-Skill Integration
+
+### Input Dependencies:
+- requirements-ingest skill → requirements.json
+- goals-extract skill → goals.json (optional)
+
+### Output Consumers:
+- domain-alignentities skill ← domain-concepts.json
+- diagram-generatecollaboration skill ← domain-concepts.json (for class diagrams)
+- domain-proposenewconcepts skill ← domain-concepts.json
+
+### Diagram Generation Integration:
+When integrated with diagram-generatecollaboration skill:
+- Extracted entities automatically generate class diagram elements with inline styling (`:::category`)
+- Operations and attributes populate class diagram structure with proper visibility markers
+- Relationships become diagram associations and inheritance with clear labels
+- Domain areas organize diagram layout and grouping
+- Styling definitions (`classDef`) must be included for proper rendering:
+  - `classDef actor fill:#e1f5fe` - for primary and supporting actors
+  - `classDef entity fill:#f3e5f5` - for core business entities
+  - `classDef enum fill:#fff3e0` - for enumeration types
+  - `classDef ai fill:#e8f5e8` - for AI-specific entities and components

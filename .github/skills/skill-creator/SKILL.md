@@ -8,6 +8,21 @@ license: Complete terms in LICENSE.txt
 
 This skill provides guidance for creating effective skills.
 
+## Intent
+
+Guide creation and update of well-formed EDPS skills. Enforce the canonical `SKILL.md` structure (`## Intent`, `## Inputs`, `## Outputs`, `## Workflow`), workflow specification patterns, upstream/downstream integration contracts, and quality standards for the skill suite.
+
+## Inputs
+
+- **Skill purpose**: Natural language description of what the new or updated skill should do
+- **Optional**: Draft or existing `SKILL.md` content to review and improve
+- **Optional**: Names of upstream skills providing inputs and downstream skills consuming outputs
+
+## Outputs
+
+- Complete `SKILL.md` scaffolded with all required sections (`## Intent`, `## Inputs`, `## Outputs`, `## Workflow`, integration notes, and quality checklist)
+- Review report if updating an existing skill: section-by-section gap analysis with fix suggestions
+
 ## About Skills
 
 Skills are modular, self-contained packages that extend Claude's capabilities by providing

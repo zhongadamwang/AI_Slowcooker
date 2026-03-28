@@ -1,0 +1,162 @@
+{
+  "project_id": "03-Building-Skills-Iteration-2",
+  "generated_at": "2026-03-14T10:00:00Z",
+  "source_files": ["requirements.json", "goals.json"],
+  "analysis_framework": "Who, What, When, Where, Why, How",
+  "who": {
+    "primary_stakeholders": [
+      {
+        "role": "AI Agent Developers",
+        "description": "Build and maintain skills for hierarchical collaboration diagrams with boundary concepts",
+        "impact": "high"
+      },
+      {
+        "role": "Process Modelers",
+        "description": "Use enhanced skills to decompose complex organizational processes into hierarchical boundaries",
+        "impact": "high"
+      },
+      {
+        "role": "EDPS Methodology Practitioners",
+        "description": "Ensure generated artifacts comply with evolutionary development principles",
+        "impact": "high"
+      }
+    ],
+    "secondary_stakeholders": [
+      {
+        "role": "Project 1 Skill Users",
+        "description": "Existing users whose workflows must remain unbroken",
+        "impact": "medium"
+      },
+      {
+        "role": "OrgModel Maintainers",
+        "description": "Responsible for evolving organizational models with new hierarchical concepts",
+        "impact": "medium"
+      },
+      {
+        "role": "Quality Assurance",
+        "description": "Validate boundary detection accuracy, decomposition rule enforcement, EDPS compliance",
+        "impact": "medium"
+      }
+    ]
+  },
+  "what": {
+    "core_capabilities": [
+      {
+        "capability": "Boundary-Enhanced Collaboration Diagrams",
+        "requirements": ["R-302", "R-303", "R-310"],
+        "description": "Extend diagram-generatecollaboration with Mermaid box syntax, participant stereotypes, and decomposition rules"
+      },
+      {
+        "capability": "Hierarchical Process Decomposition",
+        "requirements": ["R-301", "R-304"],
+        "description": "Enable control-type interactions to become sub-processes with auto-generated folder structures"
+      },
+      {
+        "capability": "Scale and Complexity Management",
+        "requirements": ["R-305"],
+        "description": "Complexity metrics, decomposition suggestions, and detail level guidelines per hierarchy level"
+      },
+      {
+        "capability": "EDPS Compliance Validation",
+        "requirements": ["R-306"],
+        "description": "Validate evolutionary development principles, change impact analysis, requirements traceability"
+      },
+      {
+        "capability": "OrgModel Enhancement",
+        "requirements": ["R-308", "R-309a"],
+        "description": "Update organizational models with boundary concepts, hierarchical diagrams, and templates"
+      },
+      {
+        "capability": "Backward Compatibility and Migration",
+        "requirements": ["R-309b"],
+        "description": "Import Project 1 diagrams, provide migration tools, preserve existing links"
+      }
+    ],
+    "nonfunctional_requirements": {
+      "performance": "≤30 second diagram generation time",
+      "integration": "Seamless VS Code and GitHub Copilot integration",
+      "usability": "Developer adoption >90%, productive within 2 hours",
+      "quality": ">95% test coverage for new functionality"
+    }
+  },
+  "when": {
+    "phases": [
+      {
+        "phase": "Phase 1: Foundation Enhancement",
+        "timeline": "Weeks 2-4 (March 2026)",
+        "duration": "2-3 weeks",
+        "effort_days": "12-15",
+        "deliverables": ["Boundary-enhanced collaboration skill", "Participant stereotypes", "Box syntax generation"]
+      },
+      {
+        "phase": "Phase 2: Hierarchy Management",
+        "timeline": "Weeks 5-7 (April 2026)",
+        "duration": "2-3 weeks",
+        "effort_days": "10-12",
+        "deliverables": ["Hierarchy management skill", "Sub-folder generation", "Cross-reference navigation"]
+      },
+      {
+        "phase": "Phase 3: EDPS Compliance",
+        "timeline": "Weeks 8-9 (April-May 2026)",
+        "duration": "2 weeks",
+        "effort_days": "8-10",
+        "deliverables": ["Compliance checking skill", "Validation tools", "Change impact analysis"]
+      },
+      {
+        "phase": "Phase 4: Migration & Integration",
+        "timeline": "Weeks 10-12 (May 2026)",
+        "duration": "1-2 weeks",
+        "effort_days": "8-11",
+        "deliverables": ["Migration tools", "OrgModel update", "Performance testing", "Documentation"]
+      }
+    ],
+    "milestones": [
+      {"id": "M1", "date": "End Week 4", "description": "Boundary-enhanced diagrams with participant stereotypes"},
+      {"id": "M2", "date": "End Week 7", "description": "Full hierarchy management with sub-folders and navigation"},
+      {"id": "M3", "date": "End Week 9", "description": "EDPS compliance validation passing all tests"},
+      {"id": "M4", "date": "End Week 12", "description": "Migration complete, OrgModel updated, documentation delivered"}
+    ]
+  },
+  "where": {
+    "technical_environment": {
+      "primary_platform": "VS Code with GitHub Copilot",
+      "diagram_rendering": "Mermaid sequence diagrams with box syntax",
+      "document_format": "Markdown with embedded Mermaid and JSON metadata",
+      "file_system": "Hierarchical folder structures within OrgDocument"
+    },
+    "skill_targets": [
+      {"skill": "diagram-generatecollaboration", "type": "enhancement", "effort_pct": 40},
+      {"skill": "hierarchy-management", "type": "new", "effort_pct": 20},
+      {"skill": "boundary-validation", "type": "new", "effort_pct": 15},
+      {"skill": "orgmodel-update", "type": "enhancement", "effort_pct": 15},
+      {"skill": "migration-tools", "type": "new", "effort_pct": 10}
+    ]
+  },
+  "why": {
+    "problem_statement": "Project 1 skills produce single-level flat collaboration diagrams that cannot represent complex multi-component systems, forcing oversized unreadable diagrams or loss of detail, violating EDPS methodology requirements for evolutionary process decomposition.",
+    "business_value": [
+      "Complexity management through navigable process hierarchies",
+      "EDPS methodology alignment fulfilling organizational commitment",
+      "Scalable modeling handling unlimited system complexity",
+      "Structured knowledge organization through folder hierarchies",
+      "Change impact analysis across process levels",
+      "Organizational model evolution reflecting methodology capabilities"
+    ]
+  },
+  "how": {
+    "implementation_strategy": [
+      "Extend existing diagram-generatecollaboration skill (don't replace)",
+      "Create dedicated new skills for hierarchy management and boundary validation",
+      "Use participant stereotypes as central organizing principle",
+      "Map process hierarchy directly to folder structure",
+      "Provide optional migration path for Project 1 diagrams"
+    ],
+    "key_technical_decisions": [
+      {"decision": "Boundary syntax", "choice": "Mermaid box", "rationale": "Only viable option for grouping in Mermaid sequence diagrams"},
+      {"decision": "Participant types", "choice": "@{ type } annotations", "rationale": "Mermaid-native participant metadata syntax"},
+      {"decision": "Decomposition trigger", "choice": "Control-type only", "rationale": "EDPS methodology alignment"},
+      {"decision": "Folder naming", "choice": "NN-BoundaryName/ format", "rationale": "Consistent with OrgModel conventions"},
+      {"decision": "Migration approach", "choice": "Opt-in enhancement", "rationale": "Preserves backward compatibility"}
+    ]
+  }
+}

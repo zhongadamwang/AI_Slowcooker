@@ -1,9 +1,9 @@
 # Domain Concepts Analysis
 
 **Project**: 01-Building-Skills  
-**Generated**: 2026-02-10T00:00:00Z  
+**Generated**: 2026-02-17T00:00:00Z  
 **Source**: requirements.json, w5h-analysis.json, goals.json  
-**Total Entities**: 15 | **Total Concepts**: 13
+**Total Entities**: 23 | **Total Concepts**: 38
 
 ## Domain Areas
 
@@ -21,6 +21,16 @@
 **Key Entities**: ChangeRequest, OrgModelComponent  
 **Core Concepts**: ChangeManagement, Traceability  
 **Primary Processes**: Change Documentation, Impact Analysis, Change Approval, Traceability Maintenance
+
+### EDP Methodology
+**Key Entities**: TargetedSystem, Empowerer, OpenSystemFramework, ValidationChecklist  
+**Core Concepts**: SystemsTheoryApproach, InformationTheoryApproach, ObjectOrientedDevelopment, ResponsibilityChain, ValueChain, SystemBoundaries, ValidationMethods  
+**Primary Processes**: System Framing, Responsibility Chain Implementation, Value Chain Implementation, Validation Process
+
+### Model Integration
+**Key Entities**: OrgModelStructure, ModelIntegrationPlan, SubProcessModel, IterativeProcess  
+**Core Concepts**: ModelAssessment, IntegrationPlanning, StakeholderTraining  
+**Primary Processes**: Model Assessment, Integration Planning, Implementation, Evaluation
 
 ### Project Planning
 **Key Entities**: Task, EffortEstimate, ProjectSchedule  
@@ -242,6 +252,99 @@
 
 **Source References**: [R-038:Change Management], [R-050:Change Process]
 
+### TargetedSystem *(ENT-016)*
+**Domain Area**: EDP Methodology  
+**Description**: Main subject system that delivers primary function and value within EDP analysis
+
+**Attributes**:
+- `system_id` (identifier): Unique targeted system identifier
+- `boundaries` (object): System boundaries definition
+- `inputs` (array): System inputs from environment
+- `outputs` (array): System outputs to environment
+- `constraints` (array): System operational constraints
+
+**Source References**: [R-057:EDP Methodology], [R-058:EDP Methodology]
+
+### Empowerer *(ENT-017)*
+**Domain Area**: EDP Methodology  
+**Description**: External systems or roles that provide goals, resources, and constraints to the Targeted System
+
+**Attributes**:
+- `empowerer_id` (identifier): Unique empowerer identifier
+- `provided_goals` (array): Goals provided to targeted system
+- `provided_resources` (array): Resources provided to targeted system
+- `imposed_constraints` (array): Constraints imposed on targeted system
+
+**Source References**: [R-058:EDP Methodology]
+
+### OpenSystemFramework *(ENT-018)*
+**Domain Area**: EDP Methodology  
+**Description**: Analytical approach viewing systems with explicit boundaries, inputs, outputs, environment interactions
+
+**Attributes**:
+- `framework_id` (identifier): Unique framework identifier
+- `system_boundaries` (object): Explicit system boundary definitions
+- `environment_interactions` (array): System-environment interaction patterns
+
+**Source References**: [R-057:EDP Methodology]
+
+### ValidationChecklist *(ENT-019)*
+**Domain Area**: EDP Methodology  
+**Description**: Systematic validation approach enforcing accuracy over notation compliance
+
+**Attributes**:
+- `checklist_id` (identifier): Unique validation checklist identifier
+- `validation_criteria` (array): Criteria for accuracy validation
+- `compliance_exceptions` (array): Notation compliance exceptions allowed
+
+**Source References**: [R-065:EDP Methodology]
+
+### OrgModelStructure *(ENT-020)*
+**Domain Area**: Model Integration  
+**Description**: Organizational model structure with defined file types for each process
+
+**Attributes**:
+- `structure_id` (identifier): Unique organizational model structure identifier
+- `required_files` (array): Required file types [domain-model.md, process.md, collaboration.md, state-machine.md, main.md, vocabulary.md, test-case-list.md]
+- `folder_hierarchy` (object): Process breakdown hierarchy structure
+
+**Source References**: [R-067:Model Integration], [R-068:Model Integration]
+
+### ModelIntegrationPlan *(ENT-021)*
+**Domain Area**: Model Integration  
+**Description**: Plan for integrating new models into existing organizational structures
+
+**Attributes**:
+- `plan_id` (identifier): Unique integration plan identifier
+- `target_subprocess` (string): Minimum sub-process identified for integration
+- `domain_entity_mapping` (object): Mapping between existing and new domain entities
+- `disruption_mitigation` (array): Steps to minimize integration disruption
+
+**Source References**: [R-072:Model Integration], [R-073:Model Integration]
+
+### SubProcessModel *(ENT-022)*
+**Domain Area**: Model Integration  
+**Description**: Minimum sub-process model identified for seamless model integration
+
+**Attributes**:
+- `subprocess_id` (identifier): Unique sub-process model identifier
+- `domain_entity_match` (number): Percentage match with new model domain entities
+- `replacement_feasibility` (enumeration): Feasibility of replacement [high, medium, low]
+
+**Source References**: [R-072:Model Integration]
+
+### IterativeProcess *(ENT-023)*
+**Domain Area**: EDP Methodology  
+**Description**: Evolutionary development process with documented rollback points
+
+**Attributes**:
+- `process_id` (identifier): Unique iterative process identifier
+- `iterations` (array): Documented iteration history
+- `rollback_points` (array): Available rollback checkpoint states
+- `validation_methods` (array): Methods for validating each iteration
+
+**Source References**: [R-060:EDP Methodology], [R-076:Model Integration]
+
 ## Business Concepts
 
 ### EvolutionaryDevelopment *(CON-001)*
@@ -322,6 +425,66 @@
 **Synonyms**: stakeholder management, stakeholder communication  
 **Source References**: [R-012:Collaboration Skills]
 
+### SystemsTheoryApproach *(CON-014)*
+**Domain Area**: EDP Methodology  
+**Definition**: Foundational principle using systems theory for holistic rather than reductionist analysis  
+**Synonyms**: systems thinking, holistic analysis  
+**Source References**: [R-054:EDP Methodology]
+
+### InformationTheoryApproach *(CON-015)*
+**Domain Area**: EDP Methodology  
+**Definition**: Mathematical framework for quantifying, storing, and communicating information in system analysis  
+**Synonyms**: information analysis, data flow modeling  
+**Source References**: [R-054:EDP Methodology]
+
+### ObjectOrientedDevelopment *(CON-016)*
+**Domain Area**: EDP Methodology  
+**Definition**: Programming paradigm organizing design around data objects with encapsulation, inheritance, polymorphism  
+**Synonyms**: OOD, object-oriented design  
+**Source References**: [R-054:EDP Methodology]
+
+### ResponsibilityChain *(CON-017)*
+**Domain Area**: EDP Methodology  
+**Definition**: Formal relationship showing how goals, resources, and constraints flow from Empowerers to Targeted System  
+**Synonyms**: responsibility flow, empowerment chain  
+**Source References**: [R-058:EDP Methodology]
+
+### ValueChain *(CON-018)*
+**Domain Area**: EDP Methodology  
+**Definition**: Formal relationship showing how deliverables, acceptance criteria, and metrics flow from Targeted System to Empowerers  
+**Synonyms**: value flow, deliverable chain  
+**Source References**: [R-059:EDP Methodology]
+
+### SystemBoundaries *(CON-019)*
+**Domain Area**: EDP Methodology  
+**Definition**: Explicit definition of what is inside versus outside the system including spatial, temporal, cognitive, organizational boundaries  
+**Synonyms**: boundary definition, system scope  
+**Source References**: [R-057:EDP Methodology]
+
+### ValidationMethods *(CON-020)*
+**Domain Area**: EDP Methodology  
+**Definition**: Systematic approaches for verifying assumptions, testing hypotheses, and confirming system descriptions  
+**Synonyms**: validation approach, verification methods  
+**Source References**: [R-061:EDP Methodology], [R-065:EDP Methodology]
+
+### ModelAssessment *(CON-021)*
+**Domain Area**: Model Integration  
+**Definition**: Analysis process for understanding current organizational model structure and components  
+**Synonyms**: model analysis, structure assessment  
+**Source References**: [R-067:Model Integration]
+
+### IntegrationPlanning *(CON-022)*
+**Domain Area**: Model Integration  
+**Definition**: Systematic approach to merging new models into existing organizational structures with minimal disruption  
+**Synonyms**: integration strategy, merge planning  
+**Source References**: [R-072:Model Integration], [R-073:Model Integration]
+
+### StakeholderTraining *(CON-023)*
+**Domain Area**: Model Integration  
+**Definition**: Formal process for educating affected parties about new models and implementation impacts  
+**Synonyms**: training program, change communication  
+**Source References**: [R-075:Model Integration]
+
 ## Terminology Glossary
 
 | Term | Definition | Domain Area | Context |
@@ -392,37 +555,43 @@
 ## Domain Analysis Summary
 
 ### Core Domain Structure
-This project operates across **8 distinct domain areas**, with the **AI Skills System** serving as the central technical foundation that integrates with **Team Management** for human development and **Project Planning** for delivery automation.
+This project operates across **10 distinct domain areas**, with the **AI Skills System** serving as the central technical foundation that integrates with **Team Management** for human development, **Project Planning** for delivery automation, **EDP Methodology** for systematic approach, and **Model Integration** for organizational alignment.
 
 ### Key Entity Patterns
 - **Hierarchical Organization**: From high-level concepts (SkillFramework) down to atomic elements (Requirement, Task)
 - **Dual Processing**: Human-driven skill development alongside AI-automated analysis and planning
 - **Full Traceability**: Every entity maintains links to source requirements and related changes
 - **Integration Focus**: All entities designed for VS Code/Claude Code environment compatibility
+- **Systems Theory Foundation**: EDP methodology entities following systems theory principles
+- **Model Integration**: Structured approach to merging new models with existing organizational structures
 
 ### Critical Relationships
 - **Processing Chain**: Requirements → AI Skills → Domain Models → Tasks → Schedules
 - **Human-AI Collaboration**: Team members leverage AI skills for enhanced productivity
 - **Change Management**: Comprehensive traceability from requirements through implementation
 - **Quality Assurance**: Confidence scoring and validation throughout all processing
+- **EDP Methodology**: Responsibility and value chains between Empowerers and Targeted Systems
+- **Model Integration**: Assessment, planning, and implementation processes for organizational models
 
 ### Domain Complexity Assessment
 **High Complexity Areas**:
 - AI Skills System (15 entities, complex processing relationships)
 - Project Planning (sophisticated estimation and scheduling logic)
+- EDP Methodology (8 entities with complex systems theory relationships)
 
 **Medium Complexity Areas**:
 - Change Management (structured workflow with approval processes)
 - Team Management (competency-based development framework)
+- Model Integration (systematic integration processes)
 
 **Lower Complexity Areas**:
 - Development Environment (focused on VS Code integration)
 - Project Governance (straightforward decision-making structure)
 
 ---
-**Traceability**: Extracted from requirements [R-001 through R-053] and W5H analysis  
-**Confidence Score**: 0.91/1.0  
-**Generated**: 2026-02-10T00:00:00Z
+**Traceability**: Extracted from requirements [R-001 through R-076] and W5H analysis  
+**Confidence Score**: 0.92/1.0  
+**Generated**: 2026-02-17T00:00:00Z
 
 ## Next Steps for Domain Modeling
 

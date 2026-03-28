@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "source_project": "03 - Building Skills Iteration 2",
+  "generated": "2026-03-15T08:00:00Z",
+  "target_process": "01 - Skill Development Process",
+  "entities": [
+    {
+      "name": "SkillExecutionContext",
+      "definition": "Runtime context object carrying skill invocation parameters, user identity, and environmental configuration during a skill pipeline execution.",
+      "attributes": ["context_id: String", "user_id: String", "invocation_timestamp: DateTime", "environment: Enum(dev,prod)"],
+      "relationships": ["associated with SkillOutputEntity", "created by PipelineOrchestrationControl"],
+      "domain_area": "Skill Pipeline",
+      "source_requirement": "R-42"
+    },
+    {
+      "name": "PipelineStageResult",
+      "definition": "Immutable value object recording the output, status, and duration of a single pipeline stage during skill execution.",
+      "attributes": ["stage_name: String", "status: Enum(pass,fail,skip)", "duration_ms: Integer", "output_ref: String"],
+      "relationships": ["aggregated by SkillOutputEntity", "produced by PipelineOrchestrationControl"],
+      "domain_area": "Skill Pipeline",
+      "source_requirement": "R-43"
+    }
+  ],
+  "vocabulary_terms": [
+    {
+      "term": "Skill Execution Context",
+      "definition": "Runtime environment and parameter bundle for a single skill invocation",
+      "aliases": ["Invocation Context", "Runtime Context"],
+      "context": "Pipeline execution, skill orchestration"
+    },
+    {
+      "term": "Pipeline Stage Result",
+      "definition": "Recorded outcome of one discrete stage within a skill execution pipeline",
+      "aliases": ["Stage Output", "Stage Record"],
+      "context": "Pipeline monitoring, audit trails"
+    }
+  ]
+}

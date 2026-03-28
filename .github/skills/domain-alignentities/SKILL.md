@@ -15,7 +15,8 @@ Systematically compare new domain concepts extracted from requirements against e
 - **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
 - **References**: Organizational domain models (`orgModel/**/*domain-model.md`)
 - **References**: Organizational vocabularies (`orgModel/**/*vocabulary.md`)
-- **Format**: Structured domain concepts with entities, terminology, relationships, and metadata
+- **References**: Organizational class diagrams (`orgModel/**/*domain-model.md` containing Mermaid class diagrams)
+- **Format**: Structured domain concepts with entities, terminology, relationships, operations, and metadata
 
 ## Outputs
 **Files Generated:**
@@ -40,6 +41,8 @@ Systematically compare new domain concepts extracted from requirements against e
       "extracted_entity": {
         "id": "ENT-001",
         "name": "User",
+        "attributes": ["user_id", "email", "role"],
+        "operations": ["authenticate", "updateProfile"],
         "source": "domain-concepts.json"
       },
       "alignment_result": {
@@ -121,6 +124,30 @@ Systematically compare new domain concepts extracted from requirements against e
       ]
     }
   ],
+  "operation_alignments": [
+    {
+      "extracted_operation": {
+        "entity": "User",
+        "operation": "authenticate",
+        "parameters": ["username", "password"],
+        "return_type": "boolean",
+        "source": "domain-concepts.json"
+      },
+      "alignment_result": {
+        "type": "method_match|method_conflict|new_method",
+        "target_operation": {
+          "entity": "Team Member",
+          "operation": "validateCredentials", 
+          "parameters": ["credentials"],
+          "source": "orgModel/01-skill-dev/domain-model.md"
+        },
+        "confidence": "0.0-1.0",
+        "similarity": "identical|similar|different",
+        "recommended_action": "use_existing|rename_operation|define_new",
+        "notes": "Similar functionality, consider parameter alignment"
+      }
+    }
+  ],
   "recommendations": [
     {
       "id": "REC-001",
@@ -177,6 +204,26 @@ Extracted entities with no organizational counterparts - potential model extensi
 **Domain Area**: Learning Management  
 **Rationale**: Project-specific concept not in organizational model  
 **Action**: ➕ Propose addition to organizational model
+
+## Operation Alignments
+
+### ✅ Method Matches
+Extracted operations that align with existing organizational entity methods.
+
+#### User.authenticate() → Team Member.validateCredentials() *(OP-001)*
+**Confidence**: 0.85  
+**Source Entity**: Team Member (orgModel/01-skill-dev/domain-model.md)  
+**Parameter Mapping**: [username, password] → [credentials]  
+**Action**: ✅ Align with organizational operation pattern
+
+### 🆕 New Operations
+Extracted operations with no organizational counterparts.
+
+#### User.updateProfile() *(OP-002)*
+**Entity**: User  
+**Parameters**: [profile_data]  
+**Return Type**: void  
+**Action**: 🆕 Propose as new capability
 
 ## Terminology Alignments
 
@@ -316,3 +363,59 @@ Terms not in organizational vocabulary that could be valuable additions.
 - **Low (0.2-0.49)**: Weak match requiring human review
 
 For detailed alignment patterns and conflict resolution strategies, see [alignment-patterns.md](references/alignment-patterns.md).
+
+## Usage Pattern
+```
+1. Call after domain-extractconcepts skill completion
+2. Load domain-concepts.json from project artifacts
+3. Analyze against organizational domain models and vocabularies
+4. Generate alignment analysis and recommendations
+5. Create domain-alignment.json and domain-alignment.md
+6. Update domain-model.md class diagrams with aligned concepts (optional)
+7. Feed results to domain-proposenewconcepts and model-integration skills
+```
+
+## Integration with Diagram Updates
+When alignment results indicate changes to domain models, this skill can trigger class diagram updates:
+
+### Diagram Update Integration
+```json
+{
+  "update_class_diagrams": true,
+  "target_domain_models": ["orgModel/01-skill-dev/domain-model.md"],
+  "alignment_mode": "rename|merge|extend|create_new",
+  "preserve_styling": true
+}
+```
+
+### Class Diagram Alignment Process
+1. **Identify diagram impacts** from entity and operation alignments
+2. **Generate updated class diagrams** reflecting organizational standards
+3. **Update domain-model.md** with aligned entity names and relationships
+4. **Maintain diagram consistency** across organizational models
+5. **Preserve existing styling** and layout where possible
+
+## Cross-Skill Integration
+
+### Input Dependencies:
+- domain-extractconcepts skill → domain-concepts.json
+- Organizational domain models (orgModel/**/*domain-model.md)
+- Organizational vocabularies (orgModel/**/*vocabulary.md)
+
+### Output Consumers:
+- domain-proposenewconcepts skill ← domain-alignment.json
+- model-integration skill ← domain-alignment.json
+- diagram-generatecollaboration skill ← alignment results (for diagram updates)
+- orgmodel-update skill ← alignment recommendations
+
+### Diagram Generation Integration:
+When updating domain models based on alignment results:
+- Entity alignments trigger class diagram updates with proper styling categories
+- Operation alignments modify method signatures in diagrams
+- Terminology standardization updates entity and attribute names
+- Relationship alignments adjust diagram associations
+- Styling consistency maintained with organizational standards:
+  - `classDef actor fill:#e1f5fe` - for actors and user roles
+  - `classDef entity fill:#f3e5f5` - for business entities and data structures  
+  - `classDef enum fill:#fff3e0` - for enumeration and value types
+  - `classDef ai fill:#e8f5e8` - for AI and automation components

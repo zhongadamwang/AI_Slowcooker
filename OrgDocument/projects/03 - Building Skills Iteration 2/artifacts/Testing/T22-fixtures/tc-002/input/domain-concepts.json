@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "source_project": "03 - Building Skills Iteration 2",
+  "generated": "2026-03-15T08:30:00Z",
+  "target_process": "02 - Analysis Process",
+  "entities": [
+    {
+      "name": "RequirementChunk",
+      "definition": "A normalized, uniquely-identified segment of a requirement document after ingestion and tokenization.",
+      "attributes": ["chunk_id: String", "source_file: String", "text: String", "requirement_type: Enum(functional,non-functional,constraint)"],
+      "relationships": ["originates from RequirementDocument", "analyzed into DomainConcept"],
+      "domain_area": "Requirements Analysis",
+      "source_requirement": "R-10"
+    },
+    {
+      "name": "AlignmentDecision",
+      "definition": "A recorded mapping verdict that links a new domain concept to an existing organizational entity, noting confidence and rationale.",
+      "attributes": ["decision_id: String", "new_concept: String", "mapped_entity: String", "confidence: Float", "rationale: String"],
+      "relationships": ["produced by domain-alignentities", "references RequirementChunk"],
+      "domain_area": "Domain Alignment",
+      "source_requirement": "R-11"
+    },
+    {
+      "name": "AnalysisPipeline",
+      "definition": "Ordered sequence of analysis skills (ingest → extract → align) that transforms requirements into domain-aligned concepts.",
+      "attributes": ["pipeline_id: String", "stages: List<String>", "status: Enum(pending,running,complete)"],
+      "relationships": ["contains RequirementChunk", "produces AlignmentDecision"],
+      "domain_area": "Pipeline Orchestration",
+      "source_requirement": "R-12"
+    }
+  ],
+  "vocabulary_terms": [
+    {
+      "term": "Requirement Chunk",
+      "definition": "A normalized, uniquely-identified segment of a requirement document",
+      "aliases": ["Requirement Segment", "Chunk"],
+      "context": "Requirements ingestion, analysis pipeline"
+    },
+    {
+      "term": "Alignment Decision",
+      "definition": "A recorded mapping verdict linking a new concept to an existing organizational entity",
+      "aliases": ["Mapping Decision", "Concept Alignment"],
+      "context": "Domain alignment, entity mapping"
+    },
+    {
+      "term": "Analysis Pipeline",
+      "definition": "Ordered sequence of analysis skills transforming requirements into domain-aligned concepts",
+      "aliases": ["Processing Pipeline", "Ingest Pipeline"],
+      "context": "Analysis orchestration, workflow management"
+    }
+  ]
+}

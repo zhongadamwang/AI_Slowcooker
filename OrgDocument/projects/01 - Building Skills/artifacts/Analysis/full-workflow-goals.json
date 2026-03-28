@@ -1,0 +1,259 @@
+{
+  "project_id": "full-workflow-test",
+  "source_file": "full-workflow-requirements.json",
+  "generated_at": "2026-02-21T10:45:00Z",
+  "goal_statement": "Modernize banking transaction processing to achieve industry-leading performance, security, and compliance while reducing operational costs by 25% and supporting 40% transaction volume growth without infrastructure expansion.",
+  "success_criteria": [
+    {
+      "criteria": "Achieve transaction authorization within 150ms for 95% of domestic transactions and 300ms for international transactions",
+      "source_refs": ["R-008:Functional Requirements"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "achieve",
+      "target_value": "150ms/300ms",
+      "confidence": 0.98
+    },
+    {
+      "criteria": "Deliver 99.99% system uptime with maximum 52 minutes downtime annually",
+      "source_refs": ["R-023:Performance Requirements"],
+      "extraction_method": "pattern_match", 
+      "outcome_verb": "deliver",
+      "target_value": "99.99%",
+      "confidence": 0.97
+    },
+    {
+      "criteria": "Support 50,000 TPS authorization requests with 100,000 TPS settlement processing capability",
+      "source_refs": ["R-022:Performance Requirements"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "support", 
+      "target_value": "50,000 TPS",
+      "confidence": 0.99
+    },
+    {
+      "criteria": "Achieve >99% fraud detection accuracy with <0.1% false positive rate",
+      "source_refs": ["R-012:Functional Requirements"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "achieve",
+      "target_value": ">99% & <0.1%",
+      "confidence": 0.96
+    },
+    {
+      "criteria": "Maintain zero regulatory compliance violations post-deployment",
+      "source_refs": ["R-024:Compliance", "R-025:Compliance"],
+      "extraction_method": "implicit_extraction",
+      "outcome_verb": "maintain",
+      "target_value": "zero violations", 
+      "confidence": 0.94
+    },
+    {
+      "criteria": "Reduce transaction processing costs by 25% compared to legacy system",
+      "source_refs": ["Business Metrics:Success Criteria"],
+      "extraction_method": "business_metric",
+      "outcome_verb": "reduce",
+      "target_value": "25%",
+      "confidence": 0.95
+    }
+  ],
+  "kpis": [
+    {
+      "kpi": "Transaction Authorization Success Rate: >99.95%",
+      "source_refs": ["R-008:Functional Requirements"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "achieve",
+      "target_value": "99.95%",
+      "timeframe": "monthly",
+      "confidence": 0.98
+    },
+    {
+      "kpi": "Average Response Time: <100ms for domestic transactions",  
+      "source_refs": ["R-008:Functional Requirements"],
+      "extraction_method": "performance_target",
+      "outcome_verb": "maintain",
+      "target_value": "100ms",
+      "timeframe": "per transaction",
+      "confidence": 0.97
+    },
+    {
+      "kpi": "System Availability: 99.99% measured monthly",
+      "source_refs": ["R-023:Performance Requirements"], 
+      "extraction_method": "availability_target",
+      "outcome_verb": "maintain",
+      "target_value": "99.99%",
+      "timeframe": "monthly",
+      "confidence": 0.98
+    },
+    {
+      "kpi": "Fraud Detection Accuracy: >99% with <0.1% false positives", 
+      "source_refs": ["R-012:Functional Requirements"],
+      "extraction_method": "accuracy_target",
+      "outcome_verb": "achieve",
+      "target_value": "99%/0.1%",
+      "timeframe": "per transaction",
+      "confidence": 0.96
+    },
+    {
+      "kpi": "Processing Throughput: 50,000 TPS authorization, 100,000 TPS settlement",
+      "source_refs": ["R-022:Performance Requirements"],
+      "extraction_method": "throughput_target", 
+      "outcome_verb": "support",
+      "target_value": "50K/100K TPS",
+      "timeframe": "sustained",
+      "confidence": 0.99
+    },
+    {
+      "kpi": "Recovery Time Objective: <15 minutes",
+      "source_refs": ["R-023:Performance Requirements"],
+      "extraction_method": "disaster_recovery",
+      "outcome_verb": "achieve",
+      "target_value": "15 minutes",
+      "timeframe": "per incident", 
+      "confidence": 0.97
+    },
+    {
+      "kpi": "Customer Satisfaction: 15% improvement in transaction experience ratings",
+      "source_refs": ["Business Metrics:Success Criteria"],
+      "extraction_method": "business_metric",
+      "outcome_verb": "improve",
+      "target_value": "15%",
+      "timeframe": "quarterly",
+      "confidence": 0.92
+    }
+  ],
+  "constraints": [
+    {
+      "constraint": "Two-phase commit protocols are prohibited due to performance constraints",
+      "source_refs": ["R-006:Architecture Requirements"],
+      "constraint_type": "technical_limitation",
+      "confidence": 0.98
+    },
+    {
+      "constraint": "Maximum transaction completion time limited to 5 seconds",
+      "source_refs": ["R-007:Architecture Requirements"],
+      "constraint_type": "timing_constraint",
+      "confidence": 0.97
+    },
+    {
+      "constraint": "Must maintain compatibility with existing FIS Profile core banking system",
+      "source_refs": ["R-013:Integration Requirements"],
+      "constraint_type": "integration_dependency",
+      "confidence": 0.96
+    },
+    {
+      "constraint": "All processing must comply with FIPS 140-2 Level 3 security standards",
+      "source_refs": ["R-018:Security Requirements"],
+      "constraint_type": "regulatory_requirement",
+      "confidence": 0.98
+    },
+    {
+      "constraint": "Payment network integration requires PCI DSS Level 1 certification",
+      "source_refs": ["R-016:Integration Requirements"],
+      "constraint_type": "certification_requirement",
+      "confidence": 0.97
+    },
+    {
+      "constraint": "Planned maintenance windows limited to maximum 4 hours monthly",
+      "source_refs": ["R-023:Performance Requirements"],
+      "constraint_type": "operational_constraint",
+      "confidence": 0.95
+    }
+  ],
+  "assumptions": [
+    {
+      "assumption": "Federal Reserve, ECB, and Bank of England rate feeds will remain available with 30-second update frequency",
+      "source_refs": ["R-010:Functional Requirements"],
+      "assumption_type": "external_dependency",
+      "confidence": 0.94
+    },
+    {
+      "assumption": "Current Kubernetes infrastructure can support microservices architecture with required scale",
+      "source_refs": ["R-001:Architecture Requirements"],
+      "assumption_type": "infrastructure_capacity",
+      "confidence": 0.93
+    },
+    {
+      "assumption": "Visa VisaNet, Mastercard, and Federal Reserve networks will maintain 99.99% uptime SLA",
+      "source_refs": ["R-015:Integration Requirements", "R-016:Integration Requirements"],
+      "assumption_type": "external_sla", 
+      "confidence": 0.95
+    },
+    {
+      "assumption": "OFAC sanctions data and credit bureau APIs will continue to meet response time requirements (<100ms, <200ms)",
+      "source_refs": ["R-017:Integration Requirements"],
+      "assumption_type": "external_performance",
+      "confidence": 0.92
+    },
+    {
+      "assumption": "HSM infrastructure will support automatic monthly key rotation without service interruption",
+      "source_refs": ["R-019:Security Requirements"],
+      "assumption_type": "security_infrastructure",
+      "confidence": 0.90
+    },
+    {
+      "assumption": "Machine learning fraud detection models will maintain accuracy targets through continuous learning",
+      "source_refs": ["R-011:Functional Requirements", "R-012:Functional Requirements"],
+      "assumption_type": "ai_model_performance",
+      "confidence": 0.88
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "How will the system handle degraded service scenarios when external payment networks experience partial outages?",
+      "source_refs": ["R-015:Integration Requirements", "R-016:Integration Requirements"],
+      "question_type": "operational_resilience",
+      "priority": "high",
+      "confidence": 0.91
+    },
+    {
+      "question": "What are the specific rollback procedures if the new system fails during the transition from the legacy system?",
+      "source_refs": ["R-013:Integration Requirements"],
+      "question_type": "migration_strategy",
+      "priority": "high", 
+      "confidence": 0.89
+    },
+    {
+      "question": "How will performance be maintained during peak load periods (e.g., Black Friday, end-of-month processing)?",
+      "source_refs": ["R-022:Performance Requirements"],
+      "question_type": "scalability_validation",
+      "priority": "medium",
+      "confidence": 0.87
+    },
+    {
+      "question": "What is the disaster recovery strategy for HSM hardware failures, and how quickly can keys be restored?",
+      "source_refs": ["R-018:Security Requirements", "R-019:Security Requirements"],
+      "question_type": "security_continuity",
+      "priority": "high",
+      "confidence": 0.90
+    },
+    {
+      "question": "How will regulatory compliance be maintained during system updates and patches?",
+      "source_refs": ["R-024:Compliance Requirements", "R-025:Compliance Requirements"],
+      "question_type": "compliance_continuity",
+      "priority": "medium",
+      "confidence": 0.86
+    },
+    {
+      "question": "What are the specific test scenarios for validating fraud detection accuracy in production?",
+      "source_refs": ["R-011:Functional Requirements", "R-012:Functional Requirements"],
+      "question_type": "validation_strategy",
+      "priority": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "traceability": {
+    "source_requirements": ["R-001", "R-006", "R-007", "R-008", "R-010", "R-011", "R-012", "R-013", "R-015", "R-016", "R-017", "R-018", "R-019", "R-022", "R-023", "R-024", "R-025"],
+    "extraction_timestamp": "2026-02-21T10:45:00Z",
+    "total_extracted_goals": 6,
+    "total_kpis": 7,
+    "total_constraints": 6,
+    "total_assumptions": 6,
+    "total_open_questions": 6,
+    "confidence_scores": {
+      "goal_statement": 0.95,
+      "success_criteria_average": 0.96,
+      "kpis_average": 0.97,
+      "constraints_average": 0.97, 
+      "assumptions_average": 0.92,
+      "open_questions_average": 0.88,
+      "overall": 0.94
+    }
+  }
+}

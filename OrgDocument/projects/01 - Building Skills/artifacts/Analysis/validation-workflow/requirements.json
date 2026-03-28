@@ -1,0 +1,132 @@
+{
+  "project_id": "simple-todo-app",
+  "generated_at": "2026-02-20T18:45:17Z",
+  "source_file": "simple-todo-app.md",
+  "total_requirements": 12,
+  "requirements": [
+    {
+      "id": "R-001",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "Core Functionality, para 1",
+      "section": "Core Functionality",
+      "text": "The application must allow users to create new tasks with a simple text description",
+      "tags": ["functional", "core"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-002", 
+      "source_file": "simple-todo-app.md",
+      "location_hint": "Core Functionality, para 2",
+      "section": "Core Functionality",
+      "text": "Users should be able to edit task descriptions if they need to make changes",
+      "tags": ["functional", "core"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-003",
+      "source_file": "simple-todo-app.md", 
+      "location_hint": "Core Functionality, para 3",
+      "section": "Core Functionality",
+      "text": "Completed tasks should be clearly marked as done but remain visible for reference",
+      "tags": ["functional", "core"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-004",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "Core Functionality, para 4",
+      "section": "Core Functionality", 
+      "text": "Tasks should be sorted with newest items at the top of the list",
+      "tags": ["functional", "interface"],
+      "confidence": 0.90
+    },
+    {
+      "id": "R-005",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "Core Functionality, para 5",
+      "section": "Core Functionality",
+      "text": "Users want to see how many tasks they have completed versus how many remain",
+      "tags": ["functional", "reporting"],
+      "confidence": 0.85
+    },
+    {
+      "id": "R-006",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "Core Functionality, para 6",
+      "section": "Core Functionality",
+      "text": "The application should remember tasks between sessions so users don't lose their list when they close the application",
+      "tags": ["functional", "persistence"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-007",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "User Interface Requirements, para 1",
+      "section": "User Interface Requirements",
+      "text": "The interface should be clean and minimalist without distracting elements",
+      "tags": ["nonfunctional", "interface"],
+      "confidence": 0.85
+    },
+    {
+      "id": "R-008",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "User Interface Requirements, para 2",
+      "section": "User Interface Requirements",
+      "text": "Adding a new task should require only typing the description and pressing enter",
+      "tags": ["functional", "interface"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-009",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "User Interface Requirements, para 3",
+      "section": "User Interface Requirements",
+      "text": "Marking tasks complete should be a single click or tap operation",
+      "tags": ["functional", "interface"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-010",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "User Interface Requirements, para 4",
+      "section": "User Interface Requirements", 
+      "text": "The application should work well on both computer screens and mobile phone screens",
+      "tags": ["nonfunctional", "responsive"],
+      "confidence": 0.90
+    },
+    {
+      "id": "R-011",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "Technical Considerations, para 1",
+      "section": "Technical Considerations",
+      "text": "The application should work in web browsers without requiring users to install additional software",
+      "tags": ["nonfunctional", "deployment"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-012",
+      "source_file": "simple-todo-app.md",
+      "location_hint": "Technical Considerations, para 2",
+      "section": "Technical Considerations",
+      "text": "Data should be stored locally so the application works without internet connectivity",
+      "tags": ["nonfunctional", "storage"],
+      "confidence": 0.90
+    }
+  ],
+  "glossary_suspects": [
+    "Todo List",
+    "Task",
+    "Desktop",
+    "Mobile",
+    "Web Browser",
+    "Local Storage",
+    "Session",
+    "Responsive Design"
+  ],
+  "metadata": {
+    "extraction_method": "requirements-ingest skill",
+    "document_type": "Requirements Specification",  
+    "domain": "Personal Productivity",
+    "complexity": "Simple"
+  }
+}

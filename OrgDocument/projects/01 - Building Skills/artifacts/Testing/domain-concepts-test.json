@@ -1,0 +1,368 @@
+{
+  "project_id": "Domain-Modeling-Chain-Test",
+  "extraction_metadata": {
+    "generated_at": "2026-02-21T10:35:00Z",
+    "source_files": ["requirements-test.json"],
+    "total_concepts": 6,
+    "total_entities": 4,
+    "confidence_score": 0.88
+  },
+  "domain_entities": [
+    {
+      "id": "ENT-001",
+      "name": "Task",
+      "description": "A todo item that users can create, edit, and mark as completed",
+      "attributes": [
+        {
+          "name": "task_id",
+          "type": "identifier",
+          "description": "Unique task identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Text description of the task",
+          "visibility": "public"
+        },
+        {
+          "name": "status",
+          "type": "enumeration",
+          "description": "Completion status of the task",
+          "values": ["pending", "completed"],
+          "visibility": "public"
+        },
+        {
+          "name": "created_date",
+          "type": "datetime",
+          "description": "When the task was created",
+          "visibility": "public"
+        },
+        {
+          "name": "modified_date",
+          "type": "datetime",
+          "description": "When the task was last modified",
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "create",
+          "description": "Create a new task with description",
+          "parameters": ["description"],
+          "return_type": "Task",
+          "visibility": "public"
+        },
+        {
+          "name": "edit",
+          "description": "Modify task description",
+          "parameters": ["new_description"],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "markCompleted",
+          "description": "Mark task as completed",
+          "parameters": [],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "isCompleted",
+          "description": "Check if task is completed",
+          "parameters": [],
+          "return_type": "boolean",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Task Management",
+      "source_refs": ["R-001", "R-002", "R-003"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-002",
+      "name": "TodoList",
+      "description": "Container that holds and manages a collection of tasks",
+      "attributes": [
+        {
+          "name": "list_id",
+          "type": "identifier",
+          "description": "Unique list identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "tasks",
+          "type": "collection",
+          "description": "Collection of tasks in the list",
+          "visibility": "public"
+        },
+        {
+          "name": "total_count",
+          "type": "integer",
+          "description": "Total number of tasks",
+          "visibility": "public"
+        },
+        {
+          "name": "completed_count",
+          "type": "integer",
+          "description": "Number of completed tasks",
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "addTask",
+          "description": "Add a new task to the list",
+          "parameters": ["task"],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "removeTask",
+          "description": "Remove a task from the list",
+          "parameters": ["task_id"],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "getSortedTasks",
+          "description": "Get tasks sorted by creation date (newest first)",
+          "parameters": [],
+          "return_type": "Task[]",
+          "visibility": "public"
+        },
+        {
+          "name": "getCompletionStats",
+          "description": "Get completed vs remaining task counts",
+          "parameters": [],
+          "return_type": "object",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Task Management",
+      "source_refs": ["R-004", "R-005", "R-006"],
+      "confidence": 0.90
+    },
+    {
+      "id": "ENT-003",
+      "name": "User",
+      "description": "Individual user who manages their personal tasks",
+      "attributes": [
+        {
+          "name": "user_id",
+          "type": "identifier",
+          "description": "Unique user identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "preferences",
+          "type": "object",
+          "description": "User interface and display preferences",
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "createTask",
+          "description": "Create a new task",
+          "parameters": ["description"],
+          "return_type": "Task",
+          "visibility": "public"
+        },
+        {
+          "name": "viewTasks",
+          "description": "View all tasks",
+          "parameters": [],
+          "return_type": "Task[]",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "User Management",
+      "source_refs": ["R-008", "R-009", "R-014"],
+      "confidence": 0.80
+    },
+    {
+      "id": "ENT-004",
+      "name": "LocalStorage",
+      "description": "Browser-based persistence mechanism for storing task data",
+      "attributes": [
+        {
+          "name": "storage_key",
+          "type": "string",
+          "description": "Key for storing data in browser storage",
+          "visibility": "private"
+        },
+        {
+          "name": "data",
+          "type": "object",
+          "description": "Serialized task data",
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "save",
+          "description": "Save task data to local storage",
+          "parameters": ["tasks"],
+          "return_type": "void",
+          "visibility": "public"
+        },
+        {
+          "name": "load",
+          "description": "Load task data from local storage",
+          "parameters": [],
+          "return_type": "Task[]",
+          "visibility": "public"
+        },
+        {
+          "name": "clear",
+          "description": "Clear all stored data",
+          "parameters": [],
+          "return_type": "void",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Data Persistence",
+      "source_refs": ["R-005", "R-012"],
+      "confidence": 0.85
+    }
+  ],
+  "business_concepts": [
+    {
+      "id": "CON-001",
+      "name": "Task Completion",
+      "definition": "The process of marking a task as done while keeping it visible for reference",
+      "synonyms": ["task completion", "marking done", "finishing task"],
+      "domain_area": "Task Management",
+      "source_refs": ["R-003", "R-009"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-002",
+      "name": "Task Persistence",
+      "definition": "Maintaining task data between application sessions without loss",
+      "synonyms": ["data persistence", "session continuity", "data retention"],
+      "domain_area": "Data Management",
+      "source_refs": ["R-005", "R-012"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-003",
+      "name": "Progress Tracking",
+      "definition": "Monitoring and displaying completion progress of tasks",
+      "synonyms": ["progress monitoring", "completion tracking", "status tracking"],
+      "domain_area": "Analytics",
+      "source_refs": ["R-006"],
+      "confidence": 0.88
+    },
+    {
+      "id": "CON-004",
+      "name": "Responsive Design",
+      "definition": "User interface that adapts to different screen sizes and devices",
+      "synonyms": ["mobile compatibility", "multi-device support", "adaptive layout"],
+      "domain_area": "User Interface",
+      "source_refs": ["R-010"],
+      "confidence": 0.85
+    },
+    {
+      "id": "CON-005",
+      "name": "Minimalist Interface",
+      "definition": "Clean, simple user interface without distracting elements",
+      "synonyms": ["clean interface", "simple design", "minimal UI"],
+      "domain_area": "User Experience",
+      "source_refs": ["R-007"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-006",
+      "name": "Offline Functionality",
+      "definition": "Application capability to work without internet connectivity",
+      "synonyms": ["offline operation", "local functionality", "disconnected mode"],
+      "domain_area": "Technical Architecture",
+      "source_refs": ["R-012"],
+      "confidence": 0.88
+    }
+  ],
+  "terminology": [
+    {
+      "term": "CRUD",
+      "definition": "Create, Read, Update, Delete operations",
+      "context": "Basic data manipulation operations for tasks",
+      "domain_area": "Technical",
+      "source_refs": ["R-001", "R-002"]
+    },
+    {
+      "term": "Local Storage",
+      "definition": "Browser-based storage mechanism for data persistence",
+      "context": "Client-side data storage without server dependency",
+      "domain_area": "Technical",
+      "source_refs": ["R-012"]
+    },
+    {
+      "term": "Session",
+      "definition": "Period of application usage from start to close",
+      "context": "Maintaining data across application usage sessions",
+      "domain_area": "Technical",
+      "source_refs": ["R-005"]
+    },
+    {
+      "term": "Responsive Design",
+      "definition": "Design approach for optimal viewing across devices",
+      "context": "Ensuring usability on desktop and mobile screens",
+      "domain_area": "UI/UX",
+      "source_refs": ["R-010"]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "REL-001",
+      "type": "composition",
+      "source_entity": "TodoList",
+      "target_entity": "Task",
+      "description": "TodoList contains multiple Tasks",
+      "cardinality": "one-to-many",
+      "source_refs": ["R-004", "R-005"]
+    },
+    {
+      "id": "REL-002",
+      "type": "association",
+      "source_entity": "User",
+      "target_entity": "TodoList",
+      "description": "User owns and manages TodoList",
+      "cardinality": "one-to-one",
+      "source_refs": ["R-014"]
+    },
+    {
+      "id": "REL-003",
+      "type": "dependency",
+      "source_entity": "TodoList",
+      "target_entity": "LocalStorage",
+      "description": "TodoList uses LocalStorage for persistence",
+      "cardinality": "one-to-one",
+      "source_refs": ["R-005", "R-012"]
+    }
+  ],
+  "domain_areas": [
+    {
+      "name": "Task Management",
+      "description": "Core functionality for creating, editing, and managing todo tasks",
+      "entities": ["Task", "TodoList"],
+      "concepts": ["Task Completion", "Progress Tracking"],
+      "key_processes": ["Create Task", "Edit Task", "Mark Complete", "Sort Tasks"]
+    },
+    {
+      "name": "Data Persistence",
+      "description": "Local storage and data management without server dependency",
+      "entities": ["LocalStorage"],
+      "concepts": ["Task Persistence", "Offline Functionality"],
+      "key_processes": ["Save Data", "Load Data", "Session Management"]
+    },
+    {
+      "name": "User Interface",
+      "description": "Presentation layer and user interactions",
+      "entities": ["User"],
+      "concepts": ["Responsive Design", "Minimalist Interface"],
+      "key_processes": ["Input Handling", "Display Management", "Device Adaptation"]
+    }
+  ]
+}

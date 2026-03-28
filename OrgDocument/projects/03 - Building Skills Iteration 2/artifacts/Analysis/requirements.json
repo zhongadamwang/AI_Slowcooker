@@ -1,0 +1,212 @@
+{
+  "project_id": "03-Building-Skills-Iteration-2",
+  "source_files": ["initial-requirements.md", "boundary-concepts.md", "hierarchy-examples.md"],
+  "generated_at": "2026-03-14T10:00:00Z",
+  "total_requirements": 12,
+  "requirements": [
+    {
+      "id": "R-301",
+      "section": "Hierarchical Process Modeling",
+      "text": "The system must support hierarchical process modeling where each interaction in a collaboration diagram can be decomposed into a sub-process with its own collaboration diagrams and process models, supporting unlimited depth levels while maintaining appropriate abstraction at each level.",
+      "tags": ["functional", "hierarchy", "core"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Generate Level 0 (high-level) collaboration diagrams",
+        "Support decomposition of any interaction into Level N+1 sub-process",
+        "Maintain consistent modeling patterns across hierarchy levels",
+        "Automatic folder structure generation for each process level"
+      ]
+    },
+    {
+      "id": "R-302",
+      "section": "Boundary Concept Implementation",
+      "text": "The system must implement boundary concepts with participant stereotypes where only one external actor interacts with a target participant boundary, sub-level collaborations occur within the boundary using Mermaid box syntax, and participant types distinguish different system components (actor, boundary, control, entity).",
+      "tags": ["functional", "boundary", "core"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Use Mermaid sequence diagram box syntax for boundary representation",
+        "Enforce single-actor-to-boundary interaction patterns",
+        "Generate sub-process diagrams within appropriate boxes",
+        "Validate boundary consistency across hierarchy levels",
+        "Implement participant stereotypes in diagram generation",
+        "Apply decomposition rules: only control participants can be decomposed",
+        "Ensure boundary participants are positioned as first recipients within boundaries"
+      ]
+    },
+    {
+      "id": "R-303",
+      "section": "Enhanced Collaboration Diagram Generation",
+      "text": "Enhance the existing diagram-generatecollaboration skill to support automatic boundary detection and box generation, hierarchical diagram creation with proper nesting, integration with sub-process folder management, and backward compatibility with Project 1 diagram formats.",
+      "tags": ["enhancement", "diagram", "core"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Extend existing collaboration diagram skill with boundary capabilities",
+        "Generate both flat and hierarchical diagram formats",
+        "Support migration from Project 1 diagrams to hierarchical format",
+        "Maintain all existing diagram generation features"
+      ]
+    },
+    {
+      "id": "R-304",
+      "section": "Sub-Process Folder Management",
+      "text": "The system must automatically manage folder structures for process hierarchies, creating sub-folders for each decomposed process with consistent naming conventions and cross-reference navigation between hierarchy levels.",
+      "tags": ["functional", "folder-management"],
+      "priority": "medium",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Automatic sub-folder creation for decomposed processes",
+        "Consistent folder structure: Level-N-ProcessName/",
+        "Include standard files: main.md, collaboration.md, process.md, domain-model.md",
+        "Cross-reference links between hierarchy levels"
+      ]
+    },
+    {
+      "id": "R-305",
+      "section": "Scale Management",
+      "text": "Each hierarchy level must maintain appropriate focus with complexity metrics for determining decomposition need, guidelines for appropriate detail at each level, automatic warnings for overly complex diagrams, and decomposition suggestions based on interaction patterns.",
+      "tags": ["nonfunctional", "complexity"],
+      "priority": "medium",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Complexity metrics for determining decomposition need",
+        "Guidelines for appropriate detail level at each hierarchy",
+        "Automatic warnings for overly complex single-level diagrams",
+        "Decomposition suggestions based on interaction patterns"
+      ]
+    },
+    {
+      "id": "R-306",
+      "section": "EDPS Methodology Compliance",
+      "text": "All generated artifacts must comply with EDPS methodology including evolutionary development principles support, incremental model refinement capabilities, change impact analysis across hierarchy levels, and traceability between requirements and process levels.",
+      "tags": ["compliance", "methodology"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "EDPS-compliant process modeling patterns",
+        "Support for iterative refinement of process hierarchies",
+        "Change propagation across hierarchy levels",
+        "Requirements traceability to appropriate process levels"
+      ]
+    },
+    {
+      "id": "R-308",
+      "section": "OrgModel Evolution and Integration",
+      "text": "The system must update and evolve the organizational model (OrgModel) to reflect enhanced hierarchical EDPS capabilities, including updating process documents with boundary concepts, enhancing collaboration diagrams with hierarchical decomposition, and integrating boundary patterns into domain models.",
+      "tags": ["enhancement", "orgmodel"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Update OrgModel skill development process with hierarchical boundary concepts",
+        "Enhance existing organizational collaboration diagrams with box syntax",
+        "Create organizational templates for hierarchical process modeling",
+        "Ensure organizational methodology reflects Project 3 capabilities",
+        "Document organizational boundary patterns and best practices"
+      ]
+    },
+    {
+      "id": "R-309a",
+      "section": "Organizational Model Automation",
+      "text": "Enhanced skills must be capable of automatically updating OrgModel documents including detecting when organizational processes need hierarchical decomposition, generating boundary-enhanced collaboration diagrams, and maintaining traceability between skills and organizational model updates.",
+      "tags": ["functional", "orgmodel-automation"],
+      "priority": "medium",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Skills can identify OrgModel documents requiring hierarchical enhancement",
+        "Automatic generation of boundary-enhanced organizational diagrams",
+        "Preservation of organizational model consistency and traceability",
+        "Integration with existing orgmodel-update skill from Project 1"
+      ]
+    },
+    {
+      "id": "R-309b",
+      "section": "Backward Compatibility",
+      "text": "Maintain compatibility with Project 1 outputs including ability to import and enhance Project 1 collaboration diagrams, migration tools for converting flat diagrams to hierarchical format, preservation of existing requirements and domain model links, and seamless integration with existing skills framework.",
+      "tags": ["compatibility", "migration"],
+      "priority": "medium",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Import Project 1 collaboration diagrams without modification",
+        "Optional enhancement to hierarchical format",
+        "Preserve all existing requirement links and metadata",
+        "No breaking changes to existing skill interfaces"
+      ]
+    },
+    {
+      "id": "R-310",
+      "section": "Participant Types and Decomposition Rules",
+      "text": "The system must classify all participants using defined types (actor, boundary, control, entity), apply decomposition rules based on participant types, maintain type consistency across hierarchy levels, and validate type usage in boundary implementations.",
+      "tags": ["functional", "participant-types", "core"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Generate Mermaid diagrams with participant type definitions",
+        "Use participant type icons instead of stereotype text",
+        "Enforce decomposition rules during sub-process generation",
+        "Validate boundary positioning as first recipient within boundaries",
+        "Maintain participant type consistency across hierarchy levels",
+        "Provide clear error messages for participant type rule violations"
+      ]
+    },
+    {
+      "id": "TC-301",
+      "section": "Mermaid Syntax Constraints",
+      "text": "Use box syntax for boundary representation (no native boundary element), maintain valid Mermaid sequence diagram syntax, support for nested structure representation within Mermaid limitations.",
+      "tags": ["technical-constraint"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Valid Mermaid box syntax generation",
+        "Diagrams render correctly in VS Code preview",
+        "Graceful handling of Mermaid syntax limitations"
+      ]
+    },
+    {
+      "id": "TC-302",
+      "section": "VS Code Integration",
+      "text": "Maintain seamless GitHub Copilot integration, preserve markdown-based workflow, support for large diagram rendering in VS Code preview.",
+      "tags": ["technical-constraint"],
+      "priority": "high",
+      "confidence": "high",
+      "acceptance_criteria": [
+        "Seamless GitHub Copilot skill invocation",
+        "Markdown-first workflow preserved",
+        "Large diagrams render within VS Code without issues"
+      ]
+    }
+  ],
+  "participant_types": {
+    "actor": {
+      "mermaid_syntax": "@{ \"type\" : \"actor\" }",
+      "role": "External entities that initiate interactions",
+      "decomposable": false,
+      "position_rule": "Always external, never within boundaries"
+    },
+    "boundary": {
+      "mermaid_syntax": "@{ \"type\" : \"boundary\" }",
+      "role": "Interface components mediating actor-system communication",
+      "decomposable": false,
+      "position_rule": "First recipient of actor messages within boundaries"
+    },
+    "control": {
+      "mermaid_syntax": "@{ \"type\" : \"control\" }",
+      "role": "Complex business logic components",
+      "decomposable": true,
+      "position_rule": "Only type that can be decomposed into sub-processes"
+    },
+    "entity": {
+      "mermaid_syntax": "@{ \"type\" : \"entity\" }",
+      "role": "Data storage, resources, or passive components",
+      "decomposable": false,
+      "position_rule": "Stable resources without internal process decomposition"
+    }
+  },
+  "decomposition_rules": [
+    "Control-Only Decomposition: Only control-type participants can become sub-processes",
+    "Boundary First Reception: Boundary-type participants must receive actor messages first within any boundary box",
+    "Actor Externality: Actor-type participants always remain external to boundaries",
+    "Entity Stability: Entity-type participants represent stable resources"
+  ]
+}

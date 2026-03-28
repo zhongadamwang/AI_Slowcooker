@@ -1,0 +1,11 @@
+{
+  "github": {
+    "issue_defaults": {
+      "default_assignee": "adam.wang",
+      "milestone": "MVP - GitHub Integration"
+    },
+    "field_mapping": {
+      "additional_labels": ["github-integration", "automation"]
+    }
+  }
+}

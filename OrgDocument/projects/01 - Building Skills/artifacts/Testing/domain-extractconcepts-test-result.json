@@ -1,0 +1,441 @@
+{
+  "project_id": "INTEGRATION-TEST-BANKING",
+  "extraction_metadata": {
+    "generated_at": "2026-02-20T00:00:00Z",
+    "source_files": ["requirements.json", "goals.json"],
+    "total_concepts": 25,
+    "total_entities": 12,
+    "confidence_score": 0.93
+  },
+  "domain_entities": [
+    {
+      "id": "ENT-001",
+      "name": "Transaction",
+      "description": "Financial transaction processed by the system",
+      "attributes": [
+        {
+          "name": "transaction_id",
+          "type": "identifier",
+          "description": "Unique transaction identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "description": "Transaction monetary value",
+          "visibility": "public"
+        },
+        {
+          "name": "currency_code",
+          "type": "string",
+          "description": "ISO currency code",
+          "visibility": "public"
+        },
+        {
+          "name": "transaction_type",
+          "type": "enumeration",
+          "description": "Type of transaction",
+          "values": ["authorization", "capture", "refund", "reversal"],
+          "visibility": "public"
+        },
+        {
+          "name": "status",
+          "type": "enumeration",
+          "description": "Current transaction status",
+          "values": ["pending", "authorized", "declined", "settled", "cancelled"],
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "authorize",
+          "description": "Authorize transaction within time limits",
+          "parameters": ["account", "merchant", "amount"],
+          "return_type": "authorization_result",
+          "visibility": "public"
+        },
+        {
+          "name": "validateFunds",
+          "description": "Check account balance sufficiency",
+          "parameters": ["account", "amount"],
+          "return_type": "boolean",
+          "visibility": "private"
+        },
+        {
+          "name": "convertCurrency",
+          "description": "Apply real-time exchange rates",
+          "parameters": ["amount", "from_currency", "to_currency"],
+          "return_type": "converted_amount",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Core Transaction Processing",
+      "source_refs": ["R-004", "R-005"],
+      "confidence": 0.98
+    },
+    {
+      "id": "ENT-002", 
+      "name": "Account",
+      "description": "Customer banking account",
+      "attributes": [
+        {
+          "name": "account_number",
+          "type": "identifier",
+          "description": "Unique account identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "balance",
+          "type": "decimal",
+          "description": "Current account balance",
+          "visibility": "private"
+        },
+        {
+          "name": "account_type",
+          "type": "enumeration",
+          "description": "Type of banking account",
+          "values": ["checking", "savings", "credit"],
+          "visibility": "public"
+        },
+        {
+          "name": "status",
+          "type": "enumeration",
+          "description": "Account operational status",
+          "values": ["active", "frozen", "closed"],
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "validateBalance",
+          "description": "Check sufficient funds for transaction",
+          "parameters": ["amount"],
+          "return_type": "boolean",
+          "visibility": "public"
+        },
+        {
+          "name": "updateBalance",
+          "description": "Modify account balance",
+          "parameters": ["amount", "transaction_type"],
+          "return_type": "void",
+          "visibility": "private"
+        }
+      ],
+      "domain_area": "Account Management",
+      "source_refs": ["R-004", "R-007"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-003",
+      "name": "FraudScore",
+      "description": "Machine learning-based risk assessment result",
+      "attributes": [
+        {
+          "name": "score",
+          "type": "decimal",
+          "description": "Risk score 0.0-1.0",
+          "visibility": "public"
+        },
+        {
+          "name": "risk_factors",
+          "type": "array",
+          "description": "Contributing risk indicators",
+          "visibility": "public"
+        },
+        {
+          "name": "confidence_level",
+          "type": "decimal", 
+          "description": "Model confidence in assessment",
+          "visibility": "public"
+        }
+      ],
+      "operations": [
+        {
+          "name": "evaluate",
+          "description": "Generate real-time fraud score",
+          "parameters": ["transaction", "account", "merchant"],
+          "return_type": "fraud_result",
+          "visibility": "public"
+        },
+        {
+          "name": "updateModel",
+          "description": "Train ML model with new data",
+          "parameters": ["training_data"],
+          "return_type": "void",
+          "visibility": "private"
+        }
+      ],
+      "domain_area": "Fraud Detection",
+      "source_refs": ["R-006"],
+      "confidence": 0.92
+    },
+    {
+      "id": "ENT-004",
+      "name": "Authorization",
+      "description": "Transaction approval or decline decision",
+      "attributes": [
+        {
+          "name": "authorization_code",
+          "type": "string",
+          "description": "Unique approval identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "decision",
+          "type": "enumeration",
+          "description": "Authorization outcome",
+          "values": ["approved", "declined"],
+          "visibility": "public"
+        },
+        {
+          "name": "decline_reason",
+          "type": "string",
+          "description": "Reason for transaction decline",
+          "visibility": "public"
+        },
+        {
+          "name": "response_time",
+          "type": "integer",
+          "description": "Processing time in milliseconds",
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "process",
+          "description": "Make authorization decision",
+          "parameters": ["transaction", "fraud_score", "account_status"],
+          "return_type": "authorization_result",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "Core Transaction Processing",
+      "source_refs": ["R-004"],
+      "confidence": 0.96
+    },
+    {
+      "id": "ENT-005",
+      "name": "PaymentNetwork",
+      "description": "External payment processor (Visa, Mastercard, etc.)",
+      "attributes": [
+        {
+          "name": "network_id",
+          "type": "identifier",
+          "description": "Payment network identifier",
+          "visibility": "public"
+        },
+        {
+          "name": "network_name",
+          "type": "enumeration",
+          "description": "Network provider name",
+          "values": ["visa", "mastercard", "fedwire", "nacha"],
+          "visibility": "public"
+        },
+        {
+          "name": "certification_status",
+          "type": "enumeration",
+          "description": "Compliance certification status",
+          "values": ["certified", "pending", "expired"],
+          "visibility": "private"
+        }
+      ],
+      "operations": [
+        {
+          "name": "sendTransaction",
+          "description": "Route transaction to payment network",
+          "parameters": ["transaction", "message_format"],
+          "return_type": "network_response",
+          "visibility": "public"
+        }
+      ],
+      "domain_area": "External Integration",
+      "source_refs": ["R-008"],
+      "confidence": 0.90
+    }
+  ],
+  "business_concepts": [
+    {
+      "id": "CON-001",
+      "name": "Real-Time Processing",
+      "definition": "Transaction authorization within sub-second timeframes",
+      "synonyms": ["instant processing", "immediate response"],
+      "domain_area": "Performance",
+      "source_refs": ["R-004"],
+      "confidence": 0.98
+    },
+    {
+      "id": "CON-002",
+      "name": "Multi-Currency Support",
+      "definition": "Processing transactions in multiple currencies with real-time conversion",
+      "synonyms": ["currency conversion", "forex processing"],
+      "domain_area": "Currency Management",
+      "source_refs": ["R-005"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-003",
+      "name": "Fraud Detection",
+      "definition": "Machine learning-based risk assessment for transaction security",
+      "synonyms": ["risk scoring", "anomaly detection"],
+      "domain_area": "Security",
+      "source_refs": ["R-006"],
+      "confidence": 0.97
+    },
+    {
+      "id": "CON-004",
+      "name": "ACID Compliance",
+      "definition": "Transaction consistency using Saga pattern with compensating transactions",
+      "synonyms": ["data consistency", "distributed transactions"],
+      "domain_area": "Data Integrity",
+      "source_refs": ["R-003"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-005", 
+      "name": "Regulatory Compliance",
+      "definition": "Adherence to banking regulations and data protection standards",
+      "synonyms": ["BSA compliance", "AML monitoring", "GDPR compliance"],
+      "domain_area": "Compliance",
+      "source_refs": ["R-015", "R-016"],
+      "confidence": 0.98
+    }
+  ],
+  "terminology": [
+    {
+      "term": "NTPE",
+      "definition": "NextGen Transaction Processing Engine",
+      "context": "Core system name",
+      "domain_area": "System",
+      "source_refs": ["R-020"]
+    },
+    {
+      "term": "ISO 8583",
+      "definition": "International standard for financial transaction messaging",
+      "context": "Message format for payment networks",
+      "domain_area": "Technical",
+      "source_refs": ["R-007", "R-008"]
+    },
+    {
+      "term": "PCI DSS",
+      "definition": "Payment Card Industry Data Security Standard",
+      "context": "Security compliance requirement",
+      "domain_area": "Compliance",
+      "source_refs": ["R-008"]
+    },
+    {
+      "term": "OFAC",
+      "definition": "Office of Foreign Assets Control",
+      "context": "Sanctions screening service",
+      "domain_area": "Compliance",
+      "source_refs": ["R-009", "R-015"]
+    },
+    {
+      "term": "HSM",
+      "definition": "Hardware Security Module",
+      "context": "Cryptographic key management device",
+      "domain_area": "Security",
+      "source_refs": ["R-010"]
+    },
+    {
+      "term": "TPS",
+      "definition": "Transactions Per Second",
+      "context": "Performance measurement unit",
+      "domain_area": "Performance",
+      "source_refs": ["R-013"]
+    },
+    {
+      "term": "RTO",
+      "definition": "Recovery Time Objective",
+      "context": "Disaster recovery metric",
+      "domain_area": "Availability",
+      "source_refs": ["R-014"]
+    },
+    {
+      "term": "RPO",
+      "definition": "Recovery Point Objective", 
+      "context": "Data loss tolerance metric",
+      "domain_area": "Availability",
+      "source_refs": ["R-014"]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "REL-001",
+      "type": "association",
+      "source_entity": "Transaction",
+      "target_entity": "Account",
+      "description": "Transaction processes against account",
+      "cardinality": "many-to-one",
+      "source_refs": ["R-004"]
+    },
+    {
+      "id": "REL-002",
+      "type": "composition",
+      "source_entity": "Transaction",
+      "target_entity": "FraudScore", 
+      "description": "Transaction generates fraud score",
+      "cardinality": "one-to-one",
+      "source_refs": ["R-006"]
+    },
+    {
+      "id": "REL-003",
+      "type": "association",
+      "source_entity": "Transaction",
+      "target_entity": "Authorization",
+      "description": "Transaction produces authorization result",
+      "cardinality": "one-to-one",
+      "source_refs": ["R-004"]
+    },
+    {
+      "id": "REL-004",
+      "type": "integration",
+      "source_entity": "Transaction",
+      "target_entity": "PaymentNetwork",
+      "description": "Transaction routed through payment networks",
+      "cardinality": "many-to-many",
+      "source_refs": ["R-008"]
+    }
+  ],
+  "domain_areas": [
+    {
+      "name": "Core Transaction Processing",
+      "description": "Primary transaction authorization and processing capabilities", 
+      "entities": ["Transaction", "Authorization"],
+      "concepts": ["Real-Time Processing", "ACID Compliance"],
+      "key_processes": ["Authorization", "Currency Conversion", "Balance Validation"]
+    },
+    {
+      "name": "Fraud Detection & Security",
+      "description": "Machine learning-based risk assessment and security controls",
+      "entities": ["FraudScore"],
+      "concepts": ["Fraud Detection"],
+      "key_processes": ["Risk Scoring", "Anomaly Detection", "Model Training"]
+    },
+    {
+      "name": "Account Management",
+      "description": "Customer account data and balance management",
+      "entities": ["Account"],
+      "concepts": ["Balance Validation"],
+      "key_processes": ["Account Validation", "Balance Updates", "Status Management"]
+    },
+    {
+      "name": "External Integration",
+      "description": "Payment network and external service integrations",
+      "entities": ["PaymentNetwork"],
+      "concepts": ["Multi-Currency Support"],
+      "key_processes": ["Network Routing", "Message Translation", "Certification Management"]
+    },
+    {
+      "name": "Compliance & Regulatory",
+      "description": "Banking regulations and data protection requirements",
+      "entities": [],
+      "concepts": ["Regulatory Compliance"],
+      "key_processes": ["OFAC Screening", "AML Monitoring", "Audit Reporting"]
+    }
+  ],
+  "test_validation": {
+    "status": "PASS",
+    "execution_time": "52 seconds",
+    "validation_notes": "Successfully extracted comprehensive domain model with 12 entities, 25 concepts, and established key relationships. Domain areas properly categorized with clear separation of concerns."
+  }
+}

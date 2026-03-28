@@ -8,6 +8,21 @@ license: MIT
 
 Provides structured approach to project planning, milestone tracking, and progress monitoring using templates that integrate with the established document tree structure.
 
+## Intent
+
+Plan project phases using PERT analysis and critical-path identification, track milestone and task progress, and produce dynamic tracking documents that integrate with the EDPS document tree. Owns PERT network initialisation; `plan-estimateeffort` supplies the duration estimates used as input.
+
+## Inputs
+
+- **Project requirements or task breakdown**: Requirements document or `plan-derivetasks` output
+- **Timeline constraints**: Earliest start date, target delivery date, available resource count
+- **Optional**: `effort-estimates.json` from `plan-estimateeffort` — seeds PERT task durations
+
+## Outputs
+
+- `project-plan.md` — Full project plan with phases, milestones, Gantt representation, and PERT critical path
+- `tasks/task-tracking.md` — Dynamic tracking document with task status, owners, and progress indicators
+
 ## Core Function
 
 **Input**: Project requirements, timeline constraints, resource information

@@ -1,0 +1,272 @@
+{
+  "project_id": "Domain-Modeling-Chain-Test",
+  "alignment_metadata": {
+    "generated_at": "2026-02-21T10:40:00Z",
+    "source_concepts_file": "domain-concepts-test.json",
+    "reference_models": ["orgModel/01 - Skill Development Process/domain-model.md"],
+    "reference_vocabularies": ["orgModel/01 - Skill Development Process/vocabulary.md"],
+    "total_alignments": 4,
+    "conflict_count": 1,
+    "alignment_confidence": 0.75
+  },
+  "entity_alignments": [
+    {
+      "extracted_entity": {
+        "id": "ENT-003",
+        "name": "User",
+        "attributes": ["user_id", "preferences"],
+        "operations": ["createTask", "viewTasks"],
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "partial_match",
+        "target_entity": {
+          "name": "TeamMember",
+          "source": "orgModel/01 - Skill Development Process/domain-model.md",
+          "section": "Primary Actors"
+        },
+        "confidence": 0.60,
+        "mapping_rationale": "Both represent individuals using system functionality, but User is more generic while TeamMember is organizational-specific",
+        "recommended_action": "create_distinction",
+        "notes": "User represents individual consumer, TeamMember represents organizational member with roles and responsibilities"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-001",
+        "name": "Task",
+        "attributes": ["task_id", "description", "status", "created_date", "modified_date"],
+        "operations": ["create", "edit", "markCompleted", "isCompleted"],
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "partial_match",
+        "target_entity": {
+          "name": "LearningActivity",
+          "source": "orgModel/01 - Skill Development Process/vocabulary.md",
+          "section": "Process Terms"
+        },
+        "confidence": 0.55,
+        "mapping_rationale": "Both represent actionable items that can be created, tracked, and completed, though in different domains",
+        "recommended_action": "create_distinction",
+        "notes": "Task is more general-purpose while LearningActivity is specific to skill development"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-002",
+        "name": "TodoList",
+        "attributes": ["list_id", "tasks", "total_count", "completed_count"],
+        "operations": ["addTask", "removeTask", "getSortedTasks", "getCompletionStats"],
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "partial_match",
+        "target_entity": {
+          "name": "LearningPath",
+          "source": "orgModel/01 - Skill Development Process/domain-model.md",
+          "section": "Core Entities"
+        },
+        "confidence": 0.65,
+        "mapping_rationale": "Both represent containers for multiple activities/tasks with progress tracking capabilities",
+        "recommended_action": "create_distinction",
+        "notes": "TodoList is generic task container, LearningPath is structured skill development sequence"
+      }
+    },
+    {
+      "extracted_entity": {
+        "id": "ENT-004",
+        "name": "LocalStorage",
+        "attributes": ["storage_key", "data"],
+        "operations": ["save", "load", "clear"],
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "new_entity",
+        "target_entity": null,
+        "confidence": 0.95,
+        "mapping_rationale": "No equivalent persistence mechanism found in organizational domain model",
+        "recommended_action": "create_new",
+        "notes": "Technical persistence entity with no direct organizational equivalent"
+      }
+    }
+  ],
+  "terminology_alignments": [
+    {
+      "extracted_term": {
+        "term": "Task Completion",
+        "definition": "The process of marking a task as done while keeping it visible for reference",
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "vocabulary_match",
+        "target_term": {
+          "term": "Skill Validation",
+          "definition": "Verification that skill has been successfully acquired",
+          "source": "orgModel/01 - Skill Development Process/vocabulary.md"
+        },
+        "confidence": 0.70,
+        "relationship": "similar",
+        "recommended_action": "clarify_distinction",
+        "notes": "Both involve marking completion, but Task Completion is immediate while Skill Validation requires verification"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "Progress Tracking",
+        "definition": "Monitoring and displaying completion progress of tasks",
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "vocabulary_match",
+        "target_term": {
+          "term": "Skills Assessment", 
+          "definition": "Systematic evaluation of current skill levels",
+          "source": "orgModel/01 - Skill Development Process/vocabulary.md"
+        },
+        "confidence": 0.60,
+        "relationship": "broader",
+        "recommended_action": "define_new",
+        "notes": "Progress Tracking is broader than Skills Assessment but serves similar monitoring purposes"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "Local Storage",
+        "definition": "Browser-based storage mechanism for data persistence",
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.95,
+        "relationship": "unrelated",
+        "recommended_action": "define_new",
+        "notes": "Technical term with no organizational equivalent"
+      }
+    },
+    {
+      "extracted_term": {
+        "term": "CRUD",
+        "definition": "Create, Read, Update, Delete operations",
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "new_term",
+        "target_term": null,
+        "confidence": 0.95,
+        "relationship": "unrelated", 
+        "recommended_action": "define_new",
+        "notes": "Technical term with no organizational equivalent"
+      }
+    }
+  ],
+  "relationship_alignments": [
+    {
+      "extracted_relationship": {
+        "id": "REL-002",
+        "source_entity": "User",
+        "target_entity": "TodoList",
+        "type": "association"
+      },
+      "alignment_result": {
+        "alignment_pattern": "existing_pattern",
+        "similar_relationships": [
+          {
+            "source": "TeamMember",
+            "target": "SkillProfile",
+            "type": "has",
+            "model": "orgModel/01 - Skill Development Process/domain-model.md"
+          },
+          {
+            "source": "TeamMember", 
+            "target": "LearningPath",
+            "type": "owns",
+            "model": "orgModel/01 - Skill Development Process/domain-model.md"
+          }
+        ],
+        "recommended_action": "use_existing_pattern",
+        "notes": "Individual ownership pattern already established in organizational model"
+      }
+    }
+  ],
+  "conflicts_detected": [
+    {
+      "conflict_id": "CONF-001",
+      "type": "naming_conflict",
+      "description": "Term 'User' overlaps conceptually with established 'TeamMember' but serves different domain contexts",
+      "affected_items": ["ENT-003", "TeamMember"],
+      "severity": "medium",
+      "resolution_options": [
+        {
+          "option": "retain_extracted",
+          "description": "Keep 'User' for personal productivity domain to distinguish from organizational 'TeamMember'",
+          "impact": "Creates domain-specific terminology while preserving organizational standards"
+        },
+        {
+          "option": "create_hierarchy", 
+          "description": "Define 'User' as a generalization of 'TeamMember' for broader contexts",
+          "impact": "Extends organizational model with generic user concept"
+        }
+      ]
+    }
+  ],
+  "operation_alignments": [
+    {
+      "extracted_operation": {
+        "entity": "Task",
+        "operation": "markCompleted",
+        "parameters": [],
+        "return_type": "void",
+        "source": "domain-concepts-test.json"
+      },
+      "alignment_result": {
+        "type": "method_match",
+        "target_operation": {
+          "entity": "LearningPath",
+          "operation": "complete",
+          "parameters": [],
+          "source": "orgModel/01 - Skill Development Process/domain-model.md"
+        },
+        "confidence": 0.85,
+        "similarity": "similar",
+        "recommended_action": "use_existing",
+        "notes": "Both represent completion marking operations with similar patterns"
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "REC-001",
+      "type": "clarification",
+      "priority": "medium",
+      "description": "Maintain 'User' terminology in personal productivity domain to distinguish from organizational 'TeamMember'",
+      "impact": "Preserves domain-specific clarity while avoiding confusion with organizational roles",
+      "implementation": "Document distinction between personal User and organizational TeamMember"
+    },
+    {
+      "id": "REC-002",
+      "type": "extension",
+      "priority": "low",
+      "description": "Consider adding LocalStorage concept to organizational technical architecture vocabulary",
+      "impact": "Enhances technical vocabulary for client-side persistence patterns",
+      "implementation": "Add LocalStorage and related technical persistence terms to organizational vocabulary"
+    },
+    {
+      "id": "REC-003",
+      "type": "standardization",
+      "priority": "medium",
+      "description": "Adopt completion operation naming pattern from organizational model",
+      "impact": "Improves consistency in operation naming across domains",
+      "implementation": "Consider 'complete()' instead of 'markCompleted()' to match LearningPath pattern"
+    },
+    {
+      "id": "REC-004",
+      "type": "clarification",
+      "priority": "high",
+      "description": "Document domain boundary between personal productivity (Todo) and organizational learning (Skills)",
+      "impact": "Clarifies when to use personal vs organizational domain concepts",
+      "implementation": "Create domain boundary documentation explaining context-appropriate entity usage"
+    }
+  ]
+}

@@ -48,6 +48,30 @@
       "source_refs": ["R-036:Change Management", "R-037:Change Management", "R-038:Change Management"],
       "extraction_method": "pattern_match",
       "outcome_verb": "maintain"
+    },
+    {
+      "criteria": "Systems-based approach implemented with documented boundaries, inputs, outputs",
+      "source_refs": ["R-054:EDP Methodology", "R-057:EDP Methodology", "R-062:EDP Methodology"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "implement"
+    },
+    {
+      "criteria": "Mermaid-first documentation standard established with UML justification process",
+      "source_refs": ["R-056:EDP Methodology", "R-064:EDP Methodology"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "establish"
+    },
+    {
+      "criteria": "Validation methodology ensuring accuracy over compliance implemented",
+      "source_refs": ["R-055:EDP Methodology", "R-065:EDP Methodology"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "implement"
+    },
+    {
+      "criteria": "Model integration capability with seamless sub-process replacement",
+      "source_refs": ["R-072:Model Integration", "R-073:Model Integration"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "integrate"
     }
   ],
   "kpis": [
@@ -128,6 +152,22 @@
     {
       "constraint": "Path patterns: From OrgModel to Changes: ../../projects/{project-name}/artifacts/Changes/",
       "source_refs": ["R-053:Referencing"]
+    },
+    {
+      "constraint": "Must follow systems theory, information theory, and object-oriented development principles",
+      "source_refs": ["R-054:EDP Methodology"]
+    },
+    {
+      "constraint": "Must use Open System framing for all entities with explicit boundaries, inputs, outputs, environment, constraints",
+      "source_refs": ["R-057:EDP Methodology"]
+    },
+    {
+      "constraint": "Must provide structured output sections with defined headings and validation checklists",
+      "source_refs": ["R-062:EDP Methodology", "R-065:EDP Methodology"]
+    },
+    {
+      "constraint": "Must maintain orgModel folder structure with domain-model.md, process.md, collaboration.md, state-machine.md, main.md, vocabulary.md, test-case-list.md",
+      "source_refs": ["R-068:Model Integration"]
     }
   ],
   "assumptions": [
@@ -162,6 +202,22 @@
     {
       "assumption": "PERT estimation methodology will provide accurate effort estimates",
       "source_refs": ["R-034:Plan.EstimateEffort"]
+    },
+    {
+      "assumption": "Existing orgModel structure can accommodate new model integration without major restructuring",
+      "source_refs": ["R-067:Model Integration", "R-068:Model Integration"]
+    },
+    {
+      "assumption": "Domain entities can be effectively mapped for integration planning and sub-process identification",
+      "source_refs": ["R-072:Model Integration"]
+    },
+    {
+      "assumption": "Sub-process models can be identified and replaced seamlessly with minimal disruption",
+      "source_refs": ["R-073:Model Integration"]
+    },
+    {
+      "assumption": "Stakeholders will be available for training and feedback during model integration implementation",
+      "source_refs": ["R-075:Model Integration", "R-076:Model Integration"]
     }
   ],
   "open_questions": [
@@ -204,6 +260,22 @@
     {
       "question": "How will success be measured for the overall evolutionary development process implementation?",
       "source_refs": ["R-016:Assessment and Measurement", "R-018:Progress tracking and reporting"]
+    },
+    {
+      "question": "How will systems theory principles be consistently applied and validated across all AI skills?",
+      "source_refs": ["R-054:EDP Methodology", "R-061:EDP Methodology"]
+    },
+    {
+      "question": "What training and onboarding will be needed for teams to adopt EDP methodology?",
+      "source_refs": ["R-060:EDP Methodology", "R-075:Model Integration"]
+    },
+    {
+      "question": "How will model integration conflicts be identified and resolved during implementation?",
+      "source_refs": ["R-072:Model Integration", "R-073:Model Integration"]
+    },
+    {
+      "question": "How will the effectiveness of iterative development with rollback points be measured?",
+      "source_refs": ["R-060:EDP Methodology", "R-076:Model Integration"]
     }
   ],
   "traceability": {
@@ -213,9 +285,11 @@
       "R-021", "R-022", "R-023", "R-024", "R-025", "R-026", "R-027", "R-028", "R-029", "R-030",
       "R-031", "R-032", "R-033", "R-034", "R-035", "R-036", "R-037", "R-038", "R-039", "R-040",
       "R-041", "R-042", "R-043", "R-044", "R-045", "R-046", "R-047", "R-048", "R-049", "R-050",
-      "R-051", "R-052", "R-053"
+      "R-051", "R-052", "R-053", "R-054", "R-055", "R-056", "R-057", "R-058", "R-059", "R-060",
+      "R-061", "R-062", "R-063", "R-064", "R-065", "R-066", "R-067", "R-068", "R-069", "R-070",
+      "R-071", "R-072", "R-073", "R-074", "R-075", "R-076"
     ],
-    "extraction_timestamp": "2026-02-10T00:00:00Z",
+    "extraction_timestamp": "2026-02-17T00:00:00Z",
     "confidence_scores": {
       "goal_statement": 0.95,
       "overall": 0.92,

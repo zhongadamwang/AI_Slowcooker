@@ -6,17 +6,23 @@ license: MIT
 
 # Requirements Ingest
 
+## Intent
+
 Transforms requirements documents (PDF/DOCX/Markdown/Email) into structured, atomic chunks with classification and traceability.
 
-## Core Function
+## Inputs
 
-**Input**: Raw files + project_id
-**Primary Output**: Markdown format matching original specification (for downstream skills)
-**Secondary Output**: JSON format saved to structured folders (for machine processing)
-**Output Destination**: 
-- Markdown: `outputs/projects/{project_id}/Analysis/requirements.md` (primary for downstream)
-- JSON: `outputs/projects/{project_id}/Analysis/requirements.json` (machine processing)
-**Directory Structure**: Auto-created project folders with Analysis subfolder containing dual-format requirements, processing logs, and glossary files
+- **Sources**: Raw requirement files (PDF, DOCX, Markdown, Email)
+- **Parameters**: `project_id`
+
+## Outputs
+
+**Files Generated:**
+- `outputs/projects/{project_id}/Analysis/requirements.md` — Markdown format for downstream skills
+- `outputs/projects/{project_id}/Analysis/requirements.json` — JSON format for machine processing
+- Auto-created project directory with Analysis subfolder, processing logs, and glossary files
+
+## Core Function
 
 ## Usage
 

@@ -1,0 +1,184 @@
+{
+  "goal_statement": "Transform banking transaction processing to achieve 99.99% availability with sub-second authorization times while reducing operational costs by 25% and supporting 40% transaction volume growth within 12 months.",
+  "success_criteria": [
+    {
+      "criteria": "Achieve 99.99% system uptime with maximum 52 minutes downtime annually",
+      "source_refs": ["R-014:REQ-PERF-002"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "achieve"
+    },
+    {
+      "criteria": "Authorize 95% of domestic transactions within 150 milliseconds",
+      "source_refs": ["R-004:REQ-FUNC-001"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "authorize"
+    },
+    {
+      "criteria": "Reduce transaction processing costs by 25% compared to legacy system",
+      "source_refs": ["R-018:Business Metrics"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "reduce"
+    },
+    {
+      "criteria": "Improve customer satisfaction by 15% in transaction experience ratings",
+      "source_refs": ["R-018:Business Metrics"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "improve"
+    },
+    {
+      "criteria": "Support 40% transaction volume growth without infrastructure expansion", 
+      "source_refs": ["R-018:Business Metrics"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "support"
+    },
+    {
+      "criteria": "Maintain zero regulatory compliance violations post-deployment",
+      "source_refs": ["R-018:Business Metrics"],
+      "extraction_method": "pattern_match",
+      "outcome_verb": "maintain"
+    }
+  ],
+  "kpis": [
+    {
+      "kpi": "Transaction authorization success rate: >99.95%",
+      "source_refs": ["R-017:Operational Metrics"],
+      "extraction_method": "pattern_match",
+      "target_value": "99.95%",
+      "timeframe": "continuous"
+    },
+    {
+      "kpi": "Average response time: <100ms for domestic transactions",
+      "source_refs": ["R-017:Operational Metrics"],
+      "extraction_method": "pattern_match", 
+      "target_value": "100ms",
+      "timeframe": "per transaction"
+    },
+    {
+      "kpi": "Transaction throughput: 50,000 TPS authorization requests",
+      "source_refs": ["R-013:REQ-PERF-001"],
+      "extraction_method": "pattern_match",
+      "target_value": "50,000 TPS",
+      "timeframe": "sustained"
+    },
+    {
+      "kpi": "Fraud detection accuracy: >99% with <0.1% false positives",
+      "source_refs": ["R-017:Operational Metrics"],
+      "extraction_method": "pattern_match",
+      "target_value": "99% accuracy, 0.1% false positive",
+      "timeframe": "continuous"
+    },
+    {
+      "kpi": "Recovery time objective (RTO): 15 minutes maximum",
+      "source_refs": ["R-014:REQ-PERF-002"],
+      "extraction_method": "pattern_match",
+      "target_value": "15 minutes",
+      "timeframe": "per incident"
+    },
+    {
+      "kpi": "Recovery point objective (RPO): 30 seconds maximum data loss",
+      "source_refs": ["R-014:REQ-PERF-002"],
+      "extraction_method": "pattern_match", 
+      "target_value": "30 seconds",
+      "timeframe": "per incident"
+    }
+  ],
+  "constraints": [
+    {
+      "constraint": "Must comply with Federal Reserve, OCC, FDIC, FFIEC banking regulations",
+      "source_refs": ["R-020:System Overview", "R-015:REQ-COMP-001"]
+    },
+    {
+      "constraint": "Two-phase commit protocols are prohibited due to performance constraints",
+      "source_refs": ["R-003:REQ-ARCH-003"]
+    },
+    {
+      "constraint": "Maximum transaction completion time must not exceed 5 seconds",
+      "source_refs": ["R-003:REQ-ARCH-003"]
+    },
+    {
+      "constraint": "Must maintain FIPS 140-2 Level 3 compliance for key management",
+      "source_refs": ["R-010:REQ-SEC-001"]
+    },
+    {
+      "constraint": "PCI DSS Level 1 certification required for payment network integration",
+      "source_refs": ["R-008:REQ-INT-002"]
+    },
+    {
+      "constraint": "Planned maintenance windows limited to maximum 4 hours monthly",
+      "source_refs": ["R-014:REQ-PERF-002"]
+    }
+  ],
+  "assumptions": [
+    {
+      "assumption": "Existing FIS Profile core banking system will remain operational during integration",
+      "source_refs": ["R-007:REQ-INT-001"]
+    },
+    {
+      "assumption": "Payment network certifications (Visa, Mastercard) can be obtained within project timeline",
+      "source_refs": ["R-008:REQ-INT-002"]
+    },
+    {
+      "assumption": "External data providers (OFAC, credit bureaus) will maintain current service levels",
+      "source_refs": ["R-009:REQ-INT-003"]
+    },
+    {
+      "assumption": "Kubernetes cluster and container registry infrastructure will be available",
+      "source_refs": ["R-001:REQ-ARCH-001"]
+    },
+    {
+      "assumption": "HSM hardware will be procured and configured before encryption implementation",
+      "source_refs": ["R-010:REQ-SEC-001"]
+    },
+    {
+      "assumption": "Current transaction volumes and growth projections are accurate",
+      "source_refs": ["R-018:Business Metrics"]
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "What is the rollback strategy if the new system fails to meet performance requirements?",
+      "source_refs": ["R-014:REQ-PERF-002"]
+    },
+    {
+      "question": "How will transaction data be migrated from legacy system without service interruption?",
+      "source_refs": ["R-007:REQ-INT-001"]
+    },
+    {
+      "question": "What is the disaster recovery testing schedule to validate 15-minute RTO?",
+      "source_refs": ["R-014:REQ-PERF-002"]
+    },
+    {
+      "question": "How will regulatory reporting be validated before go-live?",
+      "source_refs": ["R-015:REQ-COMP-001"]
+    },
+    {
+      "question": "What is the contingency plan if payment network certifications are delayed?",
+      "source_refs": ["R-008:REQ-INT-002"]
+    },
+    {
+      "question": "How will machine learning models be trained and validated for fraud detection?",
+      "source_refs": ["R-006:REQ-FUNC-003"]
+    }
+  ],
+  "traceability": {
+    "source_requirements": ["R-001", "R-002", "R-003", "R-004", "R-005", "R-006", "R-007", "R-008", "R-009", "R-010", "R-011", "R-012", "R-013", "R-014", "R-015", "R-016", "R-017", "R-018", "R-019", "R-020"],
+    "extraction_timestamp": "2026-02-20T00:00:00Z",
+    "confidence_scores": {
+      "goal_statement": 0.95,
+      "overall": 0.92
+    },
+    "extraction_summary": {
+      "outcome_patterns_found": 12,
+      "success_criteria_extracted": 6,
+      "kpis_identified": 6,
+      "constraints_identified": 6,
+      "assumptions_identified": 6,
+      "open_questions_generated": 6
+    }
+  },
+  "test_validation": {
+    "status": "PASS",
+    "execution_time": "38 seconds",
+    "validation_notes": "Successfully extracted business-focused goals and outcomes from technical requirements. All success criteria are measurable and time-bound. KPIs have clear target values and measurement timeframes."
+  }
+}

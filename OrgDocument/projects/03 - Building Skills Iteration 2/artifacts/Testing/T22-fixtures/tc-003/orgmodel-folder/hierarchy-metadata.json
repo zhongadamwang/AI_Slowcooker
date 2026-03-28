@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "process_name": "Skill Pipeline Execution",
+  "level": 1,
+  "parent_process": "01 - Skill Development Process",
+  "folder": "T22-fixtures/tc-003/orgmodel-folder",
+  "decomposed_from": "SkillPipelineExecutionControl",
+  "created": "2026-03-14T10:00:00Z",
+  "managed_by": "hierarchy-management"
+}

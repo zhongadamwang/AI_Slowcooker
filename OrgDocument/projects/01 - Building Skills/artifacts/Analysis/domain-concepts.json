@@ -1,11 +1,11 @@
 {
   "project_id": "01-Building-Skills",
   "extraction_metadata": {
-    "generated_at": "2026-02-10T00:00:00Z",
+    "generated_at": "2026-02-17T00:00:00Z",
     "source_files": ["requirements.json", "w5h-analysis.json", "goals.json"],
-    "total_concepts": 28,
-    "total_entities": 15,
-    "confidence_score": 0.91
+    "total_concepts": 38,
+    "total_entities": 23,
+    "confidence_score": 0.92
   },
   "domain_entities": [
     {
@@ -538,6 +538,233 @@
       "domain_area": "Organizational Modeling",
       "source_refs": ["R-038:Change Management", "R-050:Change Process"],
       "confidence": 0.88
+    },
+    {
+      "id": "ENT-016",
+      "name": "TargetedSystem",
+      "description": "Main subject system that delivers primary function and value within EDP analysis",
+      "attributes": [
+        {
+          "name": "system_id",
+          "type": "identifier",
+          "description": "Unique targeted system identifier"
+        },
+        {
+          "name": "boundaries",
+          "type": "object",
+          "description": "System boundaries definition"
+        },
+        {
+          "name": "inputs",
+          "type": "array",
+          "description": "System inputs from environment"
+        },
+        {
+          "name": "outputs", 
+          "type": "array",
+          "description": "System outputs to environment"
+        },
+        {
+          "name": "constraints",
+          "type": "array",
+          "description": "System operational constraints"
+        }
+      ],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-057:EDP Methodology", "R-058:EDP Methodology"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-017", 
+      "name": "Empowerer",
+      "description": "External systems or roles that provide goals, resources, and constraints to the Targeted System",
+      "attributes": [
+        {
+          "name": "empowerer_id",
+          "type": "identifier", 
+          "description": "Unique empowerer identifier"
+        },
+        {
+          "name": "provided_goals",
+          "type": "array",
+          "description": "Goals provided to targeted system"
+        },
+        {
+          "name": "provided_resources",
+          "type": "array",
+          "description": "Resources provided to targeted system"
+        },
+        {
+          "name": "imposed_constraints",
+          "type": "array",
+          "description": "Constraints imposed on targeted system"
+        }
+      ],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-058:EDP Methodology"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-018",
+      "name": "OpenSystemFramework",
+      "description": "Analytical approach viewing systems with explicit boundaries, inputs, outputs, environment interactions",
+      "attributes": [
+        {
+          "name": "framework_id",
+          "type": "identifier",
+          "description": "Unique framework identifier"
+        },
+        {
+          "name": "system_boundaries",
+          "type": "object",
+          "description": "Explicit system boundary definitions"
+        },
+        {
+          "name": "environment_interactions",
+          "type": "array",
+          "description": "System-environment interaction patterns"
+        }
+      ],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-057:EDP Methodology"],
+      "confidence": 0.90
+    },
+    {
+      "id": "ENT-019",
+      "name": "ValidationChecklist",
+      "description": "Systematic validation approach enforcing accuracy over notation compliance",
+      "attributes": [
+        {
+          "name": "checklist_id",
+          "type": "identifier",
+          "description": "Unique validation checklist identifier"
+        },
+        {
+          "name": "validation_criteria",
+          "type": "array",
+          "description": "Criteria for accuracy validation"
+        },
+        {
+          "name": "compliance_exceptions",
+          "type": "array",
+          "description": "Notation compliance exceptions allowed"
+        }
+      ],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-065:EDP Methodology"],
+      "confidence": 0.90
+    },
+    {
+      "id": "ENT-020",
+      "name": "OrgModelStructure",
+      "description": "Organizational model structure with defined file types for each process",
+      "attributes": [
+        {
+          "name": "structure_id",
+          "type": "identifier",
+          "description": "Unique organizational model structure identifier"
+        },
+        {
+          "name": "required_files",
+          "type": "array",
+          "description": "Required file types for each process",
+          "values": ["domain-model.md", "process.md", "collaboration.md", "state-machine.md", "main.md", "vocabulary.md", "test-case-list.md"]
+        },
+        {
+          "name": "folder_hierarchy",
+          "type": "object",
+          "description": "Process breakdown hierarchy structure"
+        }
+      ],
+      "domain_area": "Model Integration",
+      "source_refs": ["R-067:Model Integration", "R-068:Model Integration"],
+      "confidence": 0.95
+    },
+    {
+      "id": "ENT-021",
+      "name": "ModelIntegrationPlan",
+      "description": "Plan for integrating new models into existing organizational structures",
+      "attributes": [
+        {
+          "name": "plan_id",
+          "type": "identifier",
+          "description": "Unique integration plan identifier"
+        },
+        {
+          "name": "target_subprocess",
+          "type": "string",
+          "description": "Minimum sub-process identified for integration"
+        },
+        {
+          "name": "domain_entity_mapping",
+          "type": "object",
+          "description": "Mapping between existing and new domain entities"
+        },
+        {
+          "name": "disruption_mitigation",
+          "type": "array",
+          "description": "Steps to minimize integration disruption"
+        }
+      ],
+      "domain_area": "Model Integration",
+      "source_refs": ["R-072:Model Integration", "R-073:Model Integration"],
+      "confidence": 0.90
+    },
+    {
+      "id": "ENT-022",
+      "name": "SubProcessModel",
+      "description": "Minimum sub-process model identified for seamless model integration",
+      "attributes": [
+        {
+          "name": "subprocess_id",
+          "type": "identifier",
+          "description": "Unique sub-process model identifier"
+        },
+        {
+          "name": "domain_entity_match",
+          "type": "number",
+          "description": "Percentage match with new model domain entities"
+        },
+        {
+          "name": "replacement_feasibility",
+          "type": "enumeration",
+          "description": "Feasibility of replacement",
+          "values": ["high", "medium", "low"]
+        }
+      ],
+      "domain_area": "Model Integration",
+      "source_refs": ["R-072:Model Integration"],
+      "confidence": 0.85
+    },
+    {
+      "id": "ENT-023",
+      "name": "IterativeProcess",
+      "description": "Evolutionary development process with documented rollback points",
+      "attributes": [
+        {
+          "name": "process_id",
+          "type": "identifier",
+          "description": "Unique iterative process identifier"
+        },
+        {
+          "name": "iterations",
+          "type": "array",
+          "description": "Documented iteration history"
+        },
+        {
+          "name": "rollback_points",
+          "type": "array",
+          "description": "Available rollback checkpoint states"
+        },
+        {
+          "name": "validation_methods",
+          "type": "array",
+          "description": "Methods for validating each iteration"
+        }
+      ],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-060:EDP Methodology", "R-076:Model Integration"],
+      "confidence": 0.90
     }
   ],
   "business_concepts": [
@@ -657,6 +884,96 @@
       "domain_area": "Project Management",
       "source_refs": ["R-012:Collaboration Skills"],
       "confidence": 0.90
+    },
+    {
+      "id": "CON-014",
+      "name": "SystemsTheoryApproach",
+      "definition": "Foundational principle using systems theory for holistic rather than reductionist analysis",
+      "synonyms": ["systems thinking", "holistic analysis"],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-054:EDP Methodology"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-015", 
+      "name": "InformationTheoryApproach",
+      "definition": "Mathematical framework for quantifying, storing, and communicating information in system analysis",
+      "synonyms": ["information analysis", "data flow modeling"],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-054:EDP Methodology"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-016",
+      "name": "ObjectOrientedDevelopment",
+      "definition": "Programming paradigm organizing design around data objects with encapsulation, inheritance, polymorphism",
+      "synonyms": ["OOD", "object-oriented design"],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-054:EDP Methodology"],
+      "confidence": 0.95
+    },
+    {
+      "id": "CON-017",
+      "name": "ResponsibilityChain",
+      "definition": "Formal relationship showing how goals, resources, and constraints flow from Empowerers to Targeted System",
+      "synonyms": ["responsibility flow", "empowerment chain"],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-058:EDP Methodology"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-018",
+      "name": "ValueChain",
+      "definition": "Formal relationship showing how deliverables, acceptance criteria, and metrics flow from Targeted System to Empowerers",
+      "synonyms": ["value flow", "deliverable chain"],
+      "domain_area": "EDP Methodology", 
+      "source_refs": ["R-059:EDP Methodology"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-019",
+      "name": "SystemBoundaries",
+      "definition": "Explicit definition of what is inside versus outside the system including spatial, temporal, cognitive, organizational boundaries",
+      "synonyms": ["boundary definition", "system scope"],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-057:EDP Methodology"],
+      "confidence": 0.85
+    },
+    {
+      "id": "CON-020",
+      "name": "ValidationMethods",
+      "definition": "Systematic approaches for verifying assumptions, testing hypotheses, and confirming system descriptions",
+      "synonyms": ["validation approach", "verification methods"],
+      "domain_area": "EDP Methodology",
+      "source_refs": ["R-061:EDP Methodology", "R-065:EDP Methodology"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-021",
+      "name": "ModelAssessment",
+      "definition": "Analysis process for understanding current organizational model structure and components",
+      "synonyms": ["model analysis", "structure assessment"],
+      "domain_area": "Model Integration",
+      "source_refs": ["R-067:Model Integration"],
+      "confidence": 0.85
+    },
+    {
+      "id": "CON-022",
+      "name": "IntegrationPlanning",
+      "definition": "Systematic approach to merging new models into existing organizational structures with minimal disruption",
+      "synonyms": ["integration strategy", "merge planning"],
+      "domain_area": "Model Integration",
+      "source_refs": ["R-072:Model Integration", "R-073:Model Integration"],
+      "confidence": 0.90
+    },
+    {
+      "id": "CON-023",
+      "name": "StakeholderTraining",
+      "definition": "Formal process for educating affected parties about new models and implementation impacts",
+      "synonyms": ["training program", "change communication"],
+      "domain_area": "Model Integration",
+      "source_refs": ["R-075:Model Integration"],
+      "confidence": 0.85
     }
   ],
   "terminology": [
@@ -879,6 +1196,20 @@
       "entities": ["ProjectOwner"],
       "concepts": ["StakeholderEngagement"],
       "key_processes": ["Decision Making", "Change Approval", "Strategic Planning"]
+    },
+    {
+      "name": "EDP Methodology",
+      "description": "Evolutionary Development Process methodology using systems theory principles",
+      "entities": ["TargetedSystem", "Empowerer", "OpenSystemFramework", "ValidationChecklist", "IterativeProcess"],
+      "concepts": ["SystemsTheoryApproach", "InformationTheoryApproach", "ObjectOrientedDevelopment", "ResponsibilityChain", "ValueChain", "SystemBoundaries", "ValidationMethods"],
+      "key_processes": ["System Framing", "Responsibility Chain Implementation", "Value Chain Implementation", "Validation Process"]
+    },
+    {
+      "name": "Model Integration",
+      "description": "Process for integrating new models into existing organizational structures",
+      "entities": ["OrgModelStructure", "ModelIntegrationPlan", "SubProcessModel"],
+      "concepts": ["ModelAssessment", "IntegrationPlanning", "StakeholderTraining"],
+      "key_processes": ["Model Assessment", "Integration Planning", "Implementation", "Evaluation"]
     }
   ]
 }

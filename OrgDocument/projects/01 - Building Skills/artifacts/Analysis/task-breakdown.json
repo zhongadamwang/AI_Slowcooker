@@ -1,0 +1,215 @@
+{
+  "project_id": "01-building-skills",
+  "generated_at": "2026-02-20T10:00:00Z", 
+  "total_tasks": 5,
+  "task_categories": [
+    "development",
+    "testing",
+    "integration"
+  ],
+  "phases": [
+    {
+      "phase_id": "phase3-remaining",
+      "phase_name": "Phase 3 - Remaining Planning & Testing",
+      "description": "Complete remaining planning skills and integration testing",
+      "tasks": ["T11", "T12", "T13", "T14", "T15"],
+      "dependencies": ["phase2"],
+      "estimated_duration": "12.1 days"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "T11",
+      "title": "Process.FindTopAndUpdate (Enhanced)",
+      "description": "Identifies top-level requirements in hierarchies and updates them based on detailed analysis insights, domain modeling results, and process changes. Enhanced with orgModel consistency maintenance.",
+      "category": "development",
+      "phase": "phase3-remaining",
+      "priority": "high", 
+      "estimated_effort": null,
+      "acceptance_criteria": [
+        {
+          "criterion": "Identifies and processes top-level requirements", 
+          "testable": true,
+          "definition_of_done": "Successfully processes hierarchical requirements and updates parent requirements"
+        },
+        {
+          "criterion": "Maintains orgModel consistency",
+          "testable": true, 
+          "definition_of_done": "Updates maintain coherence with organizational model structure"
+        }
+      ],
+      "dependencies": [
+        {
+          "depends_on": "T10-N",
+          "dependency_type": "prerequisite"
+        }
+      ],
+      "source_requirements": ["REQ-011", "REQ-024"],
+      "source_goals": ["goal-process-management"],
+      "deliverables": ["process-findtopandupdate skill", "orgModel integration"],
+      "risk_factors": [
+        {
+          "risk": "Complex hierarchical processing logic",
+          "mitigation": "Break into simpler sub-algorithms"
+        }
+      ]
+    },
+    {
+      "task_id": "T12", 
+      "title": "Plan.DeriveTasks",
+      "description": "Convert analyzed requirements and goals into actionable development tasks with clear deliverables, acceptance criteria, dependencies, and task categorization",
+      "category": "development",
+      "phase": "phase3-remaining",
+      "priority": "medium",
+      "estimated_effort": null,
+      "acceptance_criteria": [
+        {
+          "criterion": "Derives specific development tasks from requirements",
+          "testable": true,
+          "definition_of_done": "Generates structured task breakdown with clear descriptions"
+        },
+        {
+          "criterion": "Creates dependencies and sequencing",
+          "testable": true,
+          "definition_of_done": "Task dependencies correctly identified and documented"
+        }
+      ],
+      "dependencies": [
+        {
+          "depends_on": "T11",
+          "dependency_type": "prerequisite" 
+        }
+      ],
+      "source_requirements": ["REQ-015", "REQ-028"],
+      "source_goals": ["goal-task-planning"],
+      "deliverables": ["plan-derivetasks skill", "task breakdown templates"],
+      "risk_factors": [
+        {
+          "risk": "Task decomposition complexity",
+          "mitigation": "Use structured decomposition patterns"
+        }
+      ]
+    },
+    {
+      "task_id": "T13",
+      "title": "Plan.EstimateEffort", 
+      "description": "Provides effort estimates for development tasks using multiple estimation methods including PERT, complexity analysis, and risk factors",
+      "category": "development",
+      "phase": "phase3-remaining", 
+      "priority": "medium",
+      "estimated_effort": null,
+      "acceptance_criteria": [
+        {
+          "criterion": "Multi-method effort estimation",
+          "testable": true,
+          "definition_of_done": "PERT, complexity, and analogy estimates implemented"
+        },
+        {
+          "criterion": "Confidence levels and rationale",
+          "testable": true,
+          "definition_of_done": "Estimates include confidence intervals and detailed reasoning"
+        }
+      ],
+      "dependencies": [
+        {
+          "depends_on": "T12",
+          "dependency_type": "prerequisite"
+        }
+      ],
+      "source_requirements": ["REQ-016", "REQ-029"],
+      "source_goals": ["goal-estimation-accuracy"],
+      "deliverables": ["plan-estimateeffort skill", "estimation methodology documentation"],
+      "risk_factors": [
+        {
+          "risk": "Estimation accuracy challenges",
+          "mitigation": "Multiple estimation methods and validation"
+        }
+      ]
+    },
+    {
+      "task_id": "T14",
+      "title": "Plan.BuildSchedule",
+      "description": "Builds project schedules from estimated tasks using PERT analysis, resource allocation, and dependency management in markdown format",
+      "category": "development", 
+      "phase": "phase3-remaining",
+      "priority": "medium",
+      "estimated_effort": null,
+      "acceptance_criteria": [
+        {
+          "criterion": "Schedule generation from tasks and estimates",
+          "testable": true,
+          "definition_of_done": "Generates complete project schedule with critical path analysis"
+        },
+        {
+          "criterion": "Resource allocation and conflict detection", 
+          "testable": true,
+          "definition_of_done": "Identifies resource conflicts and provides resolution recommendations"
+        }
+      ],
+      "dependencies": [
+        {
+          "depends_on": "T13", 
+          "dependency_type": "prerequisite"
+        }
+      ],
+      "source_requirements": ["REQ-017", "REQ-030"],
+      "source_goals": ["goal-schedule-optimization"],
+      "deliverables": ["plan-buildschedule skill", "schedule templates"],
+      "risk_factors": [
+        {
+          "risk": "Complex scheduling algorithm implementation",
+          "mitigation": "Use proven scheduling methodologies and validation"
+        }
+      ]
+    },
+    {
+      "task_id": "T15",
+      "title": "Integration & Testing",
+      "description": "Complete skill integration testing and workflow validation across all 22 skills to ensure seamless operation",
+      "category": "testing",
+      "phase": "phase3-remaining",
+      "priority": "high",
+      "estimated_effort": null, 
+      "acceptance_criteria": [
+        {
+          "criterion": "End-to-end workflow testing",
+          "testable": true,
+          "definition_of_done": "All skill sequences work correctly from requirements to final outputs"
+        },
+        {
+          "criterion": "VS Code integration validation",
+          "testable": true,
+          "definition_of_done": "Skills integrate smoothly within VS Code/Copilot environment"
+        }
+      ],
+      "dependencies": [
+        {
+          "depends_on": "T14",
+          "dependency_type": "prerequisite"
+        }
+      ],
+      "source_requirements": ["REQ-025", "REQ-031"],
+      "source_goals": ["goal-integration-quality"],
+      "deliverables": ["integration test suite", "workflow documentation", "troubleshooting guides"],
+      "risk_factors": [
+        {
+          "risk": "Complex skill interdependencies", 
+          "mitigation": "Systematic testing approach and modular validation"
+        },
+        {
+          "risk": "VS Code integration issues",
+          "mitigation": "Early integration testing and iterative refinement"
+        }
+      ]
+    }
+  ],
+  "dependency_graph": {
+    "critical_path": ["T11", "T12", "T13", "T14", "T15"],
+    "parallel_tracks": [
+      {
+        "track_name": "sequential-planning-track",
+        "tasks": ["T11", "T12", "T13", "T14", "T15"]
+      }
+    ]
+  }
+}

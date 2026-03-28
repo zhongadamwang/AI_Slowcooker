@@ -1,0 +1,24 @@
+{
+  "github": {
+    "default_repository": {
+      "owner": "zhongadamwang",
+      "name": "AI_Slowcooker"
+    },
+    "issue_defaults": {
+      "default_assignee": "adam.wang",
+      "milestone": "MVP - Building Skills"
+    },
+    "field_mapping": {
+      "additional_labels": ["skills-development", "edps-framework"],
+      "priority_labels": {
+        "High": {
+          "name": "priority:critical",
+          "color": "b60205"
+        }
+      }
+    },
+    "batch_processing": {
+      "stop_on_error": true
+    }
+  }
+}

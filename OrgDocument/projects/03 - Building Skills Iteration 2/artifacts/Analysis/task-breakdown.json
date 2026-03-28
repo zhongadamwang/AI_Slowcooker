@@ -1,0 +1,403 @@
+{
+  "project_id": "03-Building-Skills-Iteration-2",
+  "generated_at": "2026-03-14T10:00:00Z",
+  "total_tasks": 17,
+  "task_categories": ["development", "design", "testing", "documentation", "integration", "migration"],
+  "phases": [
+    {
+      "phase_id": "P1",
+      "phase_name": "Foundation Enhancement",
+      "description": "Enhance existing collaboration diagram skill with boundary support and participant stereotypes",
+      "tasks": ["T1", "T2", "T3", "T4"],
+      "dependencies": [],
+      "estimated_duration": "2-3 weeks",
+      "effort_days": "12-15"
+    },
+    {
+      "phase_id": "P2",
+      "phase_name": "Hierarchy Management",
+      "description": "Implement multi-level process decomposition and folder organization",
+      "tasks": ["T5", "T6", "T7", "T8"],
+      "dependencies": ["P1"],
+      "estimated_duration": "2-3 weeks",
+      "effort_days": "10-12"
+    },
+    {
+      "phase_id": "P3",
+      "phase_name": "EDPS Compliance & Validation",
+      "description": "Ensure full EDPS methodology compliance and validation tooling",
+      "tasks": ["T9", "T10", "T11", "T12"],
+      "dependencies": ["P2"],
+      "estimated_duration": "2 weeks",
+      "effort_days": "8-10"
+    },
+    {
+      "phase_id": "P4",
+      "phase_name": "Migration & Integration",
+      "description": "Migrate Project 1 artifacts, integrate with existing skills, enhance OrgModel",
+      "tasks": ["T13", "T14", "T15", "T16", "T17"],
+      "dependencies": ["P1", "P2", "P3"],
+      "estimated_duration": "1-2 weeks",
+      "effort_days": "8-11"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "T1",
+      "title": "Enhance Collaboration Diagram Skill with Boundary Support",
+      "description": "Extend diagram-generatecollaboration skill to support Mermaid box syntax for boundary representation while maintaining backward compatibility",
+      "category": "development",
+      "phase": "P1",
+      "priority": "high",
+      "estimated_effort": 3.5,
+      "acceptance_criteria": [
+        {"criterion": "Generate collaboration diagrams with box boundaries", "testable": true},
+        {"criterion": "Maintain 100% compatibility with Project 1 skill invocations", "testable": true},
+        {"criterion": "Detect boundaries automatically based on interaction patterns", "testable": true},
+        {"criterion": "Generate valid Mermaid syntax rendering correctly in VS Code", "testable": true}
+      ],
+      "dependencies": [],
+      "source_requirements": ["R-302", "R-303"],
+      "source_goals": ["SC-1", "SC-3"],
+      "deliverables": ["Enhanced diagram-generatecollaboration SKILL.md", "Backward compatibility test cases"]
+    },
+    {
+      "task_id": "T2",
+      "title": "Implement Participant Stereotype Classification",
+      "description": "Add participant type classification (actor, boundary, control, entity) with Mermaid @{type} annotation syntax",
+      "category": "development",
+      "phase": "P1",
+      "priority": "high",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Classify participants using actor/boundary/control/entity types", "testable": true},
+        {"criterion": "Generate Mermaid @{type} annotations in participant definitions", "testable": true},
+        {"criterion": "Apply decomposition rules based on participant type", "testable": true},
+        {"criterion": "Ensure boundary participants receive actor messages first", "testable": true}
+      ],
+      "dependencies": [{"depends_on": "T1", "dependency_type": "prerequisite"}],
+      "source_requirements": ["R-310"],
+      "source_goals": ["SC-2"],
+      "deliverables": ["Participant classification logic in skill", "Type annotation examples"]
+    },
+    {
+      "task_id": "T3",
+      "title": "Add Mermaid Box Syntax Generation",
+      "description": "Implement Mermaid box syntax generator for creating boundary boxes with proper participant grouping and nesting",
+      "category": "development",
+      "phase": "P1",
+      "priority": "high",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Generate valid Mermaid box syntax for boundary grouping", "testable": true},
+        {"criterion": "Support multiple boundaries in single diagram", "testable": true},
+        {"criterion": "Proper participant ordering within boxes", "testable": true},
+        {"criterion": "Descriptive boundary naming conventions", "testable": true}
+      ],
+      "dependencies": [{"depends_on": "T1", "dependency_type": "prerequisite"}],
+      "source_requirements": ["R-302", "TC-301"],
+      "source_goals": ["SC-1"],
+      "deliverables": ["Box syntax generation templates", "Multi-boundary rendering examples"]
+    },
+    {
+      "task_id": "T4",
+      "title": "Create Boundary Validation Rules",
+      "description": "Implement validation rules ensuring boundary correctness: single external interface, cohesive responsibility, boundary-first reception, control-only decomposition",
+      "category": "development",
+      "phase": "P1",
+      "priority": "high",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Enforce single-actor-to-boundary interaction rule", "testable": true},
+        {"criterion": "Validate boundary-type participant receives actor messages first", "testable": true},
+        {"criterion": "Validate only control-type participants marked for decomposition", "testable": true},
+        {"criterion": "Generate clear warnings for boundary rule violations", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T1", "dependency_type": "prerequisite"},
+        {"depends_on": "T2", "dependency_type": "prerequisite"},
+        {"depends_on": "T3", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-302", "R-310"],
+      "source_goals": ["SC-2"],
+      "deliverables": ["Boundary validation rule set", "Validation test cases"]
+    },
+    {
+      "task_id": "T5",
+      "title": "Create Hierarchy Management Skill",
+      "description": "New skill for managing hierarchical process decomposition, enabling control-type participants to become sub-processes at Level N+1",
+      "category": "development",
+      "phase": "P2",
+      "priority": "high",
+      "estimated_effort": 3.5,
+      "acceptance_criteria": [
+        {"criterion": "Decompose control-type participants into sub-process with own collaboration diagram", "testable": true},
+        {"criterion": "Support unlimited hierarchy depth (tested to 5+ levels)", "testable": true},
+        {"criterion": "Maintain consistent modeling patterns across levels", "testable": true},
+        {"criterion": "Track parent-child relationships between process levels", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T1", "dependency_type": "prerequisite"},
+        {"depends_on": "T4", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-301"],
+      "source_goals": ["SC-1", "SC-4"],
+      "deliverables": ["New hierarchy-management SKILL.md", "Decomposition logic and templates"]
+    },
+    {
+      "task_id": "T6",
+      "title": "Implement Sub-Folder Generation",
+      "description": "Automatic folder structure creation for decomposed processes with standard files and naming conventions",
+      "category": "development",
+      "phase": "P2",
+      "priority": "medium",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Auto-create sub-folder NN-BoundaryName/ for each decomposition", "testable": true},
+        {"criterion": "Include standard files: main.md, collaboration.md, process.md, domain-model.md", "testable": true},
+        {"criterion": "Consistent naming convention across all hierarchy levels", "testable": true},
+        {"criterion": "Populate template content with hierarchy context", "testable": true}
+      ],
+      "dependencies": [{"depends_on": "T5", "dependency_type": "prerequisite"}],
+      "source_requirements": ["R-304"],
+      "source_goals": ["SC-4"],
+      "deliverables": ["Folder generation templates", "Naming convention specification"]
+    },
+    {
+      "task_id": "T7",
+      "title": "Build Cross-Reference Navigation",
+      "description": "Bi-directional navigation between hierarchy levels with parent/child links and process index",
+      "category": "development",
+      "phase": "P2",
+      "priority": "medium",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Generate parent process links in sub-process main.md", "testable": true},
+        {"criterion": "Generate sub-process links in parent main.md", "testable": true},
+        {"criterion": "Maintain link integrity when hierarchy changes", "testable": true},
+        {"criterion": "Generate process hierarchy index at root level", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T5", "dependency_type": "prerequisite"},
+        {"depends_on": "T6", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-304"],
+      "source_goals": ["SC-4"],
+      "deliverables": ["Cross-reference link generation", "Hierarchy index template"]
+    },
+    {
+      "task_id": "T8",
+      "title": "Add Process Level Tracking and Scale Management",
+      "description": "Complexity metrics, decomposition suggestions, and scale management for hierarchy levels",
+      "category": "development",
+      "phase": "P2",
+      "priority": "medium",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Calculate complexity metrics per hierarchy level", "testable": true},
+        {"criterion": "Warn when diagram exceeds recommended interaction count", "testable": true},
+        {"criterion": "Suggest decomposition candidates based on participant type and interaction count", "testable": true},
+        {"criterion": "Track current level depth and breadth across hierarchy", "testable": true}
+      ],
+      "dependencies": [{"depends_on": "T5", "dependency_type": "prerequisite"}],
+      "source_requirements": ["R-305"],
+      "source_goals": ["SC-1"],
+      "deliverables": ["Complexity metric definitions", "Scale management guidelines"]
+    },
+    {
+      "task_id": "T9",
+      "title": "Implement EDPS Compliance Checking",
+      "description": "Validate generated artifacts against EDPS methodology principles including evolutionary development and incremental refinement",
+      "category": "development",
+      "phase": "P3",
+      "priority": "high",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Validate EDPS-compliant process modeling patterns", "testable": true},
+        {"criterion": "Check evolutionary development principle adherence", "testable": true},
+        {"criterion": "Verify incremental model refinement support", "testable": true},
+        {"criterion": "Generate compliance report with pass/fail indicators", "testable": true}
+      ],
+      "dependencies": [{"depends_on": "T5", "dependency_type": "prerequisite"}],
+      "source_requirements": ["R-306"],
+      "source_goals": ["SC-5"],
+      "deliverables": ["EDPS compliance checklist", "Compliance validation logic"]
+    },
+    {
+      "task_id": "T10",
+      "title": "Create Hierarchy Validation Tools",
+      "description": "Validate hierarchy consistency including boundary rules, participant types, and level appropriateness",
+      "category": "testing",
+      "phase": "P3",
+      "priority": "high",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Detect hierarchy inconsistencies across levels", "testable": true},
+        {"criterion": "Validate participant type consistency in decompositions", "testable": true},
+        {"criterion": "Check boundary rule compliance at every level", "testable": true},
+        {"criterion": "Report validation results with actionable suggestions", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T5", "dependency_type": "prerequisite"},
+        {"depends_on": "T4", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-306"],
+      "source_goals": ["SC-5"],
+      "deliverables": ["Hierarchy validation tool", "Validation test suite"]
+    },
+    {
+      "task_id": "T11",
+      "title": "Add Change Impact Analysis Across Levels",
+      "description": "Analyze how changes at one hierarchy level propagate to parent and child levels",
+      "category": "development",
+      "phase": "P3",
+      "priority": "medium",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Identify impacted levels when a boundary changes", "testable": true},
+        {"criterion": "Trace requirement changes to affected process levels", "testable": true},
+        {"criterion": "Generate change impact report with affected artifacts", "testable": true},
+        {"criterion": "Support what-if analysis for proposed changes", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T5", "dependency_type": "prerequisite"},
+        {"depends_on": "T7", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-306"],
+      "source_goals": ["SC-5"],
+      "deliverables": ["Change impact analysis capability", "Impact report template"]
+    },
+    {
+      "task_id": "T12",
+      "title": "Build Documentation Automation",
+      "description": "Automated generation of process documentation at each hierarchy level following organizational standards",
+      "category": "documentation",
+      "phase": "P3",
+      "priority": "medium",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Auto-generate main.md with hierarchy context and navigation", "testable": true},
+        {"criterion": "Auto-generate process.md with level-appropriate detail", "testable": true},
+        {"criterion": "Include participant types, boundary rules, and decomposition status", "testable": true},
+        {"criterion": "Follow organizational documentation standards", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T6", "dependency_type": "prerequisite"},
+        {"depends_on": "T7", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-306"],
+      "source_goals": ["SC-5"],
+      "deliverables": ["Documentation templates for hierarchy levels", "Auto-generation logic"]
+    },
+    {
+      "task_id": "T13",
+      "title": "Create Project 1 Migration Tools",
+      "description": "Migration utilities to convert existing flat Project 1 collaboration diagrams to hierarchical format with boundaries",
+      "category": "migration",
+      "phase": "P4",
+      "priority": "medium",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Import Project 1 collaboration diagrams without modification", "testable": true},
+        {"criterion": "Convert flat diagrams to hierarchical format with boundary suggestions", "testable": true},
+        {"criterion": "Preserve all existing requirement links and metadata", "testable": true},
+        {"criterion": "Add participant type annotations to existing participants", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T1", "dependency_type": "prerequisite"},
+        {"depends_on": "T5", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-309b"],
+      "source_goals": ["SC-3", "SC-7"],
+      "deliverables": ["Migration tool skill definition", "Migration validation report template"]
+    },
+    {
+      "task_id": "T14",
+      "title": "Integrate with Existing Skills Framework",
+      "description": "Ensure all new and enhanced skills integrate seamlessly with the existing EDPS skills framework",
+      "category": "integration",
+      "phase": "P4",
+      "priority": "high",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "All skills callable through GitHub Copilot integration", "testable": true},
+        {"criterion": "Cross-skill data flow validated (inputs/outputs compatible)", "testable": true},
+        {"criterion": "No breaking changes to existing skill interfaces", "testable": true},
+        {"criterion": "New skills registered in skills framework", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T1", "dependency_type": "prerequisite"},
+        {"depends_on": "T5", "dependency_type": "prerequisite"},
+        {"depends_on": "T9", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-303", "TC-302"],
+      "source_goals": ["SC-3"],
+      "deliverables": ["Integration test results", "Updated skills registry"]
+    },
+    {
+      "task_id": "T15",
+      "title": "Update OrgModel with Hierarchical Concepts",
+      "description": "Enhance OrgModel process documents with boundary concepts, hierarchical diagrams, and EDPS methodology refinements",
+      "category": "documentation",
+      "phase": "P4",
+      "priority": "high",
+      "estimated_effort": 2.5,
+      "acceptance_criteria": [
+        {"criterion": "Updated Skill Development Process with hierarchical boundary concepts", "testable": true},
+        {"criterion": "Enhanced organizational collaboration diagrams with box syntax", "testable": true},
+        {"criterion": "Updated domain model with boundary terminology", "testable": true},
+        {"criterion": "Updated process flow with hierarchical decomposition patterns", "testable": true},
+        {"criterion": "Updated test cases validating hierarchical modeling", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T13", "dependency_type": "prerequisite"},
+        {"depends_on": "T14", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-308", "R-309a"],
+      "source_goals": ["SC-6"],
+      "deliverables": ["Updated OrgModel main.md", "Enhanced collaboration.md", "Updated domain-model.md", "Enhanced process.md"]
+    },
+    {
+      "task_id": "T16",
+      "title": "Performance Testing & Optimization",
+      "description": "Validate performance requirements and optimize diagram generation for hierarchical models",
+      "category": "testing",
+      "phase": "P4",
+      "priority": "medium",
+      "estimated_effort": 1.5,
+      "acceptance_criteria": [
+        {"criterion": "Hierarchical diagram generation completes within 30 seconds", "testable": true},
+        {"criterion": "5-level hierarchy generates without performance degradation", "testable": true},
+        {"criterion": "VS Code preview renders all diagram types correctly", "testable": true},
+        {"criterion": "Performance benchmarks documented", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T15", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["TC-301", "TC-302"],
+      "source_goals": ["KPI-3"],
+      "deliverables": ["Performance test results", "Optimization recommendations"]
+    },
+    {
+      "task_id": "T17",
+      "title": "Create User Documentation",
+      "description": "Comprehensive user documentation including training materials, boundary concept guides, and migration instructions",
+      "category": "documentation",
+      "phase": "P4",
+      "priority": "medium",
+      "estimated_effort": 1.5,
+      "acceptance_criteria": [
+        {"criterion": "User guide for hierarchical process modeling with boundaries", "testable": true},
+        {"criterion": "Participant type reference with decomposition rules", "testable": true},
+        {"criterion": "Migration guide for Project 1 diagram upgrade", "testable": true},
+        {"criterion": "Example walkthroughs for common boundary patterns", "testable": true}
+      ],
+      "dependencies": [
+        {"depends_on": "T15", "dependency_type": "prerequisite"}
+      ],
+      "source_requirements": ["R-305"],
+      "source_goals": ["KPI-5"],
+      "deliverables": ["User documentation", "Training materials", "Example library"]
+    }
+  ]
+}
