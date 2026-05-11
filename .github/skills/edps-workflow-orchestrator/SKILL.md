@@ -43,11 +43,12 @@ This skill does not replace `edps-skill-navigator`; it layers above it. The navi
 
 ## Skill Catalogue
 
-All 30 EDPS skills are registered below with their category, primary inputs, primary outputs, and prerequisite skill IDs. This catalogue is the source of truth for DAG construction.
+All 31 EDPS skills are registered below with their category, primary inputs, primary outputs, and prerequisite skill IDs. This catalogue is the source of truth for DAG construction.
 
 | ID | Skill Name | Category | Prerequisite Skill IDs |
-|----|-----------|----------|------------------------|
-| S01 | `requirements-ingest` | Requirements | *(none)* |
+|----|-----------|----------|-----------------------|
+| S00 | `requirements-sanitize` | Requirements | *(none — optional pre-step before S01)* |
+| S01 | `requirements-ingest` | Requirements | *(none; use S00 output when source is mixed-perspective)* |
 | S02 | `requirements-merge` | Requirements | S01 |
 | S03 | `goals-extract` | Requirements | S01 |
 | S04 | `process-w5h` | Requirements | S01 |
@@ -78,7 +79,7 @@ All 30 EDPS skills are registered below with their category, primary inputs, pri
 | S29 | `github-issue-sync-status` | GitHub | S28 |
 | S30 | `edps-skill-navigator` | Meta | *(none — invokes others)* |
 
-> **Note**: `skill-creator` (meta, create-only) and `migration-tools` (deprecated, use `hierarchy-management --op migrate`) are catalogued but excluded from archetype workflows by default. Include them explicitly with the `--include-deprecated` flag.
+> **Note**: `skill-creator` (meta, create-only) and `migration-tools` (deprecated, use `hierarchy-management --op migrate`) are catalogued but excluded from archetype workflows by default. Include them explicitly with the `--include-deprecated` flag. `requirements-sanitize` (S00) is an optional pre-step; it is included automatically when the orchestrator detects that the source document is not already a clean business requirements document.
 
 ---
 
@@ -97,7 +98,8 @@ Phase 0 — Project Initialization
   [S18] project-document-management        (parallel start point)
 
 Phase 1 — Requirements Analysis
-  [S01] requirements-ingest                (requires: S18 OR project folder exists)
+  [S00] requirements-sanitize              (optional; recommended when source is a conversation, IT spec, or operational doc)
+  [S01] requirements-ingest                (requires: S18 OR project folder exists; input from S00 if executed)
   [S02] requirements-merge                 (optional; requires: S01 + multiple sources)
   [S03] goals-extract                      (requires: S01)
   [S04] process-w5h                        (requires: S01)

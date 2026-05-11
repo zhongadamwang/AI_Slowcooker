@@ -25,7 +25,8 @@ Project ID: [YOUR-PROJECT-ID]
 ### S2 — Requirements Processing
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
-| `requirements-ingest` | Normalize any format to structured requirements | Raw docs (PDF/Word/MD) | requirements.json/md | → `goals-extract` |
+| `requirements-sanitize` | Filter IT/operational noise; rewrite raw docs to business intent | Raw mixed-perspective doc | sanitized-requirements.md | → `requirements-ingest` |
+| `requirements-ingest` | Normalize any format to structured requirements | Raw docs (PDF/Word/MD) or sanitized-requirements.md | requirements.json/md | → `goals-extract` |
 | `requirements-merge` | Combine multiple requirement sources with conflict resolution | Multiple requirement docs | unified-requirements.json/md | → `goals-extract` |
 | `goals-extract` | Extract business goals and success criteria | requirements.json | goals.json/md | → `process-w5h` |
 | `process-w5h` | Who/What/When/Where/Why/How analysis | requirements.json | w5h-analysis.json/md | → `domain-extractconcepts` |

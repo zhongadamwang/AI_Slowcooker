@@ -12,8 +12,10 @@ Transforms requirements documents (PDF/DOCX/Markdown/Email) into structured, ato
 
 ## Inputs
 
-- **Sources**: Raw requirement files (PDF, DOCX, Markdown, Email)
+- **Sources**: Requirement files (PDF, DOCX, Markdown, Email) — ideally pre-processed by `requirements-sanitize` when the source document mixes business content with IT/operational/software perspectives
 - **Parameters**: `project_id`
+
+> **Pre-condition**: If the source document is a raw conversation transcript, operational procedure, IT change request, or software spec, run `requirements-sanitize` first to obtain a business-focused document before passing it here. Skipping this step on mixed-perspective sources will produce requirements with technical noise that degrades the quality of all downstream skills.
 
 ## Outputs
 
