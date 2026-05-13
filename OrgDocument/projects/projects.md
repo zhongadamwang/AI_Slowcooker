@@ -16,6 +16,7 @@ Format: Project Identifier, Project Description, Project folder path mapping, Re
 |----|--------------|-------------|---------|------------|----------|
 | 01 | Building Skills | Build the skills needed for evolutionary development process | Development (43% Complete) | 2026-02-07 | Phase 2 Advanced |
 | 02 | Integration with GitHub | Develop GitHub integration capabilities for enhanced collaboration workflows | Initial Setup | 2026-02-23 | Project Initiation |
+| 05 | Building Skills Iteration 4 | Continue advancing the EDPS skills framework building on Iterations 1–3 | Initialized | 2026-05-11 | Project Initiation |
 
 ## Completed Projects
 

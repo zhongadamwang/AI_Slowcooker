@@ -1,0 +1,21 @@
+{
+  "project_id": "PRJ-05",
+  "project_name": "Building Skills Iteration 4",
+  "project_number": "05",
+  "archetype": "standard",
+  "created": "2026-05-11",
+  "last_updated": "2026-05-11",
+  "status": "Initialized",
+  "version": "1.0.0",
+  "evolution_history": [
+    {
+      "version": "1.0.0",
+      "date": "2026-05-11",
+      "change": "Initial project structure created",
+      "archetype": "standard",
+      "changed_by": "project-document-management"
+    }
+  ],
+  "linked_orgmodel": null,
+  "skills_used": []
+}
