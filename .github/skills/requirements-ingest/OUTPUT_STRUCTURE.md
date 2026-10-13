@@ -3,6 +3,8 @@
 ## Folder Structure
 
 ```
+
+Every directory created in this output tree, including `outputs/`, `projects/`, each project folder, `Analysis/`, `source_files/`, and `versions/`, contains a `README.md`. Each README explains the directory's purpose, important information about its contents or conventions, and a dated **Major Events** log. Existing README content is preserved when outputs are refreshed.
 outputs/
 ├── projects/                           # Project-based organization
 │   ├── {project_id}/                   # Individual project folder  
@@ -201,6 +203,7 @@ def check_processing_log(project_id: str) -> dict:
 ### Auto-Creation
 - Create `outputs/projects/{project_id}/` if not exists
 - Create subdirectories as needed
+- Create or maintain a `README.md` in every created directory with purpose, important information, and dated major events
 - Handle permissions appropriately
 
 ### Backup Strategy

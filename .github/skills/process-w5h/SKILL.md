@@ -30,7 +30,7 @@ Apply the W5H analytical framework to requirements to systematically extract: st
 **Output Destination**: 
 - Markdown: `outputs/projects/{project_id}/Analysis/w5h-analysis.md` (primary for downstream)
 - JSON: `outputs/projects/{project_id}/Analysis/w5h-analysis.json` (machine processing)
-**Directory Structure**: Auto-created project folders with Analysis subfolder containing W5H analysis reports, stakeholder maps, and implementation guides
+**Directory Structure**: Auto-created project folders with Analysis subfolder containing W5H analysis reports, stakeholder maps, and implementation guides. Create a `README.md` in every created directory documenting its purpose, important information, and dated major events; preserve existing README content.
 
 ## Usage
 

@@ -104,6 +104,7 @@ domain-alignentities   ├─→ orgmodel-update ─→ vocabulary.md, test-case
 **Create/Update Process Folder**
 ```
 orgModel/[NN] - [Process Name]/
+├── README.md             # Folder purpose, important information, and major events
 ├── main.md               # Process overview with navigation
 ├── domain-model.md       # Actors, systems, entities from domain analysis
 ├── process.md            # Process flows, activities, decision points
@@ -111,8 +112,11 @@ orgModel/[NN] - [Process Name]/
 ├── vocabulary.md         # Canonical terminology mapping
 ├── test-case-list.md     # Comprehensive test case registry
 └── test-cases/           # Individual test case files (if testing required)
+    ├── README.md         # Test-case folder guidance and major events
     └── tc-[proc-id]-[sequence].md
 ```
+
+Whenever this skill creates or adds a directory, create or maintain a `README.md` inside it documenting its purpose, important information, and dated major events. Preserve substantive README content when updating an existing process structure.
 
 **Numbering Convention**: Use next available NN sequence number in orgModel folder structure
 

@@ -59,6 +59,7 @@ Authoritatively validate structural integrity, cross-level type consistency, nav
 | HN-2 | Required Files Present | ERROR | Each sub-process folder must contain `collaboration.md` and `main.md`. `process.md` and `domain-model.md` are recommended but not required. |
 | HN-3 | Ordinal Uniqueness | ERROR | No two sibling sub-process folders under the same parent may share the same ordinal prefix. |
 | HN-4 | Level Number Consistency | WARNING | The `**Level**: [N]` field in each `main.md` must match the actual folder depth from the root (root = Level 0). |
+| HN-5 | Folder README Present | ERROR | Every directory in the validated process hierarchy, including the root and each boundary folder, must contain `README.md` documenting purpose, important information, and dated major events. |
 
 ---
 
@@ -150,6 +151,11 @@ For each parent `collaboration.md` that has one or more child sub-folders:
 - Compare against the computed depth value from Step 1.
 - **WARN** if they differ.
 
+#### HN-5 Check
+- Walk every directory under the root process folder, including the root itself.
+- Verify that each directory contains a `README.md` with `## Purpose`, `## Important Information`, and `## Major Events` sections.
+- **FAIL** for each missing README or required section.
+
 ### Step 5 — Score and Aggregate
 
 ```
@@ -179,6 +185,7 @@ Apply the following auto-fixes in order before generating the report. Log each f
 | HX-4 | If the sub-folder exists under a different ordinal, update the comment path; otherwise remove the stale comment |
 | HX-5 | Re-generate the `## Full Hierarchy Tree` table in `hierarchy-index.md` using the filesystem walk |
 | HN-4 | Update the `**Level**: [N]` field in `main.md` to the computed depth value |
+| HN-5 | Add a `README.md` to each directory with purpose, important information, and dated major events |
 
 Fixes for structural ERROR-severity rules (HV-*, HN-1/2/3) are **not** auto-applied — they require human review. Report them with explicit remediation instructions instead. HX-1 and HX-2 auto-fixes (relative path reconstruction only) are safe to apply automatically because they do not alter hierarchy structure.
 
@@ -302,6 +309,7 @@ Hierarchy Validation — [scope path]
 | HN-2 | Required Files Present | ✅/❌ | [n] |
 | HN-3 | Ordinal Uniqueness | ✅/❌ | [n] |
 | HN-4 | Level Number Consistency | ✅/⚠️ | [n] |
+| HN-5 | Folder README Present | ✅/❌ | [n] |
 
 ## Violations Detail
 
@@ -358,6 +366,7 @@ This enables fast validation after making changes to a single sub-tree without r
 | HN-2 | Create the missing `collaboration.md` or `main.md` using `hierarchy-management` templates |
 | HN-3 | Renumber sub-folders to eliminate ordinal conflicts (assign unique two-digit prefixes in order) and update all references |
 | HN-4 | Update `**Level**: [N]` in `main.md` to the correct depth value, or run `--fix` |
+| HN-5 | Create the missing folder `README.md` with purpose, important information, and a dated major-events entry |
 
 ---
 

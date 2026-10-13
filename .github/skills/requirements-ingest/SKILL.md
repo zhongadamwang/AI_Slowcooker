@@ -23,6 +23,7 @@ Transforms requirements documents (PDF/DOCX/Markdown/Email) into structured, ato
 - `outputs/projects/{project_id}/Analysis/requirements.md` — Markdown format for downstream skills
 - `outputs/projects/{project_id}/Analysis/requirements.json` — JSON format for machine processing
 - Auto-created project directory with Analysis subfolder, processing logs, and glossary files
+- A `README.md` in every created directory, documenting purpose, important information, and dated major events
 
 ## Core Function
 

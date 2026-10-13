@@ -39,11 +39,17 @@ Minimal project structure: `artifacts/` with standard subfolders, `tasks/`, and 
 ```
 [NN] - [Project Name]/
 ├── artifacts/
+│   ├── README.md
 │   ├── Analysis/
+│   │   └── README.md
 │   ├── Requirements/
+│   │   └── README.md
 │   ├── Changes/
+│   │   └── README.md
 │   ├── Sample Data/
+│   │   └── README.md
 │   └── Testing/
+│       └── README.md
 ├── tasks/
 │   ├── README.md
 │   ├── task-tracking.md
@@ -52,6 +58,8 @@ Minimal project structure: `artifacts/` with standard subfolders, `tasks/`, and 
 ├── project-plan.md
 └── README.md
 ```
+
+Every directory in the generated tree, including the project root, `artifacts/`, each artifact category, and `tasks/`, must contain a `README.md`. Existing README files are preserved and updated only when needed to document the folder.
 
 ### `standard` — Default EDPS Style (Projects 2–3)
 Full project artifacts + `orgModel` process folder with standard modeling files. Use for most EDPS skill development or requirements analysis projects.
@@ -59,12 +67,19 @@ Full project artifacts + `orgModel` process folder with standard modeling files.
 ```
 [NN] - [Project Name]/
 ├── artifacts/
+│   ├── README.md
 │   ├── Analysis/
+│   │   └── README.md
 │   ├── Requirements/
+│   │   └── README.md
 │   ├── Changes/
+│   │   └── README.md
 │   ├── Documentation/
+│   │   └── README.md
 │   ├── Sample Data/
+│   │   └── README.md
 │   └── Testing/
+│       └── README.md
 ├── tasks/
 │   ├── README.md
 │   ├── task-tracking.md
@@ -74,6 +89,7 @@ Full project artifacts + `orgModel` process folder with standard modeling files.
 └── README.md
 
 orgModel/[NN] - [Process Name]/
+├── README.md
 ├── main.md
 ├── process.md
 ├── collaboration.md
@@ -81,13 +97,17 @@ orgModel/[NN] - [Process Name]/
 ├── vocabulary.md
 ├── test-case-list.md
 └── test-cases/
+  └── README.md
 ```
+
+Every directory shown above must contain a `README.md`, including all artifact categories, `tasks/`, the process folder, and `test-cases/`.
 
 ### `hierarchical` — EDPS Boundary-First Style (Project 3+)
 All `standard` content plus `orgModel` folders using the `[NN]-[Name]Boundary/` hierarchy pattern. Each boundary sub-folder receives `documentation-automation` stubs. Use when designing multi-level EDPS process hierarchies.
 
 ```
 orgModel/[NN] - [Process Name]/
+├── README.md
 ├── main.md
 ├── process.md
 ├── collaboration.md               ← defines boundary sub-folders
@@ -95,8 +115,10 @@ orgModel/[NN] - [Process Name]/
 ├── vocabulary.md
 ├── test-case-list.md
 ├── test-cases/
+│   └── README.md
 ├── hierarchy-metadata.json        ← created by hierarchy-management
 └── [NN]-[BoundaryName]Boundary/   ← one per control-type participant
+  ├── README.md
     ├── main.md                    ← [TO BE GENERATED - invoke documentation-automation]
     ├── process.md                 ← [TO BE GENERATED - invoke documentation-automation]
     ├── collaboration.md           ← [TO BE GENERATED - invoke documentation-automation]
@@ -126,15 +148,24 @@ orgModel/[NN] - [Process Name]/
 
 Create the folder structure for the selected archetype (see [Project Archetypes](#project-archetypes)). Always create:
 
+For **every directory created**, write a `README.md` in that directory. Each README documents the folder's purpose, important information about its contents or conventions, and a dated **Major Events** log. Do not leave nested folders undocumented. Preserve existing README content and append/update events rather than replacing substantive history.
+
 ```
 OrgDocument/projects/[NN] - [Project Name]/
 ├── artifacts/
+│   ├── README.md
 │   ├── Analysis/
+│   │   └── README.md
 │   ├── Requirements/
+│   │   └── README.md
 │   ├── Changes/
+│   │   └── README.md
 │   ├── Documentation/       ← standard + hierarchical only
+│   │   └── README.md
 │   ├── Sample Data/
+│   │   └── README.md
 │   └── Testing/
+│       └── README.md
 ├── tasks/
 │   ├── README.md
 │   ├── task-tracking.md
@@ -143,6 +174,25 @@ OrgDocument/projects/[NN] - [Project Name]/
 ├── project-plan.md
 ├── README.md
 └── project-metadata.json
+```
+
+Include `README.md` in `artifacts/Documentation/` for standard and hierarchical archetypes, and in every directory added by archetype extensions or later structure updates.
+
+### Folder README Template
+
+Create each folder README using this structure, tailoring the purpose and information to that folder:
+
+```markdown
+# [Folder Name]
+
+## Purpose
+[Why this folder exists and what belongs here.]
+
+## Important Information
+- [Conventions, ownership, links, or usage notes relevant to this folder.]
+
+## Major Events
+- [YYYY-MM-DD] [Folder created or significant change; include the related artifact/link when useful.]
 ```
 
 ### Step 3 — Write project-metadata.json
@@ -189,6 +239,7 @@ If `orgModel process name` was provided or archetype requires it:
 
 ```
 OrgDocument/orgModel/[NN] - [Process Name]/
+├── README.md
 ├── main.md
 ├── process.md
 ├── collaboration.md
@@ -196,8 +247,11 @@ OrgDocument/orgModel/[NN] - [Process Name]/
 ├── vocabulary.md
 ├── test-case-list.md
 └── test-cases/
+    ├── README.md
     └── tc-[identifier]-[3-digit-sequence].md
 ```
+
+Write a README in the process directory and `test-cases/`, plus every other directory created as part of this tree.
 
 **File initialization rules**:
 - `main.md`, `process.md`, `collaboration.md`, `domain-model.md` → write with the standard EDPS templates (see below)
@@ -210,6 +264,7 @@ For each `control`-type participant identified in the top-level `collaboration.m
 ```
 orgModel/[NN] - [Process Name]/
 └── [NN]-[BoundaryName]Boundary/
+  ├── README.md
     ├── main.md          ← insert stub: [TO BE GENERATED - invoke documentation-automation]
     ├── process.md       ← insert stub: [TO BE GENERATED - invoke documentation-automation]
     ├── collaboration.md ← insert stub: [TO BE GENERATED - invoke documentation-automation]
@@ -374,22 +429,24 @@ The following placeholder is inserted into each of the four generated files in a
 **Actions**:
 1. Read `projects.md` — verify `project_number` not already in use
 2. Create project folder with archetype-appropriate subfolder structure
-3. Write `project-metadata.json` (version `1.0.0`)
-4. Generate `main.md`, `README.md`, `project-plan.md` from templates
-5. Create `tasks/` with `README.md`, `task-tracking.md`, `task-template.md`
-6. Update `projects.md` registry
-7. *(standard/hierarchical)* Create `orgModel/[NN] - [Process Name]/` tree
-8. *(hierarchical)* Create boundary sub-folder stubs; invoke `documentation-automation` per boundary folder
+3. Create a README in every created directory using the folder README template
+4. Write `project-metadata.json` (version `1.0.0`)
+5. Generate `main.md`, `README.md`, `project-plan.md` from templates
+6. Create `tasks/` with `README.md`, `task-tracking.md`, `task-template.md`
+7. Update `projects.md` registry
+8. *(standard/hierarchical)* Create `orgModel/[NN] - [Process Name]/` tree, including README files in all directories
+9. *(hierarchical)* Create boundary sub-folder stubs; invoke `documentation-automation` per boundary folder
 
 ### Initialize Process Model
 **Parameters**: `process_number`, `process_name`, `scope_description`, `archetype` (default: `standard`)  
 **Actions**:
 1. Create `orgModel/[NN] - [Process Name]/` folder
-2. Generate `main.md`, `process.md`, `collaboration.md`, `domain-model.md` from templates
-3. Create `vocabulary.md`, `test-case-list.md` stubs (content owned by `orgmodel-update`)
-4. Create `test-cases/` folder
-5. *(hierarchical)* Create boundary sub-folder stubs and invoke `documentation-automation`
-6. Update parent `main.md` sub-process list
+2. Create a README in every created directory using the folder README template
+3. Generate `main.md`, `process.md`, `collaboration.md`, `domain-model.md` from templates
+4. Create `vocabulary.md`, `test-case-list.md` stubs (content owned by `orgmodel-update`)
+5. Create `test-cases/` folder
+6. *(hierarchical)* Create boundary sub-folder stubs and invoke `documentation-automation`
+7. Update parent `main.md` sub-process list
 
 ### Upgrade Archetype
 **Parameters**: `project_number`, `target_archetype`  
@@ -403,10 +460,11 @@ The following placeholder is inserted into each of the four generated files in a
 **Actions**:
 1. Verify folder naming conventions (`[NN] - [Name]` for projects; `[NN]-[Name]Boundary` for hierarchy nodes)
 2. Check required files in each folder (per archetype)
-3. Validate `project-metadata.json` presence and schema
-4. Validate cross-reference links in `main.md` resolve to existing files
-5. Detect stub files not yet replaced by `documentation-automation`
-6. Report: ✅ valid | ⚠️ missing files | ❌ broken links | 🔲 ungenerated stubs
+3. Check every directory in the scaffold for a `README.md` documenting purpose, important information, and major events
+4. Validate `project-metadata.json` presence and schema
+5. Validate cross-reference links in `main.md` resolve to existing files
+6. Detect stub files not yet replaced by `documentation-automation`
+7. Report: ✅ valid | ⚠️ missing files | ❌ broken links | 🔲 ungenerated stubs
 
 ## Naming Conventions
 
@@ -477,3 +535,4 @@ The following placeholder is inserted into each of the four generated files in a
 5. **Registry updates are mandatory**: Always update `projects.md` when creating a new project folder.
 6. **Never skip documentation-automation**: After creating boundary sub-folders (hierarchical archetype), immediately invoke `documentation-automation` to convert stubs.
 7. **Record every structural change**: Append to `evolution_history` in `project-metadata.json` for every modification — required for EDPS compliance.
+8. **Document every directory**: Create and maintain a `README.md` in each scaffolded folder; record its purpose, key information, and dated major events.

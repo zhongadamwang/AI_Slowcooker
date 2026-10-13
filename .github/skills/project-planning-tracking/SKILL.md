@@ -669,17 +669,22 @@ Adds planning artifacts to existing project structure:
 
 ```
 orgDocument/projects/[NN] - [project name]/
+├── README.md                 # Project purpose, key information, and major events
 ├── requirements/
+│   └── README.md
 ├── artifacts/
+│   └── README.md
 ├── main.md
 ├── project-milestones.md      # Milestone tracking
 ├── project-tasks.md           # Task management  
 ├── project-health.md          # Health dashboard
 ├── project-pert.md            # PERT analysis and critical path
 ├── status-reports/            # Weekly/monthly reports
+│   ├── README.md
 │   ├── YYYY-MM-DD-weekly.md
 │   └── YYYY-MM-DD-monthly.md
 └── planning/                  # Planning artifacts  
+  ├── README.md
     ├── project-charter.md
     ├── work-breakdown.md
     ├── risk-register.md
@@ -689,10 +694,12 @@ orgDocument/projects/[NN] - [project name]/
     └── weekly-pert-update.md  # Weekly ES/EF/LS/LF progress tracking
 ```
 
+Every directory created by the planning workflow must contain a `README.md` documenting its purpose, important information, and dated major events. Preserve existing README content and add event entries as the folder evolves.
+
 ## Quick Commands
 
 ### Initialize Project Planning
-1. Create planning folder structure
+1. Create planning folder structure and a README in every created directory
 2. Generate milestone template
 3. Create task tracking template  
 4. Initialize health dashboard

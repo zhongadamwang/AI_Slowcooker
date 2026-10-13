@@ -434,15 +434,50 @@ class RequirementsIngestor:
     
     def _create_project_directory(self, project_id: str) -> Path:
         """Create and return project directory path with Analysis subfolder"""
-        # Create Analysis subfolder to align with organizational structure
-        analysis_dir = self.output_base_dir / "projects" / project_id / "Analysis"
+        projects_dir = self.output_base_dir / "projects"
+        project_dir = projects_dir / project_id
+        analysis_dir = project_dir / "Analysis"
         analysis_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Create subdirectories within Analysis
-        (analysis_dir / "source_files").mkdir(exist_ok=True)
-        (analysis_dir / "versions").mkdir(exist_ok=True)
-        
+
+        source_files_dir = analysis_dir / "source_files"
+        versions_dir = analysis_dir / "versions"
+        source_files_dir.mkdir(exist_ok=True)
+        versions_dir.mkdir(exist_ok=True)
+
+        event = "Requirements ingestion outputs generated or updated."
+        self._ensure_folder_readme(self.output_base_dir, "Root for generated requirements-ingest outputs.", "Contains project outputs and shared templates.", event)
+        self._ensure_folder_readme(projects_dir, "Contains requirements-ingest output folders grouped by project.", "Each project folder is identified by its project ID.", event)
+        self._ensure_folder_readme(project_dir, f"Contains generated analysis artifacts for project {project_id}.", "The Analysis folder contains requirements, processing logs, glossary data, source references, and version history.", event)
+        self._ensure_folder_readme(analysis_dir, "Contains normalized requirements and their processing artifacts.", "Primary outputs include requirements.md, requirements.json, processing_log.json, and glossary.json.", event)
+        self._ensure_folder_readme(source_files_dir, "Contains source-file mappings and optional source copies.", "file_mapping.json links processed inputs to generated requirements.", event)
+        self._ensure_folder_readme(versions_dir, "Contains prior versions of generated requirements documents.", "Versioned files are retained here when a new output replaces an existing one.", event)
+
         return analysis_dir
+
+    def _ensure_folder_readme(self, folder: Path, purpose: str, important_info: str, event: str) -> None:
+        """Create or maintain folder documentation without discarding existing notes."""
+        readme_file = folder / "README.md"
+        folder_name = folder.name or "Outputs"
+        event_line = f"- [{datetime.now().date().isoformat()}] {event}"
+
+        if readme_file.exists():
+            content = readme_file.read_text(encoding="utf-8")
+        else:
+            content = f"# {folder_name}\n"
+
+        if not re.search(r"(?im)^## Purpose\s*$", content):
+            content = content.rstrip() + f"\n\n## Purpose\n{purpose}\n"
+        if not re.search(r"(?im)^## Important Information\s*$", content):
+            content = content.rstrip() + f"\n\n## Important Information\n{important_info}\n"
+
+        events_heading = re.search(r"(?im)^## Major Events\s*$", content)
+        if not events_heading:
+            content = content.rstrip() + f"\n\n## Major Events\n{event_line}\n"
+        elif event_line not in content:
+            insertion_point = events_heading.end()
+            content = content[:insertion_point] + f"\n{event_line}" + content[insertion_point:]
+
+        readme_file.write_text(content.rstrip() + "\n", encoding="utf-8")
     
     def _save_outputs(self, project_id: str, requirements: Dict, log: Dict, glossary: Dict, source_files: List[str]) -> Dict[str, str]:
         """Save all outputs to structured folders with dual format (JSON + Markdown)"""

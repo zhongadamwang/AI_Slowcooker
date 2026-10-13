@@ -31,7 +31,7 @@ Identify the minimum viable product (MVP) scope from a comprehensive requirement
 **Output Destination**: 
 - Markdown: `outputs/projects/{project_id}/Analysis/scope-analysis.md` (primary for downstream)
 - JSON: `outputs/projects/{project_id}/Analysis/scope-analysis.json` (machine processing)
-**Directory Structure**: Auto-created project folders with Analysis subfolder containing scope analysis, feature prioritization matrices, and MVP roadmaps
+**Directory Structure**: Auto-created project folders with Analysis subfolder containing scope analysis, feature prioritization matrices, and MVP roadmaps. Create a `README.md` in every created directory documenting its purpose, important information, and dated major events; preserve existing README content.
 
 ## Usage
 

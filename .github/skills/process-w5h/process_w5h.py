@@ -6,6 +6,7 @@ Analyzes requirements using Who, What, When, Where, Why, How framework
 
 import json
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any
@@ -295,8 +296,21 @@ This W5H analysis provides a comprehensive view of the project requirements acro
         """Save analysis to both markdown and JSON formats"""
         
         # Create output directory
-        project_dir = Path(output_dir) / "projects" / analysis["project_id"] / "Analysis"
+        output_root = Path(output_dir)
+        projects_dir = output_root / "projects"
+        project_folder = projects_dir / analysis["project_id"]
+        project_dir = project_folder / "Analysis"
         project_dir.mkdir(parents=True, exist_ok=True)
+
+        event = "W5H analysis outputs generated or updated."
+        folder_details = [
+            (output_root, "Root for generated analysis outputs.", "Contains project-specific analysis results."),
+            (projects_dir, "Contains analysis output folders grouped by project.", "Each project folder is identified by its project ID."),
+            (project_folder, f"Contains analysis artifacts for project {analysis['project_id']}.", "Analysis reports and structured data are stored in the Analysis folder."),
+            (project_dir, "Contains W5H analysis reports and structured results.", "Primary outputs are w5h-analysis.md and w5h-analysis.json."),
+        ]
+        for folder, purpose, important_info in folder_details:
+            self._ensure_folder_readme(folder, purpose, important_info, event)
         
         # Save JSON format
         json_file = project_dir / "w5h-analysis.json"
@@ -313,6 +327,25 @@ This W5H analysis provides a comprehensive view of the project requirements acro
             "markdown_file": str(markdown_file),
             "json_file": str(json_file)
         }
+
+    def _ensure_folder_readme(self, folder: Path, purpose: str, important_info: str, event: str) -> None:
+        """Create or maintain folder documentation without discarding existing notes."""
+        readme_file = folder / "README.md"
+        event_line = f"- [{datetime.now().date().isoformat()}] {event}"
+        content = readme_file.read_text(encoding="utf-8") if readme_file.exists() else f"# {folder.name or 'Outputs'}\n"
+
+        for heading, description in (("Purpose", purpose), ("Important Information", important_info)):
+            if not re.search(rf"(?im)^## {re.escape(heading)}\s*$", content):
+                content = content.rstrip() + f"\n\n## {heading}\n{description}\n"
+
+        events_heading = re.search(r"(?im)^## Major Events\s*$", content)
+        if not events_heading:
+            content = content.rstrip() + f"\n\n## Major Events\n{event_line}\n"
+        elif event_line not in content:
+            insertion_point = events_heading.end()
+            content = content[:insertion_point] + f"\n{event_line}" + content[insertion_point:]
+
+        readme_file.write_text(content.rstrip() + "\n", encoding="utf-8")
 
 
 def main():

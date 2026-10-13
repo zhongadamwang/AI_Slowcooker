@@ -33,7 +33,7 @@ Merge requirements from two or more heterogeneous sources into one unified, cohe
 - Markdown: `outputs/projects/{project_id}/Analysis/unified-requirements.md` (primary for downstream)
 - JSON: `outputs/projects/{project_id}/Analysis/merge-analysis.json` (machine processing)
 - Conflicts Log: `outputs/projects/{project_id}/Analysis/merge-conflicts.md` (stakeholder review)
-**Directory Structure**: Auto-created project folders with Analysis subfolder containing unified requirements, merge analysis, conflict resolution logs, and stakeholder approval tracking
+**Directory Structure**: Auto-created project folders with Analysis subfolder containing unified requirements, merge analysis, conflict resolution logs, and stakeholder approval tracking. Create a `README.md` in every created directory documenting its purpose, important information, and dated major events; preserve existing README content.
 
 ## Usage
 

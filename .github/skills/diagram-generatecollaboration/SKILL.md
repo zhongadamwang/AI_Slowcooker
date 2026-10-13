@@ -1243,7 +1243,8 @@ When called with `hierarchical_decomposition: true`, this skill:
 2. **Generates a Level 0 diagram** with high-level system boundaries
 3. **Decomposes each `<<System>>` participant** into a separate Level 1 collaboration diagram in a corresponding subfolder
 4. **Creates a folder structure** that mirrors the decomposition hierarchy
-5. **Maintains traceability** and context across all levels
+5. **Creates a `README.md` in every generated directory** documenting its purpose, important information, and dated major events; preserve existing README content
+6. **Maintains traceability** and context across all levels
 
 ### Hierarchical Input Parameters
 ```json

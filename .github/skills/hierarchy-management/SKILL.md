@@ -23,6 +23,7 @@ Decompose `control`-type participants into Level N+1 sub-process diagrams, manag
 - `[process-folder]/[NN]-[ParticipantName]Boundary/main.md` — sub-process overview with parent/child navigation links
 - `[process-folder]/[NN]-[ParticipantName]Boundary/process.md` — activity/workflow diagram for the sub-process
 - `[process-folder]/[NN]-[ParticipantName]Boundary/domain-model.md` — class diagram with entities and relationships
+- `[process-folder]/[NN]-[ParticipantName]Boundary/README.md` — folder purpose, important information, and dated major events
 - `[process-folder]/hierarchy-metadata.json` — updated hierarchy metadata (created if absent)
 - `[process-folder]/folder-creation.log` — audit log appended with each sub-folder created
 - Updated navigation links in parent `main.md` and `collaboration.md`
@@ -85,6 +86,22 @@ Before creating the folder, check whether `[NN]-[ParticipantName]Boundary/` alre
 ## Stub File Specification
 
 When `hierarchy-management` creates a new sub-process folder, it writes **stub files only** — minimal-content placeholders that are syntactically valid Markdown and Mermaid but contain no generated process knowledge. Stub files pass `hierarchy-validation` rule HN-2 (Required Files Present) immediately after creation.
+
+Every created boundary folder must also receive a substantive `README.md` documenting its purpose, important information (including parent/child context and ownership), and a dated **Major Events** log. README content is folder documentation, not a generated process artifact, and is maintained by `hierarchy-management` rather than `documentation-automation`.
+
+```markdown
+# [ParticipantName] Boundary
+
+## Purpose
+Documents the Level [N+1] process boundary decomposed from [ParentProcessName].
+
+## Important Information
+- Parent: [relative link to parent main.md]
+- Generated process documentation: main.md, process.md, collaboration.md, domain-model.md
+
+## Major Events
+- [YYYY-MM-DD] Boundary folder created by hierarchy-management.
+```
 
 Full content generation is exclusively the responsibility of `documentation-automation`. Once `documentation-automation` has run, it replaces these stubs with content-complete documents.
 
@@ -411,11 +428,13 @@ Populate class names, attributes, and relationships using participant names and 
 
 After all files are written, **append** a log entry to `[process-folder]/folder-creation.log` (create if absent):
 
+Also append a dated major-event entry to `[process-folder]/README.md` describing the new child boundary and linking to its `main.md`.
+
 ```
 [ISO-8601 timestamp] CREATED  [NN]-[ParticipantName]Boundary/
   Level:      [N+1]
   Parent:     [ParentProcessName] ([process-folder]/)
-  Files:      collaboration.md, main.md, process.md, domain-model.md
+  Files:      README.md, collaboration.md, main.md, process.md, domain-model.md
   Decomposed: [ParticipantName] (type: control)
   Ordinal:    [NN] (sibling count before: [count])
 ```
@@ -641,7 +660,7 @@ Node colors by level:
 
 When the user requests a rollback of a decomposition:
 
-1. Remove the sub-folder and its contents (`collaboration.md`, `main.md`, `process.md`, `domain-model.md`, `hierarchy-metadata.json`) (ask for confirmation first)
+1. Remove the sub-folder and its contents (`README.md`, `collaboration.md`, `main.md`, `process.md`, `domain-model.md`, `hierarchy-metadata.json`) (ask for confirmation first)
 2. Revert parent participant's `status` in `hierarchy-metadata.json` to `"available"`
 3. Remove the `%% Decomposition:` comment from parent `collaboration.md`
 4. Remove the sub-process navigation link row from parent `main.md`'s Sub-Processes table
@@ -652,7 +671,8 @@ When the user requests a rollback of a decomposition:
      Reason:   user-requested rollback
      Restored: [ParticipantName] status → available
    ```
-7. Report: participant name, folder removed, parent updated
+7. Append a dated major-event entry to the parent `README.md` recording the removed boundary and rollback reason.
+8. Report: participant name, folder removed, parent updated
 
 ## Process Level Tracking and Scale Management
 

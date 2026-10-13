@@ -85,6 +85,25 @@ def test_w5h_analysis():
         with open(files["markdown_file"], 'r') as f:
             saved_markdown = f.read()
             assert "W5H Requirements Analysis" in saved_markdown
+
+        output_folders = [
+            Path(temp_dir),
+            Path(temp_dir) / "projects",
+            Path(temp_dir) / "projects" / project_id,
+            Path(temp_dir) / "projects" / project_id / "Analysis",
+        ]
+        for folder in output_folders:
+            readme = folder / "README.md"
+            assert readme.is_file(), f"Missing README in {folder}"
+            content = readme.read_text(encoding="utf-8")
+            assert "## Purpose" in content
+            assert "## Important Information" in content
+            assert "## Major Events" in content
+
+        project_readme = output_folders[2] / "README.md"
+        project_readme.write_text(project_readme.read_text(encoding="utf-8") + "\nKeep this note.\n", encoding="utf-8")
+        analyzer.save_analysis(analysis, temp_dir)
+        assert "Keep this note." in project_readme.read_text(encoding="utf-8")
     
     print("✓ File saving and loading passed")
     

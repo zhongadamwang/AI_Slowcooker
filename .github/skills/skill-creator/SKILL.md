@@ -287,6 +287,7 @@ The script:
 - Creates the skill directory at the specified path
 - Generates a SKILL.md template with proper frontmatter and TODO placeholders
 - Creates example resource directories: `scripts/`, `references/`, and `assets/`
+- Creates a `README.md` in the skill root and every generated resource directory, documenting purpose, important information, and dated major events
 - Adds example files in each directory that can be customized or deleted
 
 After initialization, customize or remove the generated SKILL.md and example files as needed.

@@ -227,6 +227,33 @@ def test_copilot_approach():
     
     return {"approach": "copilot", "status": "recommended"}
 
+def test_output_folders_have_readmes():
+    """Verify generated output folders are documented and existing notes survive."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        ingestor = RequirementsIngestor(output_base_dir=temp_dir)
+        analysis_dir = ingestor._create_project_directory("README-TEST")
+        folders = [
+            Path(temp_dir),
+            Path(temp_dir) / "projects",
+            Path(temp_dir) / "projects" / "README-TEST",
+            analysis_dir,
+            analysis_dir / "source_files",
+            analysis_dir / "versions",
+        ]
+
+        for folder in folders:
+            readme = folder / "README.md"
+            assert readme.is_file(), f"Missing README in {folder}"
+            content = readme.read_text(encoding="utf-8")
+            assert "## Purpose" in content
+            assert "## Important Information" in content
+            assert "## Major Events" in content
+
+        project_readme = folders[2] / "README.md"
+        project_readme.write_text(project_readme.read_text(encoding="utf-8") + "\nKeep this note.\n", encoding="utf-8")
+        ingestor._create_project_directory("README-TEST")
+        assert "Keep this note." in project_readme.read_text(encoding="utf-8")
+
 def create_mock_ai_result(files, project_id):
     """Create a mock AI result for testing"""
     return {

@@ -12,6 +12,7 @@ Examples:
 """
 
 import sys
+from datetime import date
 from pathlib import Path
 
 
@@ -101,6 +102,18 @@ Files not intended to be loaded into context, but rather used within the output 
 
 **Any unneeded directories can be deleted.** Not every skill requires all three types of resources.
 """
+
+
+def write_folder_readme(folder: Path, purpose: str, important_info: str) -> None:
+    """Document a generated folder's purpose, conventions, and creation event."""
+    readme = folder / "README.md"
+    readme.write_text(
+        f"# {folder.name}\n\n"
+        f"## Purpose\n{purpose}\n\n"
+        f"## Important Information\n{important_info}\n\n"
+        f"## Major Events\n- [{date.today().isoformat()}] Folder created by skill-creator.\n",
+        encoding="utf-8",
+    )
 
 EXAMPLE_SCRIPT = '''#!/usr/bin/env python3
 """
@@ -213,6 +226,11 @@ def init_skill(skill_name, path):
     # Create skill directory
     try:
         skill_dir.mkdir(parents=True, exist_ok=False)
+        write_folder_readme(
+            skill_dir,
+            f"Root documentation for the {skill_title} skill.",
+            "SKILL.md defines the skill workflow; README.md records folder context and major events.",
+        )
         print(f"✅ Created skill directory: {skill_dir}")
     except Exception as e:
         print(f"❌ Error creating directory: {e}")
@@ -238,6 +256,7 @@ def init_skill(skill_name, path):
         # Create scripts/ directory with example script
         scripts_dir = skill_dir / 'scripts'
         scripts_dir.mkdir(exist_ok=True)
+        write_folder_readme(scripts_dir, "Executable helpers and automation scripts for this skill.", "Scripts should be documented and validated before use.")
         example_script = scripts_dir / 'example.py'
         example_script.write_text(EXAMPLE_SCRIPT.format(skill_name=skill_name))
         example_script.chmod(0o755)
@@ -246,6 +265,7 @@ def init_skill(skill_name, path):
         # Create references/ directory with example reference doc
         references_dir = skill_dir / 'references'
         references_dir.mkdir(exist_ok=True)
+        write_folder_readme(references_dir, "Supporting reference material used by this skill.", "Keep reference documents focused and link to them from SKILL.md when needed.")
         example_reference = references_dir / 'api_reference.md'
         example_reference.write_text(EXAMPLE_REFERENCE.format(skill_title=skill_title))
         print("✅ Created references/api_reference.md")
@@ -253,6 +273,7 @@ def init_skill(skill_name, path):
         # Create assets/ directory with example asset placeholder
         assets_dir = skill_dir / 'assets'
         assets_dir.mkdir(exist_ok=True)
+        write_folder_readme(assets_dir, "Static resources used by this skill.", "Store reusable files here; describe assets and their usage in this README.")
         example_asset = assets_dir / 'example_asset.txt'
         example_asset.write_text(EXAMPLE_ASSET)
         print("✅ Created assets/example_asset.txt")
