@@ -83,5 +83,5 @@ Build migration utilities to convert existing flat Project 1 collaboration diagr
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-309b](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-309b](../artifacts/Source%20Materials/initial-requirements.md)
 - [Project 1 Collaboration Diagrams](../../01%20-%20Building%20Skills/artifacts/Analysis/collaboration-diagrams.md)

@@ -68,6 +68,6 @@ All documentation created in `artifacts/Documentation/`:
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-305](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-305](../artifacts/Source%20Materials/initial-requirements.md)
 - [Hierarchy Examples](../artifacts/Sample%20Data/hierarchy-examples.md)
 - [Boundary Concepts](../artifacts/Analysis/boundary-concepts.md)

@@ -85,5 +85,5 @@ Ensure all new and enhanced skills integrate seamlessly with the existing EDPS s
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-303, TC-302](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-303, TC-302](../artifacts/Source%20Materials/initial-requirements.md)
 - [EDPS Skill Navigator](../../../.github/skills/edps-skill-navigator/SKILL.md)

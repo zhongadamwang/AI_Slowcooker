@@ -14,7 +14,7 @@ Tasks will be defined based on requirements analysis and lessons learned from pr
 
 ## Getting Started
 
-1. Review project requirements in [`../artifacts/Requirements/`](../artifacts/Requirements/)
+1. Review original project materials in [`../artifacts/Source Materials/`](../artifacts/Source%20Materials/)
 2. Check project overview in [`../main.md`](../main.md)
 3. Refer to [`task-template.md`](task-template.md) for creating new tasks
 4. Track progress in [`task-tracking.md`](task-tracking.md)

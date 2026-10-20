@@ -122,6 +122,6 @@ Implement Mermaid `box` syntax generation for creating boundary boxes in collabo
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-302](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-302](../artifacts/Source%20Materials/initial-requirements.md)
 - [Boundary Concepts Analysis](../artifacts/Analysis/boundary-concepts.md)
 - [Hierarchy Examples](../artifacts/Sample%20Data/hierarchy-examples.md)

@@ -14,7 +14,7 @@ In this project, we will continue to refine and extend the EDPS skills framework
 ## Structure
 - `artifacts/` - Supporting materials and analysis outputs
   - `Analysis/` - Technical analysis documents
-  - `Requirements/` - Project requirements and specifications
+  - `Source Materials/` - Original project source materials
   - `Changes/` - Change records and impact analyses
   - `Documentation/` - Generated and authored documentation
   - `Sample Data/` - Test data and examples
@@ -25,7 +25,7 @@ In this project, we will continue to refine and extend the EDPS skills framework
 - [`project-plan.md`](project-plan.md) — Detailed project planning and timeline
 - [`README.md`](README.md) — Project summary and quick reference
 - [`tasks/README.md`](tasks/README.md) — Task overview and tracking
-- [`artifacts/Requirements/`](artifacts/Requirements/) — Requirements and specifications
+- [`artifacts/Source Materials/`](artifacts/Source%20Materials/) — Original project documents and references
 
 ## Dependencies
 - Completion of Project 04 - Building Skills Iteration 3

@@ -7,7 +7,7 @@ This project's goal is to develop GitHub integration capabilities for enhanced c
 
 ## Structure
 - `artifacts/` - Supporting materials and analysis outputs
-  - `Requirements/` - Project requirements and specifications
+  - `Source Materials/` - Original project source materials
   - `Analysis/` - Technical analysis documents
   - `Changes/` - Requirements change requests and tracking
   - `Sample Data/` - Test data and examples
@@ -18,7 +18,7 @@ This project's goal is to develop GitHub integration capabilities for enhanced c
   - Issues can be exported from GitHub to update project documents
 
 ## Key Documents
-- [Initial Requirements](artifacts/Requirements/initial-requirements.md) - Project scope and high-level requirements
+- [Initial Requirements](artifacts/Source%20Materials/initial-requirements.md) - Project scope and high-level requirements
 - [Project Plan](project-plan.md) - Detailed project planning with timeline and deliverables
 - [Tasks Folder](tasks/) - Individual task files in GitHub issue format for team collaboration
 - [Changes Management](artifacts/Changes/) - Requirements change tracking and documentation  

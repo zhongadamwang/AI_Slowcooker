@@ -137,6 +137,6 @@ Add participant type classification (actor, boundary, control, entity) to the en
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-310](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-310](../artifacts/Source%20Materials/initial-requirements.md)
 - [Boundary Concepts Analysis](../artifacts/Analysis/boundary-concepts.md)
 - [T1: Enhance Collaboration Skill](T1-enhance-collaboration-skill.md)

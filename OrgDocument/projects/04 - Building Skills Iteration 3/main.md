@@ -13,7 +13,7 @@ In this project, we will focus on integrating all skills to achieve a cohesive a
 
 ## Structure
 - `artifacts/` - Supporting materials and analysis outputs
-  - `Requirements/` - Project requirements and specifications 
+  - `Source Materials/` - Original project source materials
   - `Analysis/` - Technical analysis documents
   - `Documentation/` - Generated and authored documentation
   - `Sample Data/` - Test data and examples

@@ -84,4 +84,4 @@ See full test suite (33 test cases) in [T9-test-cases.md](../artifacts/Testing/T
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-306](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-306](../artifacts/Source%20Materials/initial-requirements.md)

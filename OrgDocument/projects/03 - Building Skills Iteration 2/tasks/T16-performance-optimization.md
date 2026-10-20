@@ -63,7 +63,7 @@ Validate performance requirements for hierarchical diagram generation and optimi
 ---
 
 **Related Documents**:
-- [Initial Requirements - TC-301, TC-302, TC-303](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - TC-301, TC-302, TC-303](../artifacts/Source%20Materials/initial-requirements.md)
 - [Test Cases](../artifacts/Testing/T16-test-cases.md)
 - [Test Results](../artifacts/Testing/T16-test-results.md)
 - [Performance Benchmarks](../artifacts/Analysis/T16-performance-benchmarks.md)

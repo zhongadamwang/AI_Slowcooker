@@ -59,7 +59,7 @@ Verifies required output files exist in the expected locations.
   "severity": "hard",
   "description": "Requirements document must be created",
   "artifacts": [
-    "artifacts/Requirements/requirements.md",
+    "artifacts/Analysis/requirements.md",
     "artifacts/Analysis/requirements-analysis.json"
   ],
   "remediation": "Run requirements-ingest to create requirements documentation"
@@ -75,7 +75,7 @@ Checks file content for required text, patterns, or structure.
   "type": "content_pattern",
   "severity": "soft",
   "description": "Should include standard requirement sections",
-  "file": "artifacts/Requirements/requirements.md", 
+  "file": "artifacts/Analysis/requirements.md",
   "must_contain": ["## Functional Requirements", "## Non-Functional Requirements"],
   "must_not_contain": ["TODO", "PLACEHOLDER"],
   "must_contain_pattern": "REQ-\\d{3}:",
@@ -186,13 +186,13 @@ Focus on content structure, traceability, and completeness.
       "id": "requirements_documented", 
       "type": "artifact_existence",
       "severity": "hard",
-      "artifacts": ["artifacts/Requirements/requirements.md"]
+      "artifacts": ["artifacts/Analysis/requirements.md"]
     },
     {
       "id": "traceability_present",
       "type": "content_pattern", 
       "severity": "soft",
-      "file": "artifacts/Requirements/requirements.md",
+      "file": "artifacts/Analysis/requirements.md",
       "must_contain_pattern": "REQ-\\d{3}",
       "min_matches": 5
     }
@@ -264,7 +264,7 @@ Use the orchestrator's gate evaluation function to test your gates:
 > orchestrate test-gate requirements-ingest
 
 ✅ Gate evaluation: PASSED
-   • requirements_exist: ✅ Found artifacts/Requirements/requirements.md
+   • requirements_exist: ✅ Found artifacts/Analysis/requirements.md
    • content_structure: ⚠️ Missing REQ-IDs (soft failure)
    • quality_threshold: ✅ 85% meets standard archetype minimum
 

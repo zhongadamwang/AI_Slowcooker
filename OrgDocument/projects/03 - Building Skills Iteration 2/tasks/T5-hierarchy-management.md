@@ -81,6 +81,6 @@ Create a new `hierarchy-management` skill for managing hierarchical process deco
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-301](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-301](../artifacts/Source%20Materials/initial-requirements.md)
 - [Hierarchy Examples](../artifacts/Sample%20Data/hierarchy-examples.md)
 - [Boundary Concepts Analysis](../artifacts/Analysis/boundary-concepts.md)
