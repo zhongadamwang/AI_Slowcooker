@@ -3,7 +3,7 @@ name: project-document-management
 description: Initialize and manage project documentation structures following hierarchical folder guidelines. Creates consistent project trees with requirements, artifacts, and organizational modeling documents. Supports flat (Project 1) and EDPS-hierarchical (Project 3) archetypes, integrates with documentation-automation for stub generation, and tracks project evolution metadata.
 license: MIT
 version: 2.0.0
-last-updated: 2026-03-16
+last-updated: 2026-10-19
 ---
 
 # Project Document Management
@@ -25,9 +25,40 @@ Bootstrap and maintain a standardised EDPS project documentation tree — creati
 ## Outputs
 
 - `OrgDocument/projects/[NN] - [Project Name]/` — Full project folder tree per archetype
-- Stubbed `main.md`, `README.md`, `project-plan.md`, `tasks/README.md`, `tasks/task-tracking.md`, `tasks/task-template.md`
+- `main.md` in every directory created or managed by the initialization workflow
+- `README.md`, `project-plan.md`, task files, and process documentation appropriate to the selected archetype
 - `project-metadata.json` — Machine-readable project metadata and evolution history
 - *(hierarchical archetype only)* `orgModel/[NN] - [Process Name]/` tree with `documentation-automation` stubs
+
+## `main.md` Directory Documentation Rules
+
+Git does not track empty directories. Therefore, every directory created or managed by this skill must contain a `main.md` that describes the directory and its contents. This applies to the project root, `artifacts/` and its category folders, `tasks/`, each process folder, `test-cases/`, and every hierarchy boundary folder.
+
+Each `main.md` must:
+
+1. Use a heading that identifies the directory or process.
+2. State the directory's purpose and the kind of material it contains in a brief overview.
+3. List its immediate child directories and important files, with a short description and relative Markdown links where useful. Do not recursively duplicate their inventories.
+4. Say that no content has been added yet when the directory is intentionally empty; never leave `main.md` blank or as a generation-only placeholder.
+5. Keep links relative to the `main.md` file and verify that each target exists. Do not invent expected documents as though they already exist.
+6. Be updated when the directory's purpose, immediate contents, or child-folder structure changes.
+
+Use the project-root and process-root templates below for those folders; use this concise template for other directories:
+
+```markdown
+# [Directory Name]
+
+## Purpose
+[Why this directory exists and what belongs here.]
+
+## Contents
+- `[child-folder/](child-folder/main.md)` — [brief description]
+- `[important-file.md](important-file.md)` — [brief description]
+
+No content has been added yet.
+```
+
+Remove the final empty-directory sentence once content is added. Omit unavailable links and the empty-directory sentence as appropriate. For boundary folders, the initial `main.md` must be a concise, meaningful directory summary; `documentation-automation` may replace it with the full process-level overview.
 
 ## Project Archetypes
 
@@ -39,12 +70,19 @@ Minimal project structure: `artifacts/` with standard subfolders, `tasks/`, and 
 ```
 [NN] - [Project Name]/
 ├── artifacts/
+│   ├── main.md
 │   ├── Analysis/
+│   │   └── main.md
 │   ├── Requirements/
+│   │   └── main.md
 │   ├── Changes/
+│   │   └── main.md
 │   ├── Sample Data/
+│   │   └── main.md
 │   └── Testing/
+│       └── main.md
 ├── tasks/
+│   ├── main.md
 │   ├── README.md
 │   ├── task-tracking.md
 │   └── task-template.md
@@ -59,13 +97,21 @@ Full project artifacts + `orgModel` process folder with standard modeling files.
 ```
 [NN] - [Project Name]/
 ├── artifacts/
+│   ├── main.md
 │   ├── Analysis/
+│   │   └── main.md
 │   ├── Requirements/
+│   │   └── main.md
 │   ├── Changes/
+│   │   └── main.md
 │   ├── Documentation/
+│   │   └── main.md
 │   ├── Sample Data/
+│   │   └── main.md
 │   └── Testing/
+│       └── main.md
 ├── tasks/
+│   ├── main.md
 │   ├── README.md
 │   ├── task-tracking.md
 │   └── task-template.md
@@ -81,10 +127,11 @@ orgModel/[NN] - [Process Name]/
 ├── vocabulary.md
 ├── test-case-list.md
 └── test-cases/
+    └── main.md
 ```
 
 ### `hierarchical` — EDPS Boundary-First Style (Project 3+)
-All `standard` content plus `orgModel` folders using the `[NN]-[Name]Boundary/` hierarchy pattern. Each boundary sub-folder receives `documentation-automation` stubs. Use when designing multi-level EDPS process hierarchies.
+All `standard` content plus `orgModel` folders using the `[NN]-[Name]Boundary/` hierarchy pattern. Each boundary sub-folder receives a meaningful `main.md` summary and `documentation-automation` stubs for its remaining process documents. Use when designing multi-level EDPS process hierarchies.
 
 ```
 orgModel/[NN] - [Process Name]/
@@ -95,9 +142,10 @@ orgModel/[NN] - [Process Name]/
 ├── vocabulary.md
 ├── test-case-list.md
 ├── test-cases/
+│   └── main.md
 ├── hierarchy-metadata.json        ← created by hierarchy-management
 └── [NN]-[BoundaryName]Boundary/   ← one per control-type participant
-    ├── main.md                    ← [TO BE GENERATED - invoke documentation-automation]
+    ├── main.md                    ← concise directory summary, then expanded by documentation-automation
     ├── process.md                 ← [TO BE GENERATED - invoke documentation-automation]
     ├── collaboration.md           ← [TO BE GENERATED - invoke documentation-automation]
     └── domain-model.md            ← [TO BE GENERATED - invoke documentation-automation]
@@ -129,13 +177,15 @@ Create the folder structure for the selected archetype (see [Project Archetypes]
 ```
 OrgDocument/projects/[NN] - [Project Name]/
 ├── artifacts/
-│   ├── Analysis/
-│   ├── Requirements/
-│   ├── Changes/
-│   ├── Documentation/       ← standard + hierarchical only
-│   ├── Sample Data/
-│   └── Testing/
+│   ├── main.md
+│   ├── Analysis/main.md
+│   ├── Requirements/main.md
+│   ├── Changes/main.md
+│   ├── Documentation/main.md       ← standard + hierarchical only
+│   ├── Sample Data/main.md
+│   └── Testing/main.md
 ├── tasks/
+│   ├── main.md
 │   ├── README.md
 │   ├── task-tracking.md
 │   └── task-template.md
@@ -196,12 +246,14 @@ OrgDocument/orgModel/[NN] - [Process Name]/
 ├── vocabulary.md
 ├── test-case-list.md
 └── test-cases/
+    ├── main.md
     └── tc-[identifier]-[3-digit-sequence].md
 ```
 
 **File initialization rules**:
-- `main.md`, `process.md`, `collaboration.md`, `domain-model.md` → write with the standard EDPS templates (see below)
+- `main.md`, `process.md`, `collaboration.md`, `domain-model.md` → write with the standard EDPS templates (see below); `main.md` must also summarize the process folder's purpose and contents
 - `vocabulary.md`, `test-case-list.md` → write empty stubs with heading only; `orgmodel-update` owns their content
+- `test-cases/main.md` → describe the folder's purpose and explain that individual test cases belong there
 
 ### Step 6 — Initialize Boundary Sub-folders (hierarchical archetype only)
 
@@ -210,13 +262,13 @@ For each `control`-type participant identified in the top-level `collaboration.m
 ```
 orgModel/[NN] - [Process Name]/
 └── [NN]-[BoundaryName]Boundary/
-    ├── main.md          ← insert stub: [TO BE GENERATED - invoke documentation-automation]
+    ├── main.md          ← create a meaningful directory summary; documentation-automation expands it
     ├── process.md       ← insert stub: [TO BE GENERATED - invoke documentation-automation]
     ├── collaboration.md ← insert stub: [TO BE GENERATED - invoke documentation-automation]
     └── domain-model.md  ← insert stub: [TO BE GENERATED - invoke documentation-automation]
 ```
 
-After creating each boundary folder, **invoke `documentation-automation`** to replace stubs with generated content. This skill does not generate the content itself — it only creates the stub structure and triggers the downstream generation.
+After creating each boundary folder, **invoke `documentation-automation`** to replace the process-document stubs and expand `main.md` into the generated process overview. This skill does not generate the detailed process documentation itself.
 
 **Invocation pattern**:
 ```
@@ -239,12 +291,15 @@ Use this workflow when evolving an **existing** project structure to add EDPS me
 | `standard` → `hierarchical` | Add boundary sub-folder stubs for `control`-type participants in existing `collaboration.md` |
 
 ### Add Missing Files
-For each expected file that is absent, create the stub. Do **not** overwrite files that already contain substantive content (line count > 10 non-placeholder lines).
+For every directory in the managed project/process tree, create a `main.md` if it is absent and summarize the directory based on its actual contents. Do **not** overwrite files that already contain substantive content (line count > 10 non-placeholder lines). Create other expected files as stubs when absent.
 
 ### Record Evolution
 After every update, append a new entry to `evolution_history` in `project-metadata.json` and increment the `version` field (patch increment for file additions, minor for archetype upgrades).
 
 ## Standard File Templates
+
+### Non-root Directory `main.md` Template
+Use the directory documentation rules above for every generated folder that does not use the project-root or process-root template. Keep the contents list limited to immediate children and important files.
 
 ### Project main.md Template
 ```markdown
@@ -260,20 +315,14 @@ After every update, append a new entry to `evolution_history` in `project-metada
 **Created**: [Date]  
 
 ## Structure
-- `artifacts/` - Supporting materials and analysis outputs
-  - `Analysis/` - Technical analysis documents
-  - `Requirements/` - Requirements and specifications
-  - `Changes/` - Change records and impact analyses
-  - `Documentation/` - Generated and authored documentation
-  - `Sample Data/` - Test data and examples
-  - `Testing/` - Test cases and validation artifacts
-- `tasks/` - Individual task files in GitHub issue format
+- [`artifacts/main.md`](artifacts/main.md) — Index of supporting materials and analysis outputs
+- [`tasks/main.md`](tasks/main.md) — Index of individual task files and tracking documents
 
 ## Key Documents
 - [`project-plan.md`](project-plan.md) — Detailed project planning and timeline
 - [`README.md`](README.md) — Project summary and quick reference
 - [`tasks/README.md`](tasks/README.md) — Task overview and tracking
-- [`artifacts/Requirements/`](artifacts/Requirements/) — Requirements and specifications
+- [`artifacts/Requirements/main.md`](artifacts/Requirements/main.md) — Requirements and specifications
 - [`../../orgModel/[NN] - [Process Name]/main.md`](../../orgModel/[NN]%20-%20[Process%20Name]/main.md) — Linked organizational process model
 
 ## Dependencies
@@ -329,10 +378,13 @@ See [domain-model.md](domain-model.md) for actors and entities.
 
 ## Test Coverage
 See [test-case-list.md](test-case-list.md) for verification test cases.
+
+## Folder Contents
+- [`test-cases/main.md`](test-cases/main.md) — Purpose and contents of the individual test-case folder.
 ```
 
 ### Boundary Sub-folder Stub Template (hierarchical archetype)
-The following placeholder is inserted into each of the four generated files in a new boundary sub-folder. `documentation-automation` replaces this stub with real content.
+Use the standard directory `main.md` template for `main.md` so the folder is searchable immediately. The following placeholder is inserted into the other generated files in a new boundary sub-folder. `documentation-automation` replaces these stubs with real content.
 
 ```markdown
 [TO BE GENERATED - invoke documentation-automation]
@@ -375,11 +427,12 @@ The following placeholder is inserted into each of the four generated files in a
 1. Read `projects.md` — verify `project_number` not already in use
 2. Create project folder with archetype-appropriate subfolder structure
 3. Write `project-metadata.json` (version `1.0.0`)
-4. Generate `main.md`, `README.md`, `project-plan.md` from templates
-5. Create `tasks/` with `README.md`, `task-tracking.md`, `task-template.md`
-6. Update `projects.md` registry
-7. *(standard/hierarchical)* Create `orgModel/[NN] - [Process Name]/` tree
-8. *(hierarchical)* Create boundary sub-folder stubs; invoke `documentation-automation` per boundary folder
+4. Generate the project-root `main.md`, `README.md`, and `project-plan.md` from templates
+5. Create `main.md` indexes in `artifacts/`, each artifact category, and `tasks/`
+6. Create `tasks/` with `README.md`, `task-tracking.md`, and `task-template.md`
+7. Update `projects.md` registry
+8. *(standard/hierarchical)* Create `orgModel/[NN] - [Process Name]/` tree and `test-cases/main.md`
+9. *(hierarchical)* Create boundary-folder summaries and process-document stubs; invoke `documentation-automation` per boundary folder
 
 ### Initialize Process Model
 **Parameters**: `process_number`, `process_name`, `scope_description`, `archetype` (default: `standard`)  
@@ -387,7 +440,7 @@ The following placeholder is inserted into each of the four generated files in a
 1. Create `orgModel/[NN] - [Process Name]/` folder
 2. Generate `main.md`, `process.md`, `collaboration.md`, `domain-model.md` from templates
 3. Create `vocabulary.md`, `test-case-list.md` stubs (content owned by `orgmodel-update`)
-4. Create `test-cases/` folder
+4. Create `test-cases/` folder with a descriptive `main.md`
 5. *(hierarchical)* Create boundary sub-folder stubs and invoke `documentation-automation`
 6. Update parent `main.md` sub-process list
 
@@ -402,11 +455,12 @@ The following placeholder is inserted into each of the four generated files in a
 ### Structure Validation
 **Actions**:
 1. Verify folder naming conventions (`[NN] - [Name]` for projects; `[NN]-[Name]Boundary` for hierarchy nodes)
-2. Check required files in each folder (per archetype)
-3. Validate `project-metadata.json` presence and schema
-4. Validate cross-reference links in `main.md` resolve to existing files
-5. Detect stub files not yet replaced by `documentation-automation`
-6. Report: ✅ valid | ⚠️ missing files | ❌ broken links | 🔲 ungenerated stubs
+2. Check that every directory in the managed tree contains a non-empty `main.md` with a purpose and an accurate immediate-contents summary
+3. Check expected archetype-specific files and folders
+4. Validate `project-metadata.json` presence and schema
+5. Validate cross-reference links in every `main.md` resolve to existing files or directories
+6. Detect stub files not yet replaced by `documentation-automation`
+7. Report: ✅ valid | ⚠️ missing files | ❌ broken links | 🔲 ungenerated stubs
 
 ## Naming Conventions
 
@@ -457,7 +511,7 @@ The following placeholder is inserted into each of the four generated files in a
 
 ### `orgmodel-update`
 - **Files owned by `orgmodel-update`**: `vocabulary.md`, `test-case-list.md` — initialize as empty stubs only; never overwrite content in these files.
-- **Files owned by this skill**: `main.md`, `project-plan.md`, `README.md`, `project-metadata.json`
+- **Files owned by this skill**: project and artifact-directory `main.md` files, `project-plan.md`, `README.md`, `project-metadata.json`. Process-folder `main.md` is authored from the process template; hierarchy boundary `main.md` is expanded by `documentation-automation`.
 
 ### `requirements-ingest`
 - Pre-populate `artifacts/Requirements/` when initial requirements text is provided at initialization.
@@ -473,7 +527,7 @@ The following placeholder is inserted into each of the four generated files in a
 1. **Select the right archetype first**: Wrong archetype choice requires a structure upgrade later — ask if unsure.
 2. **Consistent numbering**: Use sequential NN for projects and process nodes; do not reuse numbers.
 3. **project-metadata.json is the source of truth**: Always read it before modifying a project structure.
-4. **Write stubs, not content**: This skill creates structure; `documentation-automation` and `orgmodel-update` fill content.
+4. **Never leave a folder undocumented**: Create a useful `main.md` in every managed directory, even when the directory has no other content.
 5. **Registry updates are mandatory**: Always update `projects.md` when creating a new project folder.
 6. **Never skip documentation-automation**: After creating boundary sub-folders (hierarchical archetype), immediately invoke `documentation-automation` to convert stubs.
 7. **Record every structural change**: Append to `evolution_history` in `project-metadata.json` for every modification — required for EDPS compliance.
