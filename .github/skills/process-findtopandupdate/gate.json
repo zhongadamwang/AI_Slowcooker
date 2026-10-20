@@ -13,7 +13,7 @@
       "severity": "soft",
       "description": "Should produce updated top-level requirements",
       "artifacts": [
-        "artifacts/Requirements/top-level-requirements-updated.md"
+        "artifacts/Analysis/top-level-requirements-updated.md"
       ],
       "remediation": "Run process-findtopandupdate to identify and update top requirements"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should maintain consistency across hierarchy levels",
-      "file": "artifacts/Requirements/top-level-requirements-updated.md",
+      "file": "artifacts/Analysis/top-level-requirements-updated.md",
       "must_contain": ["## Hierarchy Consistency Check", "## Updated Requirements"],
       "remediation": "Verify changes maintain consistency between high-level and detailed requirements"
     },
@@ -31,7 +31,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should preserve organizational model coherence",
-      "file": "artifacts/Requirements/top-level-requirements-updated.md",
+      "file": "artifacts/Analysis/top-level-requirements-updated.md",
       "must_contain": ["✅ OrgModel Coherence"],
       "remediation": "Ensure updates maintain organizational model coherence"
     }

@@ -266,7 +266,7 @@ The project state object is the single source of truth for where a project stand
       "state": "not_started | available | in_progress | completed | skipped",
       "started_at": "ISO-8601 or null",
       "completed_at": "ISO-8601 or null",
-      "output_artifacts": ["artifacts/Requirements/requirements.md"],
+      "output_artifacts": ["artifacts/Analysis/requirements.md"],
       "gate_result": null,
       "skip_justification": null
     }
@@ -287,7 +287,7 @@ The project state object is the single source of truth for where a project stand
       "skill_id": "S01",
       "skill_name": "requirements-ingest",
       "timestamp": "ISO-8601",
-      "output_artifacts": ["artifacts/Requirements/requirements.md"],
+      "output_artifacts": ["artifacts/Analysis/requirements.md"],
       "gate_check_requested": true,
       "gate_result": "pending | pass | fail | bypassed"
     }
@@ -332,7 +332,7 @@ After each skill execution completes, the orchestrator emits a structured comple
   "timestamp": "2026-03-16T10:30:00Z",
   "session_id": "uuid",
   "output_artifacts": [
-    "OrgDocument/projects/04 - Building Skills Iteration 3/artifacts/Requirements/requirements.md"
+    "OrgDocument/projects/04 - Building Skills Iteration 3/artifacts/Analysis/requirements.md"
   ],
   "self_reported_status": "success | partial | failed",
   "gate_check_requested": true,
@@ -559,7 +559,7 @@ function checkContentPattern(check) {
         {
           "check_id": "requirements_exist",
           "type": "artifact_existence",
-          "artifacts_found": ["artifacts/Requirements/requirements.md"]
+          "artifacts_found": ["artifacts/Analysis/requirements.md"]
         }
       ],
       "failed": [
@@ -627,7 +627,7 @@ All commands are invoked by addressing `edps-workflow-orchestrator` in a Copilot
 ⏳ Evaluating skill completion gates...
 
 ✅ Gate evaluation passed (quality score: 92%)
-   • Artifact exists: artifacts/Requirements/requirements.md ✅
+   • Artifact exists: artifacts/Analysis/requirements.md ✅
    • Content structure: Basic sections present ✅  
    • Traceability links: Missing REQ-IDs ⚠️ (soft failure)
 

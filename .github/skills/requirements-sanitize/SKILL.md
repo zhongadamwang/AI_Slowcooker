@@ -91,9 +91,11 @@ Produce a concise report listing:
 
 ### Step 6 — Output files
 
-Write both output files to the project artifacts directory:
-- `outputs/projects/{project_id}/Requirements/sanitized-requirements.md`
-- `outputs/projects/{project_id}/Requirements/sanitization-report.md`
+Write both generated files to the project analysis directory:
+- `outputs/projects/{project_id}/Analysis/sanitized-requirements.md`
+- `outputs/projects/{project_id}/Analysis/sanitization-report.md`
+
+Keep the original document in `artifacts/Source Materials/`; sanitized content and reports are derived analysis outputs, not source materials.
 
 If `project_id` is unknown, output inline and advise the user to save before proceeding.
 

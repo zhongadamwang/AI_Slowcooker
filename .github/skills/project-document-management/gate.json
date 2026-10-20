@@ -13,7 +13,7 @@
       "severity": "hard",
       "description": "Core project folders must exist",
       "base_path": "OrgDocument/projects/*/",
-      "required_folders": ["artifacts", "tasks", "artifacts/Analysis", "artifacts/Requirements"],
+      "required_folders": ["artifacts", "tasks", "artifacts/Analysis", "artifacts/Source Materials"],
       "remediation": "Run project-document-management to create project structure"
     },
     {

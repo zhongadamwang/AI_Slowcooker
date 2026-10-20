@@ -19,7 +19,7 @@ Bootstrap and maintain a standardised EDPS project documentation tree — creati
 - **Project name**: Human-readable project name
 - **Project number**: Sequential two-digit project number (e.g., `03`)
 - **Archetype** *(optional, default: `standard`)*: One of `flat`, `standard`, or `hierarchical` — see [Project Archetypes](#project-archetypes) below
-- **Initial requirements** *(optional)*: Text to pre-populate `artifacts/Requirements/`
+- **Initial source materials** *(optional)*: Original project documents or notes to pre-populate `artifacts/Source Materials/`
 - **orgModel process name** *(optional)*: If provided, also initializes matching `orgModel/[NN] - [Process Name]/` tree
 
 ## Outputs
@@ -73,7 +73,7 @@ Minimal project structure: `artifacts/` with standard subfolders, `tasks/`, and 
 │   ├── main.md
 │   ├── Analysis/
 │   │   └── main.md
-│   ├── Requirements/
+│   ├── Source Materials/   # Original project documents and references
 │   │   └── main.md
 │   ├── Changes/
 │   │   └── main.md
@@ -100,7 +100,7 @@ Full project artifacts + `orgModel` process folder with standard modeling files.
 │   ├── main.md
 │   ├── Analysis/
 │   │   └── main.md
-│   ├── Requirements/
+│   ├── Source Materials/   # Original project documents and references
 │   │   └── main.md
 │   ├── Changes/
 │   │   └── main.md
@@ -179,7 +179,7 @@ OrgDocument/projects/[NN] - [Project Name]/
 ├── artifacts/
 │   ├── main.md
 │   ├── Analysis/main.md
-│   ├── Requirements/main.md
+│   ├── Source Materials/main.md
 │   ├── Changes/main.md
 │   ├── Documentation/main.md       ← standard + hierarchical only
 │   ├── Sample Data/main.md
@@ -322,7 +322,7 @@ Use the directory documentation rules above for every generated folder that does
 - [`project-plan.md`](project-plan.md) — Detailed project planning and timeline
 - [`README.md`](README.md) — Project summary and quick reference
 - [`tasks/README.md`](tasks/README.md) — Task overview and tracking
-- [`artifacts/Requirements/main.md`](artifacts/Requirements/main.md) — Requirements and specifications
+- [`artifacts/Source Materials/main.md`](artifacts/Source%20Materials/main.md) — Original project documents, transcripts, references, and drafts
 - [`../../orgModel/[NN] - [Process Name]/main.md`](../../orgModel/[NN]%20-%20[Process%20Name]/main.md) — Linked organizational process model
 
 ## Dependencies
@@ -514,7 +514,8 @@ Use the standard directory `main.md` template for `main.md` so the folder is sea
 - **Files owned by this skill**: project and artifact-directory `main.md` files, `project-plan.md`, `README.md`, `project-metadata.json`. Process-folder `main.md` is authored from the process template; hierarchy boundary `main.md` is expanded by `documentation-automation`.
 
 ### `requirements-ingest`
-- Pre-populate `artifacts/Requirements/` when initial requirements text is provided at initialization.
+- Read original requirement sources from `artifacts/Source Materials/` and write generated `requirements.md` and `requirements.json` to `artifacts/Analysis/`.
+- Keep original source files unchanged in `artifacts/Source Materials/`; generated and transformed analysis outputs belong in `artifacts/Analysis/`.
 
 ### `goals-extract`
 - Output can seed the `## Success Criteria` section of `main.md` after project initialization.

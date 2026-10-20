@@ -185,7 +185,7 @@ projects/[PROJECT-ID]/
 │   │   └── critical-path-analysis.md
 │   ├── Changes/           # Change management
 │   │   └── [DATE]-[TYPE]-CHG-[NUM]-[description].md
-│   ├── Requirements/      # Input documents
+│   ├── Source Materials/  # Original input documents, transcripts, references, and drafts
 │   └── UI Mockups/        # Design artifacts
 └── tasks/                 # Project planning outputs
     ├── project-plan.md
