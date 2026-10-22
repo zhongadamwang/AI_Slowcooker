@@ -3,9 +3,9 @@
   "skill_id": "S18",
   "skill_name": "project-document-management",
   "version": "1.0.0",
+  "description": "Validates project structure has been properly initialized, including the collaboration_mode field introduced alongside archetype",
   "gate_type": "completion",
   "severity": "hard", 
-  "description": "Validates project structure has been properly initialized",
   "checks": [
     {
       "id": "project_structure_exists",
@@ -36,6 +36,15 @@
       "file": "OrgDocument/projects/*/project-metadata.json",
       "required_fields": ["project_id", "archetype", "created", "evolution_history"],
       "remediation": "Check project-document-management completed initialization"
+    },
+    {
+      "id": "collaboration_mode_present",
+      "type": "json_schema",
+      "severity": "soft",
+      "description": "Project metadata should declare a collaboration_mode (solo|traditional); absence is treated as traditional, not a failure, but new projects should set it explicitly",
+      "file": "OrgDocument/projects/*/project-metadata.json",
+      "required_fields": ["collaboration_mode"],
+      "remediation": "Run project-document-management's Change Collaboration Mode operation to set collaboration_mode explicitly (solo or traditional)"
     },
     {
       "id": "registry_updated",

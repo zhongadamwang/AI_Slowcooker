@@ -1,9 +1,9 @@
 ---
 name: project-document-management
-description: Initialize and manage project documentation structures following hierarchical folder guidelines. Creates consistent project trees with requirements, artifacts, and organizational modeling documents. Supports flat (Project 1) and EDPS-hierarchical (Project 3) archetypes, integrates with documentation-automation for stub generation, and tracks project evolution metadata.
+description: Initialize and manage project documentation structures following hierarchical folder guidelines. Creates consistent project trees with requirements, artifacts, and organizational modeling documents. Supports flat (Project 1) and EDPS-hierarchical (Project 3) archetypes, integrates with documentation-automation for stub generation, tracks project evolution metadata, and supports a solo vs. traditional collaboration mode orthogonal to archetype.
 license: MIT
-version: 2.0.0
-last-updated: 2026-10-19
+version: 2.1.0
+last-updated: 2026-10-22
 ---
 
 # Project Document Management
@@ -19,6 +19,7 @@ Bootstrap and maintain a standardised EDPS project documentation tree — creati
 - **Project name**: Human-readable project name
 - **Project number**: Sequential two-digit project number (e.g., `03`)
 - **Archetype** *(optional, default: `standard`)*: One of `flat`, `standard`, or `hierarchical` — see [Project Archetypes](#project-archetypes) below
+- **Collaboration mode** *(optional, default: `solo`)*: One of `solo` or `traditional` — governs stakeholder confirmation mechanics across downstream skills and gates. Orthogonal to archetype. See `collaboration-mode-reference.md` (published under Iteration 4's `artifacts/Documentation/`) for full definitions. Existing projects whose `project-metadata.json` predates this field are read as `traditional` — never silently inferred as `solo`.
 - **Initial source materials** *(optional)*: Original project documents or notes to pre-populate `artifacts/Source Materials/`
 - **orgModel process name** *(optional)*: If provided, also initializes matching `orgModel/[NN] - [Process Name]/` tree
 
@@ -205,6 +206,7 @@ Create `project-metadata.json` in the project root:
   "project_name": "[Project Name]",
   "project_number": "[NN]",
   "archetype": "[flat|standard|hierarchical]",
+  "collaboration_mode": "[solo|traditional]",
   "created": "[ISO-8601 date]",
   "last_updated": "[ISO-8601 date]",
   "status": "Initialized",
@@ -215,6 +217,7 @@ Create `project-metadata.json` in the project root:
       "date": "[ISO-8601 date]",
       "change": "Initial project structure created",
       "archetype": "[archetype]",
+      "collaboration_mode": "[solo|traditional]",
       "changed_by": "project-document-management"
     }
   ],
@@ -223,7 +226,13 @@ Create `project-metadata.json` in the project root:
 }
 ```
 
+If `collaboration_mode` is not specified by the caller, default to `"solo"` for a brand-new project (see T01's default-mode rule). This default applies only at **creation time** — it is never inferred for an existing project that is missing the field; see [Reading Legacy Metadata](#reading-legacy-metadata-collaboration_mode) below.
+
 Update `evolution_history` with a new entry every time the project structure is modified by this skill.
+
+### Reading Legacy Metadata (`collaboration_mode`)
+
+When this skill (or any downstream skill) reads `project-metadata.json` and the `collaboration_mode` field is absent, treat the project as `"traditional"` for all purposes — do not write the field in automatically and do not treat its absence as `"solo"`. This preserves the safe-default rule from `collaboration-mode-reference.md`: a project that predates this feature keeps its original (stricter) stakeholder-confirmation behavior until someone explicitly runs **Change Collaboration Mode** below.
 
 ### Step 4 — Update Project Registry
 
@@ -311,6 +320,7 @@ Use the directory documentation rules above for every generated folder that does
 [Brief project description and objectives]
 
 **Archetype**: [flat|standard|hierarchical]  
+**Collaboration Mode**: [Solo | Traditional]  
 **Status**: Initialized — Awaiting Requirements  
 **Created**: [Date]  
 
@@ -339,6 +349,8 @@ Use the directory documentation rules above for every generated folder that does
 **Last Updated**: [Date]  
 **Next Steps**: Provide requirements input and conduct initial analysis
 ```
+
+When generating this template, resolve `[Solo | Traditional]` from the project's actual `collaboration_mode` (default `Solo` for a new project). See `collaboration-mode-reference.md` (published under Iteration 4's `artifacts/Documentation/`) for the full definitions of each mode; do not hardcode a link to it here since its path is specific to one project, not a shared location.
 
 ### Process main.md Template (standard / hierarchical archetypes)
 ```markdown
@@ -422,12 +434,12 @@ Use the standard directory `main.md` template for `main.md` so the folder is sea
 ## Quick Commands
 
 ### Initialize New Project
-**Parameters**: `project_number`, `project_name`, `description`, `archetype` (default: `standard`), `orgmodel_process_name` (optional)  
+**Parameters**: `project_number`, `project_name`, `description`, `archetype` (default: `standard`), `collaboration_mode` (default: `solo`), `orgmodel_process_name` (optional)  
 **Actions**:
 1. Read `projects.md` — verify `project_number` not already in use
 2. Create project folder with archetype-appropriate subfolder structure
-3. Write `project-metadata.json` (version `1.0.0`)
-4. Generate the project-root `main.md`, `README.md`, and `project-plan.md` from templates
+3. Write `project-metadata.json` (version `1.0.0`), including `collaboration_mode`
+4. Generate the project-root `main.md`, `README.md`, and `project-plan.md` from templates, stating the active collaboration mode plainly in `main.md`
 5. Create `main.md` indexes in `artifacts/`, each artifact category, and `tasks/`
 6. Create `tasks/` with `README.md`, `task-tracking.md`, and `task-template.md`
 7. Update `projects.md` registry
@@ -451,6 +463,18 @@ Use the standard directory `main.md` template for `main.md` so the folder is sea
 2. Apply incremental changes per upgrade path table
 3. Increment version in `project-metadata.json` (minor bump for archetype upgrade)
 4. Append entry to `evolution_history`
+
+### Change Collaboration Mode
+**Parameters**: `project_number`, `target_mode` (`solo` | `traditional`), `reason` (required free-text justification)  
+**Actions**:
+1. Read `project-metadata.json`; if `collaboration_mode` is absent, treat current mode as `traditional` for the purposes of recording the "from" state
+2. Validate `target_mode` is one of `solo` or `traditional`; reject otherwise
+3. Set `collaboration_mode` to `target_mode`
+4. Append an `evolution_history` entry recording `from_mode`, `to_mode`, `reason`, and timestamp (patch version bump — this is a metadata-only change, not a structural one)
+5. State plainly in the response that the mode change is **not retroactive**: gate evaluations and self-attestations already recorded under the prior mode remain valid as-is; only evaluations performed after this change follow the new mode's rules (per `collaboration-mode-reference.md`)
+6. If the project's `main.md`/`README.md` state the active mode (see Step 3 and templates below), update that text too so it never goes stale
+
+This operation never touches folder structure, archetype, or any other metadata field.
 
 ### Structure Validation
 **Actions**:
@@ -532,3 +556,4 @@ Use the standard directory `main.md` template for `main.md` so the folder is sea
 5. **Registry updates are mandatory**: Always update `projects.md` when creating a new project folder.
 6. **Never skip documentation-automation**: After creating boundary sub-folders (hierarchical archetype), immediately invoke `documentation-automation` to convert stubs.
 7. **Record every structural change**: Append to `evolution_history` in `project-metadata.json` for every modification — required for EDPS compliance.
+8. **Never infer `collaboration_mode`**: If `project-metadata.json` lacks the field, treat the project as `traditional`. Only an explicit **Change Collaboration Mode** action may change it — never a side effect of another operation.
