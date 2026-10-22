@@ -4,7 +4,7 @@ This folder contains individual task files for implementing the Project 5 object
 
 ## Task Overview
 
-This iteration's first feature: introduce a **solo vs. traditional collaboration mode** switch across the EDPS framework (source: `../artifacts/Source Materials/add-solo-mode.md`). Traditional mode keeps today's multi-stakeholder approval/sign-off behavior; solo mode replaces it with developer self-attestation across roles, collapsing into a build-and-clarify loop, while still prompting real external check-ins when a role represents an actual separate stakeholder.
+This iteration's first feature — a **solo vs. traditional collaboration mode** switch across the EDPS framework (source: `../artifacts/Source Materials/add-solo-mode.md`) — is **complete** as of 2026-10-22. Traditional mode keeps today's multi-stakeholder approval/sign-off behavior; solo mode replaces it with developer self-attestation across roles, collapsing into a build-and-clarify loop, while still prompting real external check-ins when a role represents an actual separate stakeholder. See `../artifacts/Documentation/solo-mode-guide.md` for the how-to guide and `../artifacts/Testing/solo-mode-validation-report.md` for end-to-end validation results.
 
 | Task | Title | Phase |
 |---|---|---|
@@ -21,8 +21,8 @@ This iteration's first feature: introduce a **solo vs. traditional collaboration
 |-------|-------------|-------------|-------------|-----------|------------|
 | **1 - Foundation** | 2 | 0 | 0 | 2 | 100% |
 | **2 - Orchestration** | 3 | 0 | 0 | 3 | 100% |
-| **3 - Validation** | 1 | 1 | 0 | 0 | 0% |
-| **Total** | **6** | **1** | **0** | **5** | **83%** |
+| **3 - Validation** | 1 | 0 | 0 | 1 | 100% |
+| **Total** | **6** | **0** | **0** | **6** | **100%** |
 
 ## Getting Started
 
@@ -30,4 +30,4 @@ This iteration's first feature: introduce a **solo vs. traditional collaboration
 2. Check project overview in [`../main.md`](../main.md)
 3. Refer to [`task-template.md`](task-template.md) for creating new tasks
 4. Track progress in [`task-tracking.md`](task-tracking.md)
-5. Start with T01 — all other tasks depend on the collaboration mode schema it defines
+5. **This feature is complete** — see [`../artifacts/Documentation/solo-mode-guide.md`](../artifacts/Documentation/solo-mode-guide.md) to start using solo mode, or [`../artifacts/Testing/solo-mode-validation-report.md`](../artifacts/Testing/solo-mode-validation-report.md) for validation details

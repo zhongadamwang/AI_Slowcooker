@@ -5,8 +5,8 @@
   "archetype": "standard",
   "created": "2026-05-11",
   "last_updated": "2026-10-22",
-  "status": "T01-T05 Complete — In Progress",
-  "version": "1.6.0",
+  "status": "T01-T06 Complete — Feature Shipped",
+  "version": "1.7.0",
   "evolution_history": [
     {
       "version": "1.0.0",
@@ -56,6 +56,13 @@
       "change": "T05 complete: added Mode-Conditional Stakeholder Communication and Real External Stakeholder Flag sections to change-management and project-planning-tracking SKILL.md; defined the flag canonically in collaboration-mode-reference.md with role examples (Client/Sponsor, Regulator = real external; QA, DevOps = developer-played in solo mode)",
       "archetype": "standard",
       "changed_by": "OpenClaw assistant (T05 implementation)"
+    },
+    {
+      "version": "1.7.0",
+      "date": "2026-10-22",
+      "change": "T06 complete (feature shipped): published solo-mode-guide.md (how-to), migration-guide-collaboration-mode.md (addendum for existing projects), and solo-mode-validation-report.md (end-to-end walkthrough covering Test-06.1, Test-03.1-03.3, all passing). Collaboration mode feature (T01-T06) is now fully complete and documented.",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T06 implementation)"
     }
   ],
   "linked_orgmodel": null,

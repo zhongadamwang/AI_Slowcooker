@@ -33,16 +33,16 @@ In this project, we introduce and wire through a collaboration mode concept deri
 - Stakeholder requirements input
 
 ## Success Criteria
-- `collaboration_mode` field exists in project metadata, defaults safely for existing projects
-- Gate evaluation behaves correctly and distinctly in both modes (T03 validation tests pass)
-- Stakeholder-facing skill instructions (process-w5h, requirements-sanitize, change-management, project-planning-tracking) have mode-conditional guidance
-- End-to-end solo-mode walkthrough documented and passing (T06)
+- `collaboration_mode` field exists in project metadata, defaults safely for existing projects ✅
+- Gate evaluation behaves correctly and distinctly in both modes (T03 validation tests pass) ✅
+- Stakeholder-facing skill instructions (process-w5h, requirements-sanitize, change-management, project-planning-tracking) have mode-conditional guidance ✅
+- End-to-end solo-mode walkthrough documented and passing (T06) ✅
 
 ## Timeline
-See [`project-plan.md`](project-plan.md) — 6 tasks (T01–T06) across 3 phases: Foundation, Orchestration, Validation.
+See [`project-plan.md`](project-plan.md) — 6 tasks (T01–T06) across 3 phases: Foundation, Orchestration, Validation. **All 6 tasks complete.**
 
 ---
 
-**Project Status**: In Progress — Tasks Defined, Awaiting Implementation  
+**Project Status**: Feature Complete — Collaboration Mode (T01–T06) Shipped  
 **Last Updated**: 2026-10-22  
-**Next Steps**: Begin T01 (collaboration mode schema definition)
+**Next Steps**: Feature is done and validated. See `artifacts/Documentation/solo-mode-guide.md` to start using solo mode, or `artifacts/Testing/solo-mode-validation-report.md` for validation details. Future iterations could audit remaining gate.json files for stakeholder-review assumptions or formalize a per-check bypass override (see T06 completion notes).
