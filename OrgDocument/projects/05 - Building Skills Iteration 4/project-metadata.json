@@ -5,8 +5,8 @@
   "archetype": "standard",
   "created": "2026-05-11",
   "last_updated": "2026-10-22",
-  "status": "Tasks Defined",
-  "version": "1.1.0",
+  "status": "T01 Complete — In Progress",
+  "version": "1.2.0",
   "evolution_history": [
     {
       "version": "1.0.0",
@@ -21,6 +21,13 @@
       "change": "Defined 6-task plan (T01-T06) for solo vs. traditional collaboration mode feature, derived from artifacts/Source Materials/add-solo-mode.md",
       "archetype": "standard",
       "changed_by": "OpenClaw assistant (manual task planning)"
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-10-22",
+      "change": "T01 complete: published artifacts/Documentation/collaboration-mode-reference.md defining collaboration_mode (solo|traditional), defaults, backward-compat rule, and downstream impact on T02-T06",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T01 implementation)"
     }
   ],
   "linked_orgmodel": null,
