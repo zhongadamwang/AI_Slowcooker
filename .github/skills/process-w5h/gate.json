@@ -2,10 +2,10 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S04",
   "skill_name": "process-w5h",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "gate_type": "completion", 
   "severity": "hard",
-  "description": "Validates W5H analysis has been completed comprehensively",
+  "description": "Validates W5H analysis has been completed comprehensively, including mode-aware stakeholder role confirmation",
   "checks": [
     {
       "id": "w5h_analysis_exists",
@@ -35,6 +35,14 @@
       "json_path": "$.*.details",
       "min_percent_complete": 70,
       "remediation": "Add more detail to W5H analysis dimensions"
+    },
+    {
+      "id": "stakeholder_roles_confirmed",
+      "type": "stakeholder_confirmation",
+      "role": "Primary Stakeholder",
+      "description": "Primary stakeholder roles identified in WHO analysis should be confirmed before downstream skills (domain modeling, planning) treat them as settled",
+      "confirmation_statement": "Identified primary/secondary stakeholder roles and their responsibilities accurately reflect this process — not just a first-pass guess",
+      "remediation": "Record a confirmation for the Primary Stakeholder role (traditional: an actual distinct person's sign-off; solo: a self-attestation naming which role lens was used — see collaboration-mode-reference.md) before proceeding to domain modeling or planning"
     }
   ],
   "quality_score_weight": 0.08,

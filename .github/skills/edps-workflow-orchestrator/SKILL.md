@@ -1,10 +1,10 @@
 ````skill
 ---
 name: edps-workflow-orchestrator
-description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, and emits completion events consumed by skill-completion-gates (T08). Supports three workflow archetypes — standard, rapid, and compliance-focused.
+description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused.
 license: MIT
-version: 1.0.0
-last-updated: 2026-03-16
+version: 1.1.0
+last-updated: 2026-10-22
 ---
 
 # EDPS Workflow Orchestrator
@@ -29,6 +29,7 @@ This skill does not replace `edps-skill-navigator`; it layers above it. The navi
 - **Project state** *(for `resume` only)*: Serialized JSON string from a prior session's `project-state.json`
 - **Project context** *(optional)*: Current project folder path for auto-detection of completed artifacts
 - **Skip justification** *(for `skip` only)*: Required free-text justification logged to project state
+- **project-metadata.json** *(implicit, read automatically)*: The orchestrator reads `collaboration_mode` from the current project's `project-metadata.json` before every gate evaluation (see [Skill Completion Gates](#skill-completion-gates-t08-integration)). Absence of the field is treated as `traditional`, never inferred as `solo` (see T01/T02).
 
 ## Outputs
 
@@ -427,7 +428,7 @@ When `orchestrate complete [skill]` is invoked, the orchestrator:
 ### Gate evaluation implementation
 
 ```javascript
-async function evaluateSkillGate(skillName, workflowArchetype) {
+async function evaluateSkillGate(skillName, workflowArchetype, projectMetadata) {
   const gatePath = `.github/skills/${skillName}/gate.json`;
   if (!fs.existsSync(gatePath)) {
     return { status: "no_gate", allowed: true };
@@ -435,46 +436,70 @@ async function evaluateSkillGate(skillName, workflowArchetype) {
 
   const gateConfig = JSON.parse(fs.readFileSync(gatePath));
   const archetypeSeverity = gateConfig.workflow_archetypes[workflowArchetype];
-  
+
   if (archetypeSeverity === "bypass") {
     return { status: "bypassed", allowed: true, reason: "Archetype allows bypass" };
   }
 
+  // Collaboration mode: absence of the field on project-metadata.json means
+  // "traditional" (see T01/T02) — never silently inferred as "solo".
+  const collaborationMode = projectMetadata.collaboration_mode || "traditional";
+
   let results = { passed: [], failed: [], score: 0 };
-  
+
   for (const check of gateConfig.checks) {
-    const result = await runGateCheck(check);
+    // Mode branch happens BEFORE archetype-based severity is applied (TR-03.1).
+    // Only stakeholder_confirmation checks are mode-aware; all other check
+    // types keep their declared severity regardless of collaboration_mode.
+    const effectiveSeverity = resolveCheckSeverity(check, collaborationMode);
+    const result = await runGateCheck({ ...check, severity: effectiveSeverity }, collaborationMode);
+
     if (result.passed) {
       results.passed.push(result);
       results.score += gateConfig.quality_score_weight;
     } else {
       results.failed.push(result);
-      
+
       // Hard failures block progression unless bypass is allowed
-      if (check.severity === "hard" && !gateConfig.bypass_allowed) {
+      if (effectiveSeverity === "hard" && !gateConfig.bypass_allowed) {
         return {
           status: "failed",
           allowed: false,
           check: check.id,
+          collaboration_mode: collaborationMode,
           remediation: check.remediation,
           results: results
         };
       }
     }
   }
-  
+
   const totalScore = results.score;
   const qualityThreshold = workflowArchetype === "compliance" ? 0.95 : 0.80;
-  
+
   return {
     status: totalScore >= qualityThreshold ? "passed" : "partial",
     allowed: true,
+    collaboration_mode: collaborationMode,
     quality_score: totalScore,
     results: results
   };
 }
 
-async function runGateCheck(check) {
+// Resolves the severity actually applied to a check, given the project's
+// collaboration mode. Only stakeholder_confirmation checks are mode-aware;
+// every other check type keeps the severity declared in gate.json.
+function resolveCheckSeverity(check, collaborationMode) {
+  if (check.type !== "stakeholder_confirmation") {
+    return check.severity;
+  }
+  // traditional: a real, distinct person must confirm -> hard (blocks).
+  // solo: the developer self-attests across roles -> soft (does not block),
+  // but is still logged identically for audit purposes (FR-03.3).
+  return collaborationMode === "solo" ? "soft" : "hard";
+}
+
+async function runGateCheck(check, collaborationMode) {
   switch (check.type) {
     case "artifact_existence":
       return checkArtifactExists(check);
@@ -482,6 +507,8 @@ async function runGateCheck(check) {
       return checkContentPattern(check);
     case "json_schema":
       return validateJsonSchema(check);
+    case "stakeholder_confirmation":
+      return checkStakeholderConfirmation(check, collaborationMode);
     default:
       return { passed: false, reason: `Unknown check type: ${check.type}` };
   }
@@ -533,6 +560,61 @@ function checkContentPattern(check) {
     pattern_matches: patternMatches,
     remediation: !passed ? check.remediation : null
   };
+}
+```
+
+**Stakeholder confirmation**: Represents a human confirming an output, with severity resolved by `collaboration_mode` before this function ever runs (see `resolveCheckSeverity` above — by the time this function executes, `check.severity` is already the *effective* severity for the active mode).
+```javascript
+function checkStakeholderConfirmation(check, collaborationMode) {
+  // project_state.confirmations is an array of records already recorded
+  // against this project (see Confirmation Record Shape below), populated
+  // either by a traditional sign-off or a solo self-attestation.
+  const record = findConfirmationRecord(check.role, check.skill_id);
+
+  if (collaborationMode === "solo" && !record) {
+    // Solo mode auto-satisfies the check with a generated self-attestation
+    // entry rather than requiring the developer to have pre-recorded one.
+    // This keeps the build-and-clarify loop frictionless (FR-03.3) while
+    // still producing a full audit trail.
+    const autoRecord = {
+      role: check.role,
+      confirmation_statement: check.confirmation_statement,
+      confirmed_by: "self-attestation",
+      collaboration_mode: "solo",
+      timestamp: new Date().toISOString()
+    };
+    appendConfirmationRecord(autoRecord);
+    return {
+      passed: true,
+      mode: "solo",
+      confirmation: autoRecord,
+      note: `Self-attested as ${check.role} (solo mode) — no blocking confirmation required.`
+    };
+  }
+
+  if (!record) {
+    // traditional mode (or solo mode where, unusually, a prior record is
+    // expected but missing) with no confirmation on file -> fails.
+    return {
+      passed: false,
+      mode: collaborationMode,
+      reason: `No stakeholder confirmation on file for role "${check.role}"`,
+      remediation: check.remediation
+    };
+  }
+
+  return { passed: true, mode: collaborationMode, confirmation: record };
+}
+```
+
+**Confirmation record shape** (stored in `project-state.json`, append-only, identical shape in both modes so project history reads consistently across a mode change):
+```json
+{
+  "role": "Business Owner",
+  "confirmation_statement": "Success criteria reflect actual business priority",
+  "confirmed_by": "self-attestation | <real stakeholder name/identifier>",
+  "collaboration_mode": "solo | traditional",
+  "timestamp": "2026-10-22T09:00:00Z"
 }
 ```
 
