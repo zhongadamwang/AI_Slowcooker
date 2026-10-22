@@ -121,7 +121,8 @@ python process_w5h.py PROJECT-001 requirements.md
 - **M3**: Pilot launch - Week 7
 
 ### Dependencies and Constraints
-- Must complete stakeholder interviews before assessment
+- **Traditional mode**: Must complete stakeholder interviews before assessment
+- **Solo mode**: The developer role-plays each identified stakeholder perspective (per `collaboration_mode` — see `collaboration-mode-reference.md`, Iteration 4 artifacts) and documents inline which role lens was used for each assumption, rather than scheduling a separate interview
 - Pilot implementation depends on framework approval
 
 ## WHERE - Context and Environment
@@ -179,7 +180,8 @@ python process_w5h.py PROJECT-001 requirements.md
   - **Mitigation**: Phase implementation, integrate with existing work
 
 ### Quality Assurance
-- Regular checkpoint reviews with stakeholders
+- **Traditional mode**: Regular checkpoint reviews with stakeholders
+- **Solo mode**: Regular self-review checkpoints from each relevant role's perspective, logged as self-attestations (see `stakeholder_confirmation` gate checks); genuinely ambiguous or high-stakes items are still escalated to a real stakeholder rather than self-attested — see [Mode-Conditional Stakeholder Engagement](#mode-conditional-stakeholder-engagement) below
 - Continuous feedback collection from participants
 - Measurable success criteria at each phase
 
@@ -368,6 +370,22 @@ Identify stakeholders using this framework:
 
 Map responsibilities, authority levels, and influence/interest matrix.
 ```
+
+## Mode-Conditional Stakeholder Engagement
+
+This skill's WHO analysis always identifies stakeholders **by role**, never by individual person's name — that does not change between modes. What changes is how each identified role gets *confirmed* as accurate, per the project's `collaboration_mode` (see `collaboration-mode-reference.md`, Iteration 4 artifacts, and the `stakeholder_confirmation` gate check type from T03):
+
+- **`traditional` mode**: Schedule and complete real stakeholder interviews for each identified role before treating the WHO analysis as settled. A distinct person occupying each role signs off on the accuracy of their responsibilities and interests.
+- **`solo` mode**: The developer role-plays each identified stakeholder role in turn — End User, Business Owner, QA, etc. — and documents inline, next to each stakeholder entry, which role lens was used and what assumption was made on that role's behalf (e.g., *"Assumed as End User: primary motivation is reducing manual data entry, based on requirement R-014"*). This keeps the W5H analysis output format identical between modes; only the sourcing method differs.
+
+### When to Break Out of Solo Mode
+
+Even in `solo` mode, the developer is responsible for reaching out to a real stakeholder when:
+- A role's priorities or constraints are genuinely unclear from the available requirements, and guessing would materially change the WHY or WHAT analysis
+- A role represents a real external party with authority the developer cannot credibly substitute for (e.g., a compliance officer's regulatory interpretation, a paying client's budget ceiling) — see the "real external stakeholder" flag introduced in T05
+- A decision is high-stakes (irreversible, costly to redo, or affects a committed deadline) and self-attestation would leave meaningful risk undocumented
+
+When breaking out, document the real stakeholder's input the same way a `traditional`-mode confirmation would be recorded, and note in the W5H output which specific items were escalated and why.
 
 ### WHAT Analysis Prompt
 ```

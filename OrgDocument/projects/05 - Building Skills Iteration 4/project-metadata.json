@@ -5,8 +5,8 @@
   "archetype": "standard",
   "created": "2026-05-11",
   "last_updated": "2026-10-22",
-  "status": "T01-T03 Complete — In Progress",
-  "version": "1.4.0",
+  "status": "T01-T04 Complete — In Progress",
+  "version": "1.5.0",
   "evolution_history": [
     {
       "version": "1.0.0",
@@ -42,6 +42,13 @@
       "change": "T03 complete: added stakeholder_confirmation gate check type with mode-resolved severity (hard in traditional, soft/self-attested in solo); updated edps-workflow-orchestrator (v1.1.0) evaluateSkillGate() to branch on collaboration_mode before archetype; documented the new check type in gate-authoring-guide.md; retrofitted process-w5h gate.json (v1.1.0) as the worked example",
       "archetype": "standard",
       "changed_by": "OpenClaw assistant (T03 implementation)"
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-10-22",
+      "change": "T04 complete: updated process-w5h and requirements-sanitize SKILL.md with mode-conditional stakeholder engagement guidance (solo: developer role-plays each role and self-validates; traditional: unchanged) plus a 'when to break out of solo mode' subsection in each; requirements-ingest reviewed, no changes needed (no stakeholder/approval assumptions found)",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T04 implementation)"
     }
   ],
   "linked_orgmodel": null,

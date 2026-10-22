@@ -87,7 +87,7 @@ Omit sections for which no content exists.
 Produce a concise report listing:
 - Count of statements retained, transformed, removed, and flagged
 - Per-statement log for `TRANSFORM` and `REMOVE` decisions (original → outcome + rationale)
-- Recommended follow-up actions (e.g., "Validate transformed statements with business stakeholder")
+- Recommended follow-up actions. **Traditional mode**: e.g., "Validate transformed statements with business stakeholder." **Solo mode**: the developer performs this validation directly using the business-stakeholder lens and notes it as a self-attestation in the report; only genuinely uncertain items are still recommended for real-stakeholder follow-up (see [Quality Checks](#quality-checks) below for when solo self-validation is not sufficient)
 
 ### Step 6 — Output files
 
@@ -154,8 +154,17 @@ Project ID: ORDER-MGMT-001
 ## Quality Checks
 
 Before handing off to `requirements-ingest`, verify:
-- [ ] Every retained statement is understandable by a non-technical business stakeholder
+- [ ] Every retained statement is understandable by a non-technical business stakeholder. **Traditional mode**: validate this with an actual business stakeholder. **Solo mode**: the developer self-validates using the business-stakeholder lens (per `collaboration_mode` — see `collaboration-mode-reference.md`, Iteration 4 artifacts), and flags any statement they are not confident role-playing accurately for a later real-stakeholder check-in rather than guessing silently.
 - [ ] No implementation technology names remain in the sanitized document (unless they are a business constraint, e.g., "must integrate with SAP")
 - [ ] All business actors are expressed as roles, not team names or job titles tied to a specific org chart
 - [ ] Transformed statements preserve the original intent — none have changed *what* the business needs
-- [ ] `FLAG` items have been reviewed and resolved
+- [ ] `FLAG` items have been reviewed and resolved. **Traditional mode**: resolved by the relevant stakeholder. **Solo mode**: resolved by developer self-review where confidence is high; items the developer cannot confidently role-play (see below) remain open and routed to a real stakeholder instead of being force-resolved.
+
+### When to Break Out of Solo Mode
+
+Self-validation in `solo` mode is not a substitute for real stakeholder input when:
+- A `FLAG` statement's business intent is genuinely ambiguous even after best-effort transformation, and an incorrect guess would silently change what the business needs
+- The statement encodes a business rule with real financial, legal, or compliance consequences (e.g., approval thresholds, regulatory obligations) that the developer cannot verify from the source document alone
+- The sanitization report's recommended follow-up (Step 5) already calls for stakeholder validation of a specific transformed statement — solo mode changes *how* that follow-up is logged, not whether it's needed
+
+In these cases, flag the item explicitly in the sanitization report as requiring real-stakeholder input (do not mark it `RETAIN`/`TRANSFORM` as settled), and note once resolved which stakeholder provided the clarification.
