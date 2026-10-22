@@ -73,6 +73,25 @@ Implementation of the field itself (schema wiring into `project-document-managem
 
 Mode is set at project initialization and may be changed later via an explicit command (e.g., `orchestrate set-mode solo`). Every mode change is recorded as an entry in `project-metadata.json`'s `evolution_history`, including the timestamp and the reason for the change. A mode change is **not retroactive**: gate evaluations and self-attestations already recorded under the old mode remain valid as-is; only evaluations performed after the switch follow the new mode's rules. Full implementation is covered by **T02**.
 
+## Real External Stakeholder Flag
+
+Solo mode's self-attestation mechanism assumes the developer can credibly represent a role themselves. That assumption breaks down when a role is actually backed by a separate real person whose agreement genuinely matters — self-attesting on their behalf would misrepresent their actual position, not just streamline process overhead. The **real external stakeholder flag** marks which roles fall into that category.
+
+**Definition**: A role is flagged **real external** when it is tied to an actual, separate party outside the developer's own judgment — someone whose buy-in, interpretation, or authority cannot be substituted by the developer role-playing that perspective. A role is **developer-played** when the developer can credibly perform that function themselves in a solo project, even though the role is still tracked and reasoned about separately.
+
+This flag governs the build-and-clarify loop introduced in **T05**: in `solo` mode, developer-played roles are satisfied by a logged self-perspective note (no external contact needed); real external roles still require an actual check-in, exactly as in `traditional` mode. The flag has no effect in `traditional` mode, where every role already requires real-person confirmation regardless.
+
+| Role | Flag | Rationale |
+|---|---|---|
+| Client / Sponsor | **Real external** | An actual paying party or budget holder; their agreement to scope/schedule impact cannot be self-attested |
+| Regulator / Compliance Officer | **Real external** | Regulatory interpretation requires real authority the developer cannot substitute for |
+| QA | Developer-played | In a solo project, the developer performs the QA function directly; no separate QA person exists to notify |
+| DevOps / Ops | Developer-played | Same reasoning — the developer is also the ops function in a solo project |
+
+**Default rule**: When a role's status is unclear, default to **real external**. Treating a developer-played role as external only costs an unnecessary check-in; treating a real external stakeholder as developer-played risks silently proceeding without the one person whose agreement actually matters.
+
+Applied in `change-management/SKILL.md` (Mode-Conditional Stakeholder Communication) and `project-planning-tracking/SKILL.md` (Estimation Update Process, Step 4 Implementation Planning).
+
 ## Downstream Impact (What This Schema Feeds)
 
 This definition is the foundation other T0x tasks build on:

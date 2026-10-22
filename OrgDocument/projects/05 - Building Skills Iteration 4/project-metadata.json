@@ -5,8 +5,8 @@
   "archetype": "standard",
   "created": "2026-05-11",
   "last_updated": "2026-10-22",
-  "status": "T01-T04 Complete — In Progress",
-  "version": "1.5.0",
+  "status": "T01-T05 Complete — In Progress",
+  "version": "1.6.0",
   "evolution_history": [
     {
       "version": "1.0.0",
@@ -49,6 +49,13 @@
       "change": "T04 complete: updated process-w5h and requirements-sanitize SKILL.md with mode-conditional stakeholder engagement guidance (solo: developer role-plays each role and self-validates; traditional: unchanged) plus a 'when to break out of solo mode' subsection in each; requirements-ingest reviewed, no changes needed (no stakeholder/approval assumptions found)",
       "archetype": "standard",
       "changed_by": "OpenClaw assistant (T04 implementation)"
+    },
+    {
+      "version": "1.6.0",
+      "date": "2026-10-22",
+      "change": "T05 complete: added Mode-Conditional Stakeholder Communication and Real External Stakeholder Flag sections to change-management and project-planning-tracking SKILL.md; defined the flag canonically in collaboration-mode-reference.md with role examples (Client/Sponsor, Regulator = real external; QA, DevOps = developer-played in solo mode)",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T05 implementation)"
     }
   ],
   "linked_orgmodel": null,

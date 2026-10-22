@@ -154,7 +154,7 @@ Output exact JSON schema with changes_identified, reference_updates, next_action
 - **Planning Phase**: Changes have higher flexibility, lower implementation cost
 - **Development Phase**: Changes require careful impact assessment, may affect timeline
 - **Testing Phase**: Changes should be minimal, focus on critical fixes only
-- **Deployment Phase**: Only critical changes allowed, require stakeholder approval
+- **Deployment Phase**: Only critical changes allowed, require stakeholder approval. **Solo mode**: "stakeholder approval" for deployment-phase changes always requires a real external stakeholder check-in (see [Mode-Conditional Stakeholder Communication](#mode-conditional-stakeholder-communication) below) regardless of role flag — deployment-phase risk is too high for self-attestation alone.
 
 ### Risk Levels
 - **Low**: Minimal impact, easy implementation
@@ -168,6 +168,29 @@ Output exact JSON schema with changes_identified, reference_updates, next_action
 3. **Impact Analysis**: Evaluate effects on requirements, tasks, process models, timeline
 4. **Traceability**: Maintain links between changes and affected components
 5. **File Naming**: Generate proper filename using format `YYYY-MM-DD-{TYPE}-{ID}-{title}.md`
+
+## Mode-Conditional Stakeholder Communication
+
+Every change document identifies which roles are affected (via `impact_analysis.affected_documents`/`affected_tasks` and the Quality Checks' "stakeholder notification" rule below). How that notification happens depends on `collaboration_mode` (see `collaboration-mode-reference.md`, Iteration 4 artifacts) **and** whether the affected role is flagged as a **real external stakeholder**:
+
+- **`traditional` mode**: Formal stakeholder communication for every affected role — unchanged from existing behavior.
+- **`solo` mode, role is developer-played** (e.g., QA, DevOps, an internal reviewer role the developer also occupies): Log a self-perspective note in the change document — a short statement of how this change looks from that role's point of view — instead of a formal notification. This is the build-and-clarify loop: the developer builds the change, then clarifies its effect on each role they represent, without waiting on anyone.
+- **`solo` mode, role is a real external stakeholder** (e.g., Client/Sponsor, a regulator, an actual third-party integration owner): A genuine check-in is still required, exactly as in `traditional` mode. Solo mode never lets a real separate person's buy-in be silently self-attested away.
+
+See **Real External Stakeholder Flag** below for how to determine which case applies to a given role.
+
+### Real External Stakeholder Flag
+
+Each role referenced by this skill (and by `project-planning-tracking`) carries an implicit flag: is this role backed by an actual separate person whose buy-in matters, or is it a role the solo developer credibly plays themselves?
+
+| Role | Flag | Rationale |
+|---|---|---|
+| Client / Sponsor | **Real external** | An actual paying party or budget holder; their agreement to scope/schedule impact cannot be self-attested |
+| Regulator / Compliance Officer | **Real external** | Regulatory interpretation requires real authority the developer cannot substitute for |
+| QA | Developer-played (solo) | In a solo project, the developer performs the QA role directly; no separate QA person exists to notify |
+| DevOps / Ops | Developer-played (solo) | Same reasoning — the developer is also the ops function in a solo project |
+
+When in doubt, default to **real external** — treating a developer-played role as external only costs an unnecessary check-in; treating a real external stakeholder as developer-played risks silently proceeding without the one person whose agreement actually matters.
 
 ## Reference Path Patterns
 
@@ -228,7 +251,7 @@ def generate_change_id(change_type, changes_directory):
 5. **Status Consistency**: 
    - New changes default to "Proposed" status
    - Status progression follows: Proposed → Approved → Implemented → Verified
-   - Critical changes require immediate stakeholder notification
+   - Critical changes require immediate stakeholder notification. **Solo mode**: if every affected role is developer-played, this becomes an immediate self-attested note in the change document; if any affected role is flagged **real external**, the real notification still happens immediately, unchanged from traditional mode.
 
 ## Integration Points
 

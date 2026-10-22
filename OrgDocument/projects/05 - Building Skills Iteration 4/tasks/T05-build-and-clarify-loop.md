@@ -4,10 +4,11 @@
 **Phase**: Phase 2 - Orchestration
 **Priority**: P1-High
 **Estimated Effort**: 1-2 days
-**Status**: Not Started
+**Status**: Completed ✅
 **Assigned**: [Unassigned]
 **Created**: 2026-10-22
 **Last Updated**: 2026-10-22
+**Completed**: 2026-10-22
 
 ## Description
 
@@ -31,9 +32,9 @@
 ## Acceptance Criteria
 
 ### Definition of Done
-- [ ] `change-management/SKILL.md` updated with mode-conditional stakeholder communication step
-- [ ] `project-planning-tracking/SKILL.md` updated similarly
-- [ ] "real external stakeholder" flag concept documented with examples in `collaboration-mode-reference.md`
+- [x] `change-management/SKILL.md` updated with mode-conditional stakeholder communication step
+- [x] `project-planning-tracking/SKILL.md` updated similarly
+- [x] "real external stakeholder" flag concept documented with examples in `collaboration-mode-reference.md`
 
 ## Dependencies
 
@@ -43,3 +44,34 @@
 
 ### Blocks
 - None
+
+---
+
+## Completion Notes
+
+**Completed**: 2026-10-22
+
+### Changes Made
+
+- **`.github/skills/change-management/SKILL.md`**:
+  - "Project Phase Context" — Deployment Phase's "require stakeholder approval" annotated: in solo mode, deployment-phase changes always require a real external check-in regardless of role flag, since deployment risk is too high for self-attestation alone
+  - New **Mode-Conditional Stakeholder Communication** section (after Processing Rules): defines the three-way behavior (traditional: formal communication; solo + developer-played role: self-perspective note; solo + real external role: genuine check-in, same as traditional)
+  - New **Real External Stakeholder Flag** subsection with the role/flag/rationale table (FR-05.3) — also mirrored into `collaboration-mode-reference.md` as the canonical source, with this skill cross-referencing it
+  - Quality Checks — "Critical changes require immediate stakeholder notification" made mode-conditional
+
+- **`.github/skills/project-planning-tracking/SKILL.md`**:
+  - "Estimation Update Process" Step 5 ("Communicate Changes") made mode-conditional, cross-referencing `change-management`'s flag table rather than duplicating it
+  - "Change Management Integration" → Step 4 Implementation Planning's "Stakeholder Communication: Notify affected parties" made mode-conditional, same cross-reference pattern
+
+- **`artifacts/Documentation/collaboration-mode-reference.md`** (canonical source for the flag, per FR-05.3):
+  - New **Real External Stakeholder Flag** section: formal definition (real external vs. developer-played), the governing rule (build-and-clarify loop only applies to developer-played roles), the same role/flag/rationale table, the "default to real external when unclear" safety rule, and a note on where it's applied
+
+### Key Decisions
+
+- Defined the flag **once**, canonically, in `collaboration-mode-reference.md`, and had both `change-management` and `project-planning-tracking` cross-reference it rather than duplicating the table in three places — avoids the table drifting out of sync across skills
+- Added the **deployment-phase exception** in `change-management` (always require a real check-in for deployment-phase changes, regardless of flag) as a deliberate escalation beyond the base FR-05.1 requirement — judged that the existing "Only critical changes allowed, require stakeholder approval" language for Deployment Phase already signals higher stakes than the flag mechanism alone should fully delegate to self-attestation
+- Kept `TR-05.1` (no project-state schema changes) — this task is entirely skill-instruction and reference-documentation level, consistent with T04's approach
+
+### Next Steps for Integration
+
+- **T06**: Publish `solo-mode-guide.md`, migration notes, and run an end-to-end validation walkthrough that exercises a change request through `change-management` in solo mode, with at least one developer-played role and one real-external role, to confirm the flag table reads clearly in practice
