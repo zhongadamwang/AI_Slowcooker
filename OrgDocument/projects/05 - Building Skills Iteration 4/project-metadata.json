@@ -4,9 +4,9 @@
   "project_number": "05",
   "archetype": "standard",
   "created": "2026-05-11",
-  "last_updated": "2026-05-11",
-  "status": "Initialized",
-  "version": "1.0.0",
+  "last_updated": "2026-10-22",
+  "status": "Tasks Defined",
+  "version": "1.1.0",
   "evolution_history": [
     {
       "version": "1.0.0",
@@ -14,6 +14,13 @@
       "change": "Initial project structure created",
       "archetype": "standard",
       "changed_by": "project-document-management"
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-10-22",
+      "change": "Defined 6-task plan (T01-T06) for solo vs. traditional collaboration mode feature, derived from artifacts/Source Materials/add-solo-mode.md",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (manual task planning)"
     }
   ],
   "linked_orgmodel": null,

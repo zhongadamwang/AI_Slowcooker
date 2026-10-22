@@ -5,11 +5,11 @@
 ## Overview
 This project builds upon the foundation established in Iterations 1, 2, and 3 to further enhance the EDPS skills framework. The specific goals and objectives will be defined based on requirements analysis and lessons learned from previous iterations.
 
-## Key Innovation: [To be defined based on requirements]
+## Key Innovation: Solo vs. Traditional Collaboration Mode
 **Current State**: Advanced EDPS methodology with workflow orchestration, hierarchy validation, and completion gates from Project 4  
-**Target State**: [To be defined based on requirements input]
+**Target State**: A first-class `collaboration_mode` switch (`solo` | `traditional`) that lets single-developer AI-aided projects replace multi-stakeholder approval gates with a self-attested build-and-clarify loop, while preserving full traditional behavior for team-based projects.
 
-In this project, we will continue to refine and extend the EDPS skills framework, leveraging insights from all previous iterations to drive further innovation and capability development.
+In this project, we introduce and wire through a collaboration mode concept derived from `artifacts/Source Materials/add-solo-mode.md`: traditional projects rely on distinct stakeholders to confirm and approve work, assuring accountability is distributed; solo AI-aided projects have one developer representing every role, so formal confirmation loops collapse into build-and-clarify iterations, with the developer still reaching out to real external stakeholders when genuine ambiguity or high-stakes decisions arise.
 
 ## Structure
 - `artifacts/` - Supporting materials and analysis outputs
@@ -33,13 +33,16 @@ In this project, we will continue to refine and extend the EDPS skills framework
 - Stakeholder requirements input
 
 ## Success Criteria
-[To be defined based on requirements]
+- `collaboration_mode` field exists in project metadata, defaults safely for existing projects
+- Gate evaluation behaves correctly and distinctly in both modes (T03 validation tests pass)
+- Stakeholder-facing skill instructions (process-w5h, requirements-sanitize, change-management, project-planning-tracking) have mode-conditional guidance
+- End-to-end solo-mode walkthrough documented and passing (T06)
 
 ## Timeline
-[To be defined in project-plan.md based on requirements]
+See [`project-plan.md`](project-plan.md) — 6 tasks (T01–T06) across 3 phases: Foundation, Orchestration, Validation.
 
 ---
 
-**Project Status**: Initialized — Awaiting Requirements  
-**Last Updated**: May 11, 2026  
-**Next Steps**: Await requirements input and conduct initial analysis
+**Project Status**: In Progress — Tasks Defined, Awaiting Implementation  
+**Last Updated**: 2026-10-22  
+**Next Steps**: Begin T01 (collaboration mode schema definition)
