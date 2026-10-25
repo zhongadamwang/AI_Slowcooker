@@ -2,9 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.0.0 | **Last Updated**: 2026-03-16 | **Skill Count**: 31 (1 deprecated)
+**Version**: 2.1.0 | **Last Updated**: 2026-05-11 | **Skill Count**: 32 (1 deprecated)
 
-> **Consolidation Note (March 2026)**: Following the Project 1 + Project 3 integration review, all skills now include canonical `## Intent`, `## Inputs`, and `## Outputs` sections. `hierarchy-management` absorbs `migration-tools` via `--op migrate`. `change-impact-analysis → change-management` contract is formalised via `normalized_risk_level`. See [EDPS_Skills_Validation_Report.md](../../EDPS_Skills_Validation_Report.md) for full details.
+> **Update (May 2026)**: Added `requirements-sanitize` (S00) — a pre-ingestion sanitization skill that filters IT/infrastructure/operational noise and rewrites raw documents to focus on business processes and target system capabilities. `requirements-ingest` now references it as a recommended upstream step for mixed-perspective sources.
 
 ## 📚 Documentation Structure
 
@@ -86,6 +86,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 ### 📋 Requirements & Analysis
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
+| **requirements-sanitize** | Remove IT/operational/infrastructure noise; rewrite to business intent (run before ingest for mixed-perspective sources) | [Individual skill docs](.github/skills/requirements-sanitize/SKILL.md) |
 | **requirements-ingest** | Transform any format to structured requirements | [Individual skill docs](.github/skills/requirements-ingest/SKILL.md) |
 | **goals-extract** | Extract business goals and success criteria | [Individual skill docs](.github/skills/goals-extract/SKILL.md) |
 | **process-w5h** | WHO/What/When/Where/Why/How analysis | [Individual skill docs](.github/skills/process-w5h/SKILL.md) |

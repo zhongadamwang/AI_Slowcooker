@@ -102,6 +102,7 @@ If the user responds `y` → overwrite. If the user responds `N` or provides no 
 ### 3. Generate `main.md`
 
 Use the **Level Content Guide** (§Level Content Guide) to calibrate description depth.
+Because `main.md` is also the directory index for this process folder, its Overview must briefly state the folder's purpose and the process content it contains. Its Navigation section must accurately link to the parent, immediate sub-process folders, and core process documents that exist; do not describe unavailable files as present.
 
 ```markdown
 # [ProcessName] [Boundary|Process]
@@ -306,6 +307,7 @@ To override the default templates for an organization:
 After generating all files, confirm:
 
 - [ ] All four files exist in the target folder
+- [ ] `main.md` overview accurately summarizes the folder's purpose and process content
 - [ ] `main.md` breadcrumb depth matches actual folder nesting
 - [ ] `process.md` flowchart entry/terminal nodes match collaboration.md first/last messages
 - [ ] `collaboration.md` every participant has a stereotype listed in the `%% Stereotypes:` comment

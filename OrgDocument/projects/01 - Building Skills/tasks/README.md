@@ -69,7 +69,7 @@ Task numbering aligns directly with project plan dependencies and critical path 
 
 ## Integration with Project Structure
 Tasks reference and are referenced by:
-- Project requirements (`artifacts/Requirements/`)
+- Original project source materials (`artifacts/Source Materials/`)
 - Analysis documents (`artifacts/Analysis/`)
 - Project planning documents
 - Organizational models (`../../orgModel/`)

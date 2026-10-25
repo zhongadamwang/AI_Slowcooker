@@ -26,7 +26,7 @@ Why is this change needed? What problem does it solve?
 
 ## Impact Analysis
 ### Affected Documents
-- [ ] [Document Name](../Requirements/document.md) - Description of impact
+- [ ] [Document Name](../Source%20Materials/document.md) - Description of impact
 - [ ] [Another Document](../Analysis/document.md) - Description of impact
 
 ### Affected Tasks  

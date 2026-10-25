@@ -89,5 +89,5 @@ Automate generation of process documentation at each hierarchy level following o
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-306](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-306](../artifacts/Source%20Materials/initial-requirements.md)
 - [OrgModel Structure](../../../orgModel/01%20-%20Skill%20Development%20Process/main.md)

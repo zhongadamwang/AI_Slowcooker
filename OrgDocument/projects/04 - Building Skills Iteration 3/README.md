@@ -15,7 +15,7 @@ This project extends the EDPS skills framework based on insights from previous i
 ├── artifacts/
 │   ├── Analysis/          # Technical analysis and research
 │   ├── Documentation/     # Project documentation
-│   ├── Requirements/      # Requirements specifications
+│   ├── Source Materials/  # Original source materials
 │   ├── Sample Data/       # Test data and examples
 │   └── Testing/           # Test artifacts and validation
 ├── tasks/                 # Individual implementation tasks
@@ -30,7 +30,7 @@ This project extends the EDPS skills framework based on insights from previous i
 
 ## Getting Started
 
-1. Review project requirements in [`artifacts/Requirements/`](artifacts/Requirements/)
+1. Review original project materials in [`artifacts/Source Materials/`](artifacts/Source%20Materials/)
 2. Check project status in [`main.md`](main.md)
 3. Review task breakdown in [`tasks/README.md`](tasks/README.md)
 4. Follow project timeline in [`project-plan.md`](project-plan.md)

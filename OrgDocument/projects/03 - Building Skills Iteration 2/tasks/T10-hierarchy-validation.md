@@ -88,5 +88,5 @@ Create validation tools that ensure hierarchy consistency across all levels. Val
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-306](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-306](../artifacts/Source%20Materials/initial-requirements.md)
 - [Boundary Concepts - Validation Rules](../artifacts/Analysis/boundary-concepts.md)

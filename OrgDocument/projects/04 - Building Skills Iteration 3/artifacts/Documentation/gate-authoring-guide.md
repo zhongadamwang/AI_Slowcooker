@@ -59,7 +59,7 @@ Verifies required output files exist in the expected locations.
   "severity": "hard",
   "description": "Requirements document must be created",
   "artifacts": [
-    "artifacts/Requirements/requirements.md",
+    "artifacts/Analysis/requirements.md",
     "artifacts/Analysis/requirements-analysis.json"
   ],
   "remediation": "Run requirements-ingest to create requirements documentation"
@@ -75,7 +75,7 @@ Checks file content for required text, patterns, or structure.
   "type": "content_pattern",
   "severity": "soft",
   "description": "Should include standard requirement sections",
-  "file": "artifacts/Requirements/requirements.md", 
+  "file": "artifacts/Analysis/requirements.md",
   "must_contain": ["## Functional Requirements", "## Non-Functional Requirements"],
   "must_not_contain": ["TODO", "PLACEHOLDER"],
   "must_contain_pattern": "REQ-\\d{3}:",
@@ -107,6 +107,28 @@ Validates JSON artifacts against defined schemas.
   "remediation": "Ensure JSON follows required domain model structure"
 }
 ```
+
+#### 4. Stakeholder Confirmation
+Represents a human stakeholder confirming an output — the only check type whose **severity is resolved by `collaboration_mode`** rather than declared statically in `gate.json`. Introduced in Iteration 4 (T03) to formalize approval/sign-off checks that previously existed only as implicit assumptions in skill instructions (e.g., "must complete stakeholder interviews before assessment").
+
+```json
+{
+  "id": "business_owner_confirms_priority",
+  "type": "stakeholder_confirmation",
+  "role": "Business Owner",
+  "confirmation_statement": "Success criteria reflect actual business priority, not just technical feasibility",
+  "remediation": "Record a confirmation from the Business Owner role (traditional: an actual distinct person's sign-off; solo: a self-attestation naming the role lens used) before proceeding"
+}
+```
+
+**Fields specific to this check type**:
+- **`role`**: The stakeholder role whose confirmation is required (e.g., "Business Owner", "End User", "Compliance Officer") — always a role name, never a person's name, consistent with `collaboration-mode-reference.md`
+- **`confirmation_statement`**: The specific claim being confirmed — keep this narrow and checkable, not a vague "looks good"
+- **No `severity` field is declared here** — it is computed at evaluation time from `collaboration_mode`:
+  - `traditional` → `hard` (blocks workflow progression until a real confirmation record exists)
+  - `solo` → `soft` (the developer's self-attestation auto-satisfies the check and is logged, without blocking)
+
+See `edps-workflow-orchestrator/SKILL.md`'s `resolveCheckSeverity()` and `checkStakeholderConfirmation()` for the evaluation logic, and `collaboration-mode-reference.md` (Iteration 4 artifacts) for the full mode definitions this check type implements.
 
 ### Workflow Archetype Behavior
 
@@ -155,6 +177,7 @@ Focus on checks that catch the most common quality issues:
 - **Hard checks**: Prerequisites for next workflow steps  
 - **Soft checks**: Quality improvements and best practices
 - **Bypass where appropriate**: Not every skill needs hard gates
+- **Mode-resolved severity**: `stakeholder_confirmation` checks never declare a static `severity` — it is always resolved from `collaboration_mode` at evaluation time (see [Check Types](#check-types), item 4). Do not add a `severity` field to this check type; it will be ignored.
 
 ### 3. Provide Actionable Remediation
 Every failed check should offer specific guidance:
@@ -186,13 +209,13 @@ Focus on content structure, traceability, and completeness.
       "id": "requirements_documented", 
       "type": "artifact_existence",
       "severity": "hard",
-      "artifacts": ["artifacts/Requirements/requirements.md"]
+      "artifacts": ["artifacts/Analysis/requirements.md"]
     },
     {
       "id": "traceability_present",
       "type": "content_pattern", 
       "severity": "soft",
-      "file": "artifacts/Requirements/requirements.md",
+      "file": "artifacts/Analysis/requirements.md",
       "must_contain_pattern": "REQ-\\d{3}",
       "min_matches": 5
     }
@@ -264,7 +287,7 @@ Use the orchestrator's gate evaluation function to test your gates:
 > orchestrate test-gate requirements-ingest
 
 ✅ Gate evaluation: PASSED
-   • requirements_exist: ✅ Found artifacts/Requirements/requirements.md
+   • requirements_exist: ✅ Found artifacts/Analysis/requirements.md
    • content_structure: ⚠️ Missing REQ-IDs (soft failure)
    • quality_threshold: ✅ 85% meets standard archetype minimum
 

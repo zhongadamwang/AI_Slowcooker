@@ -42,6 +42,21 @@ Translate natural language user intent into optimally sequenced EDPS skill invoc
 #### Single-Skill Intent Patterns
 ```json
 {
+  "requirements-sanitize": {
+    "primary_patterns": [
+      "sanitize requirements", "clean requirements", "clean up requirements",
+      "filter requirements", "remove technical noise", "pre-process requirements",
+      "business requirements only", "strip implementation details"
+    ],
+    "context_patterns": [
+      "raw document", "mixed perspective", "operational document", "IT document",
+      "infrastructure spec", "conversation transcript", "technical noise"
+    ],
+    "action_patterns": [
+      "sanitize", "clean", "filter", "strip", "remove", "pre-process", "prepare"
+    ],
+    "confidence_weight": 0.88
+  },
   "requirements-ingest": {
     "primary_patterns": [
       "analyze requirements", "process requirements", "ingest requirements",
@@ -358,6 +373,7 @@ function classifyUserPrompt(userPrompt, sessionCorrections = {}, projectState = 
 
 function generateIntentExplanation(match) {
   const explanations = {
+    'requirements-sanitize': 'I\'ll filter out IT/infrastructure/operational noise and rewrite the document to focus on business processes and system capabilities.',
     'requirements-ingest': 'I\'ll process and normalize your requirements into a structured format for analysis.',
     'domain-extractconcepts': 'I\'ll analyze your requirements to identify key business entities and domain concepts.',
     'diagram-generatecollaboration': 'I\'ll create Mermaid collaboration diagrams showing system interactions and boundaries.',
@@ -651,6 +667,7 @@ Navigator:
 ### Available Skills Catalog
 ```
 Requirements Processing:
+├── requirements-sanitize     # Remove IT/operational noise; focus on business intent (run first for mixed-perspective sources)
 ├── requirements-ingest       # Normalize and structure requirements
 ├── requirements-merge        # Combine multiple requirement sources
 ├── goals-extract            # Extract business goals and success criteria

@@ -1,0 +1,70 @@
+{
+  "project_id": "PRJ-05",
+  "project_name": "Building Skills Iteration 4",
+  "project_number": "05",
+  "archetype": "standard",
+  "created": "2026-05-11",
+  "last_updated": "2026-10-22",
+  "status": "T01-T06 Complete — Feature Shipped",
+  "version": "1.7.0",
+  "evolution_history": [
+    {
+      "version": "1.0.0",
+      "date": "2026-05-11",
+      "change": "Initial project structure created",
+      "archetype": "standard",
+      "changed_by": "project-document-management"
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-10-22",
+      "change": "Defined 6-task plan (T01-T06) for solo vs. traditional collaboration mode feature, derived from artifacts/Source Materials/add-solo-mode.md",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (manual task planning)"
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-10-22",
+      "change": "T01 complete: published artifacts/Documentation/collaboration-mode-reference.md defining collaboration_mode (solo|traditional), defaults, backward-compat rule, and downstream impact on T02-T06",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T01 implementation)"
+    },
+    {
+      "version": "1.3.0",
+      "date": "2026-10-22",
+      "change": "T02 complete: wired collaboration_mode into project-document-management SKILL.md (v2.1.0) inputs, metadata template, legacy-read rule, and new Change Collaboration Mode operation; added soft collaboration_mode_present check to its gate.json",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T02 implementation)"
+    },
+    {
+      "version": "1.4.0",
+      "date": "2026-10-22",
+      "change": "T03 complete: added stakeholder_confirmation gate check type with mode-resolved severity (hard in traditional, soft/self-attested in solo); updated edps-workflow-orchestrator (v1.1.0) evaluateSkillGate() to branch on collaboration_mode before archetype; documented the new check type in gate-authoring-guide.md; retrofitted process-w5h gate.json (v1.1.0) as the worked example",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T03 implementation)"
+    },
+    {
+      "version": "1.5.0",
+      "date": "2026-10-22",
+      "change": "T04 complete: updated process-w5h and requirements-sanitize SKILL.md with mode-conditional stakeholder engagement guidance (solo: developer role-plays each role and self-validates; traditional: unchanged) plus a 'when to break out of solo mode' subsection in each; requirements-ingest reviewed, no changes needed (no stakeholder/approval assumptions found)",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T04 implementation)"
+    },
+    {
+      "version": "1.6.0",
+      "date": "2026-10-22",
+      "change": "T05 complete: added Mode-Conditional Stakeholder Communication and Real External Stakeholder Flag sections to change-management and project-planning-tracking SKILL.md; defined the flag canonically in collaboration-mode-reference.md with role examples (Client/Sponsor, Regulator = real external; QA, DevOps = developer-played in solo mode)",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T05 implementation)"
+    },
+    {
+      "version": "1.7.0",
+      "date": "2026-10-22",
+      "change": "T06 complete (feature shipped): published solo-mode-guide.md (how-to), migration-guide-collaboration-mode.md (addendum for existing projects), and solo-mode-validation-report.md (end-to-end walkthrough covering Test-06.1, Test-03.1-03.3, all passing). Collaboration mode feature (T01-T06) is now fully complete and documented.",
+      "archetype": "standard",
+      "changed_by": "OpenClaw assistant (T06 implementation)"
+    }
+  ],
+  "linked_orgmodel": null,
+  "skills_used": []
+}

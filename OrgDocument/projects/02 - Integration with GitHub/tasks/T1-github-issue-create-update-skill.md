@@ -47,8 +47,8 @@ Implement the github-issue-create-update skill that creates GitHub Issues from l
 
 ## Related Changes
 <!-- Reference any relevant requirement changes that impact this task -->
-- [REQ-001 to REQ-006](../artifacts/Requirements/initial-requirements.md) - Task-to-Issue skill functional requirements
-- [REQ-022 to REQ-025](../artifacts/Requirements/initial-requirements.md) - EDPS skills framework integration requirements
+- [REQ-001 to REQ-006](../artifacts/Source%20Materials/initial-requirements.md) - Task-to-Issue skill functional requirements
+- [REQ-022 to REQ-025](../artifacts/Source%20Materials/initial-requirements.md) - EDPS skills framework integration requirements
 
 ## Technical Notes
 

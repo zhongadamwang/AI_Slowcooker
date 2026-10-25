@@ -73,8 +73,8 @@ This skill has been successfully implemented with:
 
 ## Related Changes
 <!-- Reference any relevant requirement changes that impact this task -->
-- [REQ-007 to REQ-011](../artifacts/Requirements/initial-requirements.md) - Issue-to-Task skill functional requirements
-- [REQ-022 to REQ-025](../artifacts/Requirements/initial-requirements.md) - EDPS skills framework integration requirements
+- [REQ-007 to REQ-011](../artifacts/Source%20Materials/initial-requirements.md) - Issue-to-Task skill functional requirements
+- [REQ-022 to REQ-025](../artifacts/Source%20Materials/initial-requirements.md) - EDPS skills framework integration requirements
 
 ## Technical Notes
 

@@ -13,8 +13,8 @@
       "severity": "hard",
       "description": "Required output artifacts must exist",
       "artifacts": [
-        "artifacts/Requirements/requirements.md",
-        "artifacts/Requirements/requirements.json"
+        "artifacts/Analysis/requirements.md",
+        "artifacts/Analysis/requirements.json"
       ],
       "remediation": "Re-run requirements-ingest skill to generate missing artifacts"
     },
@@ -23,7 +23,7 @@
       "type": "file_content",
       "severity": "hard", 
       "description": "Requirements file must have substantive content",
-      "file": "artifacts/Requirements/requirements.md",
+      "file": "artifacts/Analysis/requirements.md",
       "min_lines": 10,
       "must_contain": ["# Requirements", "## Functional Requirements", "## Non-Functional Requirements"],
       "remediation": "Verify input requirements are complete and re-run ingestion"
@@ -33,7 +33,7 @@
       "type": "json_schema",
       "severity": "hard",
       "description": "Requirements JSON must have valid structure",
-      "file": "artifacts/Requirements/requirements.json",
+      "file": "artifacts/Analysis/requirements.json",
       "required_fields": ["functional_requirements", "non_functional_requirements", "metadata"],
       "remediation": "Check that requirements parsing completed successfully"
     },
@@ -42,7 +42,7 @@
       "type": "threshold",
       "severity": "soft",
       "description": "Should have reasonable number of requirements",
-      "file": "artifacts/Requirements/requirements.json",
+      "file": "artifacts/Analysis/requirements.json",
       "json_path": "$.functional_requirements.length",
       "min_value": 3,
       "max_value": 50,

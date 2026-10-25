@@ -36,5 +36,5 @@ This project bridges the gap between local development processes and GitHub's co
 
 ## Quick Links
 - [Project Plan](project-plan.md) - Detailed project planning (to be created)
-- [Requirements](artifacts/Requirements/) - Project requirements and specifications
+- [Source Materials](artifacts/Source%20Materials/) - Original project source materials
 - [Tasks](tasks/) - Individual task files for team collaboration

@@ -13,7 +13,7 @@
       "severity": "soft",
       "description": "Should produce merged requirements document",
       "artifacts": [
-        "artifacts/Requirements/merged-requirements.md"
+        "artifacts/Analysis/merged-requirements.md"
       ],
       "remediation": "Run requirements-merge to consolidate source requirements"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should document any resolved conflicts",
-      "file": "artifacts/Requirements/merged-requirements.md",
+      "file": "artifacts/Analysis/merged-requirements.md",
       "must_contain": ["## Conflicts Resolved", "## Source Traceability"],
       "remediation": "Document conflict resolution approach and source mappings"
     },
@@ -31,8 +31,8 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should maintain traceability to source documents",
-      "file": "artifacts/Requirements/merged-requirements.md",
-      "must_contain_pattern": "Source: [A-Za-z0-9\_\-]+\.md",
+      "file": "artifacts/Analysis/merged-requirements.md",
+      "must_contain_pattern": "Source: [A-Za-z0-9_-]+\\.md",
       "min_matches": 1,
       "remediation": "Add source attribution for each merged requirement"
     }

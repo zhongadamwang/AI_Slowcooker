@@ -44,7 +44,7 @@ Implement the Requirements.Ingest skill that processes requirements from markdow
 
 **✅ SOURCE ALIGNMENT COMPLETED**:
 1. **Output Format**: ✅ **FIXED - Now matches original specification**
-   - **PRIMARY**: Markdown table format as specified in [AI Agent Skillpack](../artifacts/Requirements/AI%20Agent%20Skillpack%20—%20Task%20Planning%20Assistant.md)
+   - **PRIMARY**: Markdown table format as specified in [AI Agent Skillpack](../artifacts/Source%20Materials/AI%20Agent%20Skillpack%20—%20Task%20Planning%20Assistant.md)
    - **SECONDARY**: JSON format for machine processing (dual output implemented)
    - Creates: requirements.md (primary), requirements.json (secondary)
 

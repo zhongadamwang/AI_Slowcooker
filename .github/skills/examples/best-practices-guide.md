@@ -20,7 +20,7 @@ projects/[PROJECT-ID]/
 ├── artifacts/
 │   ├── Analysis/          # Keep all skill outputs here
 │   ├── Changes/           # Track all changes chronologically
-│   ├── Requirements/      # Store input documents
+│   ├── Source Materials/  # Store original input documents, transcripts, references, and drafts
 │   └── UI Mockups/        # Visual artifacts
 ├── tasks/                 # Project planning outputs
 ├── main.md               # Project overview

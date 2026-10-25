@@ -17,7 +17,7 @@ This project's goal is to improve the analysis skills to be better aligned with 
 
 ## Structure
 - `artifacts/` - Supporting materials and analysis outputs
-  - `Requirements/` - Project requirements and specifications for hierarchical EDPS
+  - `Source Materials/` - Original project source materials for hierarchical EDPS
   - `Analysis/` - Technical analysis documents for boundary concepts
   - `Changes/` - Requirements change requests and tracking
   - `Sample Data/` - Test data and examples for hierarchical modeling
@@ -28,7 +28,7 @@ This project's goal is to improve the analysis skills to be better aligned with 
   - Sub-process folder management automation
 
 ## Key Documents
-- [Initial Requirements](artifacts/Requirements/initial-requirements.md) - Hierarchical EDPS methodology requirements
+- [Initial Requirements](artifacts/Source%20Materials/initial-requirements.md) - Hierarchical EDPS methodology requirements
 - [Boundary Concept Analysis](artifacts/Analysis/boundary-concepts.md) - Technical analysis of boundary implementation
 - [Hierarchical Process Examples](artifacts/Sample%20Data/hierarchy-examples.md) - Example decompositions
 - [Project Plan](project-plan.md) - Implementation roadmap for iteration 2

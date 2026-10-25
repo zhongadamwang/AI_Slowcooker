@@ -543,7 +543,7 @@ Track estimation accuracy to improve future estimates:
 2. **Assess Impact**: Determine which tasks are affected
 3. **Re-estimate Tasks**: Apply three-point estimation to changed tasks
 4. **Recalculate Network**: Update PERT diagram and critical path
-5. **Communicate Changes**: Update stakeholders on schedule impact
+5. **Communicate Changes**: Update stakeholders on schedule impact. **Solo mode**: log a self-perspective note per affected role the developer plays themselves (e.g., QA, DevOps); for any role flagged as a **real external stakeholder** (e.g., Client/Sponsor — see `change-management/SKILL.md`'s Real External Stakeholder Flag table), a genuine check-in is still required, unchanged from traditional mode.
 6. **Update Tracking**: Modify milestone dates and resource plans
 ```
 
@@ -582,7 +582,7 @@ For each change request:
 - **Timeline Adjustment**: Update project schedule
 - **Resource Reallocation**: Shift resources to maintain critical path
 - **Risk Mitigation**: Address new risks introduced by change
-- **Stakeholder Communication**: Notify affected parties
+- **Stakeholder Communication**: Notify affected parties. **Solo mode**: notification becomes a logged self-perspective note for developer-played roles; roles flagged as **real external stakeholders** still receive an actual notification — see `change-management/SKILL.md`'s Mode-Conditional Stakeholder Communication section for the full rule and flag table this skill shares.
 ```
 
 ## Progress Tracking

@@ -83,7 +83,7 @@ Implement bi-directional navigation between hierarchy levels. Each process level
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-304](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-304](../artifacts/Source%20Materials/initial-requirements.md)
 - [Hierarchy Examples - Navigation](../artifacts/Sample%20Data/hierarchy-examples.md)
 - [Test Cases](../artifacts/Testing/T7-test-cases.md) — 26 test cases across 7 categories, all passing
 - [Test Results](../artifacts/Testing/T7-test-results.md) — 26/26 passed, March 14, 2026

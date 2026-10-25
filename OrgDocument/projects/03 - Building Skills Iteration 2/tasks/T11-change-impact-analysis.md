@@ -84,4 +84,4 @@ Implement change impact analysis that traces how changes at one hierarchy level 
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-306](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-306](../artifacts/Source%20Materials/initial-requirements.md)

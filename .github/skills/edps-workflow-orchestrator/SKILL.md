@@ -1,10 +1,10 @@
 ````skill
 ---
 name: edps-workflow-orchestrator
-description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, and emits completion events consumed by skill-completion-gates (T08). Supports three workflow archetypes — standard, rapid, and compliance-focused.
+description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused.
 license: MIT
-version: 1.0.0
-last-updated: 2026-03-16
+version: 1.1.0
+last-updated: 2026-10-22
 ---
 
 # EDPS Workflow Orchestrator
@@ -29,6 +29,7 @@ This skill does not replace `edps-skill-navigator`; it layers above it. The navi
 - **Project state** *(for `resume` only)*: Serialized JSON string from a prior session's `project-state.json`
 - **Project context** *(optional)*: Current project folder path for auto-detection of completed artifacts
 - **Skip justification** *(for `skip` only)*: Required free-text justification logged to project state
+- **project-metadata.json** *(implicit, read automatically)*: The orchestrator reads `collaboration_mode` from the current project's `project-metadata.json` before every gate evaluation (see [Skill Completion Gates](#skill-completion-gates-t08-integration)). Absence of the field is treated as `traditional`, never inferred as `solo` (see T01/T02).
 
 ## Outputs
 
@@ -43,11 +44,12 @@ This skill does not replace `edps-skill-navigator`; it layers above it. The navi
 
 ## Skill Catalogue
 
-All 30 EDPS skills are registered below with their category, primary inputs, primary outputs, and prerequisite skill IDs. This catalogue is the source of truth for DAG construction.
+All 31 EDPS skills are registered below with their category, primary inputs, primary outputs, and prerequisite skill IDs. This catalogue is the source of truth for DAG construction.
 
 | ID | Skill Name | Category | Prerequisite Skill IDs |
-|----|-----------|----------|------------------------|
-| S01 | `requirements-ingest` | Requirements | *(none)* |
+|----|-----------|----------|-----------------------|
+| S00 | `requirements-sanitize` | Requirements | *(none — optional pre-step before S01)* |
+| S01 | `requirements-ingest` | Requirements | *(none; use S00 output when source is mixed-perspective)* |
 | S02 | `requirements-merge` | Requirements | S01 |
 | S03 | `goals-extract` | Requirements | S01 |
 | S04 | `process-w5h` | Requirements | S01 |
@@ -78,7 +80,7 @@ All 30 EDPS skills are registered below with their category, primary inputs, pri
 | S29 | `github-issue-sync-status` | GitHub | S28 |
 | S30 | `edps-skill-navigator` | Meta | *(none — invokes others)* |
 
-> **Note**: `skill-creator` (meta, create-only) and `migration-tools` (deprecated, use `hierarchy-management --op migrate`) are catalogued but excluded from archetype workflows by default. Include them explicitly with the `--include-deprecated` flag.
+> **Note**: `skill-creator` (meta, create-only) and `migration-tools` (deprecated, use `hierarchy-management --op migrate`) are catalogued but excluded from archetype workflows by default. Include them explicitly with the `--include-deprecated` flag. `requirements-sanitize` (S00) is an optional pre-step; it is included automatically when the orchestrator detects that the source document is not already a clean business requirements document.
 
 ---
 
@@ -97,7 +99,8 @@ Phase 0 — Project Initialization
   [S18] project-document-management        (parallel start point)
 
 Phase 1 — Requirements Analysis
-  [S01] requirements-ingest                (requires: S18 OR project folder exists)
+  [S00] requirements-sanitize              (optional; recommended when source is a conversation, IT spec, or operational doc)
+  [S01] requirements-ingest                (requires: S18 OR project folder exists; input from S00 if executed)
   [S02] requirements-merge                 (optional; requires: S01 + multiple sources)
   [S03] goals-extract                      (requires: S01)
   [S04] process-w5h                        (requires: S01)
@@ -264,7 +267,7 @@ The project state object is the single source of truth for where a project stand
       "state": "not_started | available | in_progress | completed | skipped",
       "started_at": "ISO-8601 or null",
       "completed_at": "ISO-8601 or null",
-      "output_artifacts": ["artifacts/Requirements/requirements.md"],
+      "output_artifacts": ["artifacts/Analysis/requirements.md"],
       "gate_result": null,
       "skip_justification": null
     }
@@ -285,7 +288,7 @@ The project state object is the single source of truth for where a project stand
       "skill_id": "S01",
       "skill_name": "requirements-ingest",
       "timestamp": "ISO-8601",
-      "output_artifacts": ["artifacts/Requirements/requirements.md"],
+      "output_artifacts": ["artifacts/Analysis/requirements.md"],
       "gate_check_requested": true,
       "gate_result": "pending | pass | fail | bypassed"
     }
@@ -330,7 +333,7 @@ After each skill execution completes, the orchestrator emits a structured comple
   "timestamp": "2026-03-16T10:30:00Z",
   "session_id": "uuid",
   "output_artifacts": [
-    "OrgDocument/projects/04 - Building Skills Iteration 3/artifacts/Requirements/requirements.md"
+    "OrgDocument/projects/04 - Building Skills Iteration 3/artifacts/Analysis/requirements.md"
   ],
   "self_reported_status": "success | partial | failed",
   "gate_check_requested": true,
@@ -425,7 +428,7 @@ When `orchestrate complete [skill]` is invoked, the orchestrator:
 ### Gate evaluation implementation
 
 ```javascript
-async function evaluateSkillGate(skillName, workflowArchetype) {
+async function evaluateSkillGate(skillName, workflowArchetype, projectMetadata) {
   const gatePath = `.github/skills/${skillName}/gate.json`;
   if (!fs.existsSync(gatePath)) {
     return { status: "no_gate", allowed: true };
@@ -433,46 +436,70 @@ async function evaluateSkillGate(skillName, workflowArchetype) {
 
   const gateConfig = JSON.parse(fs.readFileSync(gatePath));
   const archetypeSeverity = gateConfig.workflow_archetypes[workflowArchetype];
-  
+
   if (archetypeSeverity === "bypass") {
     return { status: "bypassed", allowed: true, reason: "Archetype allows bypass" };
   }
 
+  // Collaboration mode: absence of the field on project-metadata.json means
+  // "traditional" (see T01/T02) — never silently inferred as "solo".
+  const collaborationMode = projectMetadata.collaboration_mode || "traditional";
+
   let results = { passed: [], failed: [], score: 0 };
-  
+
   for (const check of gateConfig.checks) {
-    const result = await runGateCheck(check);
+    // Mode branch happens BEFORE archetype-based severity is applied (TR-03.1).
+    // Only stakeholder_confirmation checks are mode-aware; all other check
+    // types keep their declared severity regardless of collaboration_mode.
+    const effectiveSeverity = resolveCheckSeverity(check, collaborationMode);
+    const result = await runGateCheck({ ...check, severity: effectiveSeverity }, collaborationMode);
+
     if (result.passed) {
       results.passed.push(result);
       results.score += gateConfig.quality_score_weight;
     } else {
       results.failed.push(result);
-      
+
       // Hard failures block progression unless bypass is allowed
-      if (check.severity === "hard" && !gateConfig.bypass_allowed) {
+      if (effectiveSeverity === "hard" && !gateConfig.bypass_allowed) {
         return {
           status: "failed",
           allowed: false,
           check: check.id,
+          collaboration_mode: collaborationMode,
           remediation: check.remediation,
           results: results
         };
       }
     }
   }
-  
+
   const totalScore = results.score;
   const qualityThreshold = workflowArchetype === "compliance" ? 0.95 : 0.80;
-  
+
   return {
     status: totalScore >= qualityThreshold ? "passed" : "partial",
     allowed: true,
+    collaboration_mode: collaborationMode,
     quality_score: totalScore,
     results: results
   };
 }
 
-async function runGateCheck(check) {
+// Resolves the severity actually applied to a check, given the project's
+// collaboration mode. Only stakeholder_confirmation checks are mode-aware;
+// every other check type keeps the severity declared in gate.json.
+function resolveCheckSeverity(check, collaborationMode) {
+  if (check.type !== "stakeholder_confirmation") {
+    return check.severity;
+  }
+  // traditional: a real, distinct person must confirm -> hard (blocks).
+  // solo: the developer self-attests across roles -> soft (does not block),
+  // but is still logged identically for audit purposes (FR-03.3).
+  return collaborationMode === "solo" ? "soft" : "hard";
+}
+
+async function runGateCheck(check, collaborationMode) {
   switch (check.type) {
     case "artifact_existence":
       return checkArtifactExists(check);
@@ -480,6 +507,8 @@ async function runGateCheck(check) {
       return checkContentPattern(check);
     case "json_schema":
       return validateJsonSchema(check);
+    case "stakeholder_confirmation":
+      return checkStakeholderConfirmation(check, collaborationMode);
     default:
       return { passed: false, reason: `Unknown check type: ${check.type}` };
   }
@@ -534,6 +563,61 @@ function checkContentPattern(check) {
 }
 ```
 
+**Stakeholder confirmation**: Represents a human confirming an output, with severity resolved by `collaboration_mode` before this function ever runs (see `resolveCheckSeverity` above — by the time this function executes, `check.severity` is already the *effective* severity for the active mode).
+```javascript
+function checkStakeholderConfirmation(check, collaborationMode) {
+  // project_state.confirmations is an array of records already recorded
+  // against this project (see Confirmation Record Shape below), populated
+  // either by a traditional sign-off or a solo self-attestation.
+  const record = findConfirmationRecord(check.role, check.skill_id);
+
+  if (collaborationMode === "solo" && !record) {
+    // Solo mode auto-satisfies the check with a generated self-attestation
+    // entry rather than requiring the developer to have pre-recorded one.
+    // This keeps the build-and-clarify loop frictionless (FR-03.3) while
+    // still producing a full audit trail.
+    const autoRecord = {
+      role: check.role,
+      confirmation_statement: check.confirmation_statement,
+      confirmed_by: "self-attestation",
+      collaboration_mode: "solo",
+      timestamp: new Date().toISOString()
+    };
+    appendConfirmationRecord(autoRecord);
+    return {
+      passed: true,
+      mode: "solo",
+      confirmation: autoRecord,
+      note: `Self-attested as ${check.role} (solo mode) — no blocking confirmation required.`
+    };
+  }
+
+  if (!record) {
+    // traditional mode (or solo mode where, unusually, a prior record is
+    // expected but missing) with no confirmation on file -> fails.
+    return {
+      passed: false,
+      mode: collaborationMode,
+      reason: `No stakeholder confirmation on file for role "${check.role}"`,
+      remediation: check.remediation
+    };
+  }
+
+  return { passed: true, mode: collaborationMode, confirmation: record };
+}
+```
+
+**Confirmation record shape** (stored in `project-state.json`, append-only, identical shape in both modes so project history reads consistently across a mode change):
+```json
+{
+  "role": "Business Owner",
+  "confirmation_statement": "Success criteria reflect actual business priority",
+  "confirmed_by": "self-attestation | <real stakeholder name/identifier>",
+  "collaboration_mode": "solo | traditional",
+  "timestamp": "2026-10-22T09:00:00Z"
+}
+```
+
 ### Workflow transition behavior
 
 | Gate Result | Standard | Rapid | Compliance |
@@ -557,7 +641,7 @@ function checkContentPattern(check) {
         {
           "check_id": "requirements_exist",
           "type": "artifact_existence",
-          "artifacts_found": ["artifacts/Requirements/requirements.md"]
+          "artifacts_found": ["artifacts/Analysis/requirements.md"]
         }
       ],
       "failed": [
@@ -625,7 +709,7 @@ All commands are invoked by addressing `edps-workflow-orchestrator` in a Copilot
 ⏳ Evaluating skill completion gates...
 
 ✅ Gate evaluation passed (quality score: 92%)
-   • Artifact exists: artifacts/Requirements/requirements.md ✅
+   • Artifact exists: artifacts/Analysis/requirements.md ✅
    • Content structure: Basic sections present ✅  
    • Traceability links: Missing REQ-IDs ⚠️ (soft failure)
 

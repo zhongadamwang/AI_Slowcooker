@@ -107,7 +107,7 @@ With 4 backticks, the parser may:
 | Project folder creation | Auto-generated `projects/[name]/` with correct sub-folders | ✅ |
 | Testing output paths | Skills write to `artifacts/Testing/` as declared | ✅ |
 | Analysis output paths | Skills write to `artifacts/Analysis/` as declared | ✅ |
-| Requirements output paths | Skills write to `artifacts/Requirements/` as declared | ✅ |
+| Requirements output paths | Skills write to `artifacts/Analysis/` as declared | ✅ |
 | Hierarchy folder naming | `[NN]-[ParticipantName]Boundary/` pattern correct | ✅ |
 | hierarchy-metadata.json | Created/updated on each decomposition | ✅ |
 | folder-creation.log | Appended on each sub-folder creation | ✅ |

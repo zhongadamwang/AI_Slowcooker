@@ -44,7 +44,7 @@ sequenceDiagram
 ├── README.md                        # This file
 ├── project-plan.md                  # Implementation roadmap
 ├── artifacts/
-│   ├── Requirements/
+│   ├── Source Materials/
 │   │   └── initial-requirements.md  # Hierarchical EDPS requirements
 │   ├── Analysis/
 │   │   ├── boundary-concepts.md     # Technical boundary analysis  
@@ -88,7 +88,7 @@ Level 2: Within OrderService boundary: Validation ↔ Inventory ↔ Database
 - Mermaid diagram preview capability
 
 ### Quick Setup
-1. Review [initial requirements](artifacts/Requirements/initial-requirements.md)
+1. Review [initial requirements](artifacts/Source%20Materials/initial-requirements.md)
 2. Examine [boundary concepts](artifacts/Analysis/boundary-concepts.md) 
 3. Study [hierarchy examples](artifacts/Sample%20Data/hierarchy-examples.md)
 4. Start with Task 1: [Enhance Collaboration Skill](tasks/T1-enhance-collaboration-skill.md)

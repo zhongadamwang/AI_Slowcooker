@@ -69,4 +69,4 @@ Implement complexity metrics, decomposition suggestions, and scale management gu
 ---
 
 **Related Documents**:
-- [Initial Requirements - R-305](../artifacts/Requirements/initial-requirements.md)
+- [Initial Requirements - R-305](../artifacts/Source%20Materials/initial-requirements.md)
