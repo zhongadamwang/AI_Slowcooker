@@ -10,7 +10,7 @@ A comprehensive guide to using the Evolutionary Development Process System (EDPS
 
 [Your content here]
 
-Project ID: [YOUR-PROJECT-ID]
+Project ID (if an existing project): [PROJECT-ID]
 ```
 
 ## Skills Overview
@@ -59,15 +59,15 @@ Project ID: [YOUR-PROJECT-ID]
 
 ## Common Workflows
 
-### 🏁 New Project Setup (5 minutes)
-```markdown
-@workspace Use project-document-management skill to initialize a new project structure:
+### 🏁 Start a New Project
 
-Project Name: Customer Portal Redesign
-Project ID: CPR-2024
-Description: Modernize customer portal with improved UX and mobile support
-Stakeholders: Product, Engineering, Design, Customer Success
+You can start with just a rough idea. You do not need to know the project number, EDPS archetype, folder structure, or all the details yet. Copilot can suggest a project name and structure, explain the choices, and help fill in missing information as you go.
+
+```markdown
+@workspace Help me start a project. I want to make it easier for customers to use our portal on their phones.
 ```
+
+The project-document-management skill will ask only what it needs, recommend a simple starting structure, show you a short preview, and wait for your confirmation before creating the project. You can also specify preferences if you already have them.
 
 ### 📑 Requirements Analysis Pipeline (15 minutes)
 ```markdown

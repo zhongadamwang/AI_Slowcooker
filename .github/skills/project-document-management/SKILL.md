@@ -2,8 +2,8 @@
 name: project-document-management
 description: Initialize and manage project documentation structures following hierarchical folder guidelines. Creates consistent project trees with requirements, artifacts, and organizational modeling documents. Supports flat (Project 1) and EDPS-hierarchical (Project 3) archetypes, integrates with documentation-automation for stub generation, tracks project evolution metadata, and supports a solo vs. traditional collaboration mode orthogonal to archetype.
 license: MIT
-version: 2.1.0
-last-updated: 2026-10-22
+version: 2.2.0
+last-updated: 2026-10-25
 ---
 
 # Project Document Management
@@ -16,12 +16,12 @@ Bootstrap and maintain a standardised EDPS project documentation tree — creati
 
 ## Inputs
 
-- **Project name**: Human-readable project name
-- **Project number**: Sequential two-digit project number (e.g., `03`)
-- **Archetype** *(optional, default: `standard`)*: One of `flat`, `standard`, or `hierarchical` — see [Project Archetypes](#project-archetypes) below
-- **Collaboration mode** *(optional, default: `solo`)*: One of `solo` or `traditional` — governs stakeholder confirmation mechanics across downstream skills and gates. Orthogonal to archetype. See `collaboration-mode-reference.md` (published under Iteration 4's `artifacts/Documentation/`) for full definitions. Existing projects whose `project-metadata.json` predates this field are read as `traditional` — never silently inferred as `solo`.
+- **Project idea**: A name, a rough description, or simply what the user wants to accomplish. Ask for missing essentials in plain language; users do not need to know EDPS terminology or provide a complete specification.
+- **Project number**: Determine the next unused two-digit number from `projects.md`; do not ask the user to calculate it.
+- **Archetype** *(optional, default: `standard`)*: Recommend `flat`, `standard`, or `hierarchical` based on the described work and explain the difference without jargon. See [Project Archetypes](#project-archetypes).
+- **Collaboration mode** *(optional, default: `solo`)*: Explain that `solo` means the user can proceed with documented assumptions, while `traditional` expects stakeholder confirmation. Recommend one based on the described project and let the user accept or change it. This is orthogonal to archetype. Existing projects whose `project-metadata.json` predates this field are read as `traditional` — never silently inferred as `solo`.
 - **Initial source materials** *(optional)*: Original project documents or notes to pre-populate `artifacts/Source Materials/`
-- **orgModel process name** *(optional)*: If provided, also initializes matching `orgModel/[NN] - [Process Name]/` tree
+- **orgModel process name** *(optional)*: For standard or hierarchical projects, suggest a process name based on the project idea and confirm it as part of the preview; the user may accept the suggestion or provide another name. Flat projects do not need a process name.
 
 ## Outputs
 
@@ -29,7 +29,7 @@ Bootstrap and maintain a standardised EDPS project documentation tree — creati
 - `main.md` in every directory created or managed by the initialization workflow
 - `README.md`, `project-plan.md`, task files, and process documentation appropriate to the selected archetype
 - `project-metadata.json` — Machine-readable project metadata and evolution history
-- *(hierarchical archetype only)* `orgModel/[NN] - [Process Name]/` tree with `documentation-automation` stubs
+- *(standard and hierarchical archetypes)* `orgModel/[NN] - [Process Name]/` tree; hierarchical boundary folders receive `documentation-automation` stubs
 
 ## `main.md` Directory Documentation Rules
 
@@ -165,15 +165,35 @@ orgModel/[NN] - [Process Name]/
 
 ## Project Initialization Workflow
 
-### Step 1 — Select Archetype and Determine Parameters
+### Guided, Interactive Intake
 
-1. Confirm `project_number` (next sequential NN in `projects.md`) and `project_name`.
-2. If the user does not specify an archetype, apply `standard`.
-3. Read `projects.md` to validate the number is not already in use.
+Do not present initialization as a form the user must already know how to fill out. Start from whatever they provided, including an incomplete idea, and guide them through only the decisions needed to create a useful first version. When the `ask_user` tool is available, use it for focused clarification and confirmation questions; phrase them in everyday language and include a recommended answer where helpful. Otherwise, ask naturally in chat.
+
+1. Read `projects.md` and inspect the existing project folders before proposing a project number or name. Choose the next unused two-digit number yourself; if there is a numbering conflict, resolve it before writing.
+2. If the project idea or goal is unclear, ask one short, plain-language question about what they want to achieve. If a useful name is missing, offer a concise name based on their answer and let them change it. Do not ask them for a project ID, folder path, metadata, or template details.
+3. Recommend an archetype in everyday language:
+   - `flat`: a lightweight project that needs analysis and task folders, but no organizational process model.
+   - `standard`: the recommended starting point when the work benefits from a process model and full EDPS documentation.
+   - `hierarchical`: use when the user already knows the work needs multiple nested process levels and boundaries.
+   Explain the recommendation briefly and allow the user to accept it or choose another. If the user is unsure, use `standard`.
+4. Explain collaboration mode briefly: `solo` allows documented assumptions and self-attestation; `traditional` is for work requiring stakeholder confirmation. Recommend `solo` for a new project unless the user describes a team or approval process that calls for `traditional`. The creation-time default is `solo`; never apply this default when reading legacy metadata.
+5. For standard or hierarchical projects, suggest a clear process name from the project idea. Explain that it can be refined later; do not make the user invent EDPS naming conventions. Flat projects do not need an orgModel process.
+6. Reuse any requirements, notes, or attached materials already available. Ask about source materials only if their absence blocks the requested setup; do not make a complete requirements document a prerequisite.
+7. Before creating files, show a compact preview in familiar terms (project name, purpose, recommended structure, collaboration mode, and process model if applicable) and ask for confirmation. If a key choice remains unresolved, ask a focused question and update the preview. Do not require answers to optional planning fields such as stakeholders, dates, success measures, or detailed requirements; record these as to-be-defined and help the user fill them in after initialization.
+8. Once confirmed, continue through the initialization steps below without asking the user to supply internal identifiers or repeat information already provided. If the user explicitly asks to proceed without a preview, honor that and use the stated defaults.
+
+When the user has already provided enough information and a clear confirmation to create the project, avoid redundant questions: infer the project number and description, apply the defaults, and proceed.
+
+### Step 1 — Confirm Choices and Determine Parameters
+
+1. Use the confirmed project name and description; derive a concise description from the user's idea if needed.
+2. Use the next unused project number from `projects.md`, then verify it is not already in use.
+3. Use the confirmed archetype and collaboration mode, or their documented recommendations/defaults if the user is unsure.
+4. For standard or hierarchical projects, use the confirmed process name or a suggested name the user accepted.
 
 ### Step 2 — Create Project Folder Tree
 
-Create the folder structure for the selected archetype (see [Project Archetypes](#project-archetypes)). Always create:
+Create the folder structure for the selected archetype (see [Project Archetypes](#project-archetypes)). Always create the following core folders; include `Documentation/` under `artifacts/` only for standard and hierarchical projects:
 
 ```
 OrgDocument/projects/[NN] - [Project Name]/
@@ -434,17 +454,19 @@ Use the standard directory `main.md` template for `main.md` so the folder is sea
 ## Quick Commands
 
 ### Initialize New Project
-**Parameters**: `project_number`, `project_name`, `description`, `archetype` (default: `standard`), `collaboration_mode` (default: `solo`), `orgmodel_process_name` (optional)  
+**Parameters**: Project idea or name (required); derive `project_number` from `projects.md`; `description`, `archetype` (default: `standard`), `collaboration_mode` (default: `solo`), and `orgmodel_process_name` (suggest one for standard/hierarchical projects) may be inferred or confirmed interactively.
 **Actions**:
-1. Read `projects.md` — verify `project_number` not already in use
-2. Create project folder with archetype-appropriate subfolder structure
-3. Write `project-metadata.json` (version `1.0.0`), including `collaboration_mode`
-4. Generate the project-root `main.md`, `README.md`, and `project-plan.md` from templates, stating the active collaboration mode plainly in `main.md`
-5. Create `main.md` indexes in `artifacts/`, each artifact category, and `tasks/`
-6. Create `tasks/` with `README.md`, `task-tracking.md`, and `task-template.md`
-7. Update `projects.md` registry
-8. *(standard/hierarchical)* Create `orgModel/[NN] - [Process Name]/` tree and `test-cases/main.md`
-9. *(hierarchical)* Create boundary-folder summaries and process-document stubs; invoke `documentation-automation` per boundary folder
+1. Read `projects.md` and propose the next unused project number; do not require the user to supply it
+2. Guide the user through the project name/goal and explain any archetype or collaboration-mode choices in plain language; recommend sensible defaults for unknowns
+3. Preview the proposed setup and get confirmation before creating files, unless the user has already clearly confirmed or asked to proceed directly
+4. Create project folder with archetype-appropriate subfolder structure
+5. Write `project-metadata.json` (version `1.0.0`), including `collaboration_mode`
+6. Generate the project-root `main.md`, `README.md`, and `project-plan.md` from templates, stating the active collaboration mode plainly in `main.md`
+7. Create `main.md` indexes in `artifacts/`, each artifact category, and `tasks/`
+8. Create `tasks/` with `README.md`, `task-tracking.md`, and `task-template.md`
+9. Update `projects.md` registry
+10. *(standard/hierarchical)* Create `orgModel/[NN] - [Process Name]/` tree and `test-cases/main.md`
+11. *(hierarchical)* Create boundary-folder summaries and process-document stubs; invoke `documentation-automation` per boundary folder
 
 ### Initialize Process Model
 **Parameters**: `process_number`, `process_name`, `scope_description`, `archetype` (default: `standard`)  
@@ -549,7 +571,7 @@ This operation never touches folder structure, archetype, or any other metadata 
 
 ## Best Practices
 
-1. **Select the right archetype first**: Wrong archetype choice requires a structure upgrade later — ask if unsure.
+1. **Make first-time setup approachable**: Start from the user's rough idea, explain recommendations plainly, and leave optional details to be refined later.
 2. **Consistent numbering**: Use sequential NN for projects and process nodes; do not reuse numbers.
 3. **project-metadata.json is the source of truth**: Always read it before modifying a project structure.
 4. **Never leave a folder undocumented**: Create a useful `main.md` in every managed directory, even when the directory has no other content.
