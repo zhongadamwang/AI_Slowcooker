@@ -313,3 +313,5 @@ After generating all files, confirm:
 - [ ] `collaboration.md` every participant has a stereotype listed in the `%% Stereotypes:` comment
 - [ ] `domain-model.md` class count equals participant count in collaboration.md
 - [ ] VR-1 and VR-2 status in `main.md` correctly reflects collaboration.md structure
+- [ ] Every Mermaid block in `process.md`, `collaboration.md`, and `domain-model.md` parses and renders with the target renderer
+- [ ] Mermaid labels and text contain no literal semicolons (`;`) that could be interpreted as statement separators; rephrase with commas/conjunctions or split into separate statements

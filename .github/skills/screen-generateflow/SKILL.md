@@ -112,6 +112,8 @@ If Step 4 reveals a mockup has a navigation link the diagram hadn't captured, or
 2. **No orphaned diagrams**: every screen that has at least one navigation link in its mockup should appear in at least one flow diagram — a screen with real navigation that's absent from every diagram is a gap, not an acceptable omission.
 3. **Consolidated, not fragmented**: output is one project-level `interaction-flows.md`, never split per-screen (contrast with `layout-spec.md`/`mockup.html`, which are correctly per-screen since those entities genuinely are per-screen; a flow is not).
 4. **Manual verification actually performed**: per TR-07.1, this is a required, logged step in MVP (the Verification Log *is* the evidence this happened) — not an automated gate check yet (that's R-603a, Phase 2 Enhancement, deferred per `scope-analysis.md`).
+5. **Mermaid syntax verified**: render every fenced Mermaid block with the target renderer before publishing; fix any parse or render errors.
+6. **No statement-separator text in labels**: avoid literal semicolons (`;`) in Mermaid labels or diagram text, where they can be parsed as statement separators. Use commas, conjunctions, or separate statements instead.
 
 ## Integration
 

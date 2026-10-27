@@ -319,6 +319,10 @@ end
 - Notes: Clarify business rules, timeouts, constraints
 - Alt blocks: Show error handling and edge cases
 
+**Mermaid text and render checks:**
+- Do not place literal semicolons (`;`) inside Mermaid labels, messages, or notes, especially sequence-diagram text. Mermaid can interpret them as statement separators and fail to parse the diagram; use a comma, conjunction, or a separate statement instead.
+- Before finalizing output, parse and render every fenced Mermaid block with the target renderer (for example, the project's VS Code Markdown preview). Fix render errors and repeat the check; EDPS boundary validation does not validate Mermaid syntax.
+
 **Hierarchical Sequence Diagrams (with Boundaries):**
 ```
 sequenceDiagram
@@ -1204,6 +1208,7 @@ Boundary validation is integrated into the diagram generation pipeline at the **
 
 ### Technical Standards  
 - Valid Mermaid syntax that renders in VS Code
+- Parse and render every generated Mermaid block before publishing; do not rely on visual inspection of source alone.
 - Consistent naming conventions across all diagram types
 - Appropriate use of visibility markers (+/- for public/private)
 - Clear distinction between inheritance, composition, and association

@@ -179,7 +179,7 @@ sequenceDiagram
     CM-->>FB: change_management_ref (linked change document)
 
     Note over S,IM: In solo mode, Stakeholder role is played by the developer per process-w5h's existing pattern
-    Note over FB,CM: change-management owns the actual change-document schema; FeedbackItem only captures and routes
+    Note over FB,CM: change-management owns the actual change-document schema, and FeedbackItem only captures and routes
 ```
 
 ### Regeneration-on-Change Flow *(Diagram D-604)*
@@ -200,7 +200,7 @@ sequenceDiagram
     SCR->>SCR: regenerate(reason)
     SCR->>CL: Append changelog entry (not silently destructive)
 
-    Note over DA,UM: MVP implements this manually (developer re-runs); Phase 2 automates detection (R-627a enhancement)
+    Note over DA,UM: MVP implements this manually (developer re-runs), while Phase 2 automates detection (R-627a enhancement)
     Note over SCR,CL: Regeneration always logged — satisfies D-11's "regenerate, don't just flag" decision while preserving traceability
 ```
 
