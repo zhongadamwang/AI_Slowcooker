@@ -2,7 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.5.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 36 (1 deprecated)
+**Version**: 2.6.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 37 (1 deprecated)
+
+> **Update (October 2026)**: Added `screen-assembledocument` (S37) — the fifth UI Prototyping skill (Project 06), assembling the consolidated UI design document (Markdown + JSON) that summarizes and links to the screen inventory, layout specs, mockups, and interaction flows without duplicating them. This is the project's primary durable handoff deliverable; its gate includes a `handoff_sanity_check_performed` check (via `stakeholder_confirmation`, self-verified in solo mode) confirming the document is readable by someone unfamiliar with the generating session.
 
 > **Update (October 2026)**: Added `screen-generateflow` (S36) — the fourth UI Prototyping skill (Project 06), diagramming navigation across the screen set in Mermaid. Deliberately uses `flowchart LR` rather than `diagram-generatecollaboration`'s `sequenceDiagram` style, since screen-to-screen navigation is not a time-ordered message exchange between system components. Every edge is manually verified against a real `<a href>` link in the generated mockups (logged in a Verification Log), per the mockup-is-ground-truth principle — automating this check is the Phase 2 Enhancement feature R-603a, not yet built.
 

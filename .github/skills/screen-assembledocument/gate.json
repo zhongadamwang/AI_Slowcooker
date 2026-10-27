@@ -1,0 +1,73 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S37",
+  "skill_name": "screen-assembledocument",
+  "version": "1.0.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates the consolidated design document summarizes (without duplicating) prior UI Prototyping outputs, stays consistent between Markdown and JSON, and has passed a handoff sanity check",
+  "checks": [
+    {
+      "id": "design_document_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "Consolidated design document (Markdown + JSON) must exist",
+      "artifacts": [
+        "artifacts/UI Prototype/design-document.md",
+        "artifacts/UI Prototype/design-document.json"
+      ],
+      "remediation": "Run screen-assembledocument against screen-inventory.json, all layout-spec.md/mockup.html files, and interaction-flows.md"
+    },
+    {
+      "id": "no_full_duplication",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Design document must not duplicate the full screen inventory listing or full Mermaid flow diagrams inline",
+      "file": "artifacts/UI Prototype/design-document.md",
+      "must_not_contain_pattern": "```mermaid|### .+ \\*\\(SCR-\\d{3}\\)\\*\\n\\*\\*Purpose\\*\\*:.+\\n\\*\\*UI Model Entry\\*\\*",
+      "remediation": "Per D-6/FR-08.1, summarize and link to screen-inventory.md and interaction-flows.md — do not re-embed their full per-screen listings or diagrams"
+    },
+    {
+      "id": "changelog_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Design document must include an in-document changelog, even on first generation",
+      "file": "artifacts/UI Prototype/design-document.md",
+      "must_contain": ["## Changelog"],
+      "remediation": "Add a Changelog section per R-610; first generation should still record a 'v1.0: Initial consolidated generation' entry"
+    },
+    {
+      "id": "links_to_source_artifacts",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Design document must link to (not replace) the standalone screen inventory and interaction flows documents",
+      "file": "artifacts/UI Prototype/design-document.md",
+      "must_contain_pattern": "\\[screen-inventory\\.md\\]\\(screen-inventory\\.md\\)|\\[interaction-flows\\.md\\]\\(interaction-flows\\.md\\)",
+      "remediation": "Reference screen-inventory.md and interaction-flows.md via relative links rather than duplicating their content"
+    },
+    {
+      "id": "handoff_sanity_check_performed",
+      "type": "stakeholder_confirmation",
+      "role": "Developer (self-verification)",
+      "description": "A handoff sanity check (readable by someone unfamiliar with the generating session) must have been performed, not merely assumed",
+      "confirmation_statement": "I read this design document as if I were a developer who was not present for the generating session, and confirmed it is understandable and actionable without that missing context",
+      "remediation": "Per TR-08.1, perform the handoff sanity check described in screen-assembledocument's own process and log it before marking this document complete"
+    },
+    {
+      "id": "id_format_valid",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Design Document ID should follow the DD-[###] convention",
+      "file": "artifacts/UI Prototype/design-document.json",
+      "must_contain_pattern": "\"document_id\":\\s*\"DD-\\d{3}\"",
+      "remediation": "Use the DD-[###] format from ui-prototyping-conventions.md"
+    }
+  ],
+  "quality_score_weight": 0.08,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "soft",
+    "compliance": "hard"
+  }
+}
