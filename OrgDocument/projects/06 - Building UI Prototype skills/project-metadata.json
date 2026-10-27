@@ -1,0 +1,23 @@
+{
+  "project_id": "PRJ-06",
+  "project_name": "Building UI Prototype skills",
+  "project_number": "06",
+  "archetype": "standard",
+  "collaboration_mode": "solo",
+  "created": "2026-10-26",
+  "last_updated": "2026-10-26",
+  "status": "Initialized",
+  "version": "1.0.0",
+  "evolution_history": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-26",
+      "change": "Initial project structure created",
+      "archetype": "standard",
+      "collaboration_mode": "solo",
+      "changed_by": "project-document-management"
+    }
+  ],
+  "linked_orgmodel": "OrgDocument/orgModel/02 - UI Prototype Skill Development Process",
+  "skills_used": ["project-document-management"]
+}
