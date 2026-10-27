@@ -2,7 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.2.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 33 (1 deprecated)
+**Version**: 2.3.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 34 (1 deprecated)
+
+> **Update (October 2026)**: Added `screen-generatelayout` (S34) — the second UI Prototyping skill (Project 06), generating literal Markdown + embedded HTML/CSS layout specifications per screen, consuming `screen-generateinventory`'s output.
 
 > **Update (October 2026)**: Added `screen-generateinventory` (S33) — the first skill in the new UI Prototyping category (Project 06), generating a standalone, traceable screen inventory from a project's UI Model and requirements. Further UI Prototyping skills (layout, mockup, flow generation) are planned.
 

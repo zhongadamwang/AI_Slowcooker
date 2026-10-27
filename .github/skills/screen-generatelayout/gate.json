@@ -1,0 +1,73 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S34",
+  "skill_name": "screen-generatelayout",
+  "version": "1.0.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates each screen's layout specification is literal, traceable, and carries its own changelog",
+  "checks": [
+    {
+      "id": "layout_spec_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "Layout spec must exist for each screen in the inventory",
+      "artifacts": [
+        "artifacts/UI Prototype/SCR-*/layout-spec.md"
+      ],
+      "remediation": "Run screen-generatelayout for every screen in screen-inventory.json"
+    },
+    {
+      "id": "no_placeholder_content",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Generated HTML/CSS must not contain placeholder language",
+      "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
+      "must_not_contain_pattern": "(?i)(TODO|content here|lorem ipsum|\\[insert)",
+      "remediation": "Replace placeholder language with literal, implementation-ready markup and realistic representative content"
+    },
+    {
+      "id": "no_framework_leakage",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Generated markup must not reference a specific application framework",
+      "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
+      "must_not_contain_pattern": "(?i)(import React|from ['\"]vue['\"]|ng-|v-bind|v-on|className=)",
+      "remediation": "Per R-625, generate plain HTML/CSS only — no React, Vue, or Angular syntax/conventions"
+    },
+    {
+      "id": "changelog_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Every layout spec must include an in-document changelog section, even on first generation",
+      "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
+      "must_contain": ["## Changelog"],
+      "remediation": "Add a Changelog section per R-610; first generation should still record a 'v1.0: Initial generation' entry"
+    },
+    {
+      "id": "traceability_preserved",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Layout spec must preserve its Screen's UI Model and requirement traceability",
+      "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
+      "must_contain_pattern": "\\*\\*UI Model Entry\\*\\*:\\s*UME-\\d{3}",
+      "remediation": "Carry forward ui_model_ref and requirement_refs unchanged from the Screen's screen-inventory.json entry"
+    },
+    {
+      "id": "id_format_valid",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Layout Spec ID should follow the LS-[###] convention, paired to its Screen's SCR-[###] suffix",
+      "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
+      "must_contain_pattern": "LS-\\d{3}",
+      "remediation": "Use the LS-[###] format from ui-prototyping-conventions.md, matching the owning Screen's numeric suffix"
+    }
+  ],
+  "quality_score_weight": 0.07,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "soft",
+    "compliance": "hard"
+  }
+}

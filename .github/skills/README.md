@@ -90,7 +90,8 @@ Project ID: [YOUR-PROJECT-ID]
 ### S11 — UI Prototyping *(Project 06, in progress)*
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
-| `screen-generateinventory` | Generate a standalone, traceable screen inventory from a UI Model and requirements — entry point of the UI Prototyping pipeline | ui-model.json, requirements.json | screen-inventory.json/md | → `screen-generatelayout` *(planned)* |
+| `screen-generateinventory` | Generate a standalone, traceable screen inventory from a UI Model and requirements — entry point of the UI Prototyping pipeline | ui-model.json, requirements.json | screen-inventory.json/md | → `screen-generatelayout` |
+| `screen-generatelayout` | Generate a literal, implementation-ready Markdown + embedded HTML/CSS layout specification per screen | screen-inventory.json, ui-model.json | layout-spec.md (per screen) | → `screen-generatemockup` *(planned)* |
 
 ## Common Workflows
 
