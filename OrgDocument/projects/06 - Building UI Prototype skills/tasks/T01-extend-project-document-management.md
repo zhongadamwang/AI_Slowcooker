@@ -4,10 +4,11 @@
 **Phase**: Phase 1 - Foundation
 **Priority**: P0-Critical
 **Estimated Effort**: 0.5-1 day
-**Status**: Not Started
+**Status**: Completed ✅
 **Assigned**: [Unassigned]
 **Created**: 2026-10-26
-**Last Updated**: 2026-10-26
+**Last Updated**: 2026-10-27
+**Completed**: 2026-10-27
 
 ## Description
 
@@ -32,9 +33,9 @@ This is a small, explicit cross-skill change — not something this project can 
 
 ## Acceptance Criteria
 
-- [ ] `.github/skills/project-document-management/SKILL.md` updated with the new artifact category
-- [ ] New projects initialized via `project-document-management` get an `artifacts/UI Prototype/main.md` folder when the UI Prototyping skill set is in use
-- [ ] Existing projects without this category are unaffected (additive change only)
+- [x] `.github/skills/project-document-management/SKILL.md` updated with the new artifact category
+- [x] New projects initialized via `project-document-management` get an `artifacts/UI Prototype/main.md` folder when the UI Prototyping skill set is in use
+- [x] Existing projects without this category are unaffected (additive change only)
 
 ## Dependencies
 
@@ -43,3 +44,30 @@ This is a small, explicit cross-skill change — not something this project can 
 
 ### Blocks
 - T04 (screen inventory needs somewhere to be written)
+
+---
+
+## Completion Notes
+
+**Completed**: 2026-10-27
+
+### Changes Made
+
+- **`.github/skills/project-document-management/SKILL.md`** (v2.2.0 → v2.3.0):
+  - `standard` archetype folder tree now shows `UI Prototype/` as an opt-in category, explicitly commented as conditional ("Only when the project uses UI prototyping skills")
+  - Step 2 (Create Project Folder Tree) updated with the same conditional annotation, consistent with how `Documentation/` is already annotated as archetype-conditional
+  - New **Integration Points** subsection: "UI Prototyping skill set (`screen-generateinventory` and related skills, planned — Project 06)" documenting the folder dependency, ordering rule (this skill creates the folder → UI Prototyping skills fill it), and an explicit note that this category is opt-in by actual skill usage, not tied to archetype the way `Documentation/` is
+
+- **`.github/skills/project-document-management/gate.json`**:
+  - New soft check `ui_prototype_category_consistent` — does not require the folder for every project (only flags if UI Prototyping outputs exist without the folder); kept soft and non-blocking since this is an opt-in category, not a universal requirement
+
+### Key Decisions
+
+- **Made `UI Prototype/` opt-in, not archetype-tied**: unlike `Documentation/` (present for standard/hierarchical, absent for flat), `UI Prototype/` depends on whether a project actually uses the UI Prototyping skill set — a standard-archetype project with no UI work shouldn't get an empty `UI Prototype/` folder by default. This matches `domain-alignment.md`'s general pattern of keeping new concepts additive and narrowly scoped.
+- **Did not force this into the `flat` archetype's tree** — `flat` is explicitly for lightweight projects; UI prototyping is a `standard`/`hierarchical`-tier concern consistent with where `Documentation/` already lives
+- **Gate check kept soft and permissive** — since this category's presence is conditional on actual skill usage (not detectable purely from project-metadata.json yet), a hard check would produce false positives for the vast majority of projects that don't use UI prototyping at all
+
+### Next Steps for Integration
+
+- **T04** (`screen-generateinventory` skill): should reference this task's new Integration Points section when documenting its own output location
+- Future: once UI Prototyping skills are built (T04+), the gate check's `required_folders` can be tightened if a reliable signal exists (e.g., a `ui_prototyping_enabled` flag in `project-metadata.json`) rather than inferring usage indirectly

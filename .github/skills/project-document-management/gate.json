@@ -47,6 +47,15 @@
       "remediation": "Run project-document-management's Change Collaboration Mode operation to set collaboration_mode explicitly (solo or traditional)"
     },
     {
+      "id": "ui_prototype_category_consistent",
+      "type": "folder_structure",
+      "severity": "soft",
+      "description": "If a project references UI Prototyping skill outputs (screen-inventory, layout specs, mockups) anywhere in its artifacts, the artifacts/UI Prototype folder should exist; this check never requires the folder for projects that do not use these skills",
+      "base_path": "OrgDocument/projects/*/",
+      "required_folders": [],
+      "remediation": "Run project-document-management's Iterative Update Workflow to add the opt-in UI Prototype artifact category, or confirm the project does not use the UI Prototyping skill set"
+    },
+    {
       "id": "registry_updated",
       "type": "content_pattern",
       "severity": "soft", 

@@ -1,9 +1,9 @@
 ---
 name: project-document-management
-description: Initialize and manage project documentation structures following hierarchical folder guidelines. Creates consistent project trees with requirements, artifacts, and organizational modeling documents. Supports flat (Project 1) and EDPS-hierarchical (Project 3) archetypes, integrates with documentation-automation for stub generation, tracks project evolution metadata, and supports a solo vs. traditional collaboration mode orthogonal to archetype.
+description: Initialize and manage project documentation structures following hierarchical folder guidelines. Creates consistent project trees with requirements, artifacts, and organizational modeling documents. Supports flat (Project 1) and EDPS-hierarchical (Project 3) archetypes, an opt-in UI Prototype artifact category for UI prototyping skills, integrates with documentation-automation for stub generation, tracks project evolution metadata, and supports a solo vs. traditional collaboration mode orthogonal to archetype.
 license: MIT
-version: 2.2.0
-last-updated: 2026-10-25
+version: 2.3.0
+last-updated: 2026-10-27
 ---
 
 # Project Document Management
@@ -109,7 +109,9 @@ Full project artifacts + `orgModel` process folder with standard modeling files.
 │   │   └── main.md
 │   ├── Sample Data/
 │   │   └── main.md
-│   └── Testing/
+│   ├── Testing/
+│   │   └── main.md
+│   └── UI Prototype/       # Only when the project uses UI prototyping skills (see T01, Project 06)
 │       └── main.md
 ├── tasks/
 │   ├── main.md
@@ -193,7 +195,7 @@ When the user has already provided enough information and a clear confirmation t
 
 ### Step 2 — Create Project Folder Tree
 
-Create the folder structure for the selected archetype (see [Project Archetypes](#project-archetypes)). Always create the following core folders; include `Documentation/` under `artifacts/` only for standard and hierarchical projects:
+Create the folder structure for the selected archetype (see [Project Archetypes](#project-archetypes)). Always create the following core folders; include `Documentation/` under `artifacts/` only for standard and hierarchical projects; include `UI Prototype/` under `artifacts/` only when the project will use the UI Prototyping skill set (see Integration Points — `screen-generateinventory` and related skills):
 
 ```
 OrgDocument/projects/[NN] - [Project Name]/
@@ -204,7 +206,8 @@ OrgDocument/projects/[NN] - [Project Name]/
 │   ├── Changes/main.md
 │   ├── Documentation/main.md       ← standard + hierarchical only
 │   ├── Sample Data/main.md
-│   └── Testing/main.md
+│   ├── Testing/main.md
+│   └── UI Prototype/main.md        ← only when UI prototyping skills are in use
 ├── tasks/
 │   ├── main.md
 │   ├── README.md
@@ -562,6 +565,12 @@ This operation never touches folder structure, archetype, or any other metadata 
 ### `requirements-ingest`
 - Read original requirement sources from `artifacts/Source Materials/` and write generated `requirements.md` and `requirements.json` to `artifacts/Analysis/`.
 - Keep original source files unchanged in `artifacts/Source Materials/`; generated and transformed analysis outputs belong in `artifacts/Analysis/`.
+
+### UI Prototyping skill set *(`screen-generateinventory` and related skills, planned — Project 06)*
+- **Trigger**: When a project's requirements/goals call for generating UI prototypes (screen inventories, layout specs, interactive mockups) discussable with stakeholders
+- **Folder dependency**: These skills write to `artifacts/UI Prototype/`, a category this skill introduces but does not populate — create the empty `main.md`-only folder at init time (Step 2) or via the Iterative Update Workflow's "Add Missing Files" path for existing projects; the UI Prototyping skills themselves own everything written inside it
+- **Ordering rule**: This skill creates the folder → UI Prototyping skills fill the content, the same ordering convention used for `documentation-automation` and `orgmodel-update` below
+- **Non-standard categories are opt-in**: Unlike `Documentation/` (tied to archetype), `UI Prototype/` is tied to whether the project actually uses these skills, not to archetype alone — do not create it by default for every standard/hierarchical project
 
 ### `goals-extract`
 - Output can seed the `## Success Criteria` section of `main.md` after project initialization.
