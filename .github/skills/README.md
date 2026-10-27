@@ -87,6 +87,11 @@ Project ID: [YOUR-PROJECT-ID]
 | `edps-skill-navigator` | Intelligently orchestrate all EDPS skills from natural language requests (v1.2.0) | Natural language intent | Skill execution plan, workflow guidance | → Execute recommended skills |
 | `skill-creator` | Scaffold new EDPS-compliant skills following SKILL.md standard | Skill requirements | New SKILL.md + reference docs | → Implement skill |
 
+### S11 — UI Prototyping *(Project 06, in progress)*
+| Skill | Purpose | Input | Output | Next Step |
+|-------|---------|-------|---------|-----------|
+| `screen-generateinventory` | Generate a standalone, traceable screen inventory from a UI Model and requirements — entry point of the UI Prototyping pipeline | ui-model.json, requirements.json | screen-inventory.json/md | → `screen-generatelayout` *(planned)* |
+
 ## Common Workflows
 
 ### 🏁 New Project Setup (5 minutes)

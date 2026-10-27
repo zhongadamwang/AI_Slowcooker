@@ -2,7 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.1.0 | **Last Updated**: 2026-05-11 | **Skill Count**: 32 (1 deprecated)
+**Version**: 2.2.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 33 (1 deprecated)
+
+> **Update (October 2026)**: Added `screen-generateinventory` (S33) — the first skill in the new UI Prototyping category (Project 06), generating a standalone, traceable screen inventory from a project's UI Model and requirements. Further UI Prototyping skills (layout, mockup, flow generation) are planned.
 
 > **Update (May 2026)**: Added `requirements-sanitize` (S00) — a pre-ingestion sanitization skill that filters IT/infrastructure/operational noise and rewrites raw documents to focus on business processes and target system capabilities. `requirements-ingest` now references it as a recommended upstream step for mixed-perspective sources.
 

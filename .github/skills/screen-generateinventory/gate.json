@@ -1,0 +1,66 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S33",
+  "skill_name": "screen-generateinventory",
+  "version": "1.0.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates a standalone screen inventory has been generated with full traceability to the UI Model and source requirements",
+  "checks": [
+    {
+      "id": "screen_inventory_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "Standalone screen inventory must exist in the UI Prototype artifact category",
+      "artifacts": [
+        "artifacts/UI Prototype/screen-inventory.json"
+      ],
+      "remediation": "Run screen-generateinventory to produce the screen inventory from ui-model.json and requirements.json"
+    },
+    {
+      "id": "screens_traced_to_ui_model",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every screen must carry a singular ui_model_ref (never a domain entity directly)",
+      "file": "artifacts/UI Prototype/screen-inventory.json",
+      "json_path": "$.screens[*].ui_model_ref",
+      "required_fields": ["ui_model_ref"],
+      "remediation": "Ensure every screen references exactly one UI Model entry (UME-[###]) per R-606/R-628 — never a domain entity ID"
+    },
+    {
+      "id": "screens_traced_to_requirements",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every screen must carry at least one requirement reference",
+      "file": "artifacts/UI Prototype/screen-inventory.json",
+      "json_path": "$.screens[*].requirement_refs",
+      "required_fields": ["requirement_refs"],
+      "remediation": "Ensure every screen traces to at least one source requirement (R-605); a screen with no supporting requirement should be reconsidered, not silently generated"
+    },
+    {
+      "id": "standalone_artifact",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Screen inventory must remain a standalone artifact, not embedded in the consolidated design document",
+      "file": "artifacts/UI Prototype/design-document.md",
+      "must_not_contain_pattern": "## Screen Inventory\\n\\n### .+ \\*\\(SCR-",
+      "remediation": "Per D-6, screen-assembledocument (T08) must reference screen-inventory.md, not duplicate its full per-screen listing inline"
+    },
+    {
+      "id": "id_format_valid",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Screen IDs should follow the SCR-[###] convention from ui-prototyping-conventions.md",
+      "file": "artifacts/UI Prototype/screen-inventory.json",
+      "must_contain_pattern": "\"screen_id\":\\s*\"SCR-\\d{3}\"",
+      "remediation": "Use the SCR-[###] zero-padded 3-digit format defined in artifacts/Documentation/ui-prototyping-conventions.md"
+    }
+  ],
+  "quality_score_weight": 0.07,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "soft",
+    "compliance": "hard"
+  }
+}
