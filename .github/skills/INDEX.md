@@ -2,7 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.3.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 34 (1 deprecated)
+**Version**: 2.4.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 35 (1 deprecated)
+
+> **Update (October 2026)**: Added `screen-generatemockup` (S35) — the third UI Prototyping skill (Project 06), rendering layout specs into standalone, genuinely clickable HTML/JS mockups that open via `file://` with zero setup. Its `portability_tested` gate check reuses the existing `stakeholder_confirmation` mechanism as a self-verification pattern (confirming the developer actually opened the file in a browser, not just reviewed the code) — the first UI Prototyping skill to use this check type.
 
 > **Update (October 2026)**: Added `screen-generatelayout` (S34) — the second UI Prototyping skill (Project 06), generating literal Markdown + embedded HTML/CSS layout specifications per screen, consuming `screen-generateinventory`'s output.
 

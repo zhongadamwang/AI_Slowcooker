@@ -1,0 +1,63 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S35",
+  "skill_name": "screen-generatemockup",
+  "version": "1.0.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates each screen's mockup is standalone, portable, genuinely clickable, and free of external dependencies or framework leakage",
+  "checks": [
+    {
+      "id": "mockup_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "Mockup must exist for each screen in the inventory",
+      "artifacts": [
+        "artifacts/UI Prototype/SCR-*/mockup.html"
+      ],
+      "remediation": "Run screen-generatemockup for every screen with a layout-spec.md"
+    },
+    {
+      "id": "no_external_file_references",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Mockup must not reference any external stylesheet, script, or asset file",
+      "file": "artifacts/UI Prototype/SCR-*/mockup.html",
+      "must_not_contain_pattern": "<link\\s+rel=[\"']stylesheet[\"']\\s+href=|<script\\s+src=",
+      "remediation": "Embed all CSS in a <style> block and all JS in a <script> block directly within mockup.html per R-626's portability requirement"
+    },
+    {
+      "id": "no_framework_leakage",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Generated mockup must not reference a specific application framework",
+      "file": "artifacts/UI Prototype/SCR-*/mockup.html",
+      "must_not_contain_pattern": "(?i)(import React|from ['\"]vue['\"]|ng-|v-bind|v-on|className=)",
+      "remediation": "Per R-625, generate plain HTML/CSS/vanilla JS only — no React, Vue, or Angular syntax/conventions"
+    },
+    {
+      "id": "navigation_links_resolve",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Any cross-screen navigation link must point to an existing screen folder",
+      "file": "artifacts/UI Prototype/SCR-*/mockup.html",
+      "must_contain_pattern": "href=\"\\.\\./SCR-\\d{3}/mockup\\.html\"",
+      "remediation": "Confirm every navigation link's target SCR-[###] exists in screen-inventory.json; do not link to a nonexistent screen"
+    },
+    {
+      "id": "portability_tested",
+      "type": "stakeholder_confirmation",
+      "role": "Developer (self-verification)",
+      "description": "Mockup portability (file:// open, zero setup) must be tested on a real browser, not merely assumed",
+      "confirmation_statement": "I opened this screen's mockup.html via file:// in a real browser and confirmed it renders correctly with working navigation — not merely inspected the generated code",
+      "remediation": "Open the generated mockup.html directly in a browser (not just review the code) before marking this screen's mockup complete; record a confirmation per collaboration-mode-reference.md's self-attestation pattern in solo mode"
+    }
+  ],
+  "quality_score_weight": 0.08,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "soft",
+    "compliance": "hard"
+  }
+}
