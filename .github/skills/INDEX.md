@@ -2,7 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.6.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 37 (1 deprecated)
+**Version**: 2.7.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 38 (1 deprecated)
+
+> **Update (October 2026)**: Added `screen-discussfeedback` (S38) — the sixth UI Prototyping skill (Project 06), presenting mockups as a stakeholder discussion surface and routing captured feedback into `change-management`'s existing schema with no manual re-transcription. Confirmed during authoring (TR-09.1) that `change-management`'s existing change-type taxonomy fully accommodates UI-specific feedback (e.g., mapping to `REQ-CHG` with the screen's `layout-spec.md` as an affected document) — no schema extension was needed. Supports solo-mode role-play reusing `process-w5h`'s exact documentation pattern. Completes the MVP generation-and-discussion pipeline; only gate/orchestrator registration (T10) and end-to-end validation (T11) remain.
 
 > **Update (October 2026)**: Added `screen-assembledocument` (S37) — the fifth UI Prototyping skill (Project 06), assembling the consolidated UI design document (Markdown + JSON) that summarizes and links to the screen inventory, layout specs, mockups, and interaction flows without duplicating them. This is the project's primary durable handoff deliverable; its gate includes a `handoff_sanity_check_performed` check (via `stakeholder_confirmation`, self-verified in solo mode) confirming the document is readable by someone unfamiliar with the generating session.
 

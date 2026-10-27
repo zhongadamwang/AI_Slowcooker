@@ -94,7 +94,8 @@ Project ID: [YOUR-PROJECT-ID]
 | `screen-generatelayout` | Generate a literal, implementation-ready Markdown + embedded HTML/CSS layout specification per screen | screen-inventory.json, ui-model.json | layout-spec.md (per screen) | → `screen-generatemockup` |
 | `screen-generatemockup` | Render a layout spec into a standalone, genuinely clickable HTML/JS mockup, opening via file:// with zero setup | layout-spec.md, screen-inventory.json | mockup.html (per screen) | → `screen-generateflow` |
 | `screen-generateflow` | Diagram navigation across the screen set in Mermaid, manually verified edge-by-edge against real mockup `<a href>` links | screen-inventory.json, all mockup.html files | interaction-flows.md | → `screen-assembledocument` |
-| `screen-assembledocument` | Assemble the consolidated UI design document (Markdown + JSON) summarizing and linking to all prior outputs — the durable handoff deliverable | screen-inventory.json, layout-spec.md, mockup.html, interaction-flows.md | design-document.md/json | → `screen-discussfeedback` *(planned)* |
+| `screen-assembledocument` | Assemble the consolidated UI design document (Markdown + JSON) summarizing and linking to all prior outputs — the durable handoff deliverable | screen-inventory.json, layout-spec.md, mockup.html, interaction-flows.md | design-document.md/json | → `screen-discussfeedback` |
+| `screen-discussfeedback` | Present mockups as a stakeholder discussion surface, capture structured feedback, and route it into change-management with no manual re-transcription | mockup.html, interaction-flows.md, stakeholder commentary | feedback-log.md → change-management | → Gate & orchestrator registration |
 
 ## Common Workflows
 
