@@ -1,15 +1,15 @@
 ````skill
 ---
 name: edps-workflow-orchestrator
-description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused.
+description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused — plus an optional UI Prototyping extension (S33–S38).
 license: MIT
-version: 1.1.0
-last-updated: 2026-10-22
+version: 1.2.0
+last-updated: 2026-10-27
 ---
 
 # EDPS Workflow Orchestrator
 
-The central coordination hub for end-to-end EDPS methodology execution. Sits above `edps-skill-navigator` to provide workflow lifecycle management, prerequisite enforcement, and persistent project state across all 30 EDPS skills.
+The central coordination hub for end-to-end EDPS methodology execution. Sits above `edps-skill-navigator` to provide workflow lifecycle management, prerequisite enforcement, and persistent project state across all 36 EDPS skills (30 core + 6 UI Prototyping extension).
 
 ## Intent
 
@@ -44,7 +44,7 @@ This skill does not replace `edps-skill-navigator`; it layers above it. The navi
 
 ## Skill Catalogue
 
-All 31 EDPS skills are registered below with their category, primary inputs, primary outputs, and prerequisite skill IDs. This catalogue is the source of truth for DAG construction.
+All 36 EDPS skills (30 core + 6 UI Prototyping extension) are registered below with their category, primary inputs, primary outputs, and prerequisite skill IDs. This catalogue is the source of truth for DAG construction.
 
 | ID | Skill Name | Category | Prerequisite Skill IDs |
 |----|-----------|----------|-----------------------|
@@ -79,8 +79,16 @@ All 31 EDPS skills are registered below with their category, primary inputs, pri
 | S28 | `github-issue-create-update` | GitHub | S15 |
 | S29 | `github-issue-sync-status` | GitHub | S28 |
 | S30 | `edps-skill-navigator` | Meta | *(none — invokes others)* |
+| S33 | `screen-generateinventory` | UI Prototyping | S06 *(UI Model)*, S01 |
+| S34 | `screen-generatelayout` | UI Prototyping | S33 |
+| S35 | `screen-generatemockup` | UI Prototyping | S34 |
+| S36 | `screen-generateflow` | UI Prototyping | S33, S35 |
+| S37 | `screen-assembledocument` | UI Prototyping | S34, S35, S36 |
+| S38 | `screen-discussfeedback` | UI Prototyping | S35 |
 
 > **Note**: `skill-creator` (meta, create-only) and `migration-tools` (deprecated, use `hierarchy-management --op migrate`) are catalogued but excluded from archetype workflows by default. Include them explicitly with the `--include-deprecated` flag. `requirements-sanitize` (S00) is an optional pre-step; it is included automatically when the orchestrator detects that the source document is not already a clean business requirements document.
+>
+> **UI Prototyping skills (S33–S38)**: this category's prerequisite on S06 (`domain-extractconcepts`) is listed as "S06 *(UI Model)*" because `screen-generateinventory` actually depends on a project's **UI Model** (`ui-model.json`), not on `domain-extractconcepts`'s output directly. As of this registration, UI Model generation has no dedicated orchestrated skill of its own — it is produced per the worked-example process in `orgModel/02 - UI Prototype Skill Development Process/domain-model.md` (T03), manually following that schema, and is expected to be authored as its own orchestrated skill in a future iteration. Until then, the orchestrator cannot auto-verify UI Model readiness purely from DAG state; `screen-generateinventory`'s own pre-condition check (see its SKILL.md) is the actual gate for this dependency. These six skills are **not** included in any of the three named archetypes (`standard`/`rapid`/`compliance`) below — they form their own optional extension, invoked explicitly when a project's requirements call for UI prototyping (see UI Prototyping Extension below Archetype 3).
 
 ---
 
@@ -182,6 +190,32 @@ Phase 7 — Final Validation
 ```
 
 **Prerequisites**: S09 (`diagram-generatecollaboration`) output must exist. If `hierarchy-metadata.json` is absent, S10 must run in full decomposition mode first.
+
+---
+
+### UI Prototyping Extension (S33–S38) — Optional, Not Part of Named Archetypes
+
+**Use when**: A project's requirements call for generating screen inventories, layout specs, clickable mockups, interaction flows, and a consolidated design document for stakeholder discussion (Project 06's UI Prototyping skill set).
+
+**Duration estimate**: 2–3 days for a small-to-medium screen set, consistent with this project's own `scope-analysis.md` MVP estimate.
+
+```
+UI Prototyping Phase — Generation
+  [S33] screen-generateinventory            (requires: a UI Model exists — see note below; S01)
+  [S34] screen-generatelayout                (requires: S33)
+  [S35] screen-generatemockup                (requires: S34)
+  [S36] screen-generateflow                  (requires: S33, S35)
+
+UI Prototyping Phase — Discussion & Handoff
+  [S37] screen-assembledocument              (requires: S34, S35, S36)
+  [S38] screen-discussfeedback               (requires: S35)
+```
+
+**Parallel execution opportunities**: S36 and S37 both only require S34/S35 (plus S33 for S36) and can run in either order or in parallel once their shared prerequisites are satisfied; S38 can begin as soon as S35 produces at least one screen's mockup, independent of whether S36/S37 have run yet.
+
+**Why this extension is not folded into `standard`/`rapid`/`compliance`**: unlike every other skill in the catalogue, S33–S38 are not relevant to every EDPS project — a project with no UI component has no use for them. Rather than forcing every `standard`-archetype project through an irrelevant UI Prototyping phase, this extension is invoked explicitly (`orchestrate start standard --include-extension ui-prototyping`, or simply by invoking `screen-generateinventory` directly once its prerequisites are met) when a project's requirements actually call for it.
+
+**UI Model dependency (not yet its own orchestrated skill)**: `screen-generateinventory` (S33) requires a project's UI Model (`ui-model.json`) to exist, per its own documented pre-condition. As of this registration, UI Model generation has no dedicated skill ID in this catalogue — it is produced manually following the schema in `orgModel/02 - UI Prototype Skill Development Process/domain-model.md` (validated by T03's worked example). The DAG prerequisite listed above (`S06`, i.e. `domain-extractconcepts`) is therefore a **necessary but not sufficient** condition: `domain-extractconcepts` must have run (so a domain model exists for the UI Model to aggregate), but the orchestrator cannot yet auto-verify UI Model *readiness* purely from other skills' completion state. Until a dedicated UI Model generation skill is registered, `screen-generateinventory`'s own pre-condition check is the authoritative gate for this dependency — the orchestrator will mark S33 `available` once S06 is complete, but the skill itself may still report it cannot proceed if no UI Model is actually present.
 
 ---
 
@@ -837,10 +871,15 @@ skill-completion-gates emits:  gate_pass | gate_fail  →  Orchestrator updates 
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.2.0  
 **Created**: 2026-03-16  
 **Compatibility**: EDPS v2.x (hierarchical boundary format), GitHub Copilot  
 **Depends on**: `edps-skill-navigator` v1.2.0 (T06 enhanced)  
 **Consumed by**: `skill-completion-gates` (T08), `enhanced-prompt-recognition` (T09)  
 **Maintainer**: EDPS Development Team
+
+**Version History**:
+- **1.2.0** (2026-10-27): Registered UI Prototyping extension skills S33–S38 (`screen-generateinventory`, `screen-generatelayout`, `screen-generatemockup`, `screen-generateflow`, `screen-assembledocument`, `screen-discussfeedback`) per Project 06 T10. Added as an optional extension, not folded into the three named archetypes, since not every project has a UI component. Documented the UI Model dependency gap (no dedicated orchestrated skill yet for UI Model generation itself).
+- **1.1.0** (2026-10-22): Prior update (see git history for details).
+- **1.0.0** (2026-03-16): Initial release.
 ````
