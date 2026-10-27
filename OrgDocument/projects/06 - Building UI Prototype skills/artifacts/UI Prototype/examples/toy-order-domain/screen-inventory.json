@@ -1,0 +1,24 @@
+{
+  "inventory_id": "SCRINV-VALIDATION-001",
+  "project_id": "UI-PROTO-VALIDATION-001",
+  "generated_at": "2026-10-27T00:00:00Z",
+  "source_files": ["ui-model.json", "requirements.md"],
+  "screens": [
+    {
+      "screen_id": "SCR-001",
+      "name": "Order Summary",
+      "purpose": "Let a customer or support agent review a single order's full detail — its placing customer and all line items — in one coherent view",
+      "ui_model_ref": "UME-001",
+      "requirement_refs": ["R-614"],
+      "import_origin": "generated"
+    },
+    {
+      "screen_id": "SCR-002",
+      "name": "Customer Order History",
+      "purpose": "Let a customer or support agent review the list of all orders placed by a given customer, to navigate into any one of them for detail",
+      "ui_model_ref": "UME-003",
+      "requirement_refs": ["R-614"],
+      "import_origin": "generated"
+    }
+  ]
+}

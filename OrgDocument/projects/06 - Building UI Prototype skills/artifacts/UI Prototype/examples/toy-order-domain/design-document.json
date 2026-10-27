@@ -1,0 +1,33 @@
+{
+  "document_id": "DD-VALIDATION-001",
+  "project_id": "UI-PROTO-VALIDATION-001",
+  "generated_at": "2026-10-27T00:00:00Z",
+  "changelog": [
+    { "version": "1.0", "date": "2026-10-27", "change": "Initial consolidated generation" }
+  ],
+  "overview": "A small order-management UI consisting of two connected screens: an Order Summary view for reviewing a single order's full detail, and a Customer Order History view for browsing all orders placed by a customer.",
+  "screens_summary": [
+    {
+      "screen_id": "SCR-001",
+      "name": "Order Summary",
+      "ui_model_ref": "UME-001",
+      "layout_spec_ref": "SCR-001/layout-spec.md",
+      "mockup_ref": "SCR-001/mockup.html"
+    },
+    {
+      "screen_id": "SCR-002",
+      "name": "Customer Order History",
+      "ui_model_ref": "UME-003",
+      "layout_spec_ref": "SCR-002/layout-spec.md",
+      "mockup_ref": "SCR-002/mockup.html"
+    }
+  ],
+  "flows_summary": [
+    { "flow_id": "IF-001", "description": "Order Summary \u2194 Customer Order History", "ref": "interaction-flows.md#primary-navigation-flow-if-001" }
+  ],
+  "component_notes": "Both screens reuse a consistent .screen__header/.screen__nav-link pattern and a shared .status-badge component. Informal, observed pattern only.",
+  "design_rationale_highlights": [
+    "Two-column layout for Order Summary chosen because UME-001 aggregates Order+Customer+LineItem",
+    "Plain <a href> navigation preferred over JS click handlers for easier flow-diagram verification"
+  ]
+}
