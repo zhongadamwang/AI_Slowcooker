@@ -1,0 +1,64 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S36",
+  "skill_name": "screen-generateflow",
+  "version": "1.0.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates interaction-flow diagrams exist, are consolidated at the project level, and every edge is verified against actual mockup navigation",
+  "checks": [
+    {
+      "id": "interaction_flows_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "Consolidated interaction-flows document must exist",
+      "artifacts": [
+        "artifacts/UI Prototype/interaction-flows.md"
+      ],
+      "remediation": "Run screen-generateflow against the project's screen-inventory.json and all SCR-*/mockup.html files"
+    },
+    {
+      "id": "mermaid_diagram_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "At least one Mermaid flowchart diagram must be present",
+      "file": "artifacts/UI Prototype/interaction-flows.md",
+      "must_contain_pattern": "```mermaid\\s*\\n\\s*flowchart",
+      "remediation": "Use flowchart LR per screen-generateflow's conventions, not a sequence diagram (reserved for diagram-generatecollaboration's system-interaction use case)"
+    },
+    {
+      "id": "verification_log_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "A Verification Log confirming edges trace to real mockup links must be present — this is the non-skippable manual verification step required by TR-07.1",
+      "file": "artifacts/UI Prototype/interaction-flows.md",
+      "must_contain": ["## Verification Log"],
+      "remediation": "Per TR-07.1, manually verify every diagram edge against an actual <a href> in a mockup.html file and log it — do not publish unverified edges"
+    },
+    {
+      "id": "no_sequence_diagram_misuse",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Interaction flows should use flowchart, not sequenceDiagram, syntax — screen navigation is not a time-ordered message exchange between system components",
+      "file": "artifacts/UI Prototype/interaction-flows.md",
+      "must_not_contain_pattern": "```mermaid\\s*\\n\\s*sequenceDiagram",
+      "remediation": "Reserve sequenceDiagram for diagram-generatecollaboration's actor/boundary/control/entity message modeling; use flowchart LR for screen-to-screen navigation"
+    },
+    {
+      "id": "id_format_valid",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Flow IDs should follow the IF-[###] convention, independently sequenced (not paired to a Screen ID)",
+      "file": "artifacts/UI Prototype/interaction-flows.md",
+      "must_contain_pattern": "IF-\\d{3}",
+      "remediation": "Use the IF-[###] format from ui-prototyping-conventions.md"
+    }
+  ],
+  "quality_score_weight": 0.06,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "soft",
+    "compliance": "hard"
+  }
+}
