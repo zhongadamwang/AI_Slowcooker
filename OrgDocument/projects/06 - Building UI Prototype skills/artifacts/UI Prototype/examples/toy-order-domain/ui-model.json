@@ -1,0 +1,52 @@
+{
+  "model_id": "UIM-BASE-EXAMPLE",
+  "model_type": "base",
+  "derives_from": null,
+  "role_scope": null,
+  "source_domain_model": "./domain-model.md",
+  "generated_at": "2026-10-27T00:00:00Z",
+  "changelog": [
+    {
+      "version": "1.0",
+      "date": "2026-10-27",
+      "change": "Initial generation for T03 schema validation"
+    }
+  ],
+  "entries": [
+    {
+      "entry_id": "UME-001",
+      "ui_concept_name": "Order Summary",
+      "domain_entity_refs": ["Order", "Customer", "LineItem"],
+      "aggregation_description": "Combines a single Order with its placing Customer and all of its LineItems into one coherent 'what did this customer order' view"
+    },
+    {
+      "entry_id": "UME-002",
+      "ui_concept_name": "Product Catalog Entry",
+      "domain_entity_refs": ["Product"],
+      "aggregation_description": "Single-entity pass-through; Product is already a coherent UI concept on its own"
+    },
+    {
+      "entry_id": "UME-003",
+      "ui_concept_name": "Customer Order History",
+      "domain_entity_refs": ["Customer", "Order"],
+      "aggregation_description": "List-style view combining a Customer with summary-level data from all their Orders, distinct from UME-001's single-Order detail view"
+    }
+  ],
+  "aggregations": [
+    {
+      "aggregation_id": "AGG-001",
+      "member_entities": ["Order", "Customer", "LineItem"],
+      "resulting_ui_concept": "UME-001"
+    },
+    {
+      "aggregation_id": "AGG-002",
+      "member_entities": ["Product"],
+      "resulting_ui_concept": "UME-002"
+    },
+    {
+      "aggregation_id": "AGG-003",
+      "member_entities": ["Customer", "Order"],
+      "resulting_ui_concept": "UME-003"
+    }
+  ]
+}
