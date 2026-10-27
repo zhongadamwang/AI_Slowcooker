@@ -6,8 +6,8 @@
   "collaboration_mode": "solo",
   "created": "2026-10-26",
   "last_updated": "2026-10-26",
-  "status": "Initialized",
-  "version": "1.0.0",
+  "status": "Draft Requirements — Awaiting Review",
+  "version": "1.1.0",
   "evolution_history": [
     {
       "version": "1.0.0",
@@ -16,6 +16,14 @@
       "archetype": "standard",
       "collaboration_mode": "solo",
       "changed_by": "project-document-management"
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-10-26",
+      "change": "Captured vision as artifacts/Source Materials/ui-prototyping-vision.md; drafted initial requirements.md (24 requirements R-601-R-624 across Generation/Discussion/Import/Integration/Non-Functional categories, plus 5 open questions OQ-1-OQ-5 flagged for stakeholder input)",
+      "archetype": "standard",
+      "collaboration_mode": "solo",
+      "changed_by": "OpenClaw assistant (manual requirements drafting)"
     }
   ],
   "linked_orgmodel": "OrgDocument/orgModel/02 - UI Prototype Skill Development Process",

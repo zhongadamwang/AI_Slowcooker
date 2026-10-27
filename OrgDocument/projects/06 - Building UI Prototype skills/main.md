@@ -10,6 +10,8 @@ Build a set of EDPS skills that help users turn requirements and process models 
 **Status**: Initialized — Awaiting Requirements  
 **Created**: 2026-10-26  
 
+**Draft requirements available**: see [`artifacts/Analysis/requirements.md`](artifacts/Analysis/requirements.md) (24 requirements, 5 open questions flagged for review)
+
 ## Structure
 - [`artifacts/main.md`](artifacts/main.md) — Index of supporting materials and analysis outputs
 - [`tasks/main.md`](tasks/main.md) — Index of individual task files and tracking documents
@@ -31,6 +33,6 @@ To be defined based on requirements.
 To be defined in [project-plan.md](project-plan.md).
 
 ---
-**Project Status**: Initialized — Awaiting Requirements  
+**Project Status**: Draft Requirements — Awaiting Review  
 **Last Updated**: 2026-10-26  
-**Next Steps**: Provide requirements input (place in `artifacts/Source Materials/`) and conduct initial analysis
+**Next Steps**: Review `artifacts/Analysis/requirements.md`, resolve the 5 open questions (OQ-1–OQ-5), then proceed to `goals-extract` and `process-w5h`
