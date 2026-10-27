@@ -1,0 +1,24 @@
+{
+  "document_id": "DD-PRICEBOOK-001",
+  "project_id": "PRICE-BOOK-TEST-001",
+  "generated_at": "2026-10-27T00:00:00Z",
+  "changelog": [
+    { "version": "1.0", "date": "2026-10-27", "change": "Initial consolidated generation" }
+  ],
+  "overview": "A price configuration management UI covering a four-level hierarchy: Price Book, Price Category, Price Header, and Price Item, all sharing a consistent list+tabbed-detail UI pattern per the source requirements.",
+  "screens_summary": [
+    { "screen_id": "SCR-101", "name": "Price Book Management", "ui_model_ref": "UME-101", "layout_spec_ref": "SCR-101/layout-spec.md", "mockup_ref": "SCR-101/mockup.html" },
+    { "screen_id": "SCR-102", "name": "Price Category Management", "ui_model_ref": "UME-102", "layout_spec_ref": "SCR-102/layout-spec.md", "mockup_ref": "SCR-102/mockup.html" },
+    { "screen_id": "SCR-103", "name": "Price Header Management", "ui_model_ref": "UME-103", "layout_spec_ref": "SCR-103/layout-spec.md", "mockup_ref": "SCR-103/mockup.html" },
+    { "screen_id": "SCR-104", "name": "Price Item Management", "ui_model_ref": "UME-104", "layout_spec_ref": "SCR-104/layout-spec.md", "mockup_ref": "SCR-104/mockup.html" }
+  ],
+  "flows_summary": [
+    { "flow_id": "IF-101", "description": "Price Book \u2192 Price Category \u2192 Price Header \u2192 Price Item (drill-down chain)", "ref": "interaction-flows.md#primary-navigation-flow-if-101" }
+  ],
+  "component_notes": "All four screens share list-toolbar, record-list, detail-tabs (4-tab), and field--readonly patterns. SCR-102/103/104 additionally share a cascading-filter pattern.",
+  "design_rationale_highlights": [
+    "One consistent layout pattern reused across all four screens, matching the source's own repeated description",
+    "Deepest cascading filter chain (Book->Category->Header->Price Area) on Price Item screen reflects R-717's multi-level dependency",
+    "Two Price Item fields rendered with a visible [REVIEW NEEDED] marker rather than a guessed name"
+  ]
+}

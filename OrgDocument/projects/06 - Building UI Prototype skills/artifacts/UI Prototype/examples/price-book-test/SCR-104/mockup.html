@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Price Item Management — Mockup (SCR-104)</title>
+<style>
+.screen--price-item {
+  font-family: system-ui, sans-serif;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.screen__filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+.screen__filter label { font-size: 0.85rem; color: #555; }
+.screen__filter select, .screen__filter input {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.list-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.btn {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.btn--primary { background: #2563eb; color: white; border-color: #2563eb; }
+.btn--danger { background: #fff; color: #dc2626; border-color: #dc2626; }
+.record-list { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.record-list th, .record-list td {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+.record-list__row--selected { background: #eff6ff; }
+.detail-tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid #ddd; }
+.detail-tabs__tab {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #666;
+}
+.detail-tabs__tab--active {
+  border-bottom: 2px solid #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+}
+.detail-form {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 0.5rem 1rem;
+  padding: 1rem 0;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.detail-form dt { font-size: 0.8rem; color: #666; align-self: center; }
+.field--readonly { background: #f3f4f6; color: #666; }
+.field--review-needed { color: #b45309; }
+.review-badge {
+  display: inline-block;
+  background: #fef3c7;
+  color: #b45309;
+  border-radius: 999px;
+  padding: 0 0.4rem;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+}
+.multi-select { width: 100%; }
+.screen__footer {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+}
+.screen__nav-link { color: #2563eb; text-decoration: none; font-size: 0.85rem; }
+.screen__nav { display: flex; gap: 1rem; }
+</style>
+</head>
+<body>
+<div class="screen screen--price-item">
+  <header class="screen__header">
+    <h1>Price Item Management</h1>
+    <nav class="screen__nav">
+      <a href="../SCR-103/mockup.html" class="screen__nav-link" data-transition-target="SCR-103">← Back to Price Header</a>
+    </nav>
+  </header>
+  <section class="screen__filter">
+    <label for="price-book-filter">Price Book</label>
+    <select id="price-book-filter">
+      <option selected>1001 — Standard Service Pricing</option>
+    </select>
+    <label for="category-filter">Category</label>
+    <select id="category-filter">
+      <option selected>2001 — Coiled Tubing Services</option>
+    </select>
+    <label for="header-filter">Price Header</label>
+    <select id="header-filter">
+      <option selected>3001 — Equipment Rental</option>
+    </select>
+    <label for="price-area-filter">Price Area</label>
+    <input type="text" id="price-area-filter" placeholder="Filter by price area…">
+  </section>
+  <section class="screen__list-section">
+    <div class="list-toolbar">
+      <button class="btn btn--primary" data-action="add">Add</button>
+      <button class="btn" data-action="copy-to-add">Copy to Add</button>
+      <button class="btn" data-action="edit">Edit</button>
+      <button class="btn btn--danger" data-action="remove">Remove</button>
+    </div>
+    <table class="record-list">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Version</th>
+          <th>Item Number</th>
+          <th>Description</th>
+          <th>Price 1</th>
+          <th>Price 2</th>
+          <th>Unit of Measure</th>
+          <th>Book ID</th>
+          <th>Category ID</th>
+          <th>Header ID</th>
+          <th>Price Area</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="record-list__row record-list__row--selected">
+          <td>4001</td>
+          <td>0</td>
+          <td>CT-REEL-2378</td>
+          <td>2-3/8" Coiled Tubing Reel, Daily Rate</td>
+          <td>$1,250.00</td>
+          <td>$1,100.00</td>
+          <td>Day</td>
+          <td>1001</td>
+          <td>2001</td>
+          <td>3001</td>
+          <td>West Texas</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="screen__detail-section">
+    <nav class="detail-tabs" role="tablist">
+      <button class="detail-tabs__tab detail-tabs__tab--active" role="tab">Data</button>
+      <button class="detail-tabs__tab" role="tab">Effective Info</button>
+      <button class="detail-tabs__tab" role="tab">Currently Version Info</button>
+      <button class="detail-tabs__tab" role="tab">Original Version Info</button>
+    </nav>
+    <div class="detail-tabs__panel" role="tabpanel">
+      <dl class="detail-form">
+        <dt>ID</dt><dd><input type="text" value="4001" readonly class="field--readonly"></dd>
+        <dt>Price Book</dt><dd><input type="text" value="1001 — Standard Service Pricing" readonly class="field--readonly"></dd>
+        <dt>Category</dt><dd><input type="text" value="2001 — Coiled Tubing Services" readonly class="field--readonly"></dd>
+        <dt>Price Header</dt><dd><input type="text" value="3001 — Equipment Rental" readonly class="field--readonly"></dd>
+        <dt>Item Number</dt><dd><input type="text" value="CT-REEL-2378"></dd>
+        <dt>Description</dt><dd><input type="text" value='2-3/8" Coiled Tubing Reel, Daily Rate'></dd>
+        <dt>Account</dt><dd><input type="text" value="4000-EQUIP-RENTAL"></dd>
+        <dt>Bundle Category</dt><dd><input type="text" value="Equipment"></dd>
+        <dt>Price 1</dt><dd><input type="text" value="1250.00"></dd>
+        <dt>Price 2</dt><dd><input type="text" value="1100.00"></dd>
+        <dt>Unit of Measure</dt><dd><input type="text" value="Day"></dd>
+        <dt>Price Area</dt><dd><input type="text" value="West Texas"></dd>
+        <dt>Customer</dt><dd><input type="text" value="(blank — applies to all customers)"></dd>
+        <dt>Is Discountable</dt><dd><input type="checkbox" checked></dd>
+        <dt>Is Discontinued</dt><dd><input type="checkbox"></dd>
+        <dt>Is Product</dt><dd><input type="checkbox"></dd>
+        <dt>Is Internal</dt><dd><input type="checkbox"></dd>
+        <dt class="field--review-needed">[REVIEW NEEDED] Field A <span class="review-badge">?</span></dt><dd><input type="checkbox" disabled></dd>
+        <dt class="field--review-needed">[REVIEW NEEDED] Field B <span class="review-badge">?</span></dt><dd><input type="checkbox" disabled></dd>
+        <dt>Service Line</dt>
+        <dd>
+          <select multiple class="multi-select" size="3">
+            <option selected>Coiled Tubing</option>
+            <option>CBM Coil Tubing</option>
+          </select>
+        </dd>
+      </dl>
+    </div>
+  </section>
+  <footer class="screen__footer">
+    <button class="btn btn--primary" data-action="update">Update</button>
+    <button class="btn" data-action="close">Close</button>
+  </footer>
+</div>
+</body>
+</html>

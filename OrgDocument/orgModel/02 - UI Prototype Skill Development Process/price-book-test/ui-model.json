@@ -1,0 +1,63 @@
+{
+  "model_id": "UIM-BASE-PRICEBOOK",
+  "model_type": "base",
+  "derives_from": null,
+  "role_scope": null,
+  "source_domain_model": "./domain-concepts.md",
+  "generated_at": "2026-10-27T00:00:00Z",
+  "changelog": [
+    {
+      "version": "1.0",
+      "date": "2026-10-27",
+      "change": "Initial generation for price-book real-world pipeline test"
+    }
+  ],
+  "entries": [
+    {
+      "entry_id": "UME-101",
+      "ui_concept_name": "Price Book Management",
+      "domain_entity_refs": ["PriceBook"],
+      "aggregation_description": "Single-entity pass-through; Price Book is already a coherent top-level UI concept — list + CRUD detail form, no cross-entity aggregation needed at this level"
+    },
+    {
+      "entry_id": "UME-102",
+      "ui_concept_name": "Price Category Management",
+      "domain_entity_refs": ["PriceCategory", "PriceBook"],
+      "aggregation_description": "Combines PriceCategory with its parent PriceBook (for the filter/context dropdown) into one coherent 'manage categories for a selected book' view"
+    },
+    {
+      "entry_id": "UME-103",
+      "ui_concept_name": "Price Header Management",
+      "domain_entity_refs": ["PriceHeader", "PriceBook", "PriceCategory"],
+      "aggregation_description": "Combines PriceHeader with its PriceBook and PriceCategory ancestors (for cascading filters) into one coherent 'manage hierarchical headers under a selected book/category' view. Includes the PriceHeader's own self-referential parent/child structure."
+    },
+    {
+      "entry_id": "UME-104",
+      "ui_concept_name": "Price Item Management",
+      "domain_entity_refs": ["PriceItem", "PriceBook", "PriceCategory", "PriceHeader"],
+      "aggregation_description": "Combines PriceItem with its full ancestor chain (PriceBook, PriceCategory, PriceHeader) for cascading filters, into one coherent 'manage actual price records under a selected book/category/header' view"
+    }
+  ],
+  "aggregations": [
+    {
+      "aggregation_id": "AGG-101",
+      "member_entities": ["PriceBook"],
+      "resulting_ui_concept": "UME-101"
+    },
+    {
+      "aggregation_id": "AGG-102",
+      "member_entities": ["PriceCategory", "PriceBook"],
+      "resulting_ui_concept": "UME-102"
+    },
+    {
+      "aggregation_id": "AGG-103",
+      "member_entities": ["PriceHeader", "PriceBook", "PriceCategory"],
+      "resulting_ui_concept": "UME-103"
+    },
+    {
+      "aggregation_id": "AGG-104",
+      "member_entities": ["PriceItem", "PriceBook", "PriceCategory", "PriceHeader"],
+      "resulting_ui_concept": "UME-104"
+    }
+  ]
+}

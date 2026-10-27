@@ -1,0 +1,40 @@
+{
+  "inventory_id": "SCRINV-PRICEBOOK-001",
+  "project_id": "PRICE-BOOK-TEST-001",
+  "generated_at": "2026-10-27T00:00:00Z",
+  "source_files": ["ui-model.json", "requirements.json"],
+  "screens": [
+    {
+      "screen_id": "SCR-101",
+      "name": "Price Book Management",
+      "purpose": "Let a user view, create, copy, edit, and delete Price Book records, including version history metadata",
+      "ui_model_ref": "UME-101",
+      "requirement_refs": ["R-706", "R-707", "R-708", "R-709", "R-710", "R-719", "R-720", "R-721", "R-723"],
+      "import_origin": "generated"
+    },
+    {
+      "screen_id": "SCR-102",
+      "name": "Price Category Management",
+      "purpose": "Let a user, after selecting a Price Book, view, create, copy, edit, and delete Price Categories organized by Service Line",
+      "ui_model_ref": "UME-102",
+      "requirement_refs": ["R-703", "R-711", "R-712", "R-713", "R-719", "R-720", "R-721", "R-723"],
+      "import_origin": "generated"
+    },
+    {
+      "screen_id": "SCR-103",
+      "name": "Price Header Management",
+      "purpose": "Let a user, after selecting a Price Book and Price Category, view, create, copy, edit, and delete hierarchical Price Headers (with parent/child grouping)",
+      "ui_model_ref": "UME-103",
+      "requirement_refs": ["R-704", "R-714", "R-715", "R-716", "R-719", "R-720", "R-721", "R-722", "R-723"],
+      "import_origin": "generated"
+    },
+    {
+      "screen_id": "SCR-104",
+      "name": "Price Item Management",
+      "purpose": "Let a user, after selecting a Price Book, Price Category, and Price Header, view, create, copy, edit, and delete the actual Price Item records",
+      "ui_model_ref": "UME-104",
+      "requirement_refs": ["R-705", "R-717", "R-718", "R-719", "R-720", "R-721", "R-722", "R-723", "R-724"],
+      "import_origin": "generated"
+    }
+  ]
+}
