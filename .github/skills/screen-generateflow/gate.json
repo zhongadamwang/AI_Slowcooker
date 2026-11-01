@@ -2,7 +2,7 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S36",
   "skill_name": "screen-generateflow",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "gate_type": "completion",
   "severity": "hard",
   "description": "Validates interaction-flow diagrams exist, are consolidated at the project level, and every edge is verified against actual mockup navigation",
@@ -30,10 +30,19 @@
       "id": "verification_log_present",
       "type": "content_pattern",
       "severity": "hard",
-      "description": "A Verification Log confirming edges trace to real mockup links must be present — this is the non-skippable manual verification step required by TR-07.1",
+      "description": "A Verification Log must trace navigation to actual links and local-state edges to tested handlers/native controls",
       "file": "artifacts/UI Prototype/interaction-flows.md",
       "must_contain": ["## Verification Log"],
-      "remediation": "Per TR-07.1, manually verify every diagram edge against an actual <a href> in a mockup.html file and log it — do not publish unverified edges"
+      "remediation": "Record edge kind, mockup/control source location, actual link or handler and observed browser evidence; do not publish unverified edges"
+    },
+    {
+      "id": "flow_behavior_verified",
+      "type": "stakeholder_confirmation",
+      "severity": "hard",
+      "role": "Developer (self-verification)",
+      "description": "Diagram edges must represent actual exercised behavior, not only metadata or intended flows",
+      "confirmation_statement": "I reconciled all page links and meaningful local dialog/state transitions with actual mockup behavior and logged source controls and browser evidence for every diagram edge",
+      "remediation": "Verify both directions: no invented edges or missing real journey/state transitions. Blocked browser checks cannot be marked Verified"
     },
     {
       "id": "no_sequence_diagram_misuse",

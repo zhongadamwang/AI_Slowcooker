@@ -2,7 +2,7 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S33",
   "skill_name": "screen-generateinventory",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "gate_type": "completion",
   "severity": "hard",
   "description": "Validates a standalone screen inventory has been generated with full traceability to the UI Model and source requirements",
@@ -45,6 +45,15 @@
       "file": "artifacts/UI Prototype/design-document.md",
       "must_not_contain_pattern": "## Screen Inventory\\n\\n### .+ \\*\\(SCR-",
       "remediation": "Per D-6, screen-assembledocument (T08) must reference screen-inventory.md, not duplicate its full per-screen listing inline"
+    },
+    {
+      "id": "navigation_plan_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Inventory must identify the entry screen, planned journeys, and screen-local interactions",
+      "file": "artifacts/UI Prototype/screen-inventory.md",
+      "must_contain": ["## Navigation Plan", "## Local Interactions"],
+      "remediation": "Document planned source/action/target screen IDs, local dialogs, and intentional standalone screens without changing the inventory JSON schema"
     },
     {
       "id": "id_format_valid",

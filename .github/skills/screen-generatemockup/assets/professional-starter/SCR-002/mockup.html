@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order history | Northstar prototype</title>
+  <style>
+    :root {
+      --canvas: #f4f7fa; --surface: #fff; --ink: #172b4d; --muted: #475569;
+      --brand: #0f766e; --brand-hover: #115e59; --tint: #e6f4f1;
+      --border: #cbd5e1; --error: #b42318; --focus: #1d4ed8;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-6: 24px; --space-8: 32px; --radius: 16px;
+      --shadow: 0 8px 24px rgb(23 43 77 / 6%);
+      font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink);
+      background: var(--canvas); line-height: 1.5;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: var(--brand); text-underline-offset: 3px; }
+    a:hover { color: var(--brand-hover); }
+    input, select { font: inherit; min-height: 44px; padding: 10px 12px; border: 1px solid var(--muted); border-radius: 8px; color: var(--ink); background: white; width: 100%; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); }
+    .topbar-inner {
+      max-width: 1184px; margin: auto; padding: var(--space-4) var(--space-8);
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-6);
+    }
+    .brand { display: flex; align-items: center; gap: var(--space-3); font-weight: 700; font-size: 20px; }
+    .brand svg { width: 36px; height: 36px; }
+    nav { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+    nav a { padding: 10px 14px; min-height: 44px; border-radius: 8px; font-weight: 600; text-decoration: none; }
+    nav a[aria-current] { background: var(--tint); color: var(--brand-hover); }
+    main { max-width: 1184px; padding: var(--space-8); margin: auto; }
+    .eyebrow { color: var(--brand-hover); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { font-size: clamp(28px, 4vw, 36px); line-height: 1.2; margin: var(--space-2) 0 var(--space-3); }
+    h2 { font-size: 19px; line-height: 1.3; margin: 0; }
+    p { margin: 0 0 var(--space-4); }
+    .muted { color: var(--muted); }
+    .heading { margin-bottom: var(--space-8); }
+    .heading p { margin: 0; }
+    .card { min-width: 0; padding: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .card-heading { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); margin-bottom: var(--space-6); }
+    .filters { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--space-4); margin-bottom: var(--space-6); }
+    label { display: block; margin-bottom: var(--space-2); font-size: 14px; font-weight: 600; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+    caption { text-align: left; color: var(--muted); font-size: 14px; margin-bottom: var(--space-3); }
+    th { font-size: 13px; color: var(--muted); font-weight: 600; }
+    th, td { padding: 14px 8px; border-bottom: 1px solid var(--border); }
+    th:first-child, td:first-child { padding-left: 0; }
+    .number { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    td a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+    .badge { display: inline-flex; padding: 6px 12px; border-radius: 24px; background: var(--tint); color: var(--brand-hover); font-size: 14px; font-weight: 600; }
+    .empty { text-align: center; padding: var(--space-8); border: 1px dashed var(--muted); border-radius: 8px; }
+    .empty h2 { margin-bottom: var(--space-2); }
+    .empty p { margin: 0; }
+    .prototype-note { margin: var(--space-8) 0 0; color: var(--muted); font-size: 13px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 720px) {
+      .topbar-inner { padding: var(--space-4); flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+      main { padding: var(--space-6) var(--space-4); }
+      .filters { grid-template-columns: minmax(0, 1fr); }
+      .card { padding: var(--space-4); }
+      .card-heading { align-items: flex-start; flex-direction: column; gap: var(--space-2); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <svg viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0f766e"/><path d="M10 25V11l16 14V11" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/></svg>
+        Northstar <span class="muted">/ Orders</span>
+      </div>
+      <nav aria-label="Main navigation">
+        <a id="order-detail" href="../SCR-001/mockup.html" data-transition-target="SCR-001">Order detail</a>
+        <a id="current-history" href="./mockup.html" aria-current="page" data-transition-target="SCR-002">Order history</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="heading">
+      <div class="eyebrow">Customer workspace</div>
+      <h1>Order history</h1>
+      <p class="muted">Recent orders for Morgan Lee (sample customer)</p>
+    </div>
+    <section class="card" aria-labelledby="orders-heading">
+      <div class="card-heading"><h2 id="orders-heading">Recent orders</h2><span id="result-count" class="muted" role="status" aria-live="polite">3 orders shown</span></div>
+      <div class="filters">
+        <div><label for="order-search">Search by order number</label><input id="order-search" type="search" placeholder="Try 10234" data-ui-action="local-action" data-ui-target="orders-table"></div>
+        <div><label for="status-filter">Order status</label><select id="status-filter" data-ui-action="local-action" data-ui-target="orders-table"><option value="all">All statuses</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="processing">Processing</option></select></div>
+      </div>
+      <div class="table-scroll" role="region" aria-label="Recent orders" tabindex="0">
+        <table id="orders-table">
+          <caption>Prices in USD. Only order #10234 has a detail page in this starter.</caption>
+          <thead><tr><th scope="col">Order</th><th scope="col">Placed</th><th scope="col">Status</th><th scope="col" class="number">Total</th><th scope="col">Action</th></tr></thead>
+          <tbody>
+            <tr data-order="10234" data-status="shipped"><td><strong>#10234</strong></td><td>Oct 24, 2026</td><td><span class="badge">Shipped</span></td><td class="number">$84.00</td><td><a id="view-order" href="../SCR-001/mockup.html" data-transition-target="SCR-001" aria-label="View order 10234">View order</a></td></tr>
+            <tr data-order="10198" data-status="delivered"><td><strong>#10198</strong></td><td>Sep 12, 2026</td><td><span class="badge">Delivered</span></td><td class="number">$48.00</td><td><span class="muted">Summary only</span></td></tr>
+            <tr data-order="10142" data-status="delivered"><td><strong>#10142</strong></td><td>Aug 03, 2026</td><td><span class="badge">Delivered</span></td><td class="number">$36.00</td><td><span class="muted">Summary only</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="empty-state" class="empty" hidden><h2>No matching orders</h2><p class="muted">Try another order number or choose a different status.</p></div>
+    </section>
+    <p class="prototype-note">UI prototype / Sample data only. Filters reset on reload. Browser history may restore page state. No backend connection.</p>
+  </main>
+  <script>
+    const search = document.getElementById('order-search');
+    const statusFilter = document.getElementById('status-filter');
+    const rows = Array.from(document.querySelectorAll('#orders-table tbody tr'));
+    const count = document.getElementById('result-count');
+    const empty = document.getElementById('empty-state');
+    function filterOrders() {
+      const query = search.value.trim().replace(/^#/, '').toLowerCase();
+      let visible = 0;
+      rows.forEach(row => {
+        const matches = row.dataset.order.toLowerCase().includes(query) &&
+          (statusFilter.value === 'all' || row.dataset.status === statusFilter.value);
+        row.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      count.textContent = `${visible} ${visible === 1 ? 'order' : 'orders'} shown`;
+      empty.hidden = visible !== 0;
+    }
+    search.addEventListener('input', filterOrders);
+    statusFilter.addEventListener('change', filterOrders);
+  </script>
+</body>
+</html>

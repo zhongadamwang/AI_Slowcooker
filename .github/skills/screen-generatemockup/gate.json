@@ -2,7 +2,7 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S35",
   "skill_name": "screen-generatemockup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "gate_type": "completion",
   "severity": "hard",
   "description": "Validates each screen's mockup is standalone, portable, genuinely clickable, and free of external dependencies or framework leakage",
@@ -23,7 +23,7 @@
       "severity": "hard",
       "description": "Mockup must not reference any external stylesheet, script, or asset file",
       "file": "artifacts/UI Prototype/SCR-*/mockup.html",
-      "must_not_contain_pattern": "<link\\s+rel=[\"']stylesheet[\"']\\s+href=|<script\\s+src=",
+      "must_not_contain_pattern": "(?i)<link\\b(?=[^>]*\\brel\\s*=\\s*[\"']?stylesheet\\b)[^>]*>|<script\\b[^>]*\\bsrc\\s*=",
       "remediation": "Embed all CSS in a <style> block and all JS in a <script> block directly within mockup.html per R-626's portability requirement"
     },
     {
@@ -32,25 +32,52 @@
       "severity": "hard",
       "description": "Generated mockup must not reference a specific application framework",
       "file": "artifacts/UI Prototype/SCR-*/mockup.html",
-      "must_not_contain_pattern": "(?i)(import React|from ['\"]vue['\"]|ng-|v-bind|v-on|className=)",
+      "must_not_contain_pattern": "(?i)(import React|from ['\"]vue['\"]|\\sng-[\\w-]+\\s*=|\\sv-(?:bind|on)(?::|\\s*=)|className\\s*=)",
       "remediation": "Per R-625, generate plain HTML/CSS/vanilla JS only — no React, Vue, or Angular syntax/conventions"
     },
     {
       "id": "navigation_links_resolve",
-      "type": "content_pattern",
+      "type": "stakeholder_confirmation",
       "severity": "hard",
-      "description": "Any cross-screen navigation link must point to an existing screen folder",
-      "file": "artifacts/UI Prototype/SCR-*/mockup.html",
-      "must_contain_pattern": "href=\"\\.\\./SCR-\\d{3}/mockup\\.html\"",
-      "remediation": "Confirm every navigation link's target SCR-[###] exists in screen-inventory.json; do not link to a nonexistent screen"
+      "role": "Developer (self-verification)",
+      "description": "Every navigation target must match the inventory and open the actual destination file; intentionally standalone screens need no artificial link",
+      "confirmation_statement": "I checked every cross-screen href and matching data-transition-target against the inventory and actual destination file, clicked each link and return path in the browser, and recorded results; any standalone screen has a documented rationale",
+      "remediation": "Perform actual link-resolution and click-through checks. A regex match is not a resolution test. Required missing links block completion"
     },
     {
       "id": "portability_tested",
       "type": "stakeholder_confirmation",
       "role": "Developer (self-verification)",
       "description": "Mockup portability (file:// open, zero setup) must be tested on a real browser, not merely assumed",
-      "confirmation_statement": "I opened this screen's mockup.html via file:// in a real browser and confirmed it renders correctly with working navigation — not merely inspected the generated code",
-      "remediation": "Open the generated mockup.html directly in a browser (not just review the code) before marking this screen's mockup complete; record a confirmation per collaboration-mode-reference.md's self-attestation pattern in solo mode"
+      "confirmation_statement": "I opened each mockup via file:// and observed correct styling at 375 and 1440 px, no page-level overflow, no runtime errors or unexpected resource requests, and working navigation; results are recorded in Prototype Verification",
+      "remediation": "Test actual browser behavior and record evidence. If browser access is unavailable, leave the check Not run / blocked; launching a process, code inspection, or self-attestation alone is not a pass"
+    },
+    {
+      "id": "no_inert_controls",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Enabled navigation cannot be a placeholder or a browser alert substitute for an application dialog",
+      "file": "artifacts/UI Prototype/SCR-*/mockup.html",
+      "must_not_contain_pattern": "(?i)href\\s*=\\s*[\"']\\s*(?:#|javascript:[^\"']*)\\s*[\"']|\\b(?:alert|confirm)\\s*\\(",
+      "remediation": "Use real page links, designed native dialogs and working local handlers; show unresolved actions as visibly explained disabled controls"
+    },
+    {
+      "id": "interaction_verification_recorded",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Each screen must record actual expected and observed prototype checks",
+      "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
+      "must_contain": ["## Prototype Verification"],
+      "remediation": "Record contract checks with Expected, Observed, Status and Evidence; missing browser checks remain Not run / blocked"
+    },
+    {
+      "id": "all_controls_and_dialogs_tested",
+      "type": "stakeholder_confirmation",
+      "severity": "hard",
+      "role": "Developer (self-verification)",
+      "description": "Every specified control and dialog lifecycle must be exercised, including keyboard, validation and cancel semantics",
+      "confirmation_statement": "I exercised every Interaction Specification row in the browser, including dialog open, focus containment, Escape, cancel, reopen, invalid submit, valid save, focus restoration and backdrop policy where applicable, plus reachable empty/error/success states",
+      "remediation": "Execute and log the full interaction matrix. Do not pass merely because script tags, metadata or a dialog element exist"
     }
   ],
   "quality_score_weight": 0.08,

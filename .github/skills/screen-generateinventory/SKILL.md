@@ -1,9 +1,10 @@
 ---
 name: screen-generateinventory
-description: Generate a standalone screen inventory for UI prototyping from requirements and a UI Model, listing each distinct screen, its purpose, UI Model reference, and requirement traceability. First skill in the UI Prototyping pipeline (Project 06); produces the entry-point artifact all subsequent generation skills (screen-generatelayout, screen-generatemockup, screen-generateflow) depend on.
+description: Generate or revise a traceable screen inventory for connected UI prototypes from requirements and a UI Model. Use when identifying navigable pages, defining primary journeys, or deciding whether a popup belongs inside a screen. First skill in the UI Prototyping pipeline.
 license: MIT
-version: 1.0.0
-last-updated: 2026-10-27
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-01"
 ---
 
 # Screen Generate Inventory
@@ -109,11 +110,20 @@ python screen_generateinventory.py PROJECT-001 ui-model.json requirements.json
 #   📋 screen-inventory.json (JSON - machine processing)
 ```
 
-## Screen Identification Process
+## Workflow
+
+Read [Prototype Quality Contract](../screen-generatelayout/references/prototype-quality.md)
+for the page-versus-dialog boundary and downstream interaction requirements.
 
 ### Step 1 — Walk the UI Model's entries
 
 For each `UIModelEntry` in the base UI Model (and, if present, any derived UI Models — though derived-model screen generation is a Phase 3 concern per `scope-analysis.md`; MVP operates against the base model only), consider whether it corresponds to one distinct screen or whether multiple screens are needed to present it fully (e.g., a list-style entry like "Customer Order History" might justify both a list screen and a detail screen — but splitting a single entry into multiple screens should only happen when the requirements actually call for more than one view, not by default).
+
+Identify the first screen and principal user journeys in the Markdown inventory's
+`## Navigation Plan` (source screen, action, target screen). This is planned
+behavior, not evidence that links work. Keep dialogs/popovers/local states in
+their owning screen and note them under `## Local Interactions`; do not inflate
+the screen count with modals. Preserve the existing JSON screen schema.
 
 ### Step 2 — Attach requirement traceability
 
@@ -137,6 +147,7 @@ Before considering this skill's output complete, verify against `ui-prototyping-
 2. **ID uniqueness**: no duplicate `screen_id` values; new IDs correctly continue the existing sequence rather than colliding with previously-generated screens
 3. **Standalone artifact rule**: confirm output is never embedded inside another document — screen inventory is always its own file
 4. **No orphaned UI Model entries without rationale**: if a `UIModelEntry` exists but no screen was generated from it, this should be a deliberate, noted decision (e.g., it's purely a data-aggregation concept with no dedicated screen), not a silent omission
+5. **Connected journeys**: planned targets use existing screen IDs; explain intentional standalone pages and flag missing requirement/UI Model coverage instead of inventing pages. Pass the Markdown navigation/local-interaction notes to layout generation alongside JSON.
 
 ## Integration
 

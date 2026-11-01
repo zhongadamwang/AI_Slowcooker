@@ -1,9 +1,10 @@
 ---
 name: screen-discussfeedback
-description: Present a project's generated mockups as a stakeholder discussion surface, capture structured feedback, and route it into change-management's existing change-document schema with no manual re-transcription. Sixth skill in the UI Prototyping pipeline (Project 06); supports solo-mode role-play per process-w5h's established pattern.
+description: Review professional UI prototypes through actual page navigation and popup/dialog interactions, capture actionable visual and behavioral feedback, and route it to change-management without re-transcription. Use for stakeholder walkthroughs or solo-mode UI-design reviews. Sixth skill in the UI Prototyping pipeline.
 license: MIT
-version: 1.0.0
-last-updated: 2026-10-27
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-01"
 ---
 
 # Screen Discuss Feedback
@@ -72,11 +73,21 @@ reviewing it from the Customer role (role-played, solo mode) — flag anything
 that should become a change request."
 ```
 
-## Discussion Process
+## Workflow
+
+Read [Prototype Quality Contract](../screen-generatelayout/references/prototype-quality.md)
+to structure review around rendered visual quality and actual interactions.
 
 ### Step 1 — Present the mockup as the discussion surface (R-611)
 
 Open (or reference) the relevant screen's `mockup.html`. If the discussion spans multiple connected screens, use `interaction-flows.md` as a map of what to walk through and in what order (R-611a's mockup-driven walkthrough) — the discussion should follow the mockup's actual clickable paths, not an abstract list of screens.
+
+Follow a primary journey and its return paths, then open each relevant dialog:
+try invalid input, save, cancel, Escape, and keyboard focus. Review hierarchy,
+spacing, readability, and narrow-screen behavior. Distinguish design feedback
+from broken interactions and from intentional simulation limits. If the browser
+cannot be used, label the review as specification-only, not a completed live
+walkthrough.
 
 ### Step 2 — Determine stakeholder mode (R-614)
 
@@ -92,6 +103,11 @@ For each piece of actionable commentary, record:
 - `screen_ref`: the `SCR-[###]` being discussed
 - `feedback_text`: the structured statement (e.g., "change field Y from optional to required")
 - `source_mode`: `real` or `role-played`
+
+Include the triggering control/dialog ID, steps to reproduce, expected and
+observed behavior, and viewport when relevant in `feedback_text`; keep the
+existing FeedbackItem/change-management schema unchanged. Link affected layouts,
+mockups, flows, and handoff documents when the feedback impacts those surfaces.
 
 Not every piece of discussion commentary becomes a `FeedbackItem` — general praise or confirmation ("this looks right") doesn't need a change document; only commentary implying an actual change to the design or underlying requirement does.
 

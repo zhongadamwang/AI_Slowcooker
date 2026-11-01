@@ -2,7 +2,7 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S37",
   "skill_name": "screen-assembledocument",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "gate_type": "completion",
   "severity": "hard",
   "description": "Validates the consolidated design document summarizes (without duplicating) prior UI Prototyping outputs, stays consistent between Markdown and JSON, and has passed a handoff sanity check",
@@ -52,6 +52,25 @@
       "description": "A handoff sanity check (readable by someone unfamiliar with the generating session) must have been performed, not merely assumed",
       "confirmation_statement": "I read this design document as if I were a developer who was not present for the generating session, and confirmed it is understandable and actionable without that missing context",
       "remediation": "Per TR-08.1, perform the handoff sanity check described in screen-assembledocument's own process and log it before marking this document complete"
+    },
+    {
+      "id": "prototype_guide_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Handoff must explain how to open and use the prototype and distinguish verified behavior from limitations",
+      "file": "artifacts/UI Prototype/design-document.md",
+      "must_contain": ["## Prototype Guide"],
+      "remediation": "Summarize entry page, folder distribution, visual/spec references, tested navigation/dialogs and limitations, with matching prototype_guide JSON"
+    },
+    {
+      "id": "prototype_guide_json_present",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Structured handoff must mirror the Markdown prototype guide",
+      "file": "artifacts/UI Prototype/design-document.json",
+      "json_path": "$.prototype_guide",
+      "required_fields": ["entry_mockup_ref", "visual_spec_ref", "journey_summary", "verification_refs", "limitations", "open_issues"],
+      "remediation": "Add prototype_guide with matching Markdown references and content; retain existing JSON fields"
     },
     {
       "id": "id_format_valid",
