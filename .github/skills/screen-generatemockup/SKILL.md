@@ -1,9 +1,10 @@
 ---
 name: screen-generatemockup
-description: Render a screen's layout specification (Markdown + embedded HTML/CSS) into a standalone, genuinely clickable HTML/JS mockup file that opens directly via file:// with zero build step. Third skill in the UI Prototyping pipeline (Project 06); its output is the primary stakeholder-discussion artifact and the basis for screen-generateflow's consistency checking.
+description: Generate or improve professional, genuinely interactive HTML/JS prototypes with working cross-page navigation, accessible popup dialogs, forms, filters, and local state. Use when rendering layout specs into file://-portable mockups, wiring prototype controls, or improving click-through behavior. Third skill in the UI Prototyping pipeline.
 license: MIT
-version: 1.0.0
-last-updated: 2026-10-27
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-01"
 ---
 
 # Screen Generate Mockup
@@ -29,7 +30,11 @@ Unlike `screen-generatelayout`'s output, this skill's output must satisfy **R-62
 **Files Generated** (per screen, per T02's file layout convention):
 - `artifacts/UI Prototype/SCR-[###]/mockup.html` — a single, standalone HTML file with embedded `<style>` (from the LayoutSpec's CSS) and embedded `<script>` (vanilla JS only, for click handling/navigation)
 
-**No separate CSS/JS files.** Unlike a typical web project, this mockup embeds its CSS and JS directly inline in the single `mockup.html` file via `<style>`/`<script>` tags — this is a deliberate choice to guarantee R-626's portability: a single self-contained file has no relative-path dependencies that could break when opened via `file://` from an unpredictable working directory, and no risk of a stakeholder receiving `mockup.html` without its companion `style.css`/`script.js` if files are copied individually.
+**No separate CSS/JS files.** Embed CSS and JS in each file. A screen renders independently, but cross-page navigation intentionally requires sibling screen folders; distribute the whole set without changing their relative paths.
+
+**Verification evidence**: Append/update `## Prototype Verification` in the owning
+`layout-spec.md` with observed browser results per the shared quality contract.
+Do not claim completion while required checks are blocked or failing.
 
 ### HTML Structure (`mockup.html`)
 
@@ -38,6 +43,7 @@ Unlike `screen-generatelayout`'s output, this skill's output must satisfy **R-62
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[Screen Name] — Mockup (SCR-[###])</title>
 <style>
 /* Embedded verbatim from layout-spec.md's CSS block */
@@ -87,41 +93,58 @@ clickable mockup.html, linking to the other screens in screen-inventory.json
 where the layout's navigation elements call for it."
 ```
 
-## Mockup Generation Process
+## Workflow
+
+Read [Prototype Quality Contract](../screen-generatelayout/references/prototype-quality.md)
+before rendering or revising a mockup. Use the two-page
+[professional starter](assets/professional-starter/SCR-001/mockup.html) as a
+runnable reference for styling and dialog behavior, not a mandatory screen design.
 
 ### Step 1 — Embed the layout spec's HTML/CSS verbatim
 
-Copy the HTML structure and CSS rules from `layout-spec.md` into the `mockup.html` template above. Do not alter the semantic structure or styling decided in T05 — this skill's job is to make the existing layout **clickable and standalone**, not to redesign it.
+Copy the HTML structure and CSS rules from `layout-spec.md` into the `mockup.html` template above. Preserve the approved layout, styling, and traceability. For legacy specs missing professional styling or interaction/dialog definitions, improve the layout spec first with `screen-generatelayout`; do not silently redesign only the mockup. Add runtime behavior and accessibility attributes as needed and synchronize structural changes back to the spec.
 
 ### Step 2 — Identify and wire up navigation elements
 
-Scan the embedded HTML for elements that represent navigation to another screen (e.g., a link styled as "View Customer Order History", a button labeled "Back to Dashboard") — these are usually already present as placeholder-ish elements in the layout spec's HTML (e.g., `<a class="screen__nav-link">` with no `href`, or a `<button>` with a comment indicating its destination). For each one:
-1. Determine the target screen by matching its intent against `screen-inventory.json`'s screen names/purposes
-2. Convert it to a real `<a href="../SCR-[###]/mockup.html">` link (relative path, matching T02's per-screen sub-folder layout) if it isn't already
-3. If no clear navigation target exists in the inventory for an element that implies one, **flag it rather than inventing a destination** — leave a clear inline comment (`<!-- screen-generatemockup: no matching screen found for this navigation element -->`) so the gap is visible, consistent with the EDPS principle of surfacing ambiguity rather than silently guessing.
+Read the layout's Interaction Specification and wire every navigation control:
+1. Use its explicit target ID and validate it against the full inventory. For legacy specs, resolve clear targets from context; flag ambiguity rather than guessing.
+2. Use real `<a href="../SCR-[###]/mockup.html" data-transition-target="SCR-[###]">` links and current-page navigation state. Verify the destination file exists, not just its inventory entry.
+3. Generate all screens needed for the selected journey before testing. If a target is unresolved or not generated, show a disabled action with a visible explanation and record it in Open Issues. Missing required journey links block completion; inline comments are not sufficient.
 
-### Step 3 — Add minimal vanilla JS only where a plain link is insufficient
+### Step 3 — Implement all specified local interactions and popup dialogs
 
-Most navigation should be plain `<a href>` — no JS required. Only add `<script>` content for interactivity that genuinely cannot be expressed as a link (e.g., toggling a collapsible section within the same screen). Keep this to vanilla JS with no external dependencies, no framework runtime, no build step.
+Keep navigation as plain links and implement the Interaction Specification's
+local behaviors with dependency-free vanilla JS. Every enabled control must
+work: dialogs/popovers open and dismiss, filters alter results, forms validate
+and update local sample state, and cancel discards edits. Follow the contract's
+modal focus, keyboard, validation, and safe DOM rules. Prefer native `<dialog>`
+and `showModal()` over custom overlays; do not use browser alert/confirm boxes
+as a substitute. Mark simulated saves and state-reset limitations visibly.
 
 ### Step 4 — Confirm standalone self-containment
 
-Verify the generated `mockup.html` has **no external file references** of any kind — no `<link rel="stylesheet" href="...">`, no `<script src="...">` pointing to a separate file, no image `<img src="...">` pointing outside the file (if an image is genuinely needed, either omit it with a labeled placeholder box describing what would go there, or use an inline `data:` URI — never a path assuming a bundler or server will resolve it).
+Verify there are no external resource dependencies: styles, scripts, fonts,
+images, fetch calls, or framework runtimes. Use inline SVG/data URIs for needed
+imagery, not placeholder boxes. Sibling mockup navigation links are allowed.
 
 ### Step 5 — Test portability (not assumed)
 
-Per TR-06.2, actually open the generated `mockup.html` file via `file://` in a real browser — do not merely assert it should work. Confirm:
-- The page renders without errors
-- Styling is applied (the embedded `<style>` block is in effect)
-- At least one navigation link, if present, successfully opens the target screen's mockup
+Per TR-06.2, open every generated file via `file://` in a real browser. Execute
+the contract's full verification matrix: every link and return path, every
+control, dialog lifecycle and validation, keyboard operation, responsive visual
+review at 375/1440 px, and runtime errors/resource requests. Record actual
+expected/observed results in Prototype Verification. If browser tooling is
+unavailable, record Not run / blocked with manual steps; do not claim a pass
+from code inspection or from merely launching a browser.
 
 ## Quality Checks
 
-1. **Zero external file dependencies**: scan for any `href`/`src` attribute pointing outside the mockup's own embedded content or a sibling `SCR-[###]/mockup.html` path — anything else (CDN links, relative paths to separate `.css`/`.js` files) is a portability violation.
+1. **Zero external resource dependencies**: no external CSS/JS/fonts/assets or fetch calls. Actual same-page anchors and relative mockup navigation are allowed; verify their targets rather than treating all `href` values as resource loads.
 2. **No target-framework leakage**: no React/Vue/Angular runtime script tags, JSX-like syntax, or framework-specific attributes — same constraint as T05, re-verified here since this skill also touches markup directly.
 3. **Navigation correctness**: every `<a href="../SCR-[###]/...">` link's target `SCR-[###]` actually exists in `screen-inventory.json` — no links to screens that don't exist.
-4. **Genuine clickability, not static rendering**: confirm the generated file is not merely a styled, non-interactive rendering of the layout — at least the navigation elements identified in Step 2 must be real, working links.
+4. **Genuine interaction**: exercise every specified control and reachable dialog/error/empty/success state, not merely one navigation link.
 5. **Tested, not assumed, portability**: Step 5's real-browser `file://` test must actually have been performed for this screen's mockup before considering the task complete for it.
+6. **Visual quality preserved**: review actual renders at both contract viewports, with shared styling, readable content, visible focus, and no page-level overflow.
 
 ## Integration
 

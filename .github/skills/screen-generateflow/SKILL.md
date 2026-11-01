@@ -1,9 +1,10 @@
 ---
 name: screen-generateflow
-description: Generate Mermaid interaction-flow diagrams across a project's screen set, reusing diagram-generatecollaboration's existing conventions, and manually verify the diagram's edges match the actual navigation implemented in generated mockups. Fourth skill in the UI Prototyping pipeline (Project 06); gives the screen set a connective narrative for stakeholder discussion.
+description: Generate verified Mermaid interaction flows for UI prototypes, covering cross-page navigation and screen-local popup/dialog states. Use when documenting click-through journeys or reconciling flows with actual mockup links and tested event handlers. Fourth skill in the UI Prototyping pipeline.
 license: MIT
-version: 1.0.0
-last-updated: 2026-10-27
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-01"
 ---
 
 # Screen Generate Flow
@@ -21,6 +22,7 @@ Critically, this skill's diagram is **not generated in a vacuum** — FR-07.1 re
 - **Primary**: `artifacts/UI Prototype/screen-inventory.json` (from `screen-generateinventory`) — the full screen set and their names/purposes
 - **Secondary**: `artifacts/UI Prototype/SCR-[###]/mockup.html` for every screen (from `screen-generatemockup`) — specifically, each mockup's actual `<a href="../SCR-[###]/mockup.html">` navigation links, which are this skill's ground truth for what edges to draw
 - **Format**: The screen list plus the real navigation links embedded in each mockup file
+- **Secondary**: Each layout's Interaction Specification and Prototype Verification, for control IDs, dialog states, and actual browser evidence
 
 > **Pre-condition**: Both `screen-generateinventory` and `screen-generatemockup` must have already run for the screens being diagrammed. This skill does not invent navigation — it documents navigation that already exists in the mockups.
 
@@ -82,13 +84,28 @@ verifying every edge against the actual <a href> links in their mockup.html
 files — do not include an edge unless you can point to its source link."
 ```
 
-## Flow Generation Process
+## Workflow
+
+Read [Prototype Quality Contract](../screen-generatelayout/references/prototype-quality.md)
+for interaction metadata and browser-verification rules.
 
 ### Step 1 — Extract actual navigation edges from the mockups
 
-For every screen's `mockup.html`, scan for `<a href="../SCR-[###]/mockup.html">` links (the real navigation, per `screen-generatemockup`'s Step 2 convention). Record each one as a directed edge: source screen → target screen, with the link's visible text/label as the edge's description.
+For every screen's `mockup.html`, resolve actual page-navigation links against
+the source file (normally `<a href="../SCR-[###]/mockup.html">`). Record each
+cross-screen link as a directed edge: source screen → target screen, with its
+visible text as the label. Verify current-page links too, but do not turn
+current-page navigation items into artificial journey edges.
 
-**Do not** derive edges from the screen inventory's purposes/descriptions alone, and do not derive them from what the requirements *implied* the flow should be — only from links that actually exist in the generated mockups. This is the mechanism that satisfies FR-07.1.
+Compare `data-transition-target` with the resolved `href` and inventory ID.
+Verify each destination file and click-through behavior. Also extract local
+`data-ui-action`/`data-ui-target` controls and native interactions; inspect their
+actual handlers and observed browser results. Metadata alone is not evidence
+that an action works.
+
+**Do not** derive edges from inventory descriptions or intended requirements
+alone. Navigation edges need real links; local-state edges need actual exercised
+handlers or native controls. This is the mechanism that satisfies FR-07.1.
 
 ### Step 2 — Group edges into coherent named flows
 
@@ -98,9 +115,20 @@ Where the screen set has multiple distinct user journeys (e.g., an "order review
 
 Use `flowchart LR` (left-to-right) for screen-to-screen navigation flows — distinct from `diagram-generatecollaboration`'s `sequenceDiagram` style, which models message exchanges between system participants (actors/boundaries/controls/entities), not screen-to-screen UI navigation. Screen navigation is more naturally a flowchart (nodes = screens, edges = navigation actions) than a sequence diagram (which implies time-ordered messages between distinct system components). Reuse `diagram-generatecollaboration`'s general Mermaid styling conventions (clear node labels including the screen's ID, descriptive edge labels) while choosing the diagram *type* appropriate to this skill's actual content.
 
+Add focused local-interaction diagrams when dialogs or other meaningful state
+changes exist. Label nodes as owning-screen states, e.g. `SCR-001: Contact dialog
+open`, not new screens. Include open, cancel/Escape, validation-error, and
+successful-save paths as implemented. Keep local-state edges separate from
+cross-page navigation and retain independently sequenced IF IDs.
+
 ### Step 4 — Build the Verification Log (FR-07.1's non-skippable step)
 
-Per TR-07.1, this step is **mandatory and non-skippable in MVP** — do not publish `interaction-flows.md` without it. For every edge in every diagram, record in the Verification Log table: which mockup file and (approximately) which line contains the actual `<a href>` that justifies this edge's existence. If an edge cannot be matched to a real link, **do not include it in the diagram** — go back to Step 1 and re-check, or flag the discrepancy explicitly rather than drawing an aspirational edge that doesn't exist yet.
+Per TR-07.1, this step is **mandatory and non-skippable**. For every edge record
+its kind, source mockup/control ID and source location, actual link or handler
+(including native browser behavior), and observed browser evidence. Navigation
+must match a working link; local-state transitions must match exercised behavior.
+Do not draw aspirational or unverified edges. Record blocked checks explicitly
+and keep verification pending rather than publishing them as verified.
 
 ### Step 5 — Reconcile mockup/flow divergence, if found
 
@@ -108,8 +136,8 @@ If Step 4 reveals a mockup has a navigation link the diagram hadn't captured, or
 
 ## Quality Checks
 
-1. **Every edge traces to a real `<a href>`**: no edge in any diagram lacks a corresponding Verification Log entry pointing to an actual mockup link.
-2. **No orphaned diagrams**: every screen that has at least one navigation link in its mockup should appear in at least one flow diagram — a screen with real navigation that's absent from every diagram is a gap, not an acceptable omission.
+1. **Every edge traces to real behavior**: navigation edges cite working links; local-state edges cite actual handlers/native controls and browser observations, with matching Verification Log entries.
+2. **No orphaned journeys**: every screen with cross-screen navigation or meaningful local-state transitions appears in a flow. Document intentional standalone screens; a current-page navigation item alone does not require a self-loop diagram.
 3. **Consolidated, not fragmented**: output is one project-level `interaction-flows.md`, never split per-screen (contrast with `layout-spec.md`/`mockup.html`, which are correctly per-screen since those entities genuinely are per-screen; a flow is not).
 4. **Manual verification actually performed**: per TR-07.1, this is a required, logged step in MVP (the Verification Log *is* the evidence this happened) — not an automated gate check yet (that's R-603a, Phase 2 Enhancement, deferred per `scope-analysis.md`).
 5. **Mermaid syntax verified**: render every fenced Mermaid block with the target renderer before publishing; fix any parse or render errors.
@@ -143,5 +171,6 @@ Mockups (from SCR-*/mockup.html): [paste or reference all generated mockup files
 Produce interaction-flows.md with Mermaid flowchart diagrams, grouped into
 coherent named flows. Include a Verification Log confirming every edge traces
 to a real <a href> link in the mockups — do not include any edge you cannot
-verify against an actual link.
+verify against an actual link or tested local interaction. Include dialog
+open/cancel/validation/save paths as local states of their owning screen.
 ```

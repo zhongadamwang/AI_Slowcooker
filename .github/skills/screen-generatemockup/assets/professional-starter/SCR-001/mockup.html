@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order #10234 | Northstar prototype</title>
+  <style>
+    :root {
+      --canvas: #f4f7fa; --surface: #fff; --ink: #172b4d; --muted: #475569;
+      --brand: #0f766e; --brand-hover: #115e59; --tint: #e6f4f1;
+      --border: #cbd5e1; --error: #b42318; --focus: #1d4ed8;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-6: 24px; --space-8: 32px; --radius: 16px;
+      --shadow: 0 8px 24px rgb(23 43 77 / 6%);
+      font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink);
+      background: var(--canvas); line-height: 1.5;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: var(--brand); text-underline-offset: 3px; }
+    a:hover { color: var(--brand-hover); }
+    button, input { font: inherit; }
+    button, .button, input { min-height: 44px; }
+    button, .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: var(--space-2) var(--space-4); border: 1px solid var(--brand);
+      border-radius: 8px; color: white; background: var(--brand);
+      font-weight: 600; text-decoration: none; cursor: pointer;
+    }
+    button:hover, .button:hover { background: var(--brand-hover); color: white; }
+    button:active, .button:active { transform: translateY(1px); }
+    button.secondary { background: var(--surface); color: var(--ink); border-color: var(--muted); }
+    button.secondary:hover { background: var(--canvas); }
+    button:disabled { opacity: .65; cursor: not-allowed; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); }
+    .topbar-inner {
+      max-width: 1184px; margin: auto; padding: var(--space-4) var(--space-8);
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-6);
+    }
+    .brand { display: flex; align-items: center; gap: var(--space-3); font-weight: 700; font-size: 20px; }
+    .brand svg { width: 36px; height: 36px; }
+    nav { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+    nav a { padding: 10px 14px; min-height: 44px; border-radius: 8px; font-weight: 600; text-decoration: none; }
+    nav a[aria-current] { background: var(--tint); color: var(--brand-hover); }
+    main { max-width: 1184px; padding: var(--space-8); margin: auto; }
+    .eyebrow { color: var(--brand-hover); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { font-size: clamp(28px, 4vw, 36px); line-height: 1.2; margin: var(--space-2) 0 var(--space-3); }
+    h2 { font-size: 19px; line-height: 1.3; margin: 0; }
+    p { margin: 0 0 var(--space-4); }
+    .muted { color: var(--muted); }
+    .heading { display: flex; justify-content: space-between; align-items: center; gap: var(--space-6); margin-bottom: var(--space-8); }
+    .heading p { margin: 0; }
+    .badge { display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px 12px; border-radius: 24px; background: var(--tint); color: var(--brand-hover); font-size: 14px; font-weight: 600; }
+    .badge::before { content: ""; width: 7px; height: 7px; background: var(--brand); border-radius: 50%; }
+    .grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--space-6); }
+    .stack { display: grid; align-content: start; gap: var(--space-6); }
+    .card { min-width: 0; padding: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .card-heading { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); margin-bottom: var(--space-6); }
+    .card-heading p { margin: var(--space-1) 0 0; font-size: 14px; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    caption { text-align: left; color: var(--muted); font-size: 14px; margin-bottom: var(--space-3); }
+    th { font-size: 13px; color: var(--muted); font-weight: 600; }
+    th, td { padding: 14px 8px; border-bottom: 1px solid var(--border); }
+    th:first-child, td:first-child { padding-left: 0; }
+    .number { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .total { display: flex; justify-content: space-between; margin-top: var(--space-6); font-weight: 700; }
+    dl { margin: 0; }
+    dt { color: var(--muted); font-size: 13px; margin-top: var(--space-4); }
+    dt:first-child { margin-top: 0; }
+    dd { margin: var(--space-1) 0 0; overflow-wrap: anywhere; }
+    details { margin-top: var(--space-4); }
+    summary { min-height: 44px; padding: var(--space-3) 0; cursor: pointer; color: var(--brand); font-weight: 600; }
+    .status { color: var(--brand-hover); min-height: 24px; margin-top: var(--space-4); }
+    .prototype-note { margin: var(--space-8) 0 0; color: var(--muted); font-size: 13px; }
+    dialog { width: min(480px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: var(--space-8); color: var(--ink); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 24px 80px rgb(23 43 77 / 24%); }
+    dialog::backdrop { background: rgb(15 23 42 / 50%); }
+    dialog h2 { margin-bottom: var(--space-2); }
+    label { display: block; margin-bottom: var(--space-2); font-weight: 600; }
+    input { width: 100%; padding: 10px 12px; border: 1px solid var(--muted); border-radius: 8px; color: var(--ink); background: white; }
+    input[aria-invalid="true"] { border-color: var(--error); }
+    .error { color: var(--error); font-size: 14px; margin-top: var(--space-2); }
+    .dialog-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
+    [hidden] { display: none !important; }
+    @media (max-width: 720px) {
+      .topbar-inner { padding: var(--space-4); flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+      main { padding: var(--space-6) var(--space-4); }
+      .grid { grid-template-columns: minmax(0, 1fr); }
+      .heading { align-items: flex-start; flex-direction: column; }
+      .card { padding: var(--space-4); }
+      .card-heading { flex-wrap: wrap; }
+      dialog { padding: var(--space-6); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <svg viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0f766e"/><path d="M10 25V11l16 14V11" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/></svg>
+        Northstar <span class="muted">/ Orders</span>
+      </div>
+      <nav aria-label="Main navigation">
+        <a id="current-order" href="./mockup.html" aria-current="page" data-transition-target="SCR-001">Order detail</a>
+        <a id="order-history" href="../SCR-002/mockup.html" data-transition-target="SCR-002">Order history</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <div class="heading">
+      <div>
+        <div class="eyebrow">Order workspace</div>
+        <h1>Order #10234</h1>
+        <p class="muted">Placed October 24, 2026 by Morgan Lee</p>
+      </div>
+      <span class="badge">Shipped</span>
+    </div>
+    <div class="grid">
+      <div class="stack">
+        <section class="card" aria-labelledby="items-heading">
+          <div class="card-heading"><div><h2 id="items-heading">Order items</h2><p class="muted">Two items, ready for a great workday.</p></div></div>
+          <div class="table-scroll" role="region" aria-label="Order items" tabindex="0">
+            <table>
+              <caption>Prices in USD</caption>
+              <thead><tr><th scope="col">Product</th><th scope="col" class="number">Qty</th><th scope="col" class="number">Amount</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Everyday notebook</strong><br><span class="muted">Slate / A5</span></td><td class="number">2</td><td class="number">$36.00</td></tr>
+                <tr><td><strong>Desk organizer</strong><br><span class="muted">Natural oak</span></td><td class="number">1</td><td class="number">$48.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="total"><span>Total paid</span><span>$84.00</span></div>
+        </section>
+        <section class="card" aria-labelledby="delivery-heading">
+          <h2 id="delivery-heading">Delivery</h2>
+          <p class="muted" style="margin-top: 8px">Estimated arrival: October 29, 2026</p>
+          <details id="delivery-details">
+            <summary id="toggle-delivery">View shipment details</summary>
+            <dl><dt>Carrier</dt><dd>Northstar Parcel (sample)</dd><dt>Tracking reference</dt><dd>NS-2048-10234</dd><dt>Last update</dt><dd>October 26, 2026 - Departed fulfillment center</dd></dl>
+          </details>
+        </section>
+      </div>
+      <aside class="stack" aria-label="Customer information">
+        <section class="card" aria-labelledby="customer-heading">
+          <div class="card-heading"><h2 id="customer-heading">Customer</h2><button id="edit-contact" type="button" class="secondary" data-ui-action="dialog-open" data-ui-target="contact-dialog">Edit contact</button></div>
+          <dl><dt>Name</dt><dd>Morgan Lee (sample)</dd><dt>Email</dt><dd id="contact-email">morgan@example.test</dd><dt>Customer since</dt><dd>March 2025</dd></dl>
+          <p id="save-status" class="status" role="status" aria-live="polite"></p>
+        </section>
+        <section class="card" aria-labelledby="next-heading">
+          <h2 id="next-heading">Need more context?</h2>
+          <p class="muted" style="margin-top: 8px">Review this customer's recent orders and filter by status.</p>
+          <a id="view-history" class="button" href="../SCR-002/mockup.html" data-transition-target="SCR-002">View order history</a>
+        </section>
+      </aside>
+    </div>
+    <p class="prototype-note">UI prototype / Sample data only. Edits are not shared across pages and reset on reload. Browser history may restore page state. No backend connection.</p>
+  </main>
+  <dialog id="contact-dialog" aria-labelledby="contact-title" aria-describedby="contact-description">
+    <form id="contact-form" novalidate>
+      <h2 id="contact-title">Edit contact email</h2>
+      <p id="contact-description" class="muted">Update the email shown in this prototype. No message will be sent.</p>
+      <label for="email-input">Email address</label>
+      <input id="email-input" name="email" type="email" required autocomplete="off" aria-describedby="email-error">
+      <p id="email-error" class="error" hidden>Enter a valid email address, such as morgan@example.test.</p>
+      <div class="dialog-actions">
+        <button id="cancel-contact" type="button" class="secondary" data-ui-action="dialog-close" data-ui-target="contact-dialog">Cancel</button>
+        <button id="save-contact" type="submit" data-ui-action="local-action" data-ui-target="contact-dialog">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+  <script>
+    const dialog = document.getElementById('contact-dialog');
+    const opener = document.getElementById('edit-contact');
+    const input = document.getElementById('email-input');
+    const error = document.getElementById('email-error');
+    const email = document.getElementById('contact-email');
+    const status = document.getElementById('save-status');
+
+    opener.addEventListener('click', () => {
+      input.value = email.textContent;
+      input.removeAttribute('aria-invalid');
+      error.hidden = true;
+      status.textContent = '';
+      dialog.showModal();
+      input.focus();
+    });
+    document.getElementById('cancel-contact').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        dialog.close();
+      }
+    });
+    dialog.addEventListener('close', () => opener.focus());
+    document.getElementById('contact-form').addEventListener('submit', event => {
+      event.preventDefault();
+      input.value = input.value.trim();
+      if (!input.checkValidity()) {
+        input.setAttribute('aria-invalid', 'true');
+        error.hidden = false;
+        input.focus();
+        return;
+      }
+      email.textContent = input.value;
+      input.removeAttribute('aria-invalid');
+      error.hidden = true;
+      status.textContent = 'Contact email updated in this prototype.';
+      dialog.close();
+    });
+  </script>
+</body>
+</html>

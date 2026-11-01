@@ -1,7 +1,7 @@
 # UI Prototyping Conventions
 
 **Project**: PRJ-06 — 06 - Building UI Prototype skills
-**Version**: 1.0
+**Version**: 1.1
 **Created**: 2026-10-27
 **Status**: Finalized — binding on all subsequent skill-authoring tasks (T03–T09)
 
@@ -112,6 +112,28 @@ OrgDocument/orgModel/[NN] - [Process Name]/
 No new terms are introduced in this document beyond what `vocabulary.md` already defines. Where this document assigns a concrete ID format or file path to a term `vocabulary.md` only defined conceptually, that assignment is additive, not a redefinition.
 
 ---
-**Binding scope**: T03 (UI Model schema), T04–T07 (generation skills), T08 (design document assembly), T09 (discussion/feedback) must all conform to Sections 1–4 above. Any deviation discovered during those tasks should be raised as a revision to *this* document, not silently implemented differently per-skill.
+## 6. Professional Interactive Prototypes (2026-11-01)
+
+The six screen skills now use the shared
+[Prototype Quality Contract](../../../../../.github/skills/screen-generatelayout/references/prototype-quality.md).
+Treat professional, responsive visual design and complete control behavior as
+required UI-design foundations, not deferred polish. Keep original ID,
+traceability, file-layout, framework-free, and text-only conventions.
+
+- Layout specs add Visual Design, Interaction Specification, and Open Issues.
+  Mockup generation records observed Prototype Verification in the same spec.
+- Every enabled control works. Navigation uses actual sibling files; popup
+  dialogs are local states, with accessible focus, validation, save, and dismissal.
+- Flows document both working page links and tested local-state transitions.
+- Handoffs add Prototype Guide and an equivalent additive `prototype_guide`
+  JSON object; existing inventory JSON fields remain unchanged.
+- Browser checks require observed behavior. Launching a browser, source
+  inspection, or self-attestation alone does not establish portability or
+  interaction success. Missing browser access leaves checks Not run / blocked.
+- The [two-page starter](../../../../../.github/skills/screen-generatemockup/assets/professional-starter/SCR-001/mockup.html)
+  demonstrates the new standard; the toy-order-domain MVP artifacts and their
+  2026-10-27 report remain historical evidence, not certification of this revision.
+
+**Binding scope**: T03 (UI Model schema), T04–T07 (generation skills), T08 (design document assembly), T09 (discussion/feedback) must all conform to Sections 1–4 and 6 above. Any deviation discovered during those tasks should be raised as a revision to *this* document, not silently implemented differently per-skill.
 
 **See also**: `../Analysis/domain-concepts.md`, `../Analysis/domain-alignment.md`, `../../orgModel/02 - UI Prototype Skill Development Process/vocabulary.md`

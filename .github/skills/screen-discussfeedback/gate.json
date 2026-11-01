@@ -2,7 +2,7 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S38",
   "skill_name": "screen-discussfeedback",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "gate_type": "completion",
   "severity": "hard",
   "description": "Validates discussion feedback is captured as structured, append-only FeedbackItems and routed into change-management without manual re-transcription",

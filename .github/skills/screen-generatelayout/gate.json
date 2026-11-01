@@ -2,10 +2,10 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S34",
   "skill_name": "screen-generatelayout",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "gate_type": "completion",
   "severity": "hard",
-  "description": "Validates each screen's layout specification is literal, traceable, and carries its own changelog",
+  "description": "Validates literal, traceable layouts with professional visual design and complete interaction specifications",
   "checks": [
     {
       "id": "layout_spec_exists",
@@ -32,7 +32,7 @@
       "severity": "hard",
       "description": "Generated markup must not reference a specific application framework",
       "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
-      "must_not_contain_pattern": "(?i)(import React|from ['\"]vue['\"]|ng-|v-bind|v-on|className=)",
+      "must_not_contain_pattern": "(?i)(import React|from ['\"]vue['\"]|\\sng-[\\w-]+\\s*=|\\sv-(?:bind|on)(?::|\\s*=)|className\\s*=)",
       "remediation": "Per R-625, generate plain HTML/CSS only — no React, Vue, or Angular syntax/conventions"
     },
     {
@@ -52,6 +52,24 @@
       "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
       "must_contain_pattern": "\\*\\*UI Model Entry\\*\\*:\\s*UME-\\d{3}",
       "remediation": "Carry forward ui_model_ref and requirement_refs unchanged from the Screen's screen-inventory.json entry"
+    },
+    {
+      "id": "visual_and_interaction_specs_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Layout must specify its visual direction, every actionable control, and unresolved decisions",
+      "file": "artifacts/UI Prototype/SCR-*/layout-spec.md",
+      "must_contain": ["## Visual Design", "## Interaction Specification", "## Open Issues"],
+      "remediation": "Apply references/prototype-quality.md: shared tokens, responsive states, control IDs, valid page targets, and complete dialog behavior"
+    },
+    {
+      "id": "professional_design_reviewed",
+      "type": "stakeholder_confirmation",
+      "severity": "hard",
+      "role": "Developer (self-verification)",
+      "description": "Required visual design content must be reviewed, not inferred from section headings",
+      "confirmation_statement": "I reviewed the actual CSS token values, typography, hierarchy, responsive rules, contrast pairs, focus/control states, and dialog/error/empty/success styling for consistency across the screen set",
+      "remediation": "Review the layout against references/prototype-quality.md and record specific findings; mere heading presence is insufficient"
     },
     {
       "id": "id_format_valid",

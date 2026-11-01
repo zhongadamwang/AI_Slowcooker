@@ -172,18 +172,19 @@ classDiagram
 - **Embedded HTML/CSS**: Literal markup/styling, implementation-ready, not placeholder text
 - **Changelog**: In-document version history (see Changelog entity)
 - **Design Rationale**: Captured reasoning behind design decisions
+- **Prototype Design Metadata**: Visual Design (shared tokens and responsive/component styling), Interaction Specification (control IDs and outcomes), Open Issues, and observed Prototype Verification are sections of the existing Markdown spec, not new standalone domain entities. See the [Prototype Quality Contract](../../../.github/skills/screen-generatelayout/references/prototype-quality.md).
 
 ### InteractiveMockup
 - **Mockup ID**: Unique identifier
 - **Screen Reference**: The Screen this mockup renders
 - **File Path**: Standalone HTML/JS, `file://`-openable, zero build step
-- **Clickable Transitions**: Actual implemented navigation, checked against InteractionFlow
+- **Clickable Transitions**: Actual page navigation and local dialog/control behavior, checked against InteractionFlow. Dialog IDs identify states inside the owning Screen, not additional Screen entities.
 
 ### InteractionFlow
 - **Flow ID**: Unique identifier
 - **Mermaid Diagram**: The flow's Mermaid source, following `diagram-generatecollaboration`'s conventions
-- **Edges**: Screen-to-screen transitions
-- **Consistency Status**: Result of the automated check against the mockup's actual transitions
+- **Edges**: Screen-to-screen navigation and meaningful screen-local state transitions, including dialog open, cancel, validation, and save paths
+- **Consistency Status**: Result of observed mockup/flow verification (manual or browser-assisted currently; automated consistency gates remain a separate enhancement)
 
 ### UIModel
 - **Model ID**: Unique identifier
@@ -207,6 +208,7 @@ classDiagram
 - **Screens/Flows/Component Summary**: Summarized references to generated artifacts
 - **Changelog**: Same in-document versioning pattern as LayoutSpec
 - **JSON Companion Reference**: Pointer to the machine-readable output
+- **Prototype Guide**: Additive `prototype_guide` object in the JSON companion, mirrored by the Markdown's Prototype Guide section. Fields: `entry_mockup_ref`, `visual_spec_ref`, `journey_summary`, `verification_refs`, `limitations`, and `open_issues`. These summarize/reference existing artifacts and distinguish tested behavior from simulation limits; they do not change Screen/UIModel traceability.
 
 ### Changelog
 - **Entries**: Ordered version history, each with version/date/description

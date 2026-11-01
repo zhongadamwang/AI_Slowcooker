@@ -1,9 +1,10 @@
 ---
 name: screen-assembledocument
-description: Assemble a consolidated UI design document (Markdown + JSON) summarizing and referencing a project's screen inventory, layout specs, mockups, and interaction flows, with its own in-document changelog. Fifth skill in the UI Prototyping pipeline (Project 06); the durable deliverable handed to a future developer without requiring the original AI session.
+description: Assemble a UI-design handoff summarizing professional visual direction, shared tokens, screens, tested navigation and popup dialogs, and prototype limitations. Use when consolidating prototype artifacts into consistent Markdown and JSON without duplicating their full content. Fifth skill in the UI Prototyping pipeline.
 license: MIT
-version: 1.0.0
-last-updated: 2026-10-27
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-01"
 ---
 
 # Screen Assemble Document
@@ -77,6 +78,12 @@ formal design-system catalogue]
 specs' "Design Rationale" sections — only the ones worth surfacing at the project
 level, not an exhaustive re-listing of every screen's rationale]
 
+## Prototype Guide
+
+[First mockup to open via file://, folders to keep together, primary click-through
+journey, and links to visual-token, interaction, and browser-verification sections.
+Summarize verified behavior, open issues, and sample-state reset limitations.]
+
 ---
 **Traceability**: Summarizes screen-inventory.json ([N] screens), interaction-flows.md ([N] flows)
 **JSON Companion**: [design-document.json](design-document.json)
@@ -107,7 +114,15 @@ level, not an exhaustive re-listing of every screen's rationale]
     { "flow_id": "IF-001", "description": "Order Summary ↔ Customer Order History", "ref": "interaction-flows.md#if-001" }
   ],
   "component_notes": "string",
-  "design_rationale_highlights": ["string"]
+  "design_rationale_highlights": ["string"],
+  "prototype_guide": {
+    "entry_mockup_ref": "SCR-001/mockup.html",
+    "visual_spec_ref": "SCR-001/layout-spec.md#visual-design",
+    "journey_summary": "string",
+    "verification_refs": ["SCR-001/layout-spec.md#prototype-verification"],
+    "limitations": ["string"],
+    "open_issues": ["string"]
+  }
 }
 ```
 
@@ -135,7 +150,10 @@ layouts, mockups, and flows into a single design-document.md and .json —
 summarize and link to the existing artifacts, do not re-list their full content."
 ```
 
-## Assembly Process
+## Workflow
+
+Read [Prototype Quality Contract](../screen-generatelayout/references/prototype-quality.md)
+for required visual, interaction, and verification handoff information.
 
 ### Step 1 — Write the Overview
 
@@ -165,6 +183,12 @@ Unconditional from first generation, same convention as `screen-generatelayout` 
 
 Per FR-08.2, the JSON companion must mirror the Markdown's actual content (same screens, same flows, same changelog entries) — not a separately-derived or divergent summary.
 
+Add Prototype Guide and its matching additive `prototype_guide` JSON object.
+Summarize actual visual direction, token/spec references, entry screen and
+journey, tested navigation/dialog behavior, open issues, and local-state reset
+limits. Preserve existing schema fields. For legacy artifacts missing checks,
+report Not run / blocked; do not imply the handoff certifies untested behavior.
+
 ### Step 8 — Perform the handoff sanity check (TR-08.1, non-skippable)
 
 Before considering the document complete, read it from the perspective of someone who was **not** present for the generating session (or, in solo mode, deliberately switch mental context and re-read it cold). Confirm:
@@ -181,6 +205,7 @@ This check must actually be performed and should leave evidence (e.g., a note in
 3. **Changelog unconditional**: present from v1.0, same rule as `screen-generatelayout`.
 4. **Handoff sanity check performed and logged**: per TR-08.1, this is not optional polish — the task is not complete without it.
 5. **All links resolve**: every relative link to a `layout-spec.md`, `mockup.html`, `screen-inventory.md`, or `interaction-flows.md` target must point to a file that actually exists.
+6. **Usable prototype guide**: Markdown and JSON agree on entry point, references, limitations, and open issues; verified behavior is distinguished from planned or blocked behavior.
 
 ## Integration
 
