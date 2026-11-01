@@ -7,6 +7,8 @@
 ## Changelog
 
 - **v1.0** (2026-10-27): Initial generation
+- **v1.1** (2026-11-01): Recreated as a responsive, interactive prototype; added version metadata, control behavior, and verification criteria.
+- **v1.2** (2026-11-01): Recorded browser interaction and responsive verification, including nested-header level calculation.
 
 ## Purpose
 
@@ -181,5 +183,37 @@ Two cascading filter dropdowns (Price Book, then Category) are shown together ab
 ```
 
 ---
+## Visual Design
+
+Use the shared Northstar Pricing direction across SCR-101–SCR-104: calm blue navigation and primary actions, white work surfaces, a pale slate canvas, restrained borders, and system sans-serif typography. Shared tokens are `--ink: #182538`, `--muted: #526176`, `--brand: #2454a6`, `--brand-dark: #173d79`, `--surface: #ffffff`, `--canvas: #f3f5f8`, `--line: #d9e0ea`, `--focus: #b45309`, `--danger: #a83232`, and `--good: #176b4a`, with a 14px card radius and low-contrast surface shadow. Keep controls at least 42px high, show a 3px visible focus ring, use a constrained 1280px content width, and horizontally scroll wide tables inside their own labeled container. At 375px, navigation wraps and detail fields become one column; at 1440px, the record list and details remain aligned without page-level overflow.
+
+## Interaction Specification
+
+| Control ID | Trigger | Kind | Target | Result / state change | Keyboard / dismissal |
+|---|---|---|---|---|---|
+| `filter-book` | Change book | local-action | `record-rows` | Filters headers by book and restricts category choices to that book | Native select keyboard |
+| `filter-category` | Change category | local-action | `record-rows` | Filters headers by the selected category | Native select keyboard |
+| `category-link`, `item-link` | Activate link | navigation | SCR-102 / SCR-104 | Moves up or down the setup hierarchy | Enter |
+| `select-record-[id]` | Activate record ID | local-action | `record-form` | Loads that header into the detail panel | Enter or Space |
+| `add-record` | Activate Add | local-action | `record-form` | Assigns max ID + 1 and version 0; book/category follow the current filters | Enter or Space |
+| `copy-record` | Activate Copy to Add | local-action | `record-form` | Copies the selection with a new ID and version 0 | Enter or Space |
+| `edit-record` | Activate Edit | local-action | `record-form` | Enables editable fields; ID, Version, and ancestor references stay read-only | Enter or Space |
+| `remove-record` | Activate Remove | dialog-open | `remove-dialog` | Opens a confirmation for the selected header | Enter or Space |
+| `cancel-remove` | Activate Cancel or press Escape | dialog-close | `remove-dialog` | Closes without deleting; focus returns to Remove | Enter, Space, or Escape; backdrop does not dismiss |
+| `confirm-remove` | Confirm removal | local-action | `record-rows` | Removes the sample record and selects the next available row | Enter or Space |
+| `tab-data`, `tab-effective`, `tab-current`, `tab-original` | Activate tab | local-action | Corresponding tab panel | Shows data or the corresponding audit metadata | Enter/Space; Left/Right/Home/End |
+| `update-record` | Submit valid details | local-action | `record-form` | Creates at version 0 or increments the edited record version; announces success | Enter |
+| `close-record` | Activate Close | local-action | `record-form` | Discards unsaved edits and restores the selected record | Enter or Space |
+
+## Open Issues
+
+None for this screen. Record edits are in-memory prototype behavior only.
+
+## Prototype Verification
+
+| Check | Expected | Observed | Status | Evidence |
+|---|---|---|---|---|
+| Browser, cascading filters, responsive, navigation, and local actions | Opens from `file://`; book/category filtering and empty state work; fits 375px and 1440px; no external resources | Passed at 375x844 and 1440x900 with no page-level horizontal overflow. Book/category filtering, empty state, add, copy, edit, required-description validation, version updates, Close discard, remove confirmation, Cancel/Escape dismissal, focus restoration, tabs, and navigation worked. Creating a child under header 3002 produced Parent Header ID 3002 and Level 2. Browser run reported no runtime errors or external requests. | Pass | Browser interaction run on SCR-103/mockup.html, nested-header regression, responsive screenshots, and interaction-flows.md verification log |
+
 **Traces to**: UME-103, R-704, R-714, R-715, R-716, R-719, R-720, R-721, R-722, R-723
 **Generated**: 2026-10-27T00:00:00Z

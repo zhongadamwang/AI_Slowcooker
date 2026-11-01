@@ -1,24 +1,86 @@
 {
-  "document_id": "DD-PRICEBOOK-001",
+  "document_id": "DD-001",
   "project_id": "PRICE-BOOK-TEST-001",
-  "generated_at": "2026-10-27T00:00:00Z",
+  "generated_at": "2026-11-01T14:07:40-06:00",
   "changelog": [
-    { "version": "1.0", "date": "2026-10-27", "change": "Initial consolidated generation" }
+    {
+      "version": "1.0",
+      "date": "2026-10-27",
+      "change": "Initial consolidated generation"
+    },
+    {
+      "version": "1.1",
+      "date": "2026-11-01",
+      "change": "Reconciled the handoff with recreated prototypes, verified flows, responsive behavior, and browser test results"
+    }
   ],
-  "overview": "A price configuration management UI covering a four-level hierarchy: Price Book, Price Category, Price Header, and Price Item, all sharing a consistent list+tabbed-detail UI pattern per the source requirements.",
+  "overview": "Northstar Pricing is a browser-based prototype for managing a service company's four-level price configuration: Price Books contain Price Categories, which contain hierarchical Price Headers, which contain Price Items. Users can review and maintain sample records through a consistent list-and-detail interface, use cascading filters to narrow child records, and move between levels with the progression links. The prototype is a local interaction model, not a connected pricing system.",
   "screens_summary": [
-    { "screen_id": "SCR-101", "name": "Price Book Management", "ui_model_ref": "UME-101", "layout_spec_ref": "SCR-101/layout-spec.md", "mockup_ref": "SCR-101/mockup.html" },
-    { "screen_id": "SCR-102", "name": "Price Category Management", "ui_model_ref": "UME-102", "layout_spec_ref": "SCR-102/layout-spec.md", "mockup_ref": "SCR-102/mockup.html" },
-    { "screen_id": "SCR-103", "name": "Price Header Management", "ui_model_ref": "UME-103", "layout_spec_ref": "SCR-103/layout-spec.md", "mockup_ref": "SCR-103/mockup.html" },
-    { "screen_id": "SCR-104", "name": "Price Item Management", "ui_model_ref": "UME-104", "layout_spec_ref": "SCR-104/layout-spec.md", "mockup_ref": "SCR-104/mockup.html" }
+    {
+      "screen_id": "SCR-101",
+      "name": "Price Book Management",
+      "ui_model_ref": "UME-101",
+      "layout_spec_ref": "SCR-101/layout-spec.md",
+      "mockup_ref": "SCR-101/mockup.html"
+    },
+    {
+      "screen_id": "SCR-102",
+      "name": "Price Category Management",
+      "ui_model_ref": "UME-102",
+      "layout_spec_ref": "SCR-102/layout-spec.md",
+      "mockup_ref": "SCR-102/mockup.html"
+    },
+    {
+      "screen_id": "SCR-103",
+      "name": "Price Header Management",
+      "ui_model_ref": "UME-103",
+      "layout_spec_ref": "SCR-103/layout-spec.md",
+      "mockup_ref": "SCR-103/mockup.html"
+    },
+    {
+      "screen_id": "SCR-104",
+      "name": "Price Item Management",
+      "ui_model_ref": "UME-104",
+      "layout_spec_ref": "SCR-104/layout-spec.md",
+      "mockup_ref": "SCR-104/mockup.html"
+    }
   ],
   "flows_summary": [
-    { "flow_id": "IF-101", "description": "Price Book \u2192 Price Category \u2192 Price Header \u2192 Price Item (drill-down chain)", "ref": "interaction-flows.md#primary-navigation-flow-if-101" }
+    {
+      "flow_id": "IF-101",
+      "description": "Price Book to Price Category to Price Header to Price Item navigation",
+      "ref": "interaction-flows.md#if-101"
+    },
+    {
+      "flow_id": "IF-102",
+      "description": "Shared record create, copy, edit, validation, discard, and remove states",
+      "ref": "interaction-flows.md#if-102"
+    }
   ],
-  "component_notes": "All four screens share list-toolbar, record-list, detail-tabs (4-tab), and field--readonly patterns. SCR-102/103/104 additionally share a cascading-filter pattern.",
+  "component_notes": "All screens share the Northstar shell, progression navigation, record-action toolbar, scroll-contained data table, tabbed detail card, status messaging, and accessible remove-confirmation dialog. SCR-102 through SCR-104 add progressively deeper cascading selectors. Wide tables and tab strips scroll within their own containers on narrow screens.",
   "design_rationale_highlights": [
-    "One consistent layout pattern reused across all four screens, matching the source's own repeated description",
-    "Deepest cascading filter chain (Book->Category->Header->Price Area) on Price Item screen reflects R-717's multi-level dependency",
-    "Two Price Item fields rendered with a visible [REVIEW NEEDED] marker rather than a guessed name"
-  ]
+    "A shared list-and-detail pattern across the four entities reflects the repeated structure in the source requirements and keeps the journey consistent",
+    "Cascading filters expose parent-child dependencies directly, and SCR-103 computes nested header levels from the selected parent",
+    "The two unresolved Price Item flag names remain marked [REVIEW NEEDED] and disabled rather than guessed"
+  ],
+  "prototype_guide": {
+    "entry_mockup_ref": "SCR-101/mockup.html",
+    "visual_spec_ref": "SCR-101/layout-spec.md#visual-design",
+    "journey_summary": "Open SCR-101 and follow progression links through Price Category, Price Header, and Price Item. Back links and browser history were exercised. Browser checks verified CRUD, validation, filters, dialog dismissal, responsive layouts, and nested-header level calculation.",
+    "verification_refs": [
+      "SCR-101/layout-spec.md#prototype-verification",
+      "SCR-102/layout-spec.md#prototype-verification",
+      "SCR-103/layout-spec.md#prototype-verification",
+      "SCR-104/layout-spec.md#prototype-verification",
+      "interaction-flows.md"
+    ],
+    "limitations": [
+      "Records are in-memory sample data and reset on reload",
+      "No backend, persistence, or external resources are connected",
+      "The two unresolved Price Item flag fields remain disabled until their names are confirmed"
+    ],
+    "open_issues": [
+      "Confirm the two Price Item flag names with the business stakeholder before treating SCR-104 as implementation-ready"
+    ]
+  }
 }
