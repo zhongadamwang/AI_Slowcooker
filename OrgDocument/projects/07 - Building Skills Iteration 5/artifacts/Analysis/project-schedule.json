@@ -1,0 +1,28 @@
+{
+  "project_id": "PRJ-07",
+  "generated_at": "2026-11-07T23:35:39.225-06:00",
+  "schedule_version": "1.0.0",
+  "time_basis": "Working-day offsets from an uncommitted implementation start; intervals are start-inclusive/end-exclusive.",
+  "project_duration": {"start_date": null, "end_date": null, "total_duration_days": 22.17, "working_days": 19.17, "buffer_days": 3},
+  "critical_path": {"duration_days": 14.00, "tasks": ["T01", "T04", "T05", "T06", "T07"], "basis": "Unconstrained prerequisite CPM; solo schedule serializes independent work."},
+  "resource_allocation": {"total_effort_days": 19.17, "peak_resource_demand": 1, "resource_leveling_applied": true, "assumption": "One implementer at full capacity; staffing unconfirmed."},
+  "schedule_tasks": [
+    {"task_id": "T01", "start_offset": 0, "end_offset": 2.00, "duration_days": 2.00, "dependencies": [], "cpm_early_start": 0, "cpm_early_finish": 2.00, "cpm_total_slack": 0},
+    {"task_id": "T02", "start_offset": 2.00, "end_offset": 5.17, "duration_days": 3.17, "dependencies": ["T01"], "cpm_early_start": 2.00, "cpm_early_finish": 5.17, "cpm_total_slack": 0.16},
+    {"task_id": "T03", "start_offset": 5.17, "end_offset": 7.17, "duration_days": 2.00, "dependencies": ["T01"], "cpm_early_start": 2.00, "cpm_early_finish": 4.00, "cpm_total_slack": 1.33},
+    {"task_id": "T04", "start_offset": 7.17, "end_offset": 10.50, "duration_days": 3.33, "dependencies": ["T01"], "cpm_early_start": 2.00, "cpm_early_finish": 5.33, "cpm_total_slack": 0},
+    {"task_id": "T05", "start_offset": 10.50, "end_offset": 12.67, "duration_days": 2.17, "dependencies": ["T02", "T03", "T04"], "cpm_early_start": 5.33, "cpm_early_finish": 7.50, "cpm_total_slack": 0},
+    {"task_id": "T06", "start_offset": 12.67, "end_offset": 16.00, "duration_days": 3.33, "dependencies": ["T05"], "cpm_early_start": 7.50, "cpm_early_finish": 10.83, "cpm_total_slack": 0},
+    {"task_id": "T07", "start_offset": 16.00, "end_offset": 19.17, "duration_days": 3.17, "dependencies": ["T06"], "cpm_early_start": 10.83, "cpm_early_finish": 14.00, "cpm_total_slack": 0}
+  ],
+  "milestones": [
+    {"milestone_id": "M1", "name": "Contract ready", "target_offset": 2.00, "required_tasks": ["T01"]},
+    {"milestone_id": "M2", "name": "Model producers and validator ready", "target_offset": 10.50, "required_tasks": ["T02", "T03", "T04"]},
+    {"milestone_id": "M3", "name": "Integrated S5 rounds ready", "target_offset": 16.00, "required_tasks": ["T05", "T06"]},
+    {"milestone_id": "M4", "name": "Release evidence and handoff ready", "target_offset": 19.17, "required_tasks": ["T07"]}
+  ],
+  "what_if_scenarios": [
+    {"scenario_name": "Parallel contract-based implementations", "assumptions": ["Three independent implementers for T02/T03/T04", "No conflicting shared artifact edits"], "working_days_before_buffer": 14.00},
+    {"scenario_name": "Solo scenario envelope", "assumptions": ["One implementer", "Task optimistic/pessimistic sums; not statistical confidence limits"], "optimistic_person_days": 11, "pessimistic_person_days": 32}
+  ]
+}

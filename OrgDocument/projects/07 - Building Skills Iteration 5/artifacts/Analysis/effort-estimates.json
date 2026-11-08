@@ -1,0 +1,27 @@
+{
+  "project_id": "PRJ-07",
+  "generated_at": "2026-11-07T23:35:39.225-06:00",
+  "estimation_methods": ["PERT", "qualitative complexity and risk review"],
+  "total_project_estimate": {
+    "optimistic_days": 11, "most_likely_days": 18, "pessimistic_days": 32, "expected_days": 19.17, "standard_deviation": 1.3642,
+    "confidence_interval_80": {"min": 17.42, "max": 20.92},
+    "confidence_interval_95": {"min": 16.49, "max": 21.84}
+  },
+  "limitations": ["Intervals are illustrative normal-approximation PERT calculations assuming independent risks, not calibrated delivery guarantees.", "No historical velocity or actual effort baseline available.", "Risk is incorporated in pessimistic estimates, not multiplied again.", "One person-day means one full working day of implementation/review effort."],
+  "estimation_factors": {"team_experience": "unverified", "technology_familiarity": "unverified", "project_complexity": "moderate", "requirements_clarity": "clear scope; schema and source verification need design", "integration_complexity": "complex"},
+  "task_estimates": [
+    {"task_id": "T01", "pert_estimate": {"optimistic_days": 1, "most_likely_days": 2, "pessimistic_days": 3, "expected_days": 2.00, "variance": 0.111111}, "complexity": "medium", "confidence": "medium", "rationale": "Shared identity, applicability, versions, and artifact compatibility design."},
+    {"task_id": "T02", "pert_estimate": {"optimistic_days": 2, "most_likely_days": 3, "pessimistic_days": 5, "expected_days": 3.17, "variance": 0.25}, "complexity": "medium", "confidence": "medium", "rationale": "New model/script responsibility, three-level examples, and ID-preserving revision."},
+    {"task_id": "T03", "pert_estimate": {"optimistic_days": 1, "most_likely_days": 2, "pessimistic_days": 3, "expected_days": 2.00, "variance": 0.111111}, "complexity": "medium", "confidence": "medium", "rationale": "Reuse existing UI schema while adding boundary applicability and use-case inputs."},
+    {"task_id": "T04", "pert_estimate": {"optimistic_days": 2, "most_likely_days": 3, "pessimistic_days": 6, "expected_days": 3.33, "variance": 0.444444}, "complexity": "high", "confidence": "low", "rationale": "Source-backed cross-model comparisons, stale versions, and explicit clarification outcomes."},
+    {"task_id": "T05", "pert_estimate": {"optimistic_days": 1, "most_likely_days": 2, "pessimistic_days": 4, "expected_days": 2.17, "variance": 0.25}, "complexity": "high", "confidence": "medium", "rationale": "Many existing skill/gate surfaces, with prototype and model compatibility requirements."},
+    {"task_id": "T06", "pert_estimate": {"optimistic_days": 2, "most_likely_days": 3, "pessimistic_days": 6, "expected_days": 3.33, "variance": 0.444444}, "complexity": "high", "confidence": "low", "rationale": "Round lifecycle, resume/state compatibility, routing, and non-bypassable alignment across modes/archetypes."},
+    {"task_id": "T07", "pert_estimate": {"optimistic_days": 2, "most_likely_days": 3, "pessimistic_days": 5, "expected_days": 3.17, "variance": 0.25}, "complexity": "medium", "confidence": "medium", "rationale": "Worked example, negative integration tests, observed prototype behavior, and release documentation."}
+  ],
+  "summary_statistics": {
+    "total_tasks": 7,
+    "tasks_by_category": {"design": {"count": 1, "total_effort": 2.00}, "development": {"count": 3, "total_effort": 8.50}, "integration": {"count": 2, "total_effort": 5.50}, "testing": {"count": 1, "total_effort": 3.17}},
+    "critical_path_effort": 14.00,
+    "parallel_work_potential": 5.17
+  }
+}

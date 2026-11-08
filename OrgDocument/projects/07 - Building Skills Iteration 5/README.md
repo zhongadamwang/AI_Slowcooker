@@ -1,13 +1,15 @@
 # Building Skills Iteration 5
 
 **Project ID**: PRJ-07  
-**Status**: Initialized — Awaiting Requirements  
+**Status**: Planned - Implementation Not Started  
 **Collaboration Mode**: Solo  
 **Created**: November 7, 2026  
 
 ## Quick Start
 
-This project extends the EDPS skills framework based on insights from previous iterations and new requirements. Add source documents to `artifacts/Source Materials/`, then run requirements analysis.
+Start with the [requirements report](artifacts/Analysis/requirements.md), covering S5 integration, use-case modeling and scripts, and alignment across four models. The [original request](artifacts/Source%20Materials/s5-modeling-integration.md) is preserved separately. Implementation has not started.
+
+Review the [implementation plan](project-plan.md) and [seven tasks](artifacts/Analysis/task-breakdown.md). The design proposes use-case generation, UI-model generation, and shared alignment validation skills, plus integration of the existing screen pipeline. Expected effort is 19.17 person-days plus contingency; no calendar dates are committed.
 
 ## Project Structure
 
@@ -29,4 +31,7 @@ This project extends the EDPS skills framework based on insights from previous i
 
 ## Key Features
 
-To be defined based on requirements.
+- Integrate the six UI Prototype skills into S5 - Design & Visualization.
+- Treat the UI model as part of modeling.
+- Add a skill producing use-case models and detailed use-case scripts.
+- Keep UI, use-case, domain, and process models aligned.

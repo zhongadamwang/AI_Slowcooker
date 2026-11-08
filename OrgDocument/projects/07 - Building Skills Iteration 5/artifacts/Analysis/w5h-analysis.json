@@ -1,0 +1,26 @@
+{
+  "project_id": "PRJ-07",
+  "generated_at": "2026-11-07T23:35:39.225-06:00",
+  "analysis_framework": "W5H",
+  "who": {
+    "sourcing": "Solo-mode role lenses; assumptions, not external confirmations",
+    "roles_responsibilities": [
+      {"role": "Framework maintainer", "responsibilities": ["Contracts", "Registration", "Compatibility"], "authority_level": "Assumed implementation owner"},
+      {"role": "Model author", "responsibilities": ["Boundary-scoped models", "Clarification"], "authority_level": "Assumed contributor"},
+      {"role": "Reviewer/QA", "responsibilities": ["Evidence", "Regression verification"], "authority_level": "Assumed reviewer"},
+      {"role": "Prototype consumer", "responsibilities": ["Review interactions and handoff"], "authority_level": "Assumed consumer"}
+    ]
+  },
+  "what": {
+    "functional_requirement_refs": ["R-001", "R-003", "R-004", "R-007", "R-009", "R-010"],
+    "constraint_refs": ["R-002", "R-005", "R-006", "R-008", "R-011"],
+    "scope": {
+      "in_scope": ["Use-case models/scripts", "UI-model generation", "Entity/boundary validation", "S5 membership", "Modeling round lifecycle"],
+      "out_of_scope": ["Production application", "External services", "Broad historical migration", "New general-purpose gate engine"]
+    }
+  },
+  "when": {"validation_trigger": "End of every modeling round", "expected_person_days": 19.17, "buffer_working_days": 3, "committed_start": null, "committed_end": null},
+  "where": {"skill_root": ".github/skills", "models": "Resolved process/boundary folders", "reports": "Project artifacts/Analysis", "ui_applicability": "Software-type boundary with UI requirements"},
+  "why": {"primary": "Coherent and understandable cross-model design without silent inconsistencies", "goal_refs": ["G-01", "G-02", "G-03"]},
+  "how": {"sequence": ["Shared contract", "Three modeling/validation responsibilities", "Existing skill integration", "Round lifecycle", "Release verification"], "risk_report": "implementation-analysis.md"}
+}
