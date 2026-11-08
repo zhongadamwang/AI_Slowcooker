@@ -1,0 +1,16 @@
+{
+  "round_id": "ROUND-FIXTURE-005",
+  "boundary_scope": [
+    { "boundary_id": "BND-BATCH-RECON", "boundary_type": "software" }
+  ],
+  "source_model_versions": {
+    "domain_model": "fixture-v1 (not exercised)",
+    "process_model": "fixture-v1 (not exercised)",
+    "use_case_model": "fixture-v1",
+    "ui_model": "fixture-v1"
+  },
+  "status": "PASS",
+  "findings": [],
+  "generated_at": "2026-11-08T00:00:00Z",
+  "fixture_notes": "Demonstrates PASS with zero findings for a software boundary that has a real use-case model but a deliberately empty UIModel.entries array. A validator implementation must NOT report this as a finding, missing model, or incompleteness -- R-011 explicitly states software boundaries do not automatically require a screen. This is the negative-space counterpart to unknown-boundary-type and missing-applicable-model: absence of UI content here is correct, not an error."
+}

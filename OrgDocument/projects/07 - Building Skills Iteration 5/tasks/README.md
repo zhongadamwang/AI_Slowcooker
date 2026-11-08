@@ -4,7 +4,7 @@ This folder contains individual task files for the Project 7 objectives. Each ta
 
 ## Task Overview
 
-Seven implementation tasks are planned; none has started. Start with T01's shared contract. T02/T03/T04 can then be implemented independently using shared fixtures; integration waits for all three. Use [task-tracking.md](task-tracking.md) for progress and [task-breakdown.md](../artifacts/Analysis/task-breakdown.md) for coverage and dependencies.
+**T01 is complete.** T02/T03/T04 can now be implemented independently using T01's shared fixtures; integration (T05) waits for all three. Use [task-tracking.md](task-tracking.md) for progress and [task-breakdown.md](../artifacts/Analysis/task-breakdown.md) for coverage and dependencies.
 
 | Task | Title | Phase |
 |---|---|---|
