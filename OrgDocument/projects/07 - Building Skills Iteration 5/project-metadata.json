@@ -1,0 +1,23 @@
+{
+  "project_id": "PRJ-07",
+  "project_name": "Building Skills Iteration 5",
+  "project_number": "07",
+  "archetype": "standard",
+  "collaboration_mode": "solo",
+  "created": "2026-11-07",
+  "last_updated": "2026-11-07",
+  "status": "Initialized",
+  "version": "1.0.0",
+  "evolution_history": [
+    {
+      "version": "1.0.0",
+      "date": "2026-11-07",
+      "change": "Initial project structure created",
+      "archetype": "standard",
+      "collaboration_mode": "solo",
+      "changed_by": "project-document-management"
+    }
+  ],
+  "linked_orgmodel": "OrgDocument/orgModel/01 - Skill Development Process",
+  "skills_used": ["project-document-management"]
+}
