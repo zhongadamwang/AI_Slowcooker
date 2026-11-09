@@ -1,0 +1,33 @@
+{
+  "model_id": "UIM-CHILD-SW",
+  "model_type": "base",
+  "derives_from": null,
+  "role_scope": null,
+  "source_domain_model": "../../../../model-validatealignment/fixtures/three-level-valid/root-boundary/child-software-boundary/domain-model.md",
+  "generated_at": "2026-11-08T00:00:00Z",
+  "changelog": [
+    { "version": "1.0", "date": "2026-11-08", "change": "Initial generation from use-case-model.json (UCM-CHILD-SW)" }
+  ],
+  "entries": [
+    {
+      "entry_id": "UME-001",
+      "ui_concept_name": "Dispatch Queue",
+      "domain_entity_refs": ["E-002", "E-003"],
+      "aggregation_description": "Aggregates ServiceRequest (E-002, child-software-boundary scope) and Technician (E-003) so a Coordinator can see unscheduled requests alongside available technicians in one view, supporting the Schedule Technician use case.",
+      "boundary_ref": "BND-CHILD-SW",
+      "source_use_case_refs": ["UC-001"]
+    },
+    {
+      "entry_id": "UME-002",
+      "ui_concept_name": "Job Status Update",
+      "domain_entity_refs": ["E-002"],
+      "aggregation_description": "A focused view of a single ServiceRequest (E-002) for a Technician to update its status as field work progresses, supporting the Update Job Status use case.",
+      "boundary_ref": "BND-CHILD-SW",
+      "source_use_case_refs": ["UC-002"]
+    }
+  ],
+  "aggregations": [
+    { "aggregation_id": "AGG-001", "member_entities": ["E-002", "E-003"], "resulting_ui_concept": "UME-001" },
+    { "aggregation_id": "AGG-002", "member_entities": ["E-002"], "resulting_ui_concept": "UME-002" }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "model_id": "UIM-GRANDCHILD",
+  "model_type": "base",
+  "derives_from": null,
+  "role_scope": null,
+  "source_domain_model": "../../../../../model-validatealignment/fixtures/three-level-valid/root-boundary/child-software-boundary/grandchild-boundary/domain-model.md",
+  "generation_note": "Boundary BND-GRANDCHILD's one use case (UC-001, Log Time Entry) has a direct human actor (Technician) performing the logging action themselves -- unlike the software-boundary-no-ui-required fixture's 'Nightly Scheduler' (an internal-role/scheduled-trigger actor with no human-facing interaction), this is a human directly entering data. One small UIModelEntry is therefore warranted, not a forced absence.",
+  "generated_at": "2026-11-08T00:00:00Z",
+  "changelog": [
+    { "version": "1.0", "date": "2026-11-08", "change": "Initial generation from use-case-model.json (UCM-GRANDCHILD)" }
+  ],
+  "entries": [
+    {
+      "entry_id": "UME-001",
+      "ui_concept_name": "Time Entry Log",
+      "domain_entity_refs": ["E-004"],
+      "aggregation_description": "A single-entity view of TimeEntry (E-004) allowing a Technician to log a start/end time block directly, supporting the Log Time Entry use case.",
+      "boundary_ref": "BND-GRANDCHILD",
+      "source_use_case_refs": ["UC-001"]
+    }
+  ],
+  "aggregations": [
+    { "aggregation_id": "AGG-001", "member_entities": ["E-004"], "resulting_ui_concept": "UME-001" }
+  ]
+}
