@@ -1,0 +1,18 @@
+{
+  "scenario": "stale-report",
+  "boundary_id": "BND-CHILD-SW",
+  "prior_round": {
+    "round_id": "ROUND-CHILD-SW-001",
+    "status": "PASS",
+    "source_model_versions": { "domain_model": "v1", "use_case_model": "v1", "ui_model": "v1" }
+  },
+  "edit_that_happened": "domain_model for BND-CHILD-SW was edited after ROUND-CHILD-SW-001 ran (e.g. a new field added to ServiceRequest), advancing it to v2",
+  "current_model_versions_at_resume": { "domain_model": "v2", "use_case_model": "v1", "ui_model": "v1" },
+  "is_stale_result": true,
+  "resolve_round_for_resume_result": "stale",
+  "counterfactual_if_no_edit_happened": {
+    "current_model_versions_at_resume": { "domain_model": "v1", "use_case_model": "v1", "ui_model": "v1" },
+    "is_stale_result": false,
+    "resolve_round_for_resume_result": "valid"
+  }
+}
