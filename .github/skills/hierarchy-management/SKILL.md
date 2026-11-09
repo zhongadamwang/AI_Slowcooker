@@ -20,12 +20,32 @@ Decompose `control`-type participants into Level N+1 sub-process diagrams, manag
 ## Outputs
 
 - `[process-folder]/[NN]-[ParticipantName]Boundary/collaboration.md` — new Level N+1 diagram
-- `[process-folder]/[NN]-[ParticipantName]Boundary/main.md` — sub-process overview with parent/child navigation links
+- `[process-folder]/[NN]-[ParticipantName]Boundary/main.md` — sub-process overview with parent/child navigation links, now including a `## System Boundary` section (see below)
 - `[process-folder]/[NN]-[ParticipantName]Boundary/process.md` — activity/workflow diagram for the sub-process
 - `[process-folder]/[NN]-[ParticipantName]Boundary/domain-model.md` — class diagram with entities and relationships
 - `[process-folder]/hierarchy-metadata.json` — updated hierarchy metadata (created if absent)
 - `[process-folder]/folder-creation.log` — audit log appended with each sub-folder created
 - Updated navigation links in parent `main.md` and `collaboration.md`
+
+### System Boundary Declaration (PRJ-07 integration)
+
+Every boundary folder this skill creates corresponds to a [System Boundary Reference](../model-validatealignment/references/cross-model-alignment-contract.md#12-system-boundary-reference) in the shared cross-model alignment contract. This skill is responsible for the **structural** fields of that reference (`boundary_id`, `hierarchy_level`, `hierarchy_path`, `parent_boundary_id`, `corresponds_to_participant`) — all derivable from the decomposition itself and written automatically into the new `main.md`'s `## System Boundary` section.
+
+**`boundary_type` is explicitly NOT auto-populated by this skill.** Per the contract's Section 2.1, `boundary_type` (`software`/`non-software`/`unknown`) must be an explicit, human-confirmed classification — never inferred from the fact that a participant was `control`-type and decomposable (HV-1 eligibility is a diagram-structure concern, orthogonal to real-world software status). This skill writes the `## System Boundary` section with `boundary_type` left as `unknown` and a visible prompt for the user/developer to confirm it, mirroring the existing stub-file discipline (`[TO BE GENERATED - invoke documentation-automation]`) for a different, non-bypassable reason: this field cannot be safely auto-filled by any downstream skill either. `usecase-generatemodel`/`ui-generatemodel` (PRJ-07) will refuse to run against a boundary whose `main.md` still shows `unknown` here — see their own Step 0.
+
+**New `## System Boundary` section added to the `main.md` stub** (inserted after the existing `**Status**: Draft` line, before `## Navigation`):
+
+```markdown
+## System Boundary
+
+- **Boundary ID**: `BND-[NN]-[ParticipantName]`
+- **Boundary Type**: `unknown` — **[ACTION REQUIRED]** confirm whether this boundary is `software` (has its own UI/system) or `non-software` (a real-world/organizational boundary with no software of its own), then replace this line. See the [cross-model alignment contract](../model-validatealignment/references/cross-model-alignment-contract.md) Section 2.1 for the full rule — this cannot be inferred from folder name, participant stereotype, or decomposition eligibility alone.
+- **Hierarchy Path**: `[relative path from orgModel process root]`
+- **Parent Boundary ID**: `[parent's Boundary ID, or "none" at hierarchy root]`
+- **Corresponds To Participant**: `[ParticipantName]` (control-type, decomposed per HV-1 in parent's collaboration.md)
+```
+
+This section is additive to the existing stub specification below — it does not replace or change any other stub content, and it is **not** gated behind the `[TO BE GENERATED - invoke documentation-automation]` Content Guard marker, since `boundary_type` confirmation is a decision for the user/developer, not generated content `documentation-automation` can produce from the collaboration diagram.
 
 ## Workflow
 
@@ -98,6 +118,14 @@ Full content generation is exclusively the responsibility of `documentation-auto
 **Level**: [N+1]  
 **Parent Process**: [[ParentProcessName]](../main.md)  
 **Status**: Draft
+
+## System Boundary
+
+- **Boundary ID**: `BND-[NN]-[ParticipantName]`
+- **Boundary Type**: `unknown` — **[ACTION REQUIRED]** confirm whether this boundary is `software` or `non-software`, then replace this line. See the [cross-model alignment contract](../model-validatealignment/references/cross-model-alignment-contract.md) Section 2.1.
+- **Hierarchy Path**: `[relative path from orgModel process root]`
+- **Parent Boundary ID**: `[parent's Boundary ID, or "none" at hierarchy root]`
+- **Corresponds To Participant**: `[ParticipantName]` (control-type, decomposed per HV-1 in parent's collaboration.md)
 
 ## Navigation
 

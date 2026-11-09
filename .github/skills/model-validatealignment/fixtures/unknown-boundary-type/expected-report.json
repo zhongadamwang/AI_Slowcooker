@@ -1,0 +1,28 @@
+{
+  "round_id": "ROUND-FIXTURE-002",
+  "boundary_scope": [
+    { "boundary_id": "BND-UNCLASSIFIED", "boundary_type": "unknown" }
+  ],
+  "source_model_versions": {
+    "domain_model": "fixture-v1",
+    "process_model": "fixture-v1",
+    "use_case_model": "fixture-v1",
+    "ui_model": null
+  },
+  "status": "NEEDS_CLARIFICATION",
+  "findings": [
+    {
+      "finding_id": "F-001",
+      "severity": "clarification-needed",
+      "reference_a": { "boundary_id": "BND-UNCLASSIFIED", "boundary_type": "unknown" },
+      "reference_b": null,
+      "description": "Boundary BND-UNCLASSIFIED has no explicitly declared boundary_type. A use case (UC-001) and an attempted UIModelEntry both depend on this boundary's software/non-software classification, which cannot be inferred from folder name, participant stereotype, or decomposition eligibility.",
+      "affected_models": ["use-case", "ui"]
+    }
+  ],
+  "clarification_questions": [
+    "Is BND-UNCLASSIFIED (Unclassified Boundary) a software system with its own UI, or a non-software real-world boundary (e.g., a physical location, an external organization, a manual process)? This must be answered and recorded in main.md's System Boundary section before any UIModelEntry may reference it."
+  ],
+  "generated_at": "2026-11-08T00:00:00Z",
+  "fixture_notes": "Demonstrates: status is NEEDS_CLARIFICATION, not a silent PASS defaulting unknown to non-software, and not a silent fabricated UI screen defaulting unknown to software. The attempted UIModelEntry referencing this boundary must not exist in ui-model.json at all -- ui-generatemodel refuses to produce it; this report's finding is defense-in-depth confirmation, not the only safeguard."
+}

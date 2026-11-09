@@ -1,0 +1,27 @@
+{
+  "model_id": "UCM-GRANDCHILD",
+  "boundary_ref": {
+    "boundary_id": "BND-GRANDCHILD",
+    "boundary_name": "Grandchild Boundary",
+    "boundary_type": "software",
+    "hierarchy_level": 2,
+    "hierarchy_path": "root-boundary/child-software-boundary/grandchild-boundary/",
+    "parent_boundary_id": "BND-CHILD-SW"
+  },
+  "actors": [
+    { "actor_id": "A-001", "actor_name": "Technician", "boundary_id": "BND-GRANDCHILD", "actor_kind": "human" }
+  ],
+  "use_cases": [
+    {
+      "use_case_id": "UC-001",
+      "name": "Log Time Entry",
+      "goal": "Technician logs a block of time spent on a ServiceRequest within this nested time-tracking sub-module",
+      "primary_actor_ref": "A-001",
+      "boundary_ref": "BND-GRANDCHILD",
+      "requirement_refs": ["R-904"],
+      "script_ref": "use-case-scripts/UC-001-log-time-entry.md"
+    }
+  ],
+  "generated_at": "2026-11-08T00:00:00Z",
+  "changelog": [{ "version": "1.0", "date": "2026-11-08", "change": "Initial generation" }]
+}

@@ -11,6 +11,8 @@ Orchestrate comprehensive testing and validation of the complete EDPS skill ecos
 
 **Enhanced for T10**: Comprehensive phase 4 testing framework validating T07+T08+T09 integration with workflow archetype scenarios, gate validation matrix, and prompt routing accuracy testing.
 
+**PRJ-07 integration evidence (S32/S39/S40, 2026-11-08)**: Modeling-round lifecycle (fresh/revised/resumed), cross-model alignment validation, and the six negative-example categories (entity/boundary contradiction, illegal UI placement, unknown typing, missing applicable model, stale report, unresolved clarification) are validated by `model-validatealignment`'s own executable test suites (`scripts/test_alignment_contract.py`, `scripts/test_alignment_report.py`, `scripts/run_fixtures.py`) rather than by this skill's generic integration-test framework — this skill does not duplicate those checks. See [PRJ-07's evidence-log.md](../../../OrgDocument/projects/07%20-%20Building%20Skills%20Iteration%205/artifacts/Testing/evidence-log.md) for the full re-run transcript this skill's own test reports may reference when validating S5's extended membership (S32–S40).
+
 ## Inputs
 - **Skill Definitions**: `.github/skills/*/SKILL.md` (all 32 skills + orchestrator)
 - **Gate Schemas**: `.github/skills/*/gate.json` (32 completion gate definitions)

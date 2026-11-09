@@ -1,0 +1,96 @@
+{
+  "project_id": "PRJ-07",
+  "generated_at": "2026-11-07T23:32:18.964-06:00",
+  "total_requirements": 11,
+  "requirements": [
+    {
+      "id": "R-001",
+      "source_file": "artifacts/Source Materials/s5-modeling-integration.md",
+      "location_hint": "Original Request, sentence 1",
+      "text": "Integrate the existing UI Prototype skills into S5 - Design & Visualization.",
+      "tags": ["functional"],
+      "confidence": 0.99
+    },
+    {
+      "id": "R-002",
+      "source_file": "artifacts/Source Materials/s5-modeling-integration.md",
+      "location_hint": "Original Request, sentence 2",
+      "text": "Treat the UI model as a modeling artifact within the design workflow, not merely as a prototype output.",
+      "tags": ["constraint"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-003",
+      "source_file": "artifacts/Source Materials/s5-modeling-integration.md",
+      "location_hint": "Original Request, sentence 3",
+      "text": "Create a use-case skill that builds a use-case model.",
+      "tags": ["functional"],
+      "confidence": 0.98
+    },
+    {
+      "id": "R-004",
+      "source_file": "artifacts/Source Materials/s5-modeling-integration.md",
+      "location_hint": "Original Request, sentence 3",
+      "text": "The use-case skill shall produce use-case scripts describing the detailed process for each modeled use case.",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-005",
+      "source_file": "artifacts/Source Materials/s5-modeling-integration.md",
+      "location_hint": "Original Request, sentence 4",
+      "text": "Keep the UI model, use-case model, domain model, and process model aligned.",
+      "tags": ["constraint"],
+      "confidence": 0.99
+    },
+    {
+      "id": "R-006",
+      "source_file": "artifacts/Source Materials/s5-modeling-decisions.md",
+      "location_hint": "Original Responses, bullet 3",
+      "text": "Replace S11 - UI Prototyping as a separate category with membership in S5 - Design & Visualization.",
+      "tags": ["constraint"],
+      "confidence": 0.99
+    },
+    {
+      "id": "R-007",
+      "source_file": "artifacts/Source Materials/s5-modeling-decisions.md",
+      "location_hint": "Original Responses, bullet 4",
+      "text": "Use cases shall describe actor interactions with an identified system boundary at every hierarchy level where such a boundary exists.",
+      "tags": ["functional"],
+      "confidence": 0.95
+    },
+    {
+      "id": "R-008",
+      "source_file": "artifacts/Source Materials/s5-modeling-decisions.md",
+      "location_hint": "Original Responses, bullet 5, sentence 1",
+      "text": "Use entities and system boundaries as the alignment contract across UI, use-case, domain, and process models.",
+      "tags": ["constraint"],
+      "confidence": 0.99
+    },
+    {
+      "id": "R-009",
+      "source_file": "artifacts/Source Materials/s5-modeling-decisions.md",
+      "location_hint": "Original Responses, bullet 5, sentence 2",
+      "text": "Perform model-alignment validation at the end of every modeling round.",
+      "tags": ["functional"],
+      "confidence": 0.99
+    },
+    {
+      "id": "R-010",
+      "source_file": "artifacts/Source Materials/s5-modeling-decisions.md",
+      "location_hint": "Original Responses, bullet 5, sentence 3",
+      "text": "Request clarification for unresolved model inconsistencies rather than treating them as aligned.",
+      "tags": ["functional"],
+      "confidence": 0.99
+    },
+    {
+      "id": "R-011",
+      "source_file": "artifacts/Source Materials/s5-modeling-decisions.md",
+      "location_hint": "Original Responses, bullet 6",
+      "text": "UI screens shall exist only within software-type boundaries.",
+      "tags": ["constraint"],
+      "confidence": 0.99
+    }
+  ],
+  "glossary_suspects": ["UI model", "Use-case model", "Use-case script", "Model alignment", "Software-type boundary"]
+}

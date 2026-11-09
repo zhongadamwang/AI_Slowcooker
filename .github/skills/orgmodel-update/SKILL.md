@@ -11,6 +11,10 @@ Systematically manages updates to organizational model documents and folder stru
 ## Intent
 Maintain the orgModel hierarchy with systematic updates to process documentation, domain models, collaboration diagrams, and test cases. Ensures organizational models remain current with evolving requirements while preserving existing content structure and maintaining cross-reference integrity.
 
+### Use-Case and UI Model Index Awareness (PRJ-07 integration)
+
+When a boundary folder this skill updates already has a `use-case-model.md`/`.json` (from `usecase-generatemodel`) and/or a `ui-model.md`/`.json` (from `ui-generatemodel`), this skill's updates to that folder's `main.md` must include them in its navigation/index content — alongside the existing `domain-model.md`/`process.md`/`collaboration.md`/`vocabulary.md`/`test-case-list.md` links — rather than silently omitting them because they predate this skill's own file set. This skill does **not** generate or modify `use-case-model.*`/`ui-model.*` content itself; it only ensures `main.md`'s navigation stays complete when those files exist. See [cross-model-alignment-contract.md](../model-validatealignment/references/cross-model-alignment-contract.md) Section 5 for the full additive file/folder layout these two new file types follow.
+
 ## Scope and Pipeline Position
 
 **Trigger**: Project analysis outputs — domain concept extraction ([domain-extractconcepts](../domain-extractconcepts/SKILL.md)), entity alignment ([domain-alignentities](../domain-alignentities/SKILL.md)), and collaboration diagram data ([diagram-generatecollaboration](../diagram-generatecollaboration/SKILL.md)).

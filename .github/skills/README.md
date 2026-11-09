@@ -50,9 +50,20 @@ Project ID: [YOUR-PROJECT-ID]
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `diagram-generatecollaboration` | Generate EDPS collaboration diagrams with stereotype classification and boundary validation (VR-1–VR-4 authoritative source) | domain artifacts | collaboration-diagrams.json/md, boundary_validation_report.json | → `hierarchy-management` |
-| `hierarchy-management` | Decompose control-type participants into sub-processes; manage sub-folders, cross-references, hierarchy index, and scale metrics | collaboration.md | Level N+1 sub-folder, hierarchy-metadata.json, hierarchy-index.md | → `documentation-automation` |
+| `hierarchy-management` | Decompose control-type participants into sub-processes; manage sub-folders, cross-references, hierarchy index, scale metrics, and `## System Boundary` declaration (boundary_type, PRJ-07) | collaboration.md | Level N+1 sub-folder, hierarchy-metadata.json, hierarchy-index.md | → `documentation-automation` |
 | `documentation-automation` | Auto-generate level-calibrated main.md, process.md, collaboration.md, domain-model.md stubs for each hierarchy level | hierarchy-metadata.json, parent collaboration.md | Four doc files per level | → `orgmodel-update` |
 | `migration-tools` | Non-destructively migrate flat Project 1 diagrams to hierarchical boundary format | Existing collaboration.md files | Enhanced diagrams, migration-log.md | → `hierarchy-management` |
+| `usecase-generatemodel` | Generate a boundary-scoped use-case model and linked detailed scripts, for any explicitly-typed boundary (PRJ-07) | domain-model.md, process.md, collaboration.md, boundary_type | use-case-model.md/json, use-case-scripts/ | → `ui-generatemodel` (software boundaries) |
+| `ui-generatemodel` | Generate a software-boundary UI Model (UIModel/UIModelEntry/Aggregation) from its use-case model, closing the prior manual-authoring gap (PRJ-07) | use-case-model.json, domain-model.md | ui-model.md/json | → `model-validatealignment` |
+| `model-validatealignment` | Validate cross-model entity/boundary alignment at the end of every modeling round; non-bypassable across solo/traditional and standard/rapid/compliance (PRJ-07) | domain/process/use-case/UI models in round scope | alignment-report-[round-id].md/json | → `screen-generateinventory` (software boundaries with UI) |
+| `screen-generateinventory` | Generate a standalone, traceable screen inventory from a UI Model and requirements — entry point of the UI Prototyping pipeline | ui-model.json, requirements.json | screen-inventory.json/md | → `screen-generatelayout` |
+| `screen-generatelayout` | Generate a literal, implementation-ready Markdown + embedded HTML/CSS layout specification per screen | screen-inventory.json, ui-model.json | layout-spec.md (per screen) | → `screen-generatemockup` |
+| `screen-generatemockup` | Render a layout spec into a standalone, genuinely clickable HTML/JS mockup, opening via file:// with zero setup | layout-spec.md, screen-inventory.json | mockup.html (per screen) | → `screen-generateflow` |
+| `screen-generateflow` | Diagram navigation across the screen set in Mermaid, manually verified edge-by-edge against real mockup `<a href>` links | screen-inventory.json, all mockup.html files | interaction-flows.md | → `screen-assembledocument` |
+| `screen-assembledocument` | Assemble the consolidated UI design document (Markdown + JSON) summarizing and linking to all prior outputs — the durable handoff deliverable | screen-inventory.json, layout-spec.md, mockup.html, interaction-flows.md | design-document.md/json | → `screen-discussfeedback` |
+| `screen-discussfeedback` | Present mockups as a stakeholder discussion surface, capture structured feedback, and route it into change-management with no manual re-transcription | mockup.html, interaction-flows.md, stakeholder commentary | feedback-log.md → change-management | → Gate & orchestrator registration |
+
+**UI execution is conditional, S5 membership is not (PRJ-07, T06).** Every skill above is unconditionally catalogued under S5 — `usecase-generatemodel`/`model-validatealignment` apply to *every* boundary (software or not), and the six `screen-*` skills plus `ui-generatemodel` only ever *produce output* for explicitly `software`-typed boundaries with an actual UI requirement. A `standard`/`rapid`/`compliance` project with no software boundary at all still runs `usecase-generatemodel` and `model-validatealignment` against its non-software boundaries — it simply never reaches `ui-generatemodel`/`screen-*` because nothing in its model ever satisfies their own boundary-type precondition. See [`edps-workflow-orchestrator`](edps-workflow-orchestrator/SKILL.md)'s Skill Catalogue for the DAG prerequisite IDs (S32, S39, S40 alongside the existing S33–S38) and the Modeling Rounds section for round/report lifecycle details.
 
 ### S6 — Process & Change Management
 | Skill | Purpose | Input | Output | Next Step |
@@ -86,16 +97,6 @@ Project ID: [YOUR-PROJECT-ID]
 |-------|---------|-------|---------|-----------|
 | `edps-skill-navigator` | Intelligently orchestrate all EDPS skills from natural language requests (v1.2.0) | Natural language intent | Skill execution plan, workflow guidance | → Execute recommended skills |
 | `skill-creator` | Scaffold new EDPS-compliant skills following SKILL.md standard | Skill requirements | New SKILL.md + reference docs | → Implement skill |
-
-### S11 — UI Prototyping *(Project 06, in progress)*
-| Skill | Purpose | Input | Output | Next Step |
-|-------|---------|-------|---------|-----------|
-| `screen-generateinventory` | Generate a standalone, traceable screen inventory from a UI Model and requirements — entry point of the UI Prototyping pipeline | ui-model.json, requirements.json | screen-inventory.json/md | → `screen-generatelayout` |
-| `screen-generatelayout` | Generate a literal, implementation-ready Markdown + embedded HTML/CSS layout specification per screen | screen-inventory.json, ui-model.json | layout-spec.md (per screen) | → `screen-generatemockup` |
-| `screen-generatemockup` | Render a layout spec into a standalone, genuinely clickable HTML/JS mockup, opening via file:// with zero setup | layout-spec.md, screen-inventory.json | mockup.html (per screen) | → `screen-generateflow` |
-| `screen-generateflow` | Diagram navigation across the screen set in Mermaid, manually verified edge-by-edge against real mockup `<a href>` links | screen-inventory.json, all mockup.html files | interaction-flows.md | → `screen-assembledocument` |
-| `screen-assembledocument` | Assemble the consolidated UI design document (Markdown + JSON) summarizing and linking to all prior outputs — the durable handoff deliverable | screen-inventory.json, layout-spec.md, mockup.html, interaction-flows.md | design-document.md/json | → `screen-discussfeedback` |
-| `screen-discussfeedback` | Present mockups as a stakeholder discussion surface, capture structured feedback, and route it into change-management with no manual re-transcription | mockup.html, interaction-flows.md, stakeholder commentary | feedback-log.md → change-management | → Gate & orchestrator registration |
 
 ## Common Workflows
 

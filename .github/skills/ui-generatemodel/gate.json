@@ -1,0 +1,94 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S40",
+  "skill_name": "ui-generatemodel",
+  "version": "0.1.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates a software-boundary UI Model has been generated (or explicitly recorded as not applicable) from its use-case model, preserving the existing UIModel/UIModelEntry/Aggregation structure and stable UME identities",
+  "checks": [
+    {
+      "id": "ui_model_exists_or_non_applicability_recorded",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "A ui-model.json must exist for every software boundary in scope, even if its entries array is empty",
+      "artifacts": [
+        "ui-model.json"
+      ],
+      "remediation": "Run ui-generatemodel against the target boundary's use-case model; for non-software boundaries or software boundaries with no UI-worthy use cases, still write a minimal model with entries: [] and a generation_note, never omit the file entirely"
+    },
+    {
+      "id": "no_populated_model_for_non_software_boundary",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "A non-software or unknown-typed boundary's ui-model.json must have an empty entries array",
+      "file": "ui-model.json",
+      "applies_when": "boundary_type != 'software'",
+      "must_contain_pattern": "\"entries\":\\s*\\[\\]",
+      "remediation": "UI may only exist in explicitly software-typed boundaries (R-011, contract Section 2.2) \u2014 this is the single hardest line this skill must never cross"
+    },
+    {
+      "id": "entries_resolve_to_software_boundary",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every produced UIModelEntry (where boundary_ref is present) must reference a software-typed boundary",
+      "file": "ui-model.json",
+      "json_path": "$.entries[*].boundary_ref",
+      "remediation": "Confirm every entry's boundary_ref resolves to a boundary whose declared boundary_type is software, per contract Section 6"
+    },
+    {
+      "id": "existing_ui_model_schema_preserved",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every entry must retain the existing D-02 required fields (entry_id, ui_concept_name, domain_entity_refs, aggregation_description), unchanged in shape",
+      "file": "ui-model.json",
+      "json_path": "$.entries[*]",
+      "required_fields": ["entry_id", "ui_concept_name", "domain_entity_refs", "aggregation_description"],
+      "remediation": "The existing UIModel/UIModelEntry/Aggregation schema from D-02 (PRJ-06) is never restructured or had fields removed \u2014 only additive fields (boundary_ref, source_use_case_refs, generation_note) may be introduced"
+    },
+    {
+      "id": "generation_note_present_when_entries_empty",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "A model with zero entries must carry a generation_note explaining why",
+      "file": "ui-model.json",
+      "applies_when": "entries == []",
+      "must_contain": ["generation_note"],
+      "remediation": "An empty entries array must always be accompanied by an explicit generation_note \u2014 never a silent, unexplained absence of UI content"
+    },
+    {
+      "id": "no_entity_reference_without_resolution",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Entries' domain_entity_refs should be resolvable against the boundary's actual domain-model.md content, not merely well-formed IDs",
+      "file": "ui-model.json",
+      "must_contain_pattern": "\"domain_entity_refs\":\\s*\\[",
+      "remediation": "Confirm every entity reference actually appears in the cited boundary's domain-model.md \u2014 do not trust a use-case script's entity citation without checking, per the manifest-source-disagreement discipline established in T01"
+    },
+    {
+      "id": "changelog_present",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Every ui-model.md must include a changelog section",
+      "file": "ui-model.md",
+      "must_contain": ["## Changelog"],
+      "remediation": "Per D-02's existing Business Rule and R-610, every UIModel includes an in-document changelog, even at first generation"
+    },
+    {
+      "id": "entry_id_format_valid",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "UI Model Entry IDs should follow the existing UME-[###] convention",
+      "file": "ui-model.json",
+      "must_contain_pattern": "\"entry_id\":\\s*\"UME-\\d{3}\"",
+      "remediation": "Use the existing UME-[###] zero-padded 3-digit format from ui-prototyping-conventions.md \u2014 unchanged by this skill"
+    }
+  ],
+  "quality_score_weight": 0.07,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "soft",
+    "compliance": "hard"
+  }
+}

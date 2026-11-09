@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Job Status Update — Mockup (SCR-102)</title>
+<style>
+.screen--job-status { font-family: system-ui, sans-serif; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-width: 480px; }
+.detail-form { display: grid; grid-template-columns: 140px 1fr; gap: 0.5rem 1rem; padding: 1rem 0; }
+.btn { padding: 0.4rem 0.9rem; border: 1px solid #ccc; background: #f8f8f8; border-radius: 4px; cursor: pointer; font-size: 0.85rem; text-decoration: none; color: #333; display: inline-block; align-self: flex-start; }
+.btn--primary { background: #2563eb; color: white; border-color: #2563eb; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.dialog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+.dialog-overlay[hidden] { display: none; }
+.dialog { background: white; border-radius: 8px; padding: 1.5rem; min-width: 300px; }
+.dialog__actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<div class="screen screen--job-status">
+  <header class="screen__header"><h1>Job Status Update</h1></header>
+  <a class="btn" id="to-dispatch-link" href="../SCR-101/mockup.html" data-transition-target="SCR-101">← Back to Dispatch Queue</a>
+  <section class="screen__detail-section">
+    <dl class="detail-form">
+      <dt>Request</dt><dd>Equipment Rental — 2378</dd>
+      <dt>Current Status</dt><dd id="current-status">En Route</dd>
+      <dt>New Status</dt>
+      <dd>
+        <select id="new-status-select">
+          <option value="">(choose a status)</option>
+          <option value="On-Site">On-Site</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Complete">Complete</option>
+        </select>
+      </dd>
+    </dl>
+    <button class="btn btn--primary" id="update-status-btn" data-action="open-confirm-dialog" disabled>Update Status</button>
+  </section>
+
+  <div class="dialog-overlay" id="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title" hidden>
+    <div class="dialog">
+      <h2 id="confirm-dialog-title">Confirm Status Change</h2>
+      <p id="confirm-dialog-message">Change status to <strong id="confirm-dialog-value"></strong>?</p>
+      <div class="dialog__actions">
+        <button class="btn" id="confirm-cancel-btn" data-action="cancel">Cancel</button>
+        <button class="btn btn--primary" id="confirm-save-btn" data-action="save">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const statusSelect = document.getElementById('new-status-select');
+  const updateBtn = document.getElementById('update-status-btn');
+  const dialog = document.getElementById('confirm-dialog');
+  const dialogValue = document.getElementById('confirm-dialog-value');
+  const currentStatus = document.getElementById('current-status');
+  const cancelBtn = document.getElementById('confirm-cancel-btn');
+  const saveBtn = document.getElementById('confirm-save-btn');
+
+  statusSelect.addEventListener('change', () => {
+    updateBtn.disabled = !statusSelect.value;
+  });
+
+  updateBtn.addEventListener('click', () => {
+    dialogValue.textContent = statusSelect.value;
+    dialog.hidden = false;
+    cancelBtn.focus();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    dialog.hidden = true;
+    updateBtn.focus();
+  });
+
+  saveBtn.addEventListener('click', () => {
+    currentStatus.textContent = statusSelect.value;
+    dialog.hidden = true;
+    updateBtn.focus();
+  });
+</script>
+</body>
+</html>

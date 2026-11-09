@@ -572,6 +572,12 @@ This operation never touches folder structure, archetype, or any other metadata 
 - **Ordering rule**: This skill creates the folder → UI Prototyping skills fill the content, the same ordering convention used for `documentation-automation` and `orgmodel-update` below
 - **Non-standard categories are opt-in**: Unlike `Documentation/` (tied to archetype), `UI Prototype/` is tied to whether the project actually uses these skills, not to archetype alone — do not create it by default for every standard/hierarchical project
 
+### `usecase-generatemodel` / `ui-generatemodel` / `model-validatealignment` *(PRJ-07 integration)*
+- **Trigger**: When a hierarchical project's boundary folder (created by `hierarchy-management`) has its `boundary_type` confirmed (no longer `unknown`) in its `## System Boundary` section
+- **Folder dependency**: This skill does not create `use-case-model.md`/`.json`, `use-case-scripts/`, or `ui-model.md`/`.json` at project-initialization time — those are generated per-boundary, on demand, by `usecase-generatemodel`/`ui-generatemodel` once a boundary exists and its type is confirmed, not scaffolded preemptively for every boundary at init
+- **`main.md` directory-documentation rule applies unchanged**: once `usecase-generatemodel` creates a `use-case-scripts/` folder, its own `main.md` (a meaningful index of that boundary's scripts, per `usecase-generatemodel`'s own Step 4) follows this skill's general `main.md` rules above — no new exception is introduced
+- **Ordering rule**: `hierarchy-management` creates the boundary folder with `boundary_type: unknown` → user/developer confirms the type → `usecase-generatemodel` (and, for software boundaries, `ui-generatemodel`) populate that boundary's own model files → `model-validatealignment` validates at end of round. This skill is not in that chain past creating the initial boundary-agnostic project tree.
+
 ### `goals-extract`
 - Output can seed the `## Success Criteria` section of `main.md` after project initialization.
 

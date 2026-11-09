@@ -1,0 +1,24 @@
+{
+  "inventory_id": "SCRINV-PRJ07-001",
+  "project_id": "PRJ-07-WORKED-EXAMPLE",
+  "generated_at": "2026-11-08T00:00:00Z",
+  "source_files": ["ui-model.json (UIM-CHILD-SW)", "use-case-model.json (UCM-CHILD-SW)"],
+  "screens": [
+    {
+      "screen_id": "SCR-101",
+      "name": "Dispatch Queue",
+      "purpose": "Let a Field Operations Coordinator see unscheduled ServiceRequests alongside available Technicians, and assign a Technician + time slot to a request",
+      "ui_model_ref": "UME-001",
+      "requirement_refs": ["UC-001"],
+      "import_origin": "generated"
+    },
+    {
+      "screen_id": "SCR-102",
+      "name": "Job Status Update",
+      "purpose": "Let a Technician update a single ServiceRequest's status as field work progresses",
+      "ui_model_ref": "UME-002",
+      "requirement_refs": ["UC-002"],
+      "import_origin": "generated"
+    }
+  ]
+}

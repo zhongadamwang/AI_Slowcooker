@@ -1,0 +1,96 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S32",
+  "skill_name": "usecase-generatemodel",
+  "version": "0.1.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates a boundary-scoped use-case model has been generated with complete actor/boundary/requirement traceability and linked detailed scripts",
+  "checks": [
+    {
+      "id": "use_case_model_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "A use-case model must exist for the target boundary",
+      "artifacts": [
+        "use-case-model.json"
+      ],
+      "remediation": "Run usecase-generatemodel against the target boundary's domain/process/collaboration documents"
+    },
+    {
+      "id": "boundary_type_declared_before_generation",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "The model's boundary_ref must carry an explicit boundary_type, never left undeclared",
+      "file": "use-case-model.json",
+      "json_path": "$.boundary_ref.boundary_type",
+      "must_contain_pattern": "software|non-software",
+      "remediation": "This skill must not generate a model against a boundary whose boundary_type is unknown or undeclared (contract Section 2.1) \u2014 stop and surface a clarification question instead"
+    },
+    {
+      "id": "use_cases_traced_to_actor_and_boundary",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every use case must carry a primary_actor_ref and a boundary_ref matching the model's own boundary",
+      "file": "use-case-model.json",
+      "json_path": "$.use_cases[*].primary_actor_ref",
+      "required_fields": ["primary_actor_ref", "boundary_ref"],
+      "remediation": "Ensure every use case references exactly one primary actor and the same boundary_id as its owning model"
+    },
+    {
+      "id": "use_cases_traced_to_requirements",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every use case must carry at least one requirement reference",
+      "file": "use-case-model.json",
+      "json_path": "$.use_cases[*].requirement_refs",
+      "required_fields": ["requirement_refs"],
+      "remediation": "A use case with no supporting requirement should be reconsidered, not silently generated"
+    },
+    {
+      "id": "every_use_case_has_linked_script",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Every use case's script_ref must resolve to an existing script file with required sections",
+      "file": "use-case-model.json",
+      "json_path": "$.use_cases[*].script_ref",
+      "must_contain_pattern": "use-case-scripts/UC-\\d{3}-.+\\.md",
+      "remediation": "Generate a linked script at use-case-scripts/UC-[###]-[slug].md for every modeled use case, with Trigger, Preconditions, Main Flow, and Postconditions sections at minimum"
+    },
+    {
+      "id": "no_ui_references_for_non_software_boundary",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Scripts for non-software or unknown-typed boundaries must never contain a UI References section",
+      "file": "use-case-scripts/*.md",
+      "must_not_contain_pattern": "## UI References",
+      "applies_when": "boundary_type != 'software'",
+      "remediation": "UI References sections are only permitted when boundary_type is explicitly software AND a concrete Screen/UIModelEntry mapping exists for that step (contract Section 2.2)"
+    },
+    {
+      "id": "use_case_id_scoped_per_boundary",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Use case IDs should follow the UC-[###] convention, scoped per boundary",
+      "file": "use-case-model.json",
+      "must_contain_pattern": "\"use_case_id\":\\s*\"UC-\\d{3}\"",
+      "remediation": "Use the UC-[###] zero-padded 3-digit format, scoped per boundary per contract Section 3.3 (not globally unique across the project)"
+    },
+    {
+      "id": "revision_preserves_identity",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "A changelog entry should be present documenting revision history, including any flagged unresolved references",
+      "file": "use-case-model.md",
+      "must_contain": ["## Changelog"],
+      "remediation": "Document revision history; flag unresolved requirement/process references explicitly rather than silently dropping or renumbering existing use cases"
+    }
+  ],
+  "quality_score_weight": 0.07,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "soft",
+    "compliance": "hard"
+  }
+}

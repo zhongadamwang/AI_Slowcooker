@@ -1,0 +1,125 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S39",
+  "skill_name": "model-validatealignment",
+  "version": "1.0.0",
+  "gate_type": "completion",
+  "severity": "hard",
+  "description": "Validates the shared cross-model alignment contract, its fixture suite, and a real deterministic validator that produces round-scoped PASS/NEEDS_CLARIFICATION/INVALID_INPUT reports with staleness-aware revision tracking.",
+  "checks": [
+    {
+      "id": "contract_document_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "The shared alignment contract reference must exist",
+      "artifacts": [
+        ".github/skills/model-validatealignment/references/cross-model-alignment-contract.md"
+      ],
+      "remediation": "Author the cross-model alignment contract per T01's acceptance criteria"
+    },
+    {
+      "id": "fixtures_cover_required_scenarios",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "All five required fixture scenarios must be present",
+      "artifacts": [
+        ".github/skills/model-validatealignment/fixtures/three-level-valid/expected-report.json",
+        ".github/skills/model-validatealignment/fixtures/unknown-boundary-type/expected-report.json",
+        ".github/skills/model-validatealignment/fixtures/missing-applicable-model/expected-report.json",
+        ".github/skills/model-validatealignment/fixtures/manifest-source-disagreement/expected-report.json",
+        ".github/skills/model-validatealignment/fixtures/software-boundary-no-ui-required/expected-report.json"
+      ],
+      "remediation": "Each fixture must demonstrate one required acceptance scenario per T01's Acceptance Criteria and Release Acceptance sections"
+    },
+    {
+      "id": "three_level_fixture_has_non_software_parent_and_collision",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "The three-level fixture must include a non-software parent, software child, and a scoped entity-name collision",
+      "file": ".github/skills/model-validatealignment/fixtures/three-level-valid/root-boundary/child-software-boundary/domain-model.md",
+      "must_contain": ["E-002", "scoped entity-name collision"],
+      "remediation": "Ensure the fixture's child-software-boundary domain-model.md documents the deliberate E-002 collision with root-boundary, per Acceptance Criterion 2"
+    },
+    {
+      "id": "unknown_boundary_type_not_defaulted",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "The unknown-boundary-type fixture's expected report must show NEEDS_CLARIFICATION, never PASS",
+      "file": ".github/skills/model-validatealignment/fixtures/unknown-boundary-type/expected-report.json",
+      "must_contain": ["\"status\": \"NEEDS_CLARIFICATION\""],
+      "remediation": "An undeclared boundary_type must never resolve to a silent PASS in either direction (software or non-software)"
+    },
+    {
+      "id": "boundary_stereotype_not_conflated_with_type",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "The contract must explicitly state boundary stereotype and boundary_type are independent axes",
+      "file": ".github/skills/model-validatealignment/references/cross-model-alignment-contract.md",
+      "must_contain": ["independent axes", "Do not conflate boundary type with participant stereotype"],
+      "remediation": "T01 explicitly requires: do not conflate boundary type with participant stereotype"
+    },
+    {
+      "id": "skill_id_ledger_preserves_existing_ids",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "The contract must document that S11 and S33-S38 are preserved, not renumbered",
+      "file": ".github/skills/model-validatealignment/references/cross-model-alignment-contract.md",
+      "must_contain": ["No existing skill ID is renumbered", "S33\u2013S38"],
+      "remediation": "Confirm new skill IDs (S32, S39, S40) are selected without renumbering S11 or S33-S38, per T01's acceptance criteria"
+    },
+    {
+      "id": "validator_tests_pass",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "The executable test suite should exist and be runnable (soft: actual execution is a manual/CI verification step, not statically checkable by this gate)",
+      "file": ".github/skills/model-validatealignment/scripts/test_alignment_contract.py",
+      "must_contain": ["def test_collision_resolves_as_two_different_entities", "def test_unknown_type_yields_needs_clarification", "def test_missing_use_case_model_is_invalid_input", "def test_false_entity_claim_is_caught", "def test_empty_ui_entries_in_software_boundary_passes"],
+      "remediation": "Run: python3 -m unittest test_alignment_contract -v from scripts/ and confirm all tests pass"
+    },
+    {
+      "id": "report_generation_exists",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "The report-rendering module (Markdown/JSON per contract Section 4.2) must exist",
+      "artifacts": [
+        ".github/skills/model-validatealignment/scripts/alignment_report.py"
+      ],
+      "remediation": "Implement report_to_json/report_to_markdown/write_report per contract Section 4.2's schema (T04)"
+    },
+    {
+      "id": "revision_staleness_tracking_exists",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Round/revision staleness tracking must be implemented, with no severity/mode parameter that could bypass it",
+      "file": ".github/skills/model-validatealignment/scripts/alignment_report.py",
+      "must_contain": ["def is_stale", "def resolve_round_for_resume"],
+      "remediation": "Implement contract Section 4.4's revision-invalidation: an edited model within a round's scope must invalidate that round's PASS; resume must check source_model_versions, never trust a stale report"
+    },
+    {
+      "id": "end_to_end_fixture_runner_exists_and_passes",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "An executable runner that validates all five fixtures end-to-end (not just in-memory unit assertions) must exist",
+      "artifacts": [
+        ".github/skills/model-validatealignment/scripts/run_fixtures.py"
+      ],
+      "remediation": "Run: python3 run_fixtures.py from scripts/ and confirm 'All 5 fixtures: generated status matches expected-report.json status.'"
+    },
+    {
+      "id": "report_tests_pass",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "T04's additional test coverage (deterministic output, revision invalidation, report rendering) should exist and be runnable",
+      "file": ".github/skills/model-validatealignment/scripts/test_alignment_report.py",
+      "must_contain": ["class DeterministicOutputTests", "class ReportRenderingTests", "class RevisionInvalidationTests"],
+      "remediation": "Run: python3 -m unittest test_alignment_report -v from scripts/ and confirm all tests pass before considering T04 complete"
+    }
+  ],
+  "quality_score_weight": 0.08,
+  "bypass_allowed": false,
+  "workflow_archetypes": {
+    "standard": "hard",
+    "rapid": "hard",
+    "compliance": "hard"
+  }
+}

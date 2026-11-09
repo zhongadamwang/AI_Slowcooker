@@ -1,0 +1,75 @@
+{
+  "project_id": "PRJ-07",
+  "generated_at": "2026-11-07T23:35:39.225-06:00",
+  "total_tasks": 7,
+  "task_categories": ["design", "development", "integration", "testing"],
+  "phases": [
+    {"phase_id": "P1", "phase_name": "Foundation", "tasks": ["T01"], "dependencies": [], "estimated_duration": "2.00 person-days"},
+    {"phase_id": "P2", "phase_name": "Modeling and Validation", "tasks": ["T02", "T03", "T04"], "dependencies": ["P1"], "estimated_duration": "8.50 person-days; 3.33 elapsed days with three independent implementers"},
+    {"phase_id": "P3", "phase_name": "Integration", "tasks": ["T05", "T06"], "dependencies": ["P2"], "estimated_duration": "5.50 person-days"},
+    {"phase_id": "P4", "phase_name": "Release Verification", "tasks": ["T07"], "dependencies": ["P3"], "estimated_duration": "3.17 person-days"}
+  ],
+  "tasks": [
+    {
+      "task_id": "T01", "title": "Define Entity, Boundary, and Modeling-Round Contracts", "description": "Specify minimal shared references, applicability, versions, and validation ownership.", "category": "design", "phase": "P1", "priority": "high", "estimated_effort": 2.00,
+      "task_file": "tasks/T01-define-modeling-contract.md",
+      "acceptance_criteria": [{"criterion": "Contract and valid/invalid fixtures define scoped identities, explicit boundary types, source-backed validation, and round outcomes without renumbering IDs.", "testable": true, "definition_of_done": "Schema/reference checks and documented compatibility review pass."}],
+      "dependencies": [], "source_requirements": ["R-002", "R-005", "R-007", "R-008", "R-009", "R-010", "R-011"], "source_goals": ["G-01", "G-02", "G-03"],
+      "deliverables": ["Shared modeling contract", "Schemas and fixtures", "Compatibility and applicability rules"],
+      "risk_factors": [{"risk": "Boundary type conflated with stereotype", "mitigation": "Explicit typing and counterexample fixtures"}]
+    },
+    {
+      "task_id": "T02", "title": "Build Boundary-Scoped Use-Case Models and Scripts", "description": "Implement usecase-generatemodel for actor interactions at all identified boundary levels.", "category": "development", "phase": "P2", "priority": "high", "estimated_effort": 3.17,
+      "task_file": "tasks/T02-build-use-case-skill.md",
+      "acceptance_criteria": [{"criterion": "Every use case has a linked detailed script with boundary/actor references across a three-level example including non-software boundaries.", "testable": true, "definition_of_done": "Model/script coverage, stable-ID revision, and invalid-input tests pass."}],
+      "dependencies": [{"depends_on": "T01", "dependency_type": "prerequisite"}], "source_requirements": ["R-003", "R-004", "R-007", "R-008"], "source_goals": ["G-02", "G-03"],
+      "deliverables": ["Use-case skill and gate", "Model/script templates", "Examples and tests"],
+      "risk_factors": [{"risk": "Use cases restricted to leaf software systems", "mitigation": "Non-software and system-actor fixtures"}]
+    },
+    {
+      "task_id": "T03", "title": "Build Software-Boundary UI Models", "description": "Implement ui-generatemodel preserving existing entry aggregation and screen traceability.", "category": "development", "phase": "P2", "priority": "high", "estimated_effort": 2.00,
+      "task_file": "tasks/T03-build-ui-model-skill.md",
+      "acceptance_criteria": [{"criterion": "UI entries resolve to software boundaries and scoped entities; non-software or software-without-UI cases do not create screens.", "testable": true, "definition_of_done": "UI schema compatibility, applicability, unknown-type, and revision tests pass."}],
+      "dependencies": [{"depends_on": "T01", "dependency_type": "prerequisite"}], "source_requirements": ["R-002", "R-005", "R-008", "R-011"], "source_goals": ["G-01", "G-03"],
+      "deliverables": ["UI-model skill and gate", "Extended existing UI contract", "Examples and tests"],
+      "risk_factors": [{"risk": "Competing UI schema breaks consumers", "mitigation": "Preserve existing IDs/fields and singular screen references"}]
+    },
+    {
+      "task_id": "T04", "title": "Build Shared Model-Alignment Validation", "description": "Implement model-validatealignment with deterministic source-backed checks and clarification.", "category": "development", "phase": "P2", "priority": "high", "estimated_effort": 3.33,
+      "task_file": "tasks/T04-build-alignment-validator.md",
+      "acceptance_criteria": [{"criterion": "Entity/boundary conflicts, stale or invalid input, unknown UI typing, and source/manifest disagreement never produce alignment success.", "testable": true, "definition_of_done": "Positive and negative deterministic validator tests pass with item-level evidence."}],
+      "dependencies": [{"depends_on": "T01", "dependency_type": "prerequisite"}], "source_requirements": ["R-005", "R-008", "R-009", "R-010", "R-011"], "source_goals": ["G-03"],
+      "deliverables": ["Alignment skill and non-bypassable gate", "Validator and fixtures", "Reports and clarification procedure"],
+      "risk_factors": [{"risk": "Detached manifest falsely passes", "mitigation": "Check actual source artifact definitions and versions"}]
+    },
+    {
+      "task_id": "T05", "title": "Wire Existing Model Producers and UI Consumers", "description": "Connect shared references and validation into existing modeling, prototype, initialization, and change surfaces.", "category": "integration", "phase": "P3", "priority": "high", "estimated_effort": 2.17,
+      "task_file": "tasks/T05-integrate-existing-modeling-skills.md",
+      "acceptance_criteria": [{"criterion": "All model artifacts validate together, six screen skills preserve behavior, and affected changes invalidate reports.", "testable": true, "definition_of_done": "Producer/consumer integration tests and existing prototype regressions pass."}],
+      "dependencies": [{"depends_on": "T02", "dependency_type": "prerequisite"}, {"depends_on": "T03", "dependency_type": "prerequisite"}, {"depends_on": "T04", "dependency_type": "prerequisite"}], "source_requirements": ["R-001", "R-002", "R-005", "R-007", "R-008", "R-009", "R-010", "R-011"], "source_goals": ["G-01", "G-02", "G-03"],
+      "deliverables": ["Updated modeling/screen instructions and gates", "Initialization and change handoffs", "Compatibility examples"],
+      "risk_factors": [{"risk": "Prototype traceability/behavior regresses", "mitigation": "Preserve established contracts and run regression suite"}]
+    },
+    {
+      "task_id": "T06", "title": "Integrate S5 Membership and Modeling-Round Lifecycle", "description": "Update orchestration/routing/categories and persistent round validation without cyclic DAGs or ID changes.", "category": "integration", "phase": "P3", "priority": "high", "estimated_effort": 3.33,
+      "task_file": "tasks/T06-integrate-s5-workflow-rounds.md",
+      "acceptance_criteria": [{"criterion": "S11 category is removed but skill IDs retained; current validation is required across round revision/resume and mode/archetype combinations.", "testable": true, "definition_of_done": "Catalog, routing, DAG, applicability, and non-bypassable round tests pass."}],
+      "dependencies": [{"depends_on": "T05", "dependency_type": "prerequisite"}], "source_requirements": ["R-001", "R-002", "R-006", "R-009", "R-010", "R-011"], "source_goals": ["G-01", "G-03"],
+      "deliverables": ["Updated coordinator/navigator/templates", "State versioning notes", "Gates and routing tests"],
+      "risk_factors": [{"risk": "Legacy states or solo/rapid bypass produce false completion", "mitigation": "Preserve IDs and enforce fresh non-bypassable alignment evidence"}]
+    },
+    {
+      "task_id": "T07", "title": "Verify End-to-End Alignment and Publish Handoff", "description": "Prove all requirements with multi-level worked examples, negative scenarios, and actual prototype interactions.", "category": "testing", "phase": "P4", "priority": "high", "estimated_effort": 3.17,
+      "task_file": "tasks/T07-verify-and-document-release.md",
+      "acceptance_criteria": [{"criterion": "11/11 requirements have passing evidence and actual navigation/dialog verification complements static tests.", "testable": true, "definition_of_done": "Focused tests, worked workflow, browser/manual walkthrough, and release guide are complete."}],
+      "dependencies": [{"depends_on": "T06", "dependency_type": "prerequisite"}], "source_requirements": ["R-001", "R-002", "R-003", "R-004", "R-005", "R-006", "R-007", "R-008", "R-009", "R-010", "R-011"], "source_goals": ["G-01", "G-02", "G-03"],
+      "deliverables": ["Worked example and negative fixtures", "Acceptance evidence matrix", "Modeling/clarification guide and handoff"],
+      "risk_factors": [{"risk": "Static checks mistaken for runtime verification", "mitigation": "Observe cross-page navigation and dialog behavior"}]
+    }
+  ],
+  "dependency_graph": {
+    "critical_path": ["T01", "T04", "T05", "T06", "T07"],
+    "parallel_tracks": [{"track_name": "Independent contract-based implementations after T01", "tasks": ["T02", "T03", "T04"]}],
+    "note": "Parallel implementation uses shared fixtures; runtime model-generation prerequisites are separate. Solo schedule serializes all work."
+  }
+}
