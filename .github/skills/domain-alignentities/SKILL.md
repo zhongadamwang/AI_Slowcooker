@@ -11,6 +11,10 @@ Align extracted domain concepts with existing organizational domain models and s
 ## Intent
 Systematically compare new domain concepts extracted from requirements against existing organizational domain models, vocabularies, and standards. Identifies mappings, conflicts, and alignment opportunities to maintain consistency across projects while supporting domain model evolution.
 
+### Boundary-Scoped Entity References (PRJ-07 integration)
+
+When the target organizational model is boundary-decomposed (per `hierarchy-management`'s `[NN]-[Name]Boundary/` structure), every `extracted_entity`/`target_entity` in this skill's output must additionally resolve to a [Scoped Entity Reference](../model-validatealignment/references/cross-model-alignment-contract.md#11-scoped-entity-reference) — `(scope, entity_id)`, never `entity_id` alone — so that `model-validatealignment` can check alignment without re-deriving which boundary an entity belongs to. This does not change this skill's existing alignment logic or output schema; it adds a `scope` field (the boundary path, e.g., `root-boundary/child-software-boundary/`) alongside each existing `extracted_entity`/`target_entity` object, populated from the boundary folder this skill is currently operating within. A flat (non-hierarchical) project has a single implicit scope and may omit this field, exactly as the contract's own Section 1.1 describes scope as meaningful primarily when entity-name collisions across boundaries are possible.
+
 ## Inputs
 - **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
 - **References**: Organizational domain models (`orgModel/**/*domain-model.md`)
@@ -396,6 +400,10 @@ When alignment results indicate changes to domain models, this skill can trigger
 5. **Preserve existing styling** and layout where possible
 
 ## Cross-Skill Integration
+
+### Boundary-Scoped Alignment (PRJ-07 integration)
+
+This skill's entity alignments are a direct input to [`model-validatealignment`](../model-validatealignment/SKILL.md)'s end-of-round validation — specifically, its check that a `UIModelEntry`'s `domain_entity_refs` resolve to entities actually defined in the cited boundary's `domain-model.md` (contract Section 6). Nothing in this skill's own responsibility changes: it still produces alignment mappings between extracted and organizational entities. The only addition is populating `scope` on each entity reference when operating within a boundary-decomposed hierarchy, so downstream validation has a *** to check without re-deriving it.
 
 ### Input Dependencies:
 - domain-extractconcepts skill → domain-concepts.json

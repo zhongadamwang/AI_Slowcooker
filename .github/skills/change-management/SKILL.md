@@ -259,6 +259,7 @@ def generate_change_id(change_type, changes_directory):
 - **Task Planning**: New changes may spawn additional tasks or modify existing ones
 - **Status Reporting**: Changes feed into project status and progress tracking
 - **Document Management**: Changes integrate with overall project documentation structure
+- **`model-validatealignment` *(PRJ-07 integration, conditional)***: When a change document's `impact_analysis.affected_documents` includes a boundary's `domain-model.md`, `use-case-model.json`, or `ui-model.json` (i.e., the change affects a model under T01's cross-model alignment contract), add a note to that change document's Implementation Plan: "This change affects a modeled boundary; a fresh alignment round ([cross-model-alignment-contract.md](../model-validatealignment/references/cross-model-alignment-contract.md) Section 4.1) is required after implementation, before this boundary's prior round report can be trusted again." This skill does **not** invoke `model-validatealignment` itself or alter its own output schema — it only ensures the change document makes the revalidation obligation visible, exactly as `screen-discussfeedback` already routes UI feedback into this skill without this skill needing new fields to receive it. Most change documents (affecting non-modeled files, or projects without PRJ-07's modeling layer in use) have nothing to add here.
 
 ## AI Conversation Patterns
 

@@ -63,6 +63,16 @@
       "file": "artifacts/UI Prototype/screen-inventory.json",
       "must_contain_pattern": "\"screen_id\":\\s*\"SCR-\\d{3}\"",
       "remediation": "Use the SCR-[###] zero-padded 3-digit format defined in artifacts/Documentation/ui-prototyping-conventions.md"
+    },
+    {
+      "id": "ui_model_traces_to_software_boundary",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "PRJ-07 integration (conditional): when the project's ui-model.json carries a boundary_ref (produced by ui-generatemodel), every screen's ui_model_ref should resolve to an entry whose boundary_ref names an explicitly software-typed boundary",
+      "file": "artifacts/UI Prototype/screen-inventory.json",
+      "applies_when": "ui-model.json entries carry a boundary_ref field",
+      "must_contain_pattern": "\"ui_model_ref\":\\s*\"UME-\\d{3}\"",
+      "remediation": "This check is soft and conditional — legacy ui-model.json files predating ui-generatemodel (PRJ-07) have no boundary_ref field and are unaffected. When present, a screen tracing to a UIModelEntry whose boundary_ref is non-software or unknown is a model-validatealignment finding (contract Section 2.2/6), not solely this gate's concern — this check exists as an early, non-blocking signal at the screen-inventory stage."
     }
   ],
   "quality_score_weight": 0.07,

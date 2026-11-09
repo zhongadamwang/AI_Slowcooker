@@ -11,6 +11,10 @@ Systematically combine new domain models and processes into existing organizatio
 ## Intent
 Implement comprehensive model integration that analyzes integration points, resolves entity mapping conflicts, maintains model coherence, and supports progressive deployment with rollback capabilities. Follows EDP methodology principles for minimal disruption while ensuring cross-process consistency and stakeholder impact analysis.
 
+### Boundary and Use-Case/UI Model Awareness (PRJ-07 integration)
+
+When target models include boundary-decomposed hierarchies with use-case and/or UI models (per `usecase-generatemodel`/`ui-generatemodel`, PRJ-07), integration points touching entities that a use case or `UIModelEntry` already references must preserve those references rather than silently breaking them. Specifically: if this skill's `entity_integration` renames, merges, or specializes an entity that appears in a boundary's `use-case-model.json` (`referenced_entities`, via its scripts' Main Flow entity citations) or `ui-model.json` (`domain_entity_refs`), the integration plan must flag those as **affected use cases/UI entries requiring a fresh modeling round** (see [cross-model-alignment-contract.md](../model-validatealignment/references/cross-model-alignment-contract.md) Section 4.1) — not merely as a stakeholder-impact note. This is additive to the existing `integration_points`/`conflict_resolutions` schema: add an optional `affected_use_case_refs`/`affected_ui_model_refs` array to an integration point when applicable; omit entirely when a boundary has no use-case/UI model yet (most integrations, especially early in a project, will have nothing to flag here).
+
 ## Inputs
 - **Primary**: `projects/[project-name]/artifacts/Analysis/domain-alignment.json` (from domain-alignentities skill)
 - **Secondary**: `projects/[project-name]/artifacts/Analysis/domain-newconcepts.json` (from domain-proposenewconcepts skill)
@@ -349,6 +353,7 @@ for each integration_point:
 - **domain-proposenewconcepts**: Gap analysis and new concept definitions
 - **orgmodel-update**: Target model update execution
 - **change-management**: Integration tracking and approval workflow
+- **model-validatealignment** *(PRJ-07, conditional)*: when a boundary has a use-case/UI model, this skill's entity-integration plan should flag affected `use_case_id`/`entry_id` references per the Boundary and Use-Case/UI Model Awareness section above, so a fresh alignment round can be triggered rather than silently invalidating those references
 
 ## Success Criteria
 - All integration points successfully processed
