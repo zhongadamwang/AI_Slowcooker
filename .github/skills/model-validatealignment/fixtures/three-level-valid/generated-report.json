@@ -1,0 +1,27 @@
+{
+  "round_id": "ROUND-FIXTURE-001",
+  "boundary_scope": [
+    {
+      "boundary_id": "BND-ROOT",
+      "boundary_type": "non-software"
+    },
+    {
+      "boundary_id": "BND-CHILD-SW",
+      "boundary_type": "software"
+    },
+    {
+      "boundary_id": "BND-GRANDCHILD",
+      "boundary_type": "software"
+    }
+  ],
+  "source_model_versions": {
+    "domain_model": "fixture-v1",
+    "process_model": "fixture-v1 (not exercised by this fixture)",
+    "use_case_model": "fixture-v1 (not exercised by this fixture)",
+    "ui_model": null
+  },
+  "status": "PASS",
+  "findings": [],
+  "clarification_questions": [],
+  "generated_at": "2026-11-08T00:00:00Z"
+}

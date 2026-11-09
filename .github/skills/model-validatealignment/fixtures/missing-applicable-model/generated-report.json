@@ -1,0 +1,28 @@
+{
+  "round_id": "ROUND-FIXTURE-003",
+  "boundary_scope": [
+    {
+      "boundary_id": "BND-ORDER-INTAKE",
+      "boundary_type": "software"
+    }
+  ],
+  "source_model_versions": {
+    "domain_model": "fixture-v1",
+    "process_model": "fixture-v1",
+    "use_case_model": "MISSING",
+    "ui_model": "MISSING"
+  },
+  "status": "INVALID_INPUT",
+  "findings": [
+    {
+      "finding_id": "F-001",
+      "severity": "error",
+      "description": "use-case-model.json is required for boundary BND-ORDER-INTAKE (a software boundary in round scope) but does not exist. Reported as a missing applicable model, not silently treated as not-applicable.",
+      "affected_models": [
+        "use-case"
+      ]
+    }
+  ],
+  "clarification_questions": [],
+  "generated_at": "2026-11-08T00:00:00Z"
+}

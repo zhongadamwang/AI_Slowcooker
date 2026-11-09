@@ -1,0 +1,31 @@
+{
+  "round_id": "ROUND-FIXTURE-002",
+  "boundary_scope": [
+    {
+      "boundary_id": "BND-UNCLASSIFIED",
+      "boundary_type": "unknown"
+    }
+  ],
+  "source_model_versions": {
+    "domain_model": "fixture-v1",
+    "process_model": "fixture-v1",
+    "use_case_model": "fixture-v1",
+    "ui_model": null
+  },
+  "status": "NEEDS_CLARIFICATION",
+  "findings": [
+    {
+      "finding_id": "F-001",
+      "severity": "clarification-needed",
+      "description": "Boundary BND-UNCLASSIFIED has no explicitly declared boundary_type. Dependent use-case/UI content cannot proceed until this is resolved.",
+      "affected_models": [
+        "use-case",
+        "ui"
+      ]
+    }
+  ],
+  "clarification_questions": [
+    "Is BND-UNCLASSIFIED a software system with its own UI, or a non-software real-world boundary? This must be answered and recorded before any UIModelEntry may reference it."
+  ],
+  "generated_at": "2026-11-08T00:00:00Z"
+}

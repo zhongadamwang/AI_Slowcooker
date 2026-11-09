@@ -11,7 +11,7 @@ Owns the shared cross-model alignment contract and the end-of-round validation t
 
 ## Status
 
-**T01 deliverable (this file + its references/fixtures/scripts) is complete.** The full generation-time validator that parses real project file trees is scope for this skill's own later build-out task, not T01. T01's job was to define and prove the shared contract (`references/cross-model-alignment-contract.md`) and ship a deterministic, executable validator skeleton (`scripts/alignment_validator.py`) proven against five fixtures (`scripts/test_alignment_contract.py`, all passing).
+**T01 and T04 deliverables are both complete.** T01 defined and proved the shared contract (`references/cross-model-alignment-contract.md`) with a deterministic validator skeleton (`scripts/alignment_validator.py`) proven against five fixtures. T04 completed the real generation-time concerns T01 explicitly deferred: report rendering to Markdown/JSON per contract Section 4.2 (`scripts/alignment_report.py`), round/revision staleness tracking per contract Section 4.4 (`is_stale`/`resolve_round_for_resume`), and an end-to-end fixture runner (`scripts/run_fixtures.py`) that writes real `generated-report.md`/`.json` files for all five fixtures and confirms every one matches its `expected-report.json` status — not just in-memory unit assertions.
 
 ## Intent
 
@@ -58,7 +58,13 @@ That document is authoritative for:
 
 ## Fixtures and Proof
 
-See [`fixtures/`](fixtures/) for five worked scenarios (three-level-valid, unknown-boundary-type, missing-applicable-model, manifest-source-disagreement, software-boundary-no-ui-required), each with a `scenario.md` and an `expected-report.json`. [`scripts/test_alignment_contract.py`](scripts/test_alignment_contract.py) runs the validator skeleton against all five and asserts the documented outcome — run `python3 -m unittest test_alignment_contract -v` from `scripts/` to reproduce (all 8 tests pass as of this writing).
+See [`fixtures/`](fixtures/) for five worked scenarios (three-level-valid, unknown-boundary-type, missing-applicable-model, manifest-source-disagreement, software-boundary-no-ui-required), each with a `scenario.md` and an `expected-report.json`.
+
+- [`scripts/test_alignment_contract.py`](scripts/test_alignment_contract.py) (T01): 8 tests proving the core decision logic against hand-authored in-memory fixtures.
+- [`scripts/test_alignment_report.py`](scripts/test_alignment_report.py) (T04): 10 tests covering deterministic output, report rendering (JSON/Markdown), and revision/staleness invalidation.
+- [`scripts/run_fixtures.py`](scripts/run_fixtures.py) (T04): an executable runner that actually validates all five fixtures end-to-end and writes real `generated-report.md`/`.json` files into each fixture folder, then confirms the generated status matches `expected-report.json`.
+
+Run `python3 -m unittest test_alignment_contract test_alignment_report -v` (18 tests) and `python3 run_fixtures.py` from `scripts/` to reproduce — both pass as of this writing.
 
 ## Integration
 
