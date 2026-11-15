@@ -17,7 +17,7 @@ Translate natural language user intent into optimally sequenced EDPS skill invoc
 ## Enhanced Capabilities (T09)
 
 ### 1. Advanced Intent Classification
-- **High-Accuracy Recognition**: Classifies user prompts against 30 skills + 3 workflow archetypes with ≥95% accuracy
+- **High-Accuracy Recognition**: Classifies user prompts against every catalogued skill + 3 workflow archetypes with ≥95% accuracy
 - **Confidence Scoring**: Provides ranked results with confidence percentages
 - **Disambiguation Flow**: Generates clarifying questions when confidence gap < 10%
 - **Multi-Step Detection**: Identifies complex requests requiring full workflow archetypes

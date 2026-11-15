@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S20",
+  "skill_id": "S28",
   "skill_name": "github-issue-create-update",
   "version": "1.0.0",
   "gate_type": "completion",

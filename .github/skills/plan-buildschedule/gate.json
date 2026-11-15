@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S14",
+  "skill_id": "S17",
   "skill_name": "plan-buildschedule",
   "version": "1.0.0",
   "gate_type": "completion",

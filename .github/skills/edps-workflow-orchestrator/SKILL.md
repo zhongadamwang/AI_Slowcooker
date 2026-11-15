@@ -1,15 +1,15 @@
 ---
 name: edps-workflow-orchestrator
-description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused — plus the Design & Visualization (S5) phase, including boundary-scoped use-case/UI modeling (S32, S40) and non-bypassable cross-model alignment validation (S39).
+description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused — plus the Design & Visualization phase, including boundary-scoped use-case/UI modeling (S32, S40) and non-bypassable cross-model alignment validation (S39).
 license: MIT
 metadata:
-  version: 1.3.0
-  last-updated: "2026-11-08"
+  version: 1.3.1
+  last-updated: "2026-11-15"
 ---
 
 # EDPS Workflow Orchestrator
 
-The central coordination hub for end-to-end EDPS methodology execution. Sits above `edps-skill-navigator` to provide workflow lifecycle management, prerequisite enforcement, and persistent project state across all 39 EDPS skills (30 core + 9 Design & Visualization extension members — S32–S40, formerly split between S5 and a separate S11 "UI Prototyping" category, now unified under S5 per PRJ-07/T06).
+The central coordination hub for end-to-end EDPS methodology execution. Sits above `edps-skill-navigator` to provide workflow lifecycle management, prerequisite enforcement, and persistent project state across every EDPS skill in the catalogue below (skill IDs S00–S41).
 
 ## Intent
 
@@ -44,7 +44,7 @@ This skill does not replace `edps-skill-navigator`; it layers above it. The navi
 
 ## Skill Catalogue
 
-All 39 EDPS skills (30 core + 9 Design & Visualization extension members, S32–S40) are registered below with their category, primary inputs, primary outputs, and prerequisite skill IDs. This catalogue is the source of truth for DAG construction.
+Every EDPS skill is registered below with its skill ID, category, and prerequisite skill IDs. This catalogue is the source of truth for skill IDs (each skill's `gate.json` `skill_id` must match it) and for DAG construction. `S`-numbers always mean skill IDs; skill categories are referred to by name only.
 
 | ID | Skill Name | Category | Prerequisite Skill IDs |
 |----|-----------|----------|-----------------------|
@@ -79,6 +79,7 @@ All 39 EDPS skills (30 core + 9 Design & Visualization extension members, S32–
 | S28 | `github-issue-create-update` | GitHub | S15 |
 | S29 | `github-issue-sync-status` | GitHub | S28 |
 | S30 | `edps-skill-navigator` | Meta | *(none — invokes others)* |
+| S31 | `edps-workflow-orchestrator` | Meta | *(none — this skill; not a DAG node)* |
 | S32 | `usecase-generatemodel` | Design & Visualization | S09, S10 *(boundary_type declared)* |
 | S33 | `screen-generateinventory` | Design & Visualization | S40 *(UI Model)*, S01 |
 | S34 | `screen-generatelayout` | Design & Visualization | S33 |
@@ -88,18 +89,19 @@ All 39 EDPS skills (30 core + 9 Design & Visualization extension members, S32–
 | S38 | `screen-discussfeedback` | Design & Visualization | S35 |
 | S39 | `model-validatealignment` | Design & Visualization | S32 *(round-scoped; validates whichever of S32/S40 are in round scope)* |
 | S40 | `ui-generatemodel` | Design & Visualization | S32 *(software boundary only)* |
+| S41 | `skill-creator` | Meta | *(none — create-only; not a DAG node)* |
 
-> **Note**: `skill-creator` (meta, create-only) and `migration-tools` (deprecated, use `hierarchy-management --op migrate`) are catalogued but excluded from archetype workflows by default. Include them explicitly with the `--include-deprecated` flag. `requirements-sanitize` (S00) is an optional pre-step; it is included automatically when the orchestrator detects that the source document is not already a clean business requirements document.
+> **Note**: `skill-creator` (S41, meta, create-only) and `migration-tools` (deprecated, use `hierarchy-management --op migrate`) are catalogued but excluded from archetype workflows by default. Include them explicitly with the `--include-deprecated` flag. `requirements-sanitize` (S00) is an optional pre-step; it is included automatically when the orchestrator detects that the source document is not already a clean business requirements document.
 >
-> **S11 category removed, folded into S5 (PRJ-07, T06).** The former standalone "S11 — UI Prototyping" category in `.github/skills/README.md` no longer exists as a separate category; S33–S38 are now catalogued as members of **S5 — Design & Visualization**, alongside the new S32/S39/S40. This is a category/documentation change only — **no skill ID was renumbered**. `documentation-automation` retains its own, unrelated skill ID **S11** in this catalogue (do not confuse the removed category label "S11 — UI Prototyping" with the still-active skill ID S11); S33–S38 retain their IDs unchanged.
+> **Category labels are names, not numbers.** `.github/skills/README.md` previously numbered its categories S1–S10 (and briefly "S11 — UI Prototyping"), which collided with skill IDs. Those labels are retired: where older project documents say "S5", read **Design & Visualization**; S33–S38 belong to that category alongside S32/S39/S40. No skill ID was renumbered by that change.
 >
-> **UI Prototyping skills (S32–S40) and S5 membership (PRJ-07, T06)**: `usecase-generatemodel` (S32) and `model-validatealignment` (S39) apply to *every* boundary identified during S09/S10, software or not — they are unconditionally part of the S5 phase, exactly like `diagram-generatecollaboration`/`hierarchy-management`. `ui-generatemodel` (S40) and the six `screen-*` skills (S33–S38) only ever produce output for a boundary whose `main.md` `## System Boundary` section declares `boundary_type: software` (see `hierarchy-management`'s stub template, T05) — a project with no software boundary completes S32/S39 against its non-software boundaries and simply never reaches S40/S33–S38, rather than being forced through an irrelevant UI phase. **The former S06-only UI-Model-readiness proxy is removed**: `screen-generateinventory` (S33) now has a real, auto-verifiable prerequisite on **S40** (`ui-generatemodel`), closing the gap this catalogue previously documented as "UI Model generation has no dedicated orchestrated skill of its own." See the [Modeling Rounds](#modeling-rounds-prj-07-t06) section below for round/report lifecycle and non-bypassable alignment semantics.
+> **UI Prototyping skills (S32–S40) and Design & Visualization membership (PRJ-07, T06)**: `usecase-generatemodel` (S32) and `model-validatealignment` (S39) apply to *every* boundary identified during S09/S10, software or not — they are unconditionally part of the Design & Visualization phase, exactly like `diagram-generatecollaboration`/`hierarchy-management`. `ui-generatemodel` (S40) and the six `screen-*` skills (S33–S38) only ever produce output for a boundary whose `main.md` `## System Boundary` section declares `boundary_type: software` (see `hierarchy-management`'s stub template, T05) — a project with no software boundary completes S32/S39 against its non-software boundaries and simply never reaches S40/S33–S38, rather than being forced through an irrelevant UI phase. **The former S06-only UI-Model-readiness proxy is removed**: `screen-generateinventory` (S33) now has a real, auto-verifiable prerequisite on **S40** (`ui-generatemodel`), closing the gap this catalogue previously documented as "UI Model generation has no dedicated orchestrated skill of its own." See the [Modeling Rounds](#modeling-rounds-s32s39s40-lifecycle) section below for round/report lifecycle and non-bypassable alignment semantics.
 
 ---
 
 ## Workflow Archetypes
 
-Three canonical archetypes cover the most common EDPS project goals. Each is a named DAG subset of the full 30-skill catalogue.
+Three canonical archetypes cover the most common EDPS project goals. Each is a named DAG subset of the full catalogue.
 
 ### Archetype 1: `standard` — Full EDPS Lifecycle
 **Use when**: Starting a new project end-to-end, or continuing an interrupted full-lifecycle project.  
@@ -198,21 +200,21 @@ Phase 7 — Final Validation
 
 ---
 
-### Design & Visualization Phase (S5) — Including Modeling Rounds (PRJ-07, T06)
+### Design & Visualization Phase — Including Modeling Rounds (PRJ-07, T06)
 
 **Use when**: A project's requirements call for domain/process modeling, use-case modeling, and (for software boundaries) UI prototyping — screen inventories, layout specs, clickable mockups, interaction flows, and a consolidated design document for stakeholder discussion.
 
 **Duration estimate**: 2–3 days for a small-to-medium boundary/screen set, consistent with Project 06's `scope-analysis.md` MVP estimate.
 
 ```
-S5 Phase — Unconditional (every boundary, software or not)
+Design & Visualization — Unconditional (every boundary, software or not)
   [S09] diagram-generatecollaboration        (requires: S06)
   [S10] hierarchy-management                  (requires: S09; declares boundary_type per boundary)
   [S11] documentation-automation               (requires: S10)
   [S32] usecase-generatemodel                  (requires: S09, S10 with boundary_type declared — not 'unknown')
   [S39] model-validatealignment                (requires: S32; end-of-round, see Modeling Rounds below)
 
-S5 Phase — Conditional on boundary_type: software (per boundary)
+Design & Visualization — Conditional on boundary_type: software (per boundary)
   [S40] ui-generatemodel                       (requires: S32, boundary_type == software)
   [S33] screen-generateinventory               (requires: S40, S01)
   [S34] screen-generatelayout                  (requires: S33)
@@ -224,7 +226,7 @@ S5 Phase — Conditional on boundary_type: software (per boundary)
 
 **Parallel execution opportunities**: S36 and S37 both only require S34/S35 (plus S33 for S36) and can run in either order or in parallel once their shared prerequisites are satisfied; S38 can begin as soon as S35 produces at least one screen's mockup, independent of whether S36/S37 have run yet. S32/S39 can run per-boundary in parallel across independent, non-overlapping boundaries.
 
-**S32/S39 are unconditional S5 members; S40/S33–S38 remain conditional on boundary_type.** Every EDPS project that reaches S5 runs `usecase-generatemodel` and `model-validatealignment` against every identified boundary — these are not an optional extension, unlike the removed "UI Prototyping Extension" framing. What remains genuinely conditional is **UI execution**: `ui-generatemodel` (S40) and the six `screen-*` skills only ever engage for a boundary whose `main.md` declares `boundary_type: software`. A project with zero software boundaries completes S32/S39 for all its boundaries and simply never reaches S40/S33–S38 — this is the correct, documented outcome (R-011), not an incomplete workflow.
+**S32/S39 are unconditional Design & Visualization members; S40/S33–S38 remain conditional on boundary_type.** Every EDPS project that reaches this phase runs `usecase-generatemodel` and `model-validatealignment` against every identified boundary — these are not an optional extension, unlike the removed "UI Prototyping Extension" framing. What remains genuinely conditional is **UI execution**: `ui-generatemodel` (S40) and the six `screen-*` skills only ever engage for a boundary whose `main.md` declares `boundary_type: software`. A project with zero software boundaries completes S32/S39 for all its boundaries and simply never reaches S40/S33–S38 — this is the correct, documented outcome (R-011), not an incomplete workflow.
 
 **The former S06-only UI-Model-readiness proxy is removed.** `screen-generateinventory` (S33) now has a real, orchestrator-verifiable prerequisite on **S40** (`ui-generatemodel`'s completion), not merely "S06 has run" as a necessary-but-insufficient stand-in. The orchestrator can now mark S33 `available` only once S40 has actually produced a non-empty `ui-model.json` for at least one software boundary — closing the gap this catalogue previously had to document as a manual pre-condition workaround.
 
@@ -896,7 +898,7 @@ skill-completion-gates emits:  gate_pass | gate_fail  →  Orchestrator updates 
 | Operation | Target Latency |
 |-----------|---------------|
 | Workflow plan generation (≤ 15 skills) | < 3 seconds |
-| DAG resolution (all 30 skills) | < 1 second |
+| DAG resolution (full catalogue) | < 1 second |
 | Project state serialization | < 500ms |
 | State restore on resume | < 2 seconds |
 | Progress dashboard render | < 500ms |
@@ -923,6 +925,7 @@ skill-completion-gates emits:  gate_pass | gate_fail  →  Orchestrator updates 
 **Maintainer**: EDPS Development Team
 
 **Version History**:
+- **1.3.1** (2026-11-15): Review fixes — removed the code fence that wrapped this file (its frontmatter did not parse); moved `version`/`last-updated` under `metadata`; added catalogue rows for `edps-workflow-orchestrator` (S31) and `skill-creator` (S41) and aligned every `gate.json` `skill_id` with this catalogue; retired the numbered category labels (S1–S10) in favour of category names; removed hard-coded skill counts.
 - **1.3.0** (2026-11-08): PRJ-07/T06 — Removed the standalone "S11 — UI Prototyping" category; S33–S38 are now catalogued as members of **S5 — Design & Visualization**, no skill IDs renumbered. Registered `usecase-generatemodel` (S32, filling the one existing catalogue gap), `model-validatealignment` (S39), and `ui-generatemodel` (S40). Replaced the former S06-only UI-Model-readiness proxy with a real prerequisite: S33 now requires S40's completion. Added the `modeling_rounds` project-state field and round/revision staleness-checking on `orchestrate resume`. Documented that alignment-round (S39) completion is non-bypassable across `collaboration_mode` and workflow archetype — its gate checks are never `stakeholder_confirmation` type, so `resolveCheckSeverity()` cannot soften them.
 - **1.2.0** (2026-10-27): Registered UI Prototyping extension skills S33–S38 (`screen-generateinventory`, `screen-generatelayout`, `screen-generatemockup`, `screen-generateflow`, `screen-assembledocument`, `screen-discussfeedback`) per Project 06 T10. Added as an optional extension, not folded into the three named archetypes, since not every project has a UI component. Documented the UI Model dependency gap (no dedicated orchestrated skill yet for UI Model generation itself).
 - **1.1.0** (2026-10-22): Prior update (see git history for details).

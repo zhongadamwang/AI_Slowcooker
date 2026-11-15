@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S18",
+  "skill_id": "S23",
   "skill_name": "process-merge",
   "version": "1.0.0",
   "gate_type": "completion",

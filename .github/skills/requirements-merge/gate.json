@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S24",
+  "skill_id": "S02",
   "skill_name": "requirements-merge",
   "version": "1.0.0",
   "gate_type": "completion",

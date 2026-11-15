@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S16",
+  "skill_id": "S26",
   "skill_name": "orgmodel-update",
   "version": "1.0.0",
   "gate_type": "completion",

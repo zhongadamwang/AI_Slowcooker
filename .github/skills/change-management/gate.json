@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S15",
+  "skill_id": "S21",
   "skill_name": "change-management",
   "version": "1.0.0",
   "gate_type": "completion",

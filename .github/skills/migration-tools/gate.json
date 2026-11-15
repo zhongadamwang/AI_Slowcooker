@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S29",
+  "skill_id": "S14",
   "skill_name": "migration-tools",
   "version": "1.0.0",
   "gate_type": "completion",

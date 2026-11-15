@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S06",
+  "skill_id": "S07",
   "skill_name": "domain-alignentities",
   "version": "1.0.0",
   "gate_type": "completion",

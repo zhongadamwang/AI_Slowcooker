@@ -1,6 +1,6 @@
 ---
 name: integration-testing
-description: Execute comprehensive integration testing of all 30 EDPS skills with enhanced coverage for T07 workflow orchestrator, T08 completion gates, and T09 prompt pattern recognition. Validates end-to-end workflow archetypes, gate behavior, and classification accuracy to ensure seamless VS Code integration.
+description: Execute comprehensive integration testing of all EDPS skills with enhanced coverage for T07 workflow orchestrator, T08 completion gates, and T09 prompt pattern recognition. Validates end-to-end workflow archetypes, gate behavior, and classification accuracy to ensure seamless VS Code integration.
 license: MIT
 ---
 
@@ -14,8 +14,8 @@ Orchestrate comprehensive testing and validation of the complete EDPS skill ecos
 **PRJ-07 integration evidence (S32/S39/S40, 2026-11-08)**: Modeling-round lifecycle (fresh/revised/resumed), cross-model alignment validation, and the six negative-example categories (entity/boundary contradiction, illegal UI placement, unknown typing, missing applicable model, stale report, unresolved clarification) are validated by `model-validatealignment`'s own executable test suites (`scripts/test_alignment_contract.py`, `scripts/test_alignment_report.py`, `scripts/run_fixtures.py`) rather than by this skill's generic integration-test framework — this skill does not duplicate those checks. See [PRJ-07's evidence-log.md](../../../OrgDocument/projects/07%20-%20Building%20Skills%20Iteration%205/artifacts/Testing/evidence-log.md) for the full re-run transcript this skill's own test reports may reference when validating S5's extended membership (S32–S40).
 
 ## Inputs
-- **Skill Definitions**: `.github/skills/*/SKILL.md` (all 32 skills + orchestrator)
-- **Gate Schemas**: `.github/skills/*/gate.json` (32 completion gate definitions)
+- **Skill Definitions**: `.github/skills/*/SKILL.md` (every skill, including the orchestrator)
+- **Gate Schemas**: `.github/skills/*/gate.json` (one completion gate definition per skill)
 - **Test Projects**: `projects/*/` (sample projects for workflow testing)
 - **Sample Data**: `projects/*/artifacts/Sample Data/` (diverse test inputs)
 - **Prompt Corpus**: T09 classification test prompts (240+ labeled examples)
@@ -234,11 +234,11 @@ Orchestrate comprehensive testing and validation of the complete EDPS skill ecos
   - Error event handling and recovery
 
 #### 2. T08 Completion Gate Testing
-**Purpose**: Validate all 32 gate schemas and gate behavior across workflow archetypes
+**Purpose**: Validate all gate schemas and gate behavior across workflow archetypes
 
 **Test Categories**:
 - **Gate Schema Validation**
-  - JSON schema compliance for all 32 gate.json files
+  - JSON schema compliance for all gate.json files
   - Artifact existence checks with known-good/known-bad samples
   - Content pattern validation with realistic skill outputs
   - Quality score weighting calculation accuracy
@@ -413,7 +413,7 @@ function testWorkflowOrchestrator() {
 
 // T08 Gate Component Tests  
 function testCompletionGates() {
-  // Test 1: All 32 gate schema validation
+  // Test 1: All gate schema validation
   for (const gateSchema of getAllGateSchemas()) {
     validateGateSchema(gateSchema);
     testGateWithKnownGoodOutput(gateSchema);
@@ -673,7 +673,7 @@ function benchmarkPerformance() {
 ### Complete Integration Test
 ```markdown
 # Execute full integration test suite
-Use the integration-testing skill to run comprehensive validation of all 30 EDPS skills with the Banking Transactions sample project.
+Use the integration-testing skill to run comprehensive validation of all EDPS skills with the Banking Transactions sample project.
 
 Skills under test (all 30):
 - Requirements & Analysis: requirements-ingest, requirements-merge, goals-extract, process-w5h, process-merge, process-findtopandupdate, process-scopemin
@@ -684,7 +684,7 @@ Skills under test (all 30):
 - Meta Skills: edps-skill-navigator, skill-creator
 
 Expected outputs:
-- Complete test report with pass/fail status for all 30 skills
+- Complete test report with pass/fail status for all skills
 - Performance analysis showing execution times and resource usage  
 - Integration validation results for all skill chains
 - VS Code compatibility assessment
@@ -717,7 +717,7 @@ edps-skill-navigator → skill-creator
 Focus areas:
 - Data flow consistency across all handoffs within each category chain
 - Cross-chain traceability preservation (requirements IDs flow through to tasks and schedules)
-- Performance within acceptable standards for all 30 skills
+- Performance within acceptable standards for all skills
 ```
 
 ### Performance Benchmarking

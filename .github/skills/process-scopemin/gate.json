@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S9",
+  "skill_id": "S05",
   "skill_name": "process-scopemin",
   "version": "1.0.0",
   "gate_type": "completion",

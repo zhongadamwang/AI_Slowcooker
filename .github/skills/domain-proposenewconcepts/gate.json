@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S7",
+  "skill_id": "S08",
   "skill_name": "domain-proposenewconcepts",
   "version": "1.0.0",
   "gate_type": "completion",
