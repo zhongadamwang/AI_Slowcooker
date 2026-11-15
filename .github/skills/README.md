@@ -15,14 +15,16 @@ Project ID: [YOUR-PROJECT-ID]
 
 ## Skills Overview
 
-### S1 — Project Initialization
+Skills are grouped by category below. `S`-numbers (S00–S41) are **skill IDs**, defined in the [`edps-workflow-orchestrator`](edps-workflow-orchestrator/SKILL.md) Skill Catalogue; categories are referred to by name only (the former S1–S10 category labels are retired because they collided with skill IDs).
+
+### Project Initialization
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `project-document-management` | Initialize project folder structure | Project details | Project folder tree | → `requirements-ingest` |
 | `project-planning-tracking` | Create project plans and track milestones | Project scope | project-plan.md, task-tracking.md | → Execution |
 | `project-status-reporting` | Generate status dashboards and reports | Project artifacts | Status reports | → Stakeholder review |
 
-### S2 — Requirements Processing
+### Requirements Processing
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `requirements-sanitize` | Filter IT/operational noise; rewrite raw docs to business intent | Raw mixed-perspective doc | sanitized-requirements.md | → `requirements-ingest` |
@@ -32,21 +34,21 @@ Project ID: [YOUR-PROJECT-ID]
 | `process-w5h` | Who/What/When/Where/Why/How analysis | requirements.json | w5h-analysis.json/md | → `domain-extractconcepts` |
 | `process-scopemin` | Define MVP and minimal viable scope | requirements.json, goals.json | scope-analysis.json/md | → Planning |
 
-### S3 — Domain Analysis
+### Domain Analysis
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `domain-extractconcepts` | Identify domain entities and concepts | requirements.json | domain-concepts.json/md | → `domain-alignentities` |
 | `domain-alignentities` | Align concepts with existing org domain models | domain-concepts.json | domain-alignment.json/md | → `domain-proposenewconcepts` |
 | `domain-proposenewconcepts` | Propose new concepts to fill domain gaps | domain-alignment.json | domain-newconcepts.json/md | → `diagram-generatecollaboration` |
 
-### S4 — Planning
+### Planning
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `plan-derivetasks` | Convert requirements into actionable tasks | requirements.json, goals.json | task-breakdown.json/md | → `plan-estimateeffort` |
 | `plan-estimateeffort` | Generate effort estimates with confidence levels | task-breakdown.json | effort-estimates.json/md | → `plan-buildschedule` |
 | `plan-buildschedule` | Generate project schedules with critical path | task-breakdown.json, effort-estimates.json | project-schedule.json/md | → Execution |
 
-### S5 — Design & Visualization
+### Design & Visualization
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `diagram-generatecollaboration` | Generate EDPS collaboration diagrams with stereotype classification and boundary validation (VR-1–VR-4 authoritative source) | domain artifacts | collaboration-diagrams.json/md, boundary_validation_report.json | → `hierarchy-management` |
@@ -63,9 +65,9 @@ Project ID: [YOUR-PROJECT-ID]
 | `screen-assembledocument` | Assemble the consolidated UI design document (Markdown + JSON) summarizing and linking to all prior outputs — the durable handoff deliverable | screen-inventory.json, layout-spec.md, mockup.html, interaction-flows.md | design-document.md/json | → `screen-discussfeedback` |
 | `screen-discussfeedback` | Present mockups as a stakeholder discussion surface, capture structured feedback, and route it into change-management with no manual re-transcription | mockup.html, interaction-flows.md, stakeholder commentary | feedback-log.md → change-management | → Gate & orchestrator registration |
 
-**UI execution is conditional, S5 membership is not (PRJ-07, T06).** Every skill above is unconditionally catalogued under S5 — `usecase-generatemodel`/`model-validatealignment` apply to *every* boundary (software or not), and the six `screen-*` skills plus `ui-generatemodel` only ever *produce output* for explicitly `software`-typed boundaries with an actual UI requirement. A `standard`/`rapid`/`compliance` project with no software boundary at all still runs `usecase-generatemodel` and `model-validatealignment` against its non-software boundaries — it simply never reaches `ui-generatemodel`/`screen-*` because nothing in its model ever satisfies their own boundary-type precondition. See [`edps-workflow-orchestrator`](edps-workflow-orchestrator/SKILL.md)'s Skill Catalogue for the DAG prerequisite IDs (S32, S39, S40 alongside the existing S33–S38) and the Modeling Rounds section for round/report lifecycle details.
+**UI execution is conditional, Design & Visualization membership is not (PRJ-07, T06).** Every skill above is unconditionally catalogued under this category — `usecase-generatemodel`/`model-validatealignment` apply to *every* boundary (software or not), and the six `screen-*` skills plus `ui-generatemodel` only ever *produce output* for explicitly `software`-typed boundaries with an actual UI requirement. A `standard`/`rapid`/`compliance` project with no software boundary at all still runs `usecase-generatemodel` and `model-validatealignment` against its non-software boundaries — it simply never reaches `ui-generatemodel`/`screen-*` because nothing in its model ever satisfies their own boundary-type precondition. See [`edps-workflow-orchestrator`](edps-workflow-orchestrator/SKILL.md)'s Skill Catalogue for the DAG prerequisite IDs (S32, S39, S40 alongside the existing S33–S38) and the Modeling Rounds section for round/report lifecycle details.
 
-### S6 — Process & Change Management
+### Process & Change Management
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `process-merge` | Merge process models with existing organizational models | Multiple process docs | process-merge.json/md | → `model-integration` |
@@ -73,29 +75,30 @@ Project ID: [YOUR-PROJECT-ID]
 | `change-management` | Track, document, and manage requirement changes | Change requests (conversation) | Change documentation | → Update artifacts |
 | `change-impact-analysis` | Trace change propagation across hierarchy levels with risk classification | hierarchy-metadata.json, change inputs | change-impact-report.json/md | → `orgmodel-update` |
 
-### S7 — Model Integration
+### Model Integration
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `model-integration` | Integrate new domain models into existing org structures | domain-alignment.json, domain-newconcepts.json | model-integration.json/md | → `orgmodel-update` |
 | `orgmodel-update` | Update organizational model documents (with EDPS-Hierarchy Guard preventing overwrite of hierarchy-aware files) | Model artifacts | orgModel document updates | → `integration-testing` |
 
-### S8 — Compliance & Validation
+### Compliance & Validation
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `hierarchy-validation` | Validate hierarchy structural integrity — 14 rules across cross-level consistency, cross-reference integrity, naming/structure (authoritative structural source) | hierarchy-metadata.json + orgModel folders | hierarchy-validation-report.json/md | → `edps-compliance` |
 | `edps-compliance` | Score EDPS methodology compliance — 11 rules (VR-1–4 delegated to `diagram-generatecollaboration`; HR-2/6 native; EP-1–4 native); gates on `hierarchy-validation` PASS | boundary_validation_report.json, hierarchy-validation-report.json | edps-compliance-report.json/md (0–100 score) | → `integration-testing` |
 | `integration-testing` | Validate end-to-end workflows across all skills | All skill artifacts | test-reports.json/md | → Production |
 
-### S9 — External Integration
+### External Integration
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `github-issue-create-update` | Create and update GitHub Issues from local task markdown files | Local task files | GitHub Issues (created/updated) | ⇄ `github-issue-sync-status` |
 | `github-issue-sync-status` | Sync local task status from GitHub Issue state changes | GitHub Issues | Updated local task files | ⇄ `github-issue-create-update` |
 
-### S10 — Orchestration & Meta
+### Orchestration & Meta
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
-| `edps-skill-navigator` | Intelligently orchestrate all EDPS skills from natural language requests (v1.2.0) | Natural language intent | Skill execution plan, workflow guidance | → Execute recommended skills |
+| `edps-workflow-orchestrator` | Coordinate end-to-end workflows: skill sequencing (DAG prerequisites), project state, completion gates, modeling rounds | Workflow archetype or resume request | Workflow plan, project state, gate results | → Execute next available skill |
+| `edps-skill-navigator` | Intelligently orchestrate all EDPS skills from natural language requests | Natural language intent | Skill execution plan, workflow guidance | → Execute recommended skills |
 | `skill-creator` | Scaffold new EDPS-compliant skills following SKILL.md standard | Skill requirements | New SKILL.md + reference docs | → Implement skill |
 
 ## Common Workflows
@@ -178,31 +181,40 @@ Project: CPR-2024
 
 ## File Structure Convention
 
-All skills output to standardized locations:
+Every skill reads and writes under one project root, created by `project-document-management`:
+
 ```
-projects/[PROJECT-ID]/
+OrgDocument/projects/[NN] - [Project Name]/
 ├── artifacts/
-│   ├── Analysis/          # Core analysis outputs
+│   ├── Analysis/          # Generated analysis and planning outputs
 │   │   ├── requirements.json/md
-│   │   ├── goals.json/md  
+│   │   ├── goals.json/md
 │   │   ├── w5h-analysis.json/md
+│   │   ├── scope-analysis.json/md
 │   │   ├── domain-concepts.json/md
 │   │   ├── domain-alignment.json/md
-│   │   ├── scope-analysis.json/md
 │   │   ├── collaboration-diagrams.json/md
-│   │   ├── task-breakdown.json/md      # Planning outputs
+│   │   ├── task-breakdown.json/md
 │   │   ├── effort-estimates.json/md
 │   │   ├── project-schedule.json/md
-│   │   └── critical-path-analysis.md
-│   ├── Changes/           # Change management
-│   │   └── [DATE]-[TYPE]-CHG-[NUM]-[description].md
+│   │   └── alignment-report-[round-id].json/md
 │   ├── Source Materials/  # Original input documents, transcripts, references, and drafts
-│   └── UI Mockups/        # Design artifacts
-└── tasks/                 # Project planning outputs
-    ├── project-plan.md
-    ├── task-tracking.md
-    └── T[NN]-[task-name].md
+│   ├── Changes/           # [DATE]-[TYPE]-CHG-[NUM]-[description].md
+│   ├── Documentation/     # Standard and hierarchical projects only
+│   ├── Sample Data/
+│   ├── Testing/
+│   └── UI Prototype/      # Only when the screen-* skills are in use
+├── tasks/                 # task-tracking.md, T[NN]-[task-name].md
+├── project-plan.md
+├── project-metadata.json
+└── main.md
 ```
+
+Organizational models (process hierarchies with `main.md`, `process.md`, `collaboration.md`, `domain-model.md`, and the use-case and UI models) live separately under `OrgDocument/orgModel/[NN] - [Process Name]/`.
+
+Path conventions used across the skills:
+- In a `SKILL.md`, project paths are written in full from the repository root: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json`.
+- In a `gate.json`, artifact paths are relative to the project root: `artifacts/Analysis/requirements.json`.
 
 ## Tips for Success 💡
 
@@ -240,4 +252,4 @@ projects/[PROJECT-ID]/
 3. **Build workflows**: Chain skills together for comprehensive analysis
 4. **Customize**: Adapt prompt patterns to your specific domain and needs
 
-See `/examples/` folder for complete project walkthroughs and `/workflows/` for advanced skill combination patterns.
+See the [`examples/`](examples/) folder for usage walkthroughs and prompt patterns, and [`INDEX.md`](INDEX.md) for navigation by use case.

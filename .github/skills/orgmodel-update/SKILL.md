@@ -47,10 +47,10 @@ domain-alignentities   ├─→ orgmodel-update ─→ vocabulary.md, test-case
 ```
 
 ## Inputs
-- **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/domain-alignment.json` (from domain-alignentities skill)
-- **Tertiary**: `projects/[project-name]/artifacts/Analysis/collaboration-diagrams.json` (from diagram-generatecollaboration skill)
-- **Context**: `projects/[project-name]/artifacts/Analysis/requirements.json` (for traceability)
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json` (from domain-alignentities skill)
+- **Tertiary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/collaboration-diagrams.json` (from diagram-generatecollaboration skill)
+- **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (for traceability)
 - **Existing**: `orgModel/[NN] - [Process Name]/` (existing organizational model content)
 - **Diagram Updates**: Class diagram updates triggered by domain alignment results
 
@@ -62,7 +62,7 @@ domain-alignentities   ├─→ orgmodel-update ─→ vocabulary.md, test-case
 - `orgModel/[NN] - [Process Name]/collaboration.md` - Updated collaboration diagrams
 - `orgModel/[NN] - [Process Name]/vocabulary.md` - Updated terminology consistency mapping
 - `orgModel/[NN] - [Process Name]/test-case-list.md` - Updated test case master list
-- `projects/[project-name]/artifacts/Analysis/orgmodel-update-summary.md` - Change summary and validation report
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/orgmodel-update-summary.md` - Change summary and validation report
 
 ### Update Summary Structure (`orgmodel-update-summary.md`)
 ```markdown

@@ -86,7 +86,7 @@ Business Objectives:
 - [Success metrics]
 - [Constraints and assumptions]
 
-Extract goals from: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Extract goals from: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 
 Focus on measurable outcomes and KPIs.
 ```
@@ -101,7 +101,7 @@ Stakeholder Context:
 - Administrators: [admin types]
 - External: [external parties]
 
-Analyze: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Analyze: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 
 Focus on stakeholder touchpoints and implementation approaches.
 ```
@@ -117,7 +117,7 @@ Focus on stakeholder touchpoints and implementation approaches.
 Industry Context: [industry/domain type]
 Business Focus: [core business areas]
 
-Input: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Input: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 
 Extract:
 - Core business entities and attributes
@@ -139,7 +139,7 @@ Standards:
 - [Industry standard 1]
 - [Compliance requirement 1]
 
-Align concepts from: projects/[PROJECT-ID]/artifacts/Analysis/domain-concepts.json
+Align concepts from: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json
 ```
 
 ### Innovation and Gap Analysis
@@ -151,7 +151,7 @@ Strategic Direction:
 - [Innovation area 1]
 - [Competitive advantage focus]
 
-Current State: projects/[PROJECT-ID]/artifacts/Analysis/domain-alignment.json
+Current State: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json
 
 Identify gaps and propose future-state concepts for 2-year roadmap.
 ```
@@ -167,8 +167,8 @@ Focus Areas:
 - Stakeholder collaboration patterns
 
 Input Sources:
-- projects/[PROJECT-ID]/artifacts/Analysis/domain-concepts.json
-- projects/[PROJECT-ID]/artifacts/Analysis/w5h-analysis.json
+- OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json
+- OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.json
 
 Generate Mermaid diagrams for architecture and workflow visualization.
 ```
@@ -230,7 +230,7 @@ Business Goals (Priority Order):
 2. [Secondary goal with success metric]
 3. [Tertiary goal with success metric]
 
-Input: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Input: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 
 Define MVP boundary with feature prioritization matrix.
 ```
@@ -381,7 +381,7 @@ Project Context:
 ### Input Specification Best Practices
 ```markdown
 # For file-based inputs
-Input: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Input: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 
 # For direct content
 [Paste or attach content here]
@@ -422,7 +422,7 @@ Prepare for:
 @workspace Validate skill output quality:
 
 Skill Used: [skill-name]
-Output Location: projects/[PROJECT-ID]/artifacts/[path]
+Output Location: OrgDocument/projects/[NN] - [Project Name]/artifacts/[path]
 
 Validation Criteria:
 - Completeness: [What should be included]

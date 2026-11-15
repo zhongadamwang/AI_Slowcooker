@@ -2,7 +2,9 @@
 
 Complete navigation guide for EDPS (Evolutionary Development Process System) skills documentation.
 
-**Version**: 2.7.0 | **Last Updated**: 2026-10-27 | **Skill Count**: 38 (1 deprecated)
+**Version**: 2.8.0 | **Last Updated**: 2026-11-15 | **Skills**: every folder in this directory with a `SKILL.md` (skill IDs S00–S41, see the [orchestrator's Skill Catalogue](edps-workflow-orchestrator/SKILL.md#skill-catalogue); `migration-tools` is deprecated)
+
+> **Update (November 2026)**: Added `usecase-generatemodel` (S32), `model-validatealignment` (S39), and `ui-generatemodel` (S40) (Project 07), and listed the six `screen-*` skills and `edps-workflow-orchestrator` in the category tables below. Fixed the per-skill documentation links, which pointed at a non-existent nested `.github/skills/` path.
 
 > **Update (October 2026)**: Added `screen-discussfeedback` (S38) — the sixth UI Prototyping skill (Project 06), presenting mockups as a stakeholder discussion surface and routing captured feedback into `change-management`'s existing schema with no manual re-transcription. Confirmed during authoring (TR-09.1) that `change-management`'s existing change-type taxonomy fully accommodates UI-specific feedback (e.g., mapping to `REQ-CHG` with the screen's `layout-spec.md` as an affected document) — no schema extension was needed. Supports solo-mode role-play reusing `process-w5h`'s exact documentation pattern. Completes the MVP generation-and-discussion pipeline; only gate/orchestrator registration (T10) and end-to-end validation (T11) remain.
 
@@ -98,58 +100,72 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 ### 📋 Requirements & Analysis
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
-| **requirements-sanitize** | Remove IT/operational/infrastructure noise; rewrite to business intent (run before ingest for mixed-perspective sources) | [Individual skill docs](.github/skills/requirements-sanitize/SKILL.md) |
-| **requirements-ingest** | Transform any format to structured requirements | [Individual skill docs](.github/skills/requirements-ingest/SKILL.md) |
-| **goals-extract** | Extract business goals and success criteria | [Individual skill docs](.github/skills/goals-extract/SKILL.md) |
-| **process-w5h** | WHO/What/When/Where/Why/How analysis | [Individual skill docs](.github/skills/process-w5h/SKILL.md) |
-| **process-merge** | Merge multiple requirement sources | [Individual skill docs](.github/skills/process-merge/SKILL.md) |
-| **process-findtopandupdate** | Identify and update top-level requirements in hierarchies | [Individual skill docs](.github/skills/process-findtopandupdate/SKILL.md) |
-| **requirements-merge** | Combine multiple requirement sources with conflict resolution | [Individual skill docs](.github/skills/requirements-merge/SKILL.md) |
+| **requirements-sanitize** | Remove IT/operational/infrastructure noise; rewrite to business intent (run before ingest for mixed-perspective sources) | [Individual skill docs](requirements-sanitize/SKILL.md) |
+| **requirements-ingest** | Transform any format to structured requirements | [Individual skill docs](requirements-ingest/SKILL.md) |
+| **goals-extract** | Extract business goals and success criteria | [Individual skill docs](goals-extract/SKILL.md) |
+| **process-w5h** | WHO/What/When/Where/Why/How analysis | [Individual skill docs](process-w5h/SKILL.md) |
+| **process-merge** | Merge multiple requirement sources | [Individual skill docs](process-merge/SKILL.md) |
+| **process-findtopandupdate** | Identify and update top-level requirements in hierarchies | [Individual skill docs](process-findtopandupdate/SKILL.md) |
+| **requirements-merge** | Combine multiple requirement sources with conflict resolution | [Individual skill docs](requirements-merge/SKILL.md) |
 
 ### 🎯 Domain Modeling
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
-| **domain-extractconcepts** | Identify domain entities and concepts | [Individual skill docs](.github/skills/domain-extractconcepts/SKILL.md) |
-| **domain-alignentities** | Align concepts with existing systems | [Individual skill docs](.github/skills/domain-alignentities/SKILL.md) |
-| **domain-proposenewconcepts** | Propose new concepts for gaps | [Individual skill docs](.github/skills/domain-proposenewconcepts/SKILL.md) |
-| **diagram-generatecollaboration** | Generate system interaction diagrams | [Individual skill docs](.github/skills/diagram-generatecollaboration/SKILL.md) |
-| **model-integration** | Integrate new domain models into existing organizational structures | [Individual skill docs](.github/skills/model-integration/SKILL.md) |
-| **hierarchy-management** | Decompose control-type participants into sub-processes; manage folder structure, metadata, and cross-reference navigation; `--op migrate` absorbs `migration-tools` for non-destructive P1→P3 upgrades | [Individual skill docs](.github/skills/hierarchy-management/SKILL.md) |
-| **documentation-automation** | Auto-generate `main.md`, `process.md`, `collaboration.md`, and `domain-model.md` for each process hierarchy level with level-appropriate content; takes precedence over `orgmodel-update` for the four shared files in hierarchy-managed folders | [Individual skill docs](.github/skills/documentation-automation/SKILL.md) |
-| **migration-tools** | ~~DEPRECATED~~ — superseded by `hierarchy-management --op migrate`; retained for backward compatibility during transition | [Individual skill docs](.github/skills/migration-tools/SKILL.md) |
+| **domain-extractconcepts** | Identify domain entities and concepts | [Individual skill docs](domain-extractconcepts/SKILL.md) |
+| **domain-alignentities** | Align concepts with existing systems | [Individual skill docs](domain-alignentities/SKILL.md) |
+| **domain-proposenewconcepts** | Propose new concepts for gaps | [Individual skill docs](domain-proposenewconcepts/SKILL.md) |
+| **diagram-generatecollaboration** | Generate system interaction diagrams | [Individual skill docs](diagram-generatecollaboration/SKILL.md) |
+| **model-integration** | Integrate new domain models into existing organizational structures | [Individual skill docs](model-integration/SKILL.md) |
+| **hierarchy-management** | Decompose control-type participants into sub-processes; manage folder structure, metadata, and cross-reference navigation; `--op migrate` absorbs `migration-tools` for non-destructive P1→P3 upgrades | [Individual skill docs](hierarchy-management/SKILL.md) |
+| **documentation-automation** | Auto-generate `main.md`, `process.md`, `collaboration.md`, and `domain-model.md` for each process hierarchy level with level-appropriate content; takes precedence over `orgmodel-update` for the four shared files in hierarchy-managed folders | [Individual skill docs](documentation-automation/SKILL.md) |
+| **migration-tools** | ~~DEPRECATED~~ — superseded by `hierarchy-management --op migrate`; retained for backward compatibility during transition | [Individual skill docs](migration-tools/SKILL.md) |
+
+### 🖥️ Use-Case, UI Modeling & Prototyping
+| Skill | Purpose | Documentation |
+|-------|---------|---------------|
+| **usecase-generatemodel** | Generate a boundary-scoped use-case model and linked detailed scripts for any explicitly-typed boundary | [Individual skill docs](usecase-generatemodel/SKILL.md) |
+| **ui-generatemodel** | Generate a software boundary's UI Model from its use-case and domain models | [Individual skill docs](ui-generatemodel/SKILL.md) |
+| **model-validatealignment** | Validate cross-model entity/boundary alignment at the end of every modeling round | [Individual skill docs](model-validatealignment/SKILL.md) |
+| **screen-generateinventory** | Generate a traceable screen inventory from a UI Model and requirements | [Individual skill docs](screen-generateinventory/SKILL.md) |
+| **screen-generatelayout** | Generate a literal HTML/CSS layout specification per screen | [Individual skill docs](screen-generatelayout/SKILL.md) |
+| **screen-generatemockup** | Render layout specs into standalone, clickable HTML/JS mockups | [Individual skill docs](screen-generatemockup/SKILL.md) |
+| **screen-generateflow** | Diagram verified navigation and dialog flows across the screen set | [Individual skill docs](screen-generateflow/SKILL.md) |
+| **screen-assembledocument** | Assemble the consolidated UI design handoff document | [Individual skill docs](screen-assembledocument/SKILL.md) |
+| **screen-discussfeedback** | Review prototypes with stakeholders and route feedback to `change-management` | [Individual skill docs](screen-discussfeedback/SKILL.md) |
 
 ### ✅ Compliance & Validation
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
-| **edps-compliance** | Validate EDPS methodology compliance (VR-1–4 delegated to `diagram-generatecollaboration`, structural checks delegated to `hierarchy-validation` via pre-condition gate); own rules: HR-2/HR-6 and EP-1–4; generates scored reports with remediation guidance | [Individual skill docs](.github/skills/edps-compliance/SKILL.md) |
-| **hierarchy-validation** | **Authoritative structural integrity checker.** Validates cross-level type consistency (HV-1–5), cross-reference link integrity (HX-1–5), and naming/structure rules (HN-1–4). All other skills delegate file/link integrity checks here. Supports full-tree and incremental single-branch modes with `--fix` auto-repair | [Individual skill docs](.github/skills/hierarchy-validation/SKILL.md) |
-| **change-impact-analysis** | Trace change propagation across hierarchy levels (CI-1–5, CR-1–3); emits `change-impact-report.json` with `normalized_risk_level` field directly consumable by `change-management`; supports `--mode what-if` (safe preview) and `--mode apply` (auto-fix navigational links) | [Individual skill docs](.github/skills/change-impact-analysis/SKILL.md) |
+| **edps-compliance** | Validate EDPS methodology compliance (VR-1–4 delegated to `diagram-generatecollaboration`, structural checks delegated to `hierarchy-validation` via pre-condition gate); own rules: HR-2/HR-6 and EP-1–4; generates scored reports with remediation guidance | [Individual skill docs](edps-compliance/SKILL.md) |
+| **hierarchy-validation** | **Authoritative structural integrity checker.** Validates cross-level type consistency (HV-1–5), cross-reference link integrity (HX-1–5), and naming/structure rules (HN-1–4). All other skills delegate file/link integrity checks here. Supports full-tree and incremental single-branch modes with `--fix` auto-repair | [Individual skill docs](hierarchy-validation/SKILL.md) |
+| **change-impact-analysis** | Trace change propagation across hierarchy levels (CI-1–5, CR-1–3); emits `change-impact-report.json` with `normalized_risk_level` field directly consumable by `change-management`; supports `--mode what-if` (safe preview) and `--mode apply` (auto-fix navigational links) | [Individual skill docs](change-impact-analysis/SKILL.md) |
 
 ### 📊 Planning & Management  
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
-| **project-document-management** | Initialize project structure | [Individual skill docs](.github/skills/project-document-management/SKILL.md) |
-| **project-planning-tracking** | Create plans and track progress | [Individual skill docs](.github/skills/project-planning-tracking/SKILL.md) |
-| **project-status-reporting** | Generate status reports | [Individual skill docs](.github/skills/project-status-reporting/SKILL.md) |
-| **plan-derivetasks** | Convert requirements into actionable development tasks | [Individual skill docs](.github/skills/plan-derivetasks/SKILL.md) |
-| **plan-estimateeffort** | Generate effort estimates using multiple methodologies | [Individual skill docs](.github/skills/plan-estimateeffort/SKILL.md) |
-| **plan-buildschedule** | Generate project schedules with dependencies and critical path | [Individual skill docs](.github/skills/plan-buildschedule/SKILL.md) |
-| **process-scopemin** | Define MVP and scope boundaries | [Individual skill docs](.github/skills/process-scopemin/SKILL.md) |
-| **change-management** | Track and manage changes; accepts `change-impact-report.json` with `normalized_risk_level` from `change-impact-analysis` directly as `risk_level` in `affected_documents` | [Individual skill docs](.github/skills/change-management/SKILL.md) |
+| **project-document-management** | Initialize project structure | [Individual skill docs](project-document-management/SKILL.md) |
+| **project-planning-tracking** | Create plans and track progress | [Individual skill docs](project-planning-tracking/SKILL.md) |
+| **project-status-reporting** | Generate status reports | [Individual skill docs](project-status-reporting/SKILL.md) |
+| **plan-derivetasks** | Convert requirements into actionable development tasks | [Individual skill docs](plan-derivetasks/SKILL.md) |
+| **plan-estimateeffort** | Generate effort estimates using multiple methodologies | [Individual skill docs](plan-estimateeffort/SKILL.md) |
+| **plan-buildschedule** | Generate project schedules with dependencies and critical path | [Individual skill docs](plan-buildschedule/SKILL.md) |
+| **process-scopemin** | Define MVP and scope boundaries | [Individual skill docs](process-scopemin/SKILL.md) |
+| **change-management** | Track and manage changes; accepts `change-impact-report.json` with `normalized_risk_level` from `change-impact-analysis` directly as `risk_level` in `affected_documents` | [Individual skill docs](change-management/SKILL.md) |
 
 ### 🔗 Integration & Automation
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
-| **github-issue-create-update** | Create and update GitHub Issues from local task files with dual CLI/API support | [Individual skill docs](.github/skills/github-issue-create-update/SKILL.md) |
-| **github-issue-sync-status** | Sync local task status from GitHub Issue state changes with format preservation | [Individual skill docs](.github/skills/github-issue-sync-status/SKILL.md) |
+| **github-issue-create-update** | Create and update GitHub Issues from local task files with dual CLI/API support | [Individual skill docs](github-issue-create-update/SKILL.md) |
+| **github-issue-sync-status** | Sync local task status from GitHub Issue state changes with format preservation | [Individual skill docs](github-issue-sync-status/SKILL.md) |
 
 ### 🧠 Meta Skills
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
-| **edps-skill-navigator** | Navigate and orchestrate skills | [Individual skill docs](.github/skills/edps-skill-navigator/SKILL.md) |
-| **skill-creator** | Create new EDPS skills | [Individual skill docs](.github/skills/skill-creator/SKILL.md) |
-| **integration-testing** | Comprehensive testing and validation of all EDPS skills | [Individual skill docs](.github/skills/integration-testing/SKILL.md) |
-| **orgmodel-update** | Update organizational model documents and folder structures | [Individual skill docs](.github/skills/orgmodel-update/SKILL.md) |
+| **edps-workflow-orchestrator** | Coordinate end-to-end workflows: skill sequencing, project state, completion gates, modeling rounds | [Individual skill docs](edps-workflow-orchestrator/SKILL.md) |
+| **edps-skill-navigator** | Navigate and orchestrate skills | [Individual skill docs](edps-skill-navigator/SKILL.md) |
+| **skill-creator** | Create new EDPS skills | [Individual skill docs](skill-creator/SKILL.md) |
+| **integration-testing** | Comprehensive testing and validation of all EDPS skills | [Individual skill docs](integration-testing/SKILL.md) |
+| **orgmodel-update** | Update organizational model documents and folder structures | [Individual skill docs](orgmodel-update/SKILL.md) |
 
 ---
 
@@ -174,7 +190,7 @@ Project: [PROJECT-NAME] ([PROJECT-ID])
 3. Use project-planning-tracking → MVP timeline
 
 Business constraints: [timeline/budget/resources]
-Input: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Input: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 ```
 
 ### 🔄 45-Minute Domain Analysis
@@ -187,7 +203,7 @@ Input: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
 
 Industry: [INDUSTRY-TYPE]
 Integration: [EXISTING-SYSTEMS]
-Input: projects/[PROJECT-ID]/artifacts/Analysis/
+Input: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/
 ```
 
 ### 📊 60-Minute Full Analysis Pipeline

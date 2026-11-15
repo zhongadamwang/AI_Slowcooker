@@ -12,16 +12,16 @@ Generate visual collaboration diagrams from domain analysis to illustrate system
 Transform analyzed domain concepts and requirements into clear, actionable collaboration diagrams that visualize key system interactions, user journeys, cross-system workflows, and domain entity relationships. Focus on communicating complex relationships through standardized diagram patterns.
 
 ## Inputs
-- **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/requirements.json` (from requirements-ingest skill)
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (from requirements-ingest skill)
 - **Tertiary**: `orgModel/**/domain-model.md` (existing domain models for class diagram generation)
-- **Optional**: `projects/[project-name]/artifacts/Analysis/goals.json` (from goals-extract skill)
+- **Optional**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/goals.json` (from goals-extract skill)
 - **Format**: Structured domain entities, relationships, and requirements data
 
 ## Outputs
 **Files Generated:**
-- `projects/[project-name]/artifacts/Analysis/collaboration-diagrams.md` - Markdown with embedded Mermaid diagrams
-- `projects/[project-name]/artifacts/Analysis/collaboration-diagrams.json` - Structured diagram metadata
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/collaboration-diagrams.md` - Markdown with embedded Mermaid diagrams
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/collaboration-diagrams.json` - Structured diagram metadata
 - `orgModel/**/domain-model.md` - Updated organizational domain models with embedded class diagrams (when domain-model integration is requested)
 
 ### Markdown Structure (`collaboration-diagrams.md`)

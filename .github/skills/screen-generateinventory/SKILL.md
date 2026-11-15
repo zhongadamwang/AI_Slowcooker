@@ -17,8 +17,8 @@ Identify the distinct screens/views a project's UI needs, based on its requireme
 
 ## Inputs
 
-- **Primary**: `projects/[project-name]/orgModel/[NN] - [Process Name]/ui-model.json` (from the project's UI Model — see `domain-model.md` under `orgModel/02 - UI Prototype Skill Development Process/` for the schema, and T03's worked example for a validated instance)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/requirements.json` (from `requirements-ingest`)
+- **Primary**: `OrgDocument/orgModel/[NN] - [Process Name]/ui-model.json` (from the project's UI Model — see `domain-model.md` under `orgModel/02 - UI Prototype Skill Development Process/` for the schema, and T03's worked example for a validated instance)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (from `requirements-ingest`)
 - **Format**: Structured UI Model entries (`entry_id`, `ui_concept_name`, `domain_entity_refs`) and structured requirements (`req_id`, `text`, `tags`)
 
 > **Pre-condition**: A UI Model must already exist for the project. If it doesn't, this skill cannot proceed — a screen must trace to a UI Model entry (R-606/R-628), not directly to a domain entity, so there is nothing to generate a screen inventory from until the UI Model is in place.

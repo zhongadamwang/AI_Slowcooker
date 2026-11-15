@@ -19,8 +19,8 @@ Apply the W5H analytical framework to requirements to systematically extract: st
 
 ## Outputs
 
-- `outputs/projects/{project_id}/Analysis/w5h-analysis.md` — W5H analysis report (primary, for downstream skills)
-- `outputs/projects/{project_id}/Analysis/w5h-analysis.json` — Structured W5H data for machine processing
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.md` — W5H analysis report (primary, for downstream skills)
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.json` — Structured W5H data for machine processing
 
 ## Core Function
 
@@ -28,8 +28,8 @@ Apply the W5H analytical framework to requirements to systematically extract: st
 **Primary Output**: Markdown W5H analysis report matching specification format
 **Secondary Output**: JSON format with structured W5H elements for machine processing
 **Output Destination**: 
-- Markdown: `outputs/projects/{project_id}/Analysis/w5h-analysis.md` (primary for downstream)
-- JSON: `outputs/projects/{project_id}/Analysis/w5h-analysis.json` (machine processing)
+- Markdown: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.md` (primary for downstream)
+- JSON: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.json` (machine processing)
 **Directory Structure**: Auto-created project folders with Analysis subfolder containing W5H analysis reports, stakeholder maps, and implementation guides
 
 ## Usage

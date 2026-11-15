@@ -517,7 +517,7 @@ This operation never touches folder structure, archetype, or any other metadata 
 ### Folders
 - Projects: `[NN] - [Project Name]` (e.g., "01 - Customer Portal")
 - Processes: `[NN] - [Process Name]` (e.g., "02 - User Authentication")
-- Artifacts: Descriptive names without numbering (e.g., "Analysis", "UI Mockups")
+- Artifacts: Descriptive names without numbering (e.g., "Analysis", "UI Prototype")
 
 ### Files  
 - Main documentation: `main.md`

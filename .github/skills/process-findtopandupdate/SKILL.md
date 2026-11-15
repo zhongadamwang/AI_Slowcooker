@@ -14,12 +14,12 @@ Implement intelligent requirement hierarchy analysis that identifies top-level r
 
 ## Inputs
 
-- **Primary**: `projects/[project-name]/artifacts/Analysis/requirements.json` (processed requirements with hierarchy metadata)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (domain entities from analysis)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/domain-alignment.json` (entity mappings and alignments)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/process-merge.json` (process integration results)
-- **Context**: `projects/[project-name]/artifacts/Analysis/w5h-analysis.json` (comprehensive requirement context)
-- **Context**: `projects/[project-name]/artifacts/Analysis/goals.json` (business goals and success criteria)
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (processed requirements with hierarchy metadata)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` (domain entities from analysis)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json` (entity mappings and alignments)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/process-merge.json` (process integration results)
+- **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.json` (comprehensive requirement context)
+- **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/goals.json` (business goals and success criteria)
 - **Existing**: `orgModel/*/main.md` (existing high-level organizational processes)
 - **Existing**: `orgModel/*/process.md` (detailed process flows)
 - **Existing**: `orgModel/*/domain-model.md` (organizational domain models)
@@ -27,10 +27,10 @@ Implement intelligent requirement hierarchy analysis that identifies top-level r
 ## Outputs
 
 **Files Generated:**
-- `projects/[project-name]/artifacts/Analysis/top-requirements-update.json` - Structured hierarchy analysis and update plan
-- `projects/[project-name]/artifacts/Analysis/top-requirements-update.md` - Human-readable requirement update report
-- `projects/[project-name]/artifacts/Analysis/orgmodel-update-plan.md` - OrgModel update coordination plan
-- `projects/[project-name]/artifacts/Analysis/requirement-consistency-report.md` - Consistency validation and traceability report
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/top-requirements-update.json` - Structured hierarchy analysis and update plan
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/top-requirements-update.md` - Human-readable requirement update report
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/orgmodel-update-plan.md` - OrgModel update coordination plan
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirement-consistency-report.md` - Consistency validation and traceability report
 
 ### JSON Structure (`top-requirements-update.json`)
 

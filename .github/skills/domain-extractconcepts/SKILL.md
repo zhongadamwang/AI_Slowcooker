@@ -12,14 +12,14 @@ Extract and structure domain-specific concepts, entities, and terminology from r
 Systematically identify and extract domain entities, business concepts, terminology, and relationships from structured requirements. Creates comprehensive domain concept maps with categorization, definitions, and traceability for downstream domain modeling tasks.
 
 ## Inputs
-- **Source**: `projects/[project-name]/artifacts/Analysis/requirements.json` (from requirements-ingest skill)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/goals.json` (from goals-extract skill, optional)
+- **Source**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (from requirements-ingest skill)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/goals.json` (from goals-extract skill, optional)
 - **Format**: Structured requirements with IDs, classifications, and text content
 
 ## Outputs
 **Files Generated:**
-- `projects/[project-name]/artifacts/Analysis/domain-concepts.json` - Structured domain data for programmatic use
-- `projects/[project-name]/artifacts/Analysis/domain-concepts.md` - Human-readable domain documentation
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` - Structured domain data for programmatic use
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.md` - Human-readable domain documentation
 
 ### JSON Structure (`domain-concepts.json`)
 ```json

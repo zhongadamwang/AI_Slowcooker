@@ -12,15 +12,15 @@ Analyze domain gaps and propose new concepts to enhance model completeness and a
 Systematically identify missing concepts in domain models by analyzing alignment gaps, requirement coverage, and emerging patterns. Proposes new domain concepts with clear justification, suggests integration approaches, and assesses impact on existing domain structures.
 
 ## Inputs
-- **Primary**: `projects/[project-name]/artifacts/Analysis/domain-alignment.json` (from domain-alignentities skill)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
-- **References**: `projects/[project-name]/artifacts/Analysis/requirements.json` (for gap validation)
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json` (from domain-alignentities skill)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
+- **References**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (for gap validation)
 - **References**: Organizational domain models (`orgModel/**/*domain-model.md`)
 
 ## Outputs
 **Files Generated:**
-- `projects/[project-name]/artifacts/Analysis/domain-newconcepts.json` - Structured proposal data for programmatic use
-- `projects/[project-name]/artifacts/Analysis/domain-newconcepts.md` - Human-readable proposal report and planning
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-newconcepts.json` - Structured proposal data for programmatic use
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-newconcepts.md` - Human-readable proposal report and planning
 
 ### JSON Structure (`domain-newconcepts.json`)
 ```json

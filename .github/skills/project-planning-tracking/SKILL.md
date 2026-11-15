@@ -668,7 +668,7 @@ Store as `project-health.md`:
 Adds planning artifacts to existing project structure:
 
 ```
-orgDocument/projects/[NN] - [project name]/
+OrgDocument/projects/[NN] - [Project Name]/
 ├── requirements/
 ├── artifacts/
 ├── main.md
@@ -918,7 +918,7 @@ For projects requiring team collaboration and external feedback, implement task 
 
 #### Task Management Structure
 ```
-projects/[NN] - [Project Name]/
+OrgDocument/projects/[NN] - [Project Name]/
 ├── tasks/                    # Individual task files in GitHub issue format
 │   ├── T##-task-name.md     # Task files aligned with project plan numbering  
 │   ├── task-tracking.md # Overall task progress tracking

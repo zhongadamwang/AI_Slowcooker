@@ -16,12 +16,12 @@ Expert guidance for maximizing effectiveness and resolving common issues with ED
 
 #### Folder Structure Discipline
 ```
-projects/[PROJECT-ID]/
+OrgDocument/projects/[NN] - [Project Name]/
 ├── artifacts/
 │   ├── Analysis/          # Keep all skill outputs here
 │   ├── Changes/           # Track all changes chronologically
 │   ├── Source Materials/  # Store original input documents, transcripts, references, and drafts
-│   └── UI Mockups/        # Visual artifacts
+│   └── UI Prototype/      # Visual artifacts
 ├── tasks/                 # Project planning outputs
 ├── main.md               # Project overview
 └── README.md             # Quick project reference
@@ -103,7 +103,7 @@ process-scopemin → project-planning-tracking → project-status-reporting
 ```markdown
 @workspace Validate skill output quality:
 
-Output to validate: projects/[PROJECT-ID]/artifacts/Analysis/[output-file]
+Output to validate: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/[output-file]
 
 Validation criteria:
 1. Completeness: [Specific completeness requirements]
@@ -119,9 +119,9 @@ Identify gaps and recommend improvements.
 @workspace Check consistency across skill outputs:
 
 Files to validate:
-- projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
-- projects/[PROJECT-ID]/artifacts/Analysis/goals.json  
-- projects/[PROJECT-ID]/artifacts/Analysis/domain-concepts.json
+- OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
+- OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/goals.json  
+- OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json
 
 Check for:
 - Terminology consistency
@@ -196,7 +196,7 @@ Focus Requirements:
 - Business rules and constraints
 - Domain-specific terminology with definitions
 
-Enhanced extraction from: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Enhanced extraction from: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 ```
 
 **Prevention:**
@@ -238,7 +238,7 @@ Feature Evaluation Criteria:
 
 Apply strict 80/20 rule: 80% of business value from 20% of features.
 
-Input: projects/[PROJECT-ID]/artifacts/Analysis/requirements.json
+Input: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
 ```
 
 **Prevention:**

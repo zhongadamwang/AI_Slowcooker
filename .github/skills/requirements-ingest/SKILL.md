@@ -20,8 +20,8 @@ Transforms requirements documents (PDF/DOCX/Markdown/Email) into structured, ato
 ## Outputs
 
 **Files Generated:**
-- `outputs/projects/{project_id}/Analysis/requirements.md` — Markdown format for downstream skills
-- `outputs/projects/{project_id}/Analysis/requirements.json` — JSON format for machine processing
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.md` — Markdown format for downstream skills
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` — JSON format for machine processing
 - Auto-created project directory with Analysis subfolder, processing logs, and glossary files
 
 For projects following the EDPS `artifacts/` structure, keep original inputs in `artifacts/Source Materials/` and save the generated `requirements.md` and `requirements.json` in `artifacts/Analysis/`. Do not store generated analysis outputs in `Source Materials/`.

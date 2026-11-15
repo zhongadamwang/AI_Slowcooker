@@ -16,7 +16,7 @@ Systematically compare new domain concepts extracted from requirements against e
 When the target organizational model is boundary-decomposed (per `hierarchy-management`'s `[NN]-[Name]Boundary/` structure), every `extracted_entity`/`target_entity` in this skill's output must additionally resolve to a [Scoped Entity Reference](../model-validatealignment/references/cross-model-alignment-contract.md#11-scoped-entity-reference) — `(scope, entity_id)`, never `entity_id` alone — so that `model-validatealignment` can check alignment without re-deriving which boundary an entity belongs to. This does not change this skill's existing alignment logic or output schema; it adds a `scope` field (the boundary path, e.g., `root-boundary/child-software-boundary/`) alongside each existing `extracted_entity`/`target_entity` object, populated from the boundary folder this skill is currently operating within. A flat (non-hierarchical) project has a single implicit scope and may omit this field, exactly as the contract's own Section 1.1 describes scope as meaningful primarily when entity-name collisions across boundaries are possible.
 
 ## Inputs
-- **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` (from domain-extractconcepts skill)
 - **References**: Organizational domain models (`orgModel/**/*domain-model.md`)
 - **References**: Organizational vocabularies (`orgModel/**/*vocabulary.md`)
 - **References**: Organizational class diagrams (`orgModel/**/*domain-model.md` containing Mermaid class diagrams)
@@ -24,8 +24,8 @@ When the target organizational model is boundary-decomposed (per `hierarchy-mana
 
 ## Outputs
 **Files Generated:**
-- `projects/[project-name]/artifacts/Analysis/domain-alignment.json` - Structured alignment data for programmatic use
-- `projects/[project-name]/artifacts/Analysis/domain-alignment.md` - Human-readable alignment report and recommendations
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json` - Structured alignment data for programmatic use
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.md` - Human-readable alignment report and recommendations
 
 ### JSON Structure (`domain-alignment.json`)
 ```json

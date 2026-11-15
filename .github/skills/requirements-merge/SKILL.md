@@ -20,9 +20,9 @@ Merge requirements from two or more heterogeneous sources into one unified, cohe
 
 ## Outputs
 
-- `outputs/projects/{project_id}/Analysis/unified-requirements.md` — Merged specification (primary, for downstream skills)
-- `outputs/projects/{project_id}/Analysis/merge-analysis.json` — Detailed merge trace with source traceability
-- `outputs/projects/{project_id}/Analysis/merge-conflicts.md` — Conflict log for stakeholder review
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/unified-requirements.md` — Merged specification (primary, for downstream skills)
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/merge-analysis.json` — Detailed merge trace with source traceability
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/merge-conflicts.md` — Conflict log for stakeholder review
 
 ## Core Function
 
@@ -30,9 +30,9 @@ Merge requirements from two or more heterogeneous sources into one unified, cohe
 **Primary Output**: Markdown unified requirements specification (for stakeholder review and downstream skills)
 **Secondary Output**: JSON format with detailed merge analysis and traceability (for machine processing and audit trails)
 **Output Destination**: 
-- Markdown: `outputs/projects/{project_id}/Analysis/unified-requirements.md` (primary for downstream)
-- JSON: `outputs/projects/{project_id}/Analysis/merge-analysis.json` (machine processing)
-- Conflicts Log: `outputs/projects/{project_id}/Analysis/merge-conflicts.md` (stakeholder review)
+- Markdown: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/unified-requirements.md` (primary for downstream)
+- JSON: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/merge-analysis.json` (machine processing)
+- Conflicts Log: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/merge-conflicts.md` (stakeholder review)
 **Directory Structure**: Auto-created project folders with Analysis subfolder containing unified requirements, merge analysis, conflict resolution logs, and stakeholder approval tracking
 
 ## Usage

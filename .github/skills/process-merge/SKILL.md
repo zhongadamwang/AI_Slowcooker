@@ -12,20 +12,20 @@ Systematically merges new process models derived from requirements with existing
 Implement true process model integration that analyzes new process elements against existing orgModel structure, identifies minimum sub-process overlap using domain entity matching, and executes systematic integration following EDP methodology principles. Maintains process coherence while preserving existing organizational content and ensuring stakeholder validation at critical integration points.
 
 ## Inputs
-- **Primary**: `projects/[project-name]/artifacts/Analysis/domain-concepts.json` (new process entities from domain-extractconcepts skill)
-- **Secondary**: `projects/[project-name]/artifacts/Analysis/domain-alignment.json` (entity mappings from domain-alignentities skill)
-- **Context**: `projects/[project-name]/artifacts/Analysis/requirements.json` (source requirements for traceability)
-- **Context**: `projects/[project-name]/artifacts/Analysis/w5h-analysis.json` (process context understanding)
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` (new process entities from domain-extractconcepts skill)
+- **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json` (entity mappings from domain-alignentities skill)
+- **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (source requirements for traceability)
+- **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.json` (process context understanding)
 - **Existing**: `orgModel/*/process.md` (existing organizational process flows)
 - **Existing**: `orgModel/*/domain-model.md` (existing domain models for entity mapping)
 - **Existing**: `orgModel/*/vocabulary.md` (organizational terminology consistency)
 
 ## Outputs
 **Files Generated:**
-- `projects/[project-name]/artifacts/Analysis/process-merge.json` - Structured merge plan and overlap analysis
-- `projects/[project-name]/artifacts/Analysis/process-merge.md` - Human-readable integration report
-- `projects/[project-name]/artifacts/Analysis/process-integration-plan.md` - Stakeholder review and approval workflow
-- `projects/[project-name]/artifacts/Analysis/process-rollback-data.json` - Rollback capabilities and validation checkpoints
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/process-merge.json` - Structured merge plan and overlap analysis
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/process-merge.md` - Human-readable integration report
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/process-integration-plan.md` - Stakeholder review and approval workflow
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/process-rollback-data.json` - Rollback capabilities and validation checkpoints
 
 ### JSON Structure (`process-merge.json`)
 ```json

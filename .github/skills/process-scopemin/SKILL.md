@@ -20,8 +20,8 @@ Identify the minimum viable product (MVP) scope from a comprehensive requirement
 
 ## Outputs
 
-- `outputs/projects/{project_id}/Analysis/scope-analysis.md` — Scope analysis report with MVP recommendation (primary, for downstream skills)
-- `outputs/projects/{project_id}/Analysis/scope-analysis.json` — Structured scope classifications (machine processing)
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.md` — Scope analysis report with MVP recommendation (primary, for downstream skills)
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.json` — Structured scope classifications (machine processing)
 
 ## Core Function
 
@@ -29,8 +29,8 @@ Identify the minimum viable product (MVP) scope from a comprehensive requirement
 **Primary Output**: Markdown scope analysis report with MVP recommendations
 **Secondary Output**: JSON format with structured scope classifications for machine processing
 **Output Destination**: 
-- Markdown: `outputs/projects/{project_id}/Analysis/scope-analysis.md` (primary for downstream)
-- JSON: `outputs/projects/{project_id}/Analysis/scope-analysis.json` (machine processing)
+- Markdown: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.md` (primary for downstream)
+- JSON: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.json` (machine processing)
 **Directory Structure**: Auto-created project folders with Analysis subfolder containing scope analysis, feature prioritization matrices, and MVP roadmaps
 
 ## Usage
