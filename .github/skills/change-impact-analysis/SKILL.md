@@ -1,6 +1,7 @@
 ---
 name: change-impact-analysis
 description: Trace how changes at one EDPS hierarchy level propagate to parent and child levels. Given a boundary restructuring, participant rename, or requirement modification, this skill identifies all affected artifacts across the full hierarchy tree, generates a prioritised impact report, and supports what-if mode so proposed changes can be evaluated without being applied. Use when a user wants to understand the blast radius of a hierarchy or requirement change, trace a requirement to all implementing artifacts, or run a pre-flight check before executing a hierarchy modification.
+license: MIT
 ---
 
 # Change Impact Analysis

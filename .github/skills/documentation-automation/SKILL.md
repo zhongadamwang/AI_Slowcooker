@@ -1,6 +1,7 @@
 ---
 name: documentation-automation
 description: Automate generation of process documentation at each hierarchy level following organizational standards. Auto-generates main.md (with hierarchy navigation and breadcrumb), process.md (level-appropriate activity diagram and description), collaboration.md (EDPS-compliant sequencing with box boundaries and participant stereotypes), and domain-model.md (entities scoped to the boundary). Use when a new process folder has been created (e.g., after hierarchy-management decomposition), when existing docs need to be regenerated from collaboration.md, or when a user asks to "document a process", "generate docs", "regenerate documentation", or "fill in the templates" for a hierarchy level.
+license: MIT
 ---
 
 # Documentation Automation

@@ -2,8 +2,9 @@
 name: project-document-management
 description: Initialize and manage project documentation structures following hierarchical folder guidelines. Creates consistent project trees with requirements, artifacts, and organizational modeling documents. Supports flat (Project 1) and EDPS-hierarchical (Project 3) archetypes, an opt-in UI Prototype artifact category for UI prototyping skills, integrates with documentation-automation for stub generation, tracks project evolution metadata, and supports a solo vs. traditional collaboration mode orthogonal to archetype.
 license: MIT
-version: 2.3.0
-last-updated: 2026-10-27
+metadata:
+  version: 2.3.0
+  last-updated: "2026-10-27"
 ---
 
 # Project Document Management

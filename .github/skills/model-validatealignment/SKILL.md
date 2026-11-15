@@ -2,7 +2,9 @@
 name: model-validatealignment
 description: Owns the single cross-model entity/system-boundary alignment contract shared by the use-case model, UI model, domain model, and process model. Validates alignment at the end of every modeling round, reports PASS, NEEDS_CLARIFICATION, or INVALID_INPUT with item-level evidence, and requests clarification for unresolved inconsistencies rather than treating them as aligned. This skill does not generate use-case or UI models itself — see usecase-generatemodel and ui-generatemodel.
 license: MIT
-version: 0.1.0
+metadata:
+  version: 0.1.0
+  last-updated: "2026-11-08"
 ---
 
 # Model Validate Alignment

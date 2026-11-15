@@ -1,6 +1,7 @@
 ---
 name: edps-compliance
 description: Validate EDPS (Evolutionary Development Process System) methodology compliance across process hierarchies. Checks evolutionary decomposition patterns, boundary validation rules (VR-1 through VR-4), requirements traceability at each hierarchy level, change history metadata, and incremental model refinement adherence. Generates item-level pass/fail compliance reports in both JSON and Markdown formats. Use when a user wants to validate EDPS compliance, check hierarchy conformance, generate a compliance report, or get remediation suggestions for violations.
+license: MIT
 ---
 
 # EDPS Compliance Checking

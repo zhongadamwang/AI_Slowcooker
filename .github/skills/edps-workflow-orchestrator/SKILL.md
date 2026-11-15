@@ -1,10 +1,10 @@
-````skill
 ---
 name: edps-workflow-orchestrator
 description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused — plus the Design & Visualization (S5) phase, including boundary-scoped use-case/UI modeling (S32, S40) and non-bypassable cross-model alignment validation (S39).
 license: MIT
-version: 1.3.0
-last-updated: 2026-11-08
+metadata:
+  version: 1.3.0
+  last-updated: "2026-11-08"
 ---
 
 # EDPS Workflow Orchestrator
@@ -927,4 +927,3 @@ skill-completion-gates emits:  gate_pass | gate_fail  →  Orchestrator updates 
 - **1.2.0** (2026-10-27): Registered UI Prototyping extension skills S33–S38 (`screen-generateinventory`, `screen-generatelayout`, `screen-generatemockup`, `screen-generateflow`, `screen-assembledocument`, `screen-discussfeedback`) per Project 06 T10. Added as an optional extension, not folded into the three named archetypes, since not every project has a UI component. Documented the UI Model dependency gap (no dedicated orchestrated skill yet for UI Model generation itself).
 - **1.1.0** (2026-10-22): Prior update (see git history for details).
 - **1.0.0** (2026-03-16): Initial release.
-````
