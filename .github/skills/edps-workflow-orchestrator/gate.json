@@ -23,7 +23,7 @@
       "severity": "hard",
       "description": "Should validate DAG prerequisite dependencies",
       "file": "artifacts/Orchestration/project-state.json",
-      "must_contain": ["prerequisitesValidated": true],
+      "must_contain": ["\"prerequisitesValidated\": true"],
       "remediation": "Ensure all workflow prerequisite dependencies are satisfied"
     },
     {
