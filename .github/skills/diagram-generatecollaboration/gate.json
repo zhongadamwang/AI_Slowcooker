@@ -13,7 +13,7 @@
       "severity": "hard",
       "description": "Collaboration diagram must exist",
       "artifacts": [
-        "orgModel/*/collaboration.md"
+        "{process}/collaboration.md"
       ],
       "remediation": "Run diagram-generatecollaboration to create sequence diagrams"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "hard",
       "description": "Must contain valid Mermaid sequence diagram",
-      "file": "orgModel/*/collaboration.md", 
+      "file": "{process}/collaboration.md", 
       "must_contain": ["```mermaid", "sequenceDiagram"],
       "must_not_contain": ["[TO BE GENERATED]"],
       "remediation": "Verify diagram generation completed successfully"
@@ -32,7 +32,7 @@
       "type": "content_pattern",
       "severity": "hard",
       "description": "Must have participant declarations with EDPS stereotypes",
-      "file": "orgModel/*/collaboration.md",
+      "file": "{process}/collaboration.md",
       "must_contain_pattern": "participant\\s+\\w+@\\{\\s*\"type\":\\s*\"(actor|boundary|control|entity)\"",
       "min_matches": 2,
       "remediation": "Ensure domain concepts include sufficient participants for diagram generation"
@@ -42,7 +42,7 @@
       "type": "content_pattern",
       "severity": "hard",
       "description": "Must have message flows between participants",
-      "file": "orgModel/*/collaboration.md",
+      "file": "{process}/collaboration.md",
       "must_contain_pattern": "\\w+\\s*-[->]\\w*>\\s*\\w+:",
       "min_matches": 3,
       "remediation": "Review requirements to ensure sufficient interaction detail for message flows"
@@ -52,7 +52,7 @@
       "type": "content_pattern", 
       "severity": "soft",
       "description": "Should use boundary groupings for EDPS v2",
-      "file": "orgModel/*/collaboration.md",
+      "file": "{process}/collaboration.md",
       "must_contain": ["box"],
       "remediation": "Consider using boundary groupings for better process organization"
     }

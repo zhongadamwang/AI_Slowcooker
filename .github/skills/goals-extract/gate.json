@@ -13,7 +13,7 @@
       "severity": "hard",
       "description": "Goals analysis file must exist",
       "artifacts": [
-        "artifacts/Analysis/goals-analysis.json"
+        "artifacts/Analysis/goals.json"
       ],
       "remediation": "Run goals-extract skill on requirements to identify business goals"
     },
@@ -22,7 +22,7 @@
       "type": "json_schema",
       "severity": "hard",
       "description": "Goals file must have valid structure", 
-      "file": "artifacts/Analysis/goals-analysis.json",
+      "file": "artifacts/Analysis/goals.json",
       "required_fields": ["business_goals", "success_criteria", "constraints", "assumptions"],
       "remediation": "Verify requirements contain sufficient goal information"
     },
@@ -31,7 +31,7 @@
       "type": "field_completeness",
       "severity": "soft",
       "description": "Success criteria should be measurable",
-      "file": "artifacts/Analysis/goals-analysis.json",
+      "file": "artifacts/Analysis/goals.json",
       "json_path": "$.success_criteria[*].metric",
       "min_percent_complete": 60,
       "remediation": "Review success criteria to ensure they include measurable metrics"

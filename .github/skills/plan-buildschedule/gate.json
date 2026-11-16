@@ -13,7 +13,7 @@
       "severity": "soft",
       "description": "Should produce project schedule",
       "artifacts": [
-        "artifacts/Planning/project-schedule.md"
+        "artifacts/Analysis/project-schedule.md"
       ],
       "remediation": "Run plan-buildschedule to generate project timeline"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should include Gantt chart representation",
-      "file": "artifacts/Planning/project-schedule.md",
+      "file": "artifacts/Analysis/project-schedule.md",
       "must_contain": ["```mermaid", "gantt"],
       "remediation": "Add Gantt diagram to visualize project timeline"
     },
@@ -31,7 +31,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should identify critical path",
-      "file": "artifacts/Planning/project-schedule.md",
+      "file": "artifacts/Analysis/project-schedule.md",
       "must_contain": ["## Critical Path", "## Dependencies"],
       "remediation": "Complete critical path analysis and dependency mapping"
     }

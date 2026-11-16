@@ -13,7 +13,7 @@
       "severity": "soft",
       "description": "Should produce process merge analysis",
       "artifacts": [
-        "artifacts/Analysis/process-merge-analysis.md"
+        "artifacts/Analysis/process-merge.md"
       ],
       "remediation": "Run process-merge to analyze integration approaches"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should identify minimum overlap requirements",
-      "file": "artifacts/Analysis/process-merge-analysis.md",
+      "file": "artifacts/Analysis/process-merge.md",
       "must_contain": ["## Overlap Analysis", "## Integration Strategy"],
       "remediation": "Document minimum sub-process overlap identification"
     },
@@ -31,7 +31,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should verify model coherence is maintained",
-      "file": "artifacts/Analysis/process-merge-analysis.md",
+      "file": "artifacts/Analysis/process-merge.md",
       "must_contain": ["✅ Model Coherence Check"],
       "remediation": "Validate that merged models maintain EDP coherence"
     }

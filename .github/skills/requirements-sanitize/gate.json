@@ -1,0 +1,38 @@
+{
+  "$schema": "https://edps.dev/schemas/gate/v1.0.0",
+  "skill_id": "S00",
+  "skill_name": "requirements-sanitize",
+  "version": "1.0.0",
+  "gate_type": "completion",
+  "severity": "soft",
+  "description": "Validates that a sanitized, business-focused requirements document and its sanitization report were produced",
+  "checks": [
+    {
+      "id": "sanitized_requirements_exist",
+      "type": "artifact_existence",
+      "severity": "hard",
+      "description": "The sanitized requirements document must exist",
+      "artifacts": [
+        "artifacts/Analysis/sanitized-requirements.md"
+      ],
+      "remediation": "Run requirements-sanitize on the raw source document"
+    },
+    {
+      "id": "sanitization_report_exists",
+      "type": "artifact_existence",
+      "severity": "soft",
+      "description": "The sanitization report listing retained, transformed, removed, and flagged statements should exist",
+      "artifacts": [
+        "artifacts/Analysis/sanitization-report.md"
+      ],
+      "remediation": "Generate the sanitization report (Step 5) so removed and transformed content can be reviewed"
+    }
+  ],
+  "quality_score_weight": 0.05,
+  "bypass_allowed": true,
+  "workflow_archetypes": {
+    "standard": "soft",
+    "rapid": "bypass",
+    "compliance": "soft"
+  }
+}

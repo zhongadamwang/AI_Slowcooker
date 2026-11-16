@@ -3,7 +3,7 @@ name: edps-workflow-orchestrator
 description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused — plus the Design & Visualization phase, including boundary-scoped use-case/UI modeling (S32, S40) and non-bypassable cross-model alignment validation (S39).
 license: MIT
 metadata:
-  version: 1.3.1
+  version: 1.4.0
   last-updated: "2026-11-15"
 ---
 
@@ -236,8 +236,10 @@ A **modeling round** (full definition: [cross-model-alignment-contract.md](../mo
 
 **Project state additions** (see [Project State Schema](#project-state-schema) below for the full `modeling_rounds` field): each round records its `round_id`, `boundary_scope`, `source_model_versions` (as they stood when the round ran), and its `status`. `S39`'s own `completed` state in the `skills` map means "at least one round has reached a terminal status" — it does **not** by itself mean every round is `PASS`; the orchestrator must inspect `modeling_rounds` for the actual per-boundary status, exactly as `model-validatealignment`'s own `resolve_round_for_resume()` does (see its `scripts/alignment_report.py`).
 
+**Running a round's validation.** Run `python3 .github/skills/model-validatealignment/scripts/validate_alignment.py --round-id <id> --root <process or boundary folder> --output-dir "<project>/artifacts/Analysis"` from the repository root. It writes the round report and `alignment-status.json` (the latest round's status and model versions), which is what the S39 completion gate reads. Copy that file's `status` and `source_model_versions` into `modeling_rounds` for each boundary in scope.
+
 **Non-bypassable alignment, across every mode and archetype.** A round's `PASS` status can only be set by `model-validatealignment`'s own validator actually running against current artifacts (contract Section 4.4). This is explicitly **not** subject to:
-- `collaboration_mode` (`solo` vs. `traditional`) — unlike `stakeholder_confirmation` gate checks, whose severity this orchestrator resolves via `resolveCheckSeverity()` (see Skill Completion Gates below), alignment-round status has no severity-resolution step at all. There is no code path, solo or traditional, that converts a `NEEDS_CLARIFICATION`/`INVALID_INPUT` round into `PASS` without an actual revalidation.
+- `collaboration_mode` (`solo` vs. `traditional`) — unlike `stakeholder_confirmation` gate checks, whose severity depends on collaboration mode (see Skill Completion Gates below), alignment-round status has no severity-resolution step at all. There is no code path, solo or traditional, that converts a `NEEDS_CLARIFICATION`/`INVALID_INPUT` round into `PASS` without an actual revalidation.
 - Workflow archetype (`standard`/`rapid`/`compliance`) — `rapid`'s generally more lenient gate severities (see each skill's `gate.json` `workflow_archetypes` field) do not apply to round status; `model-validatealignment`'s own `gate.json` keeps `workflow_archetypes.rapid: "hard"` specifically so a rapid-archetype project cannot soften this check the way other skills' soft checks are allowed to relax.
 - `orchestrate skip` — skipping `S39` is logged to `skip_audit` exactly like skipping any other skill, but a skipped `S39` means the round was never validated, not that it passed. The orchestrator must never report a boundary as "aligned" on the strength of a skipped validation.
 
@@ -376,7 +378,7 @@ The project state object is the single source of truth for where a project stand
 }
 ```
 
-**`modeling_rounds` and `resume` staleness checking**: on `orchestrate resume`, for every boundary present in `modeling_rounds`, the orchestrator re-reads that boundary's actual current `domain-model.md`/`process.md`/`use-case-model.json`/`ui-model.json` and compares against the recorded `source_model_versions` — exactly the `is_stale()`/`resolve_round_for_resume()` logic in `model-validatealignment/scripts/alignment_report.py`. If stale, the orchestrator sets that boundary's `status` to `"stale"` in the resumption summary (not silently left as the old `"PASS"`) and marks `S39` `available` again for that boundary, regardless of whether `S39`'s overall `skills` map entry still shows `completed` from an earlier, now-superseded round.
+**`modeling_rounds` and `resume` staleness checking**: on `orchestrate resume`, for every boundary present in `modeling_rounds`, the orchestrator re-reads that boundary's actual current `domain-model.md`/`process.md`/`use-case-model.json`/`ui-model.json` and compares against the recorded `source_model_versions` by running `python3 .github/skills/model-validatealignment/scripts/validate_alignment.py --check-stale <round report .json>` (exit code 0 = still valid, 3 = stale). If stale, the orchestrator sets that boundary's `status` to `"stale"` in the resumption summary (not silently left as the old `"PASS"`) and marks `S39` `available` again for that boundary, regardless of whether `S39`'s overall `skills` map entry still shows `completed` from an earlier, now-superseded round.
 
 ### Serialization and Resumption
 
@@ -493,247 +495,55 @@ The orchestrator integrates with skill completion gates to validate output quali
 
 ### Gate evaluation process
 
-When `orchestrate complete [skill]` is invoked, the orchestrator:
+When `orchestrate complete [skill]` is invoked, run the skill's gate with the gate runner and act on its result. Do not judge a gate by reading `gate.json` and the artifacts yourself; the runner's result is the gate result.
 
-1. **Locates gate configuration**: Reads `.github/skills/[skill-name]/gate.json`
-2. **Evaluates gate checks**: Runs all validation checks defined in the gate schema
-3. **Computes quality score**: Aggregates weighted scores from successful checks
-4. **Determines transition**: Based on severity levels and workflow archetype
-
-### Gate evaluation implementation
-
-```javascript
-async function evaluateSkillGate(skillName, workflowArchetype, projectMetadata) {
-  const gatePath = `.github/skills/${skillName}/gate.json`;
-  if (!fs.existsSync(gatePath)) {
-    return { status: "no_gate", allowed: true };
-  }
-
-  const gateConfig = JSON.parse(fs.readFileSync(gatePath));
-  const archetypeSeverity = gateConfig.workflow_archetypes[workflowArchetype];
-
-  if (archetypeSeverity === "bypass") {
-    return { status: "bypassed", allowed: true, reason: "Archetype allows bypass" };
-  }
-
-  // Collaboration mode: absence of the field on project-metadata.json means
-  // "traditional" (see T01/T02) — never silently inferred as "solo".
-  const collaborationMode = projectMetadata.collaboration_mode || "traditional";
-
-  let results = { passed: [], failed: [], score: 0 };
-
-  for (const check of gateConfig.checks) {
-    // Mode branch happens BEFORE archetype-based severity is applied (TR-03.1).
-    // Only stakeholder_confirmation checks are mode-aware; all other check
-    // types keep their declared severity regardless of collaboration_mode.
-    const effectiveSeverity = resolveCheckSeverity(check, collaborationMode);
-    const result = await runGateCheck({ ...check, severity: effectiveSeverity }, collaborationMode);
-
-    if (result.passed) {
-      results.passed.push(result);
-      results.score += gateConfig.quality_score_weight;
-    } else {
-      results.failed.push(result);
-
-      // Hard failures block progression unless bypass is allowed
-      if (effectiveSeverity === "hard" && !gateConfig.bypass_allowed) {
-        return {
-          status: "failed",
-          allowed: false,
-          check: check.id,
-          collaboration_mode: collaborationMode,
-          remediation: check.remediation,
-          results: results
-        };
-      }
-    }
-  }
-
-  const totalScore = results.score;
-  const qualityThreshold = workflowArchetype === "compliance" ? 0.95 : 0.80;
-
-  return {
-    status: totalScore >= qualityThreshold ? "passed" : "partial",
-    allowed: true,
-    collaboration_mode: collaborationMode,
-    quality_score: totalScore,
-    results: results
-  };
-}
-
-// Resolves the severity actually applied to a check, given the project's
-// collaboration mode. Only stakeholder_confirmation checks are mode-aware;
-// every other check type keeps the severity declared in gate.json.
-function resolveCheckSeverity(check, collaborationMode) {
-  if (check.type !== "stakeholder_confirmation") {
-    // PRJ-07/T06: this is also what makes alignment-round checks (S39,
-    // model-validatealignment's gate.json checks are all artifact_existence/
-    // content_pattern types, never stakeholder_confirmation) non-bypassable
-    // by collaboration_mode -- they fall through this branch unchanged,
-    // exactly like every other non-stakeholder-confirmation check type.
-    return check.severity;
-  }
-  // traditional: a real, distinct person must confirm -> hard (blocks).
-  // solo: the developer self-attests across roles -> soft (does not block),
-  // but is still logged identically for audit purposes (FR-03.3).
-  return collaborationMode === "solo" ? "soft" : "hard";
-}
-
-async function runGateCheck(check, collaborationMode) {
-  switch (check.type) {
-    case "artifact_existence":
-      return checkArtifactExists(check);
-    case "content_pattern":
-      return checkContentPattern(check);
-    case "json_schema":
-      return validateJsonSchema(check);
-    case "stakeholder_confirmation":
-      return checkStakeholderConfirmation(check, collaborationMode);
-    default:
-      return { passed: false, reason: `Unknown check type: ${check.type}` };
-  }
-}
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py <skill-name> \
+    --project "OrgDocument/projects/[NN] - [Project Name]" \
+    [--process <orgModel process folder>] [--boundary <boundary folder>] \
+    [--archetype standard|rapid|compliance] [--json]
 ```
 
-### Gate check types
+Pass `--process` for skills that write into an orgModel process folder (S09, S10, S11) and `--boundary` for skills that work on one boundary (S32, S40); run those gates once per folder. The collaboration mode is read from `project-metadata.json`.
 
-**Artifact existence**: Verifies required output files exist
-```javascript
-function checkArtifactExists(check) {
-  const missing = check.artifacts.filter(path => !fs.existsSync(path));
-  return {
-    passed: missing.length === 0,
-    missing_artifacts: missing,
-    remediation: missing.length > 0 ? check.remediation : null
-  };
-}
-```
+| Runner status | Exit code | What the orchestrator does |
+|---|---|---|
+| `passed` | 0 | Mark the skill `completed` |
+| `passed_with_warnings` | 0 | Show the failed checks and their remediation, then mark `completed` unless the user chooses to remediate first |
+| `bypassed` | 0 | Mark `completed`; record that the archetype bypasses this gate |
+| `failed` | 1 | Do not mark `completed`; show each failed hard check's remediation |
+| `incomplete` | 2 | Re-run with the scope folder the skipped checks name |
+| `no_gate` | 0 | Mark `completed` |
 
-**Content pattern**: Validates file contents match required patterns
-```javascript
-function checkContentPattern(check) {
-  if (!fs.existsSync(check.file)) {
-    return { passed: false, reason: `File not found: ${check.file}` };
-  }
-  
-  const content = fs.readFileSync(check.file, 'utf8');
-  
-  // Check required content
-  const missingContent = check.must_contain.filter(text => !content.includes(text));
-  const forbiddenContent = check.must_not_contain.filter(text => content.includes(text));
-  
-  // Pattern matching with minimum count
-  let patternMatches = 0;
-  if (check.must_contain_pattern) {
-    const regex = new RegExp(check.must_contain_pattern, 'g');
-    patternMatches = (content.match(regex) || []).length;
-  }
-  
-  const passed = missingContent.length === 0 && 
-                forbiddenContent.length === 0 && 
-                patternMatches >= (check.min_matches || 0);
-  
-  return {
-    passed: passed,
-    missing_content: missingContent,
-    forbidden_content: forbiddenContent,
-    pattern_matches: patternMatches,
-    remediation: !passed ? check.remediation : null
-  };
-}
-```
+How severity resolves (full detail in [references/gate-schema.md](references/gate-schema.md)):
 
-**Stakeholder confirmation**: Represents a human confirming an output, with severity resolved by `collaboration_mode` before this function ever runs (see `resolveCheckSeverity` above — by the time this function executes, `check.severity` is already the *effective* severity for the active mode).
-```javascript
-function checkStakeholderConfirmation(check, collaborationMode) {
-  // project_state.confirmations is an array of records already recorded
-  // against this project (see Confirmation Record Shape below), populated
-  // either by a traditional sign-off or a solo self-attestation.
-  const record = findConfirmationRecord(check.role, check.skill_id);
+- A check is `hard` or `soft` as declared. The only exception is `stakeholder_confirmation`, which is hard in `traditional` mode and soft (self-attested) in `solo` mode. No other check type is affected by collaboration mode.
+- Each gate states, per archetype, whether its hard failures block (`hard`), only warn (`soft`), or whether the gate is skipped (`bypass`). `model-validatealignment` (S39) is `hard` in every archetype, and none of its checks is a stakeholder confirmation, so neither archetype nor collaboration mode can soften it.
+- In the `compliance` archetype a quality score below 0.80 also blocks.
 
-  if (collaborationMode === "solo" && !record) {
-    // Solo mode auto-satisfies the check with a generated self-attestation
-    // entry rather than requiring the developer to have pre-recorded one.
-    // This keeps the build-and-clarify loop frictionless (FR-03.3) while
-    // still producing a full audit trail.
-    const autoRecord = {
-      role: check.role,
-      confirmation_statement: check.confirmation_statement,
-      confirmed_by: "self-attestation",
-      collaboration_mode: "solo",
-      timestamp: new Date().toISOString()
-    };
-    appendConfirmationRecord(autoRecord);
-    return {
-      passed: true,
-      mode: "solo",
-      confirmation: autoRecord,
-      note: `Self-attested as ${check.role} (solo mode) — no blocking confirmation required.`
-    };
-  }
+When a `stakeholder_confirmation` check passes by solo self-attestation, append the confirmation record (shape in the gate schema reference) to `project-state.json`.
 
-  if (!record) {
-    // traditional mode (or solo mode where, unusually, a prior record is
-    // expected but missing) with no confirmation on file -> fails.
-    return {
-      passed: false,
-      mode: collaborationMode,
-      reason: `No stakeholder confirmation on file for role "${check.role}"`,
-      remediation: check.remediation
-    };
-  }
-
-  return { passed: true, mode: collaborationMode, confirmation: record };
-}
-```
-
-**Confirmation record shape** (stored in `project-state.json`, append-only, identical shape in both modes so project history reads consistently across a mode change):
-```json
-{
-  "role": "Business Owner",
-  "confirmation_statement": "Success criteria reflect actual business priority",
-  "confirmed_by": "self-attestation | <real stakeholder name/identifier>",
-  "collaboration_mode": "solo | traditional",
-  "timestamp": "2026-10-22T09:00:00Z"
-}
-```
-
-### Workflow transition behavior
-
-| Gate Result | Standard | Rapid | Compliance |
-|------------|----------|-------|------------|
-| **Hard Failure** | ❌ Block | ⚠️ Warn + Continue | ❌ Block |
-| **Soft Failure** | ⚠️ Warn + Continue | ✅ Continue | ⚠️ Warn + Continue |
-| **Quality < 80%** | ⚠️ Warn + Continue | ✅ Continue | ❌ Block |
-| **Quality < 95%** | ✅ Continue | ✅ Continue | ⚠️ Warn + Continue |
+The gate check types, path scopes, `applies_when` conditions, and the quality score are defined in [references/gate-schema.md](references/gate-schema.md). After editing any `gate.json`, run `run_gate.py --lint`.
 
 ### Gate evaluation output
 
+`run_gate.py --json` prints the result the orchestrator records with the `skill_completed` event:
+
 ```json
 {
-  "gate_evaluation": {
-    "skill": "requirements-ingest",
-    "status": "passed",
-    "quality_score": 0.92,
-    "workflow_impact": "continue",
-    "checks": {
-      "passed": [
-        {
-          "check_id": "requirements_exist",
-          "type": "artifact_existence",
-          "artifacts_found": ["artifacts/Analysis/requirements.md"]
-        }
-      ],
-      "failed": [
-        {
-          "check_id": "traceability_complete",
-          "type": "content_pattern",
-          "severity": "soft", 
-          "remediation": "Add requirement IDs for full traceability"
-        }
-      ]
-    }
-  }
+  "skill": "requirements-ingest",
+  "skill_id": "S01",
+  "archetype": "standard",
+  "collaboration_mode": "solo",
+  "archetype_level": "hard",
+  "status": "passed_with_warnings",
+  "allowed": true,
+  "quality_score": 0.75,
+  "quality_below_threshold": true,
+  "checks": [
+    { "id": "artifacts_exist", "type": "artifact_existence", "severity": "hard", "status": "passed", "detail": "all artifacts exist" },
+    { "id": "requirement_count", "type": "threshold", "severity": "soft", "status": "failed", "detail": "...", "remediation": "..." }
+  ]
 }
 ```
 
@@ -772,7 +582,7 @@ All commands are invoked by addressing `edps-workflow-orchestrator` in a Copilot
 **Purpose**: Mark a skill as completed after running gate validation checks.  
 **Flow**:
 1. Validate the skill was `available` (not blocked by prerequisites)
-2. **Run gate evaluation** using `evaluateSkillGate()` function
+2. **Run gate evaluation** with `scripts/run_gate.py` (see [Gate evaluation process](#gate-evaluation-process))
 3. **Gate decision logic**:
    - If gate fails with hard errors → block completion, display remediation steps
    - If gate passes → continue to step 4
@@ -925,6 +735,7 @@ skill-completion-gates emits:  gate_pass | gate_fail  →  Orchestrator updates 
 **Maintainer**: EDPS Development Team
 
 **Version History**:
+- **1.4.0** (2026-11-15): Gate evaluation is now executable — `scripts/run_gate.py` evaluates any skill's `gate.json` against real files and `--lint` validates the gate definitions; the JavaScript pseudo-code that previously stood in for it is removed and the gate schema is documented in `references/gate-schema.md`. Round validation and staleness checks now name `model-validatealignment`'s `validate_alignment.py`.
 - **1.3.1** (2026-11-15): Review fixes — removed the code fence that wrapped this file (its frontmatter did not parse); moved `version`/`last-updated` under `metadata`; added catalogue rows for `edps-workflow-orchestrator` (S31) and `skill-creator` (S41) and aligned every `gate.json` `skill_id` with this catalogue; retired the numbered category labels (S1–S10) in favour of category names; removed hard-coded skill counts.
 - **1.3.0** (2026-11-08): PRJ-07/T06 — Removed the standalone "S11 — UI Prototyping" category; S33–S38 are now catalogued as members of **S5 — Design & Visualization**, no skill IDs renumbered. Registered `usecase-generatemodel` (S32, filling the one existing catalogue gap), `model-validatealignment` (S39), and `ui-generatemodel` (S40). Replaced the former S06-only UI-Model-readiness proxy with a real prerequisite: S33 now requires S40's completion. Added the `modeling_rounds` project-state field and round/revision staleness-checking on `orchestrate resume`. Documented that alignment-round (S39) completion is non-bypassable across `collaboration_mode` and workflow archetype — its gate checks are never `stakeholder_confirmation` type, so `resolveCheckSeverity()` cannot soften them.
 - **1.2.0** (2026-10-27): Registered UI Prototyping extension skills S33–S38 (`screen-generateinventory`, `screen-generatelayout`, `screen-generatemockup`, `screen-generateflow`, `screen-assembledocument`, `screen-discussfeedback`) per Project 06 T10. Added as an optional extension, not folded into the three named archetypes, since not every project has a UI component. Documented the UI Model dependency gap (no dedicated orchestrated skill yet for UI Model generation itself).

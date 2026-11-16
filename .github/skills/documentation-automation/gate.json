@@ -13,10 +13,10 @@
       "severity": "hard",
       "description": "Core documentation files must exist",
       "artifacts": [
-        "orgModel/*/main.md",
-        "orgModel/*/process.md", 
-        "orgModel/*/collaboration.md",
-        "orgModel/*/domain-model.md"
+        "{process}/main.md",
+        "{process}/process.md", 
+        "{process}/collaboration.md",
+        "{process}/domain-model.md"
       ],
       "remediation": "Run documentation-automation to generate level-appropriate docs"
     },
@@ -25,7 +25,7 @@
       "type": "content_pattern",
       "severity": "hard", 
       "description": "Generated files must not contain stubs",
-      "file": "orgModel/*/main.md",
+      "file": "{process}/main.md",
       "must_not_contain": ["[TO BE GENERATED - invoke documentation-automation]"],
       "remediation": "Complete documentation generation process"
     },
@@ -34,7 +34,7 @@
       "type": "content_pattern",
       "severity": "hard",
       "description": "Process and domain diagrams must be valid",
-      "file": "orgModel/*/process.md",
+      "file": "{process}/process.md",
       "must_contain": ["```mermaid", "flowchart", "graph"],
       "remediation": "Ensure process diagrams are properly generated"
     },
@@ -43,7 +43,7 @@
       "type": "content_pattern", 
       "severity": "soft",
       "description": "Should have navigation breadcrumbs",
-      "file": "orgModel/*/main.md",
+      "file": "{process}/main.md",
       "must_contain_pattern": "\\[.*\\]\\(\\.\\.\/.*\\.md\\)",
       "remediation": "Add navigation links to parent and child processes"
     }

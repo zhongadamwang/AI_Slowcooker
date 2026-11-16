@@ -13,8 +13,8 @@
       "severity": "soft",
       "description": "Should create project planning documents",
       "artifacts": [
-        "artifacts/Planning/project-plan.md",
-        "artifacts/Planning/milestone-tracking.md"
+        "project-plan.md",
+        "tasks/task-tracking.md"
       ],
       "remediation": "Run project-planning-tracking to establish project structure"
     },
@@ -23,7 +23,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should track project milestones",
-      "file": "artifacts/Planning/milestone-tracking.md",
+      "file": "project-plan.md",
       "must_contain": ["## Milestones", "## Progress Tracking"],
       "remediation": "Define and track project milestones with progress indicators"
     }

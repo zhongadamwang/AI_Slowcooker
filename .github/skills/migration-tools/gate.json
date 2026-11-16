@@ -13,8 +13,8 @@
       "severity": "soft",
       "description": "Should produce enhanced collaboration diagrams",
       "artifacts": [
-        "collaboration-diagrams-enhanced.md",
-        "collaboration-diagrams-enhanced.json"
+        "artifacts/Analysis/collaboration-diagrams-enhanced.md",
+        "artifacts/Analysis/collaboration-diagrams-enhanced.json"
       ],
       "remediation": "Run migration-tools to upgrade flat diagrams to hierarchical"
     },
@@ -23,7 +23,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should include boundary groupings",
-      "file": "collaboration-diagrams-enhanced.md",
+      "file": "artifacts/Analysis/collaboration-diagrams-enhanced.md",
       "must_contain": ["subgraph", "Boundary"],
       "remediation": "Apply boundary detection heuristics to create groupings"
     },
@@ -32,7 +32,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should preserve existing traceability",
-      "file": "collaboration-diagrams-enhanced.md",
+      "file": "artifacts/Analysis/collaboration-diagrams-enhanced.md",
       "must_contain_pattern": "REQ-\\d{3}",
       "min_matches": 1,
       "remediation": "Ensure all requirement links are preserved during migration"

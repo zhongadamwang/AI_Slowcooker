@@ -13,7 +13,7 @@
       "severity": "soft",
       "description": "Should document organizational model changes",
       "artifacts": [
-        "artifacts/Changes/orgmodel-update-log.md"
+        "artifacts/Analysis/orgmodel-update-summary.md"
       ],
       "remediation": "Run orgmodel-update to sync organizational model changes"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should verify model coherence",
-      "file": "artifacts/Changes/orgmodel-update-log.md",
+      "file": "artifacts/Analysis/orgmodel-update-summary.md",
       "must_contain": ["✅ Coherence Check", "Updated Documents:"],
       "remediation": "Verify organizational model coherence after updates"
     },
@@ -31,7 +31,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should assess impact on existing processes",
-      "file": "artifacts/Changes/orgmodel-update-log.md",
+      "file": "artifacts/Analysis/orgmodel-update-summary.md",
       "must_contain_pattern": "Impact Analysis:",
       "remediation": "Document integration impact of organizational model changes"
     }

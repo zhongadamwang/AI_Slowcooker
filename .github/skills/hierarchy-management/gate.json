@@ -12,7 +12,7 @@
       "type": "folder_structure",
       "severity": "hard",
       "description": "Boundary folders must exist for control participants",
-      "base_path": "orgModel/*/",
+      "base_path": "{process}/",
       "folder_pattern": "*-*Boundary/",
       "min_folders": 1,
       "remediation": "Ensure control-type participants exist in collaboration.md for decomposition"
@@ -23,7 +23,7 @@
       "severity": "hard",
       "description": "Hierarchy metadata must be created",
       "artifacts": [
-        "orgModel/*/hierarchy-metadata.json"
+        "{process}/hierarchy-metadata.json"
       ],
       "remediation": "Hierarchy-management should generate metadata file during decomposition"
     },
@@ -33,10 +33,10 @@
       "severity": "hard", 
       "description": "Each boundary folder must have required files",
       "artifacts": [
-        "orgModel/*/*Boundary/collaboration.md",
-        "orgModel/*/*Boundary/main.md",
-        "orgModel/*/*Boundary/process.md", 
-        "orgModel/*/*Boundary/domain-model.md"
+        "{process}/*Boundary/collaboration.md",
+        "{process}/*Boundary/main.md",
+        "{process}/*Boundary/process.md", 
+        "{process}/*Boundary/domain-model.md"
       ],
       "remediation": "Run documentation-automation after hierarchy decomposition"
     },
@@ -45,7 +45,7 @@
       "type": "json_schema",
       "severity": "hard",
       "description": "Hierarchy metadata must have valid structure",
-      "file": "orgModel/*/hierarchy-metadata.json", 
+      "file": "{process}/hierarchy-metadata.json", 
       "required_fields": ["hierarchy_tree", "level_mappings", "decomposition_history"],
       "remediation": "Check hierarchy-management completed successfully"
     },
@@ -54,7 +54,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Parent main.md should link to boundary folders",
-      "file": "orgModel/*/main.md",
+      "file": "{process}/main.md",
       "must_contain_pattern": "\\[\\d+-.*Boundary\\]\\(\\d+-.*Boundary/main\\.md\\)",
       "min_matches": 1,
       "remediation": "Update navigation links in parent main.md to reference boundary folders"

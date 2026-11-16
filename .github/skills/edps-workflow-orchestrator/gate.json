@@ -13,7 +13,7 @@
       "severity": "hard",
       "description": "Should maintain workflow state tracking",
       "artifacts": [
-        "artifacts/Orchestration/project-state.json"
+        "project-state.json"
       ],
       "remediation": "Run edps-workflow-orchestrator to initialize or update workflow state"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "hard",
       "description": "Should validate DAG prerequisite dependencies",
-      "file": "artifacts/Orchestration/project-state.json",
+      "file": "project-state.json",
       "must_contain": ["\"prerequisitesValidated\": true"],
       "remediation": "Ensure all workflow prerequisite dependencies are satisfied"
     },
@@ -31,7 +31,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should complete workflow archetype execution",
-      "file": "artifacts/Orchestration/project-state.json",
+      "file": "project-state.json",
       "must_contain": ["workflowArchetype"],
       "remediation": "Complete execution of selected workflow archetype (standard/rapid/compliance)"
     }

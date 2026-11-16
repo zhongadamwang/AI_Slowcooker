@@ -13,7 +13,7 @@
       "severity": "soft",
       "description": "Should produce domain alignment analysis",
       "artifacts": [
-        "artifacts/Domain/domain-alignment-analysis.md"
+        "artifacts/Analysis/domain-alignment.md"
       ],
       "remediation": "Run domain-alignentities to map concepts to organizational standards"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should document concept mappings",
-      "file": "artifacts/Domain/domain-alignment-analysis.md",
+      "file": "artifacts/Analysis/domain-alignment.md",
       "must_contain": ["## Concept Mappings", "## Conflicts Identified", "## Alignment Recommendations"],
       "remediation": "Complete mapping of new concepts to existing organizational entities"
     },
@@ -31,7 +31,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should provide standardization guidance",
-      "file": "artifacts/Domain/domain-alignment-analysis.md",
+      "file": "artifacts/Analysis/domain-alignment.md",
       "must_contain": ["## Standardization Plan"],
       "remediation": "Provide guidance for standardizing terminology across organization"
     }

@@ -13,7 +13,7 @@
       "severity": "hard",
       "description": "Change impact report must exist",
       "artifacts": [
-        "artifacts/Analysis/change-impact-analysis.md"
+        "artifacts/Testing/change-impact-report.md"
       ],
       "remediation": "Run change-impact-analysis to assess change propagation"
     },
@@ -22,7 +22,7 @@
       "type": "content_pattern",
       "severity": "hard",
       "description": "Must trace impact across hierarchy levels",
-      "file": "artifacts/Analysis/change-impact-analysis.md",
+      "file": "artifacts/Testing/change-impact-report.md",
       "must_contain": ["## Impact Tree", "## Affected Artifacts", "## Priority Assessment"],
       "remediation": "Complete hierarchy impact tracing for all affected levels"
     },
@@ -31,7 +31,7 @@
       "type": "content_pattern",
       "severity": "soft",
       "description": "Should include what-if scenario analysis",
-      "file": "artifacts/Analysis/change-impact-analysis.md",
+      "file": "artifacts/Testing/change-impact-report.md",
       "must_contain": ["## What-If Scenarios"],
       "remediation": "Add what-if analysis for alternative change approaches"
     }
