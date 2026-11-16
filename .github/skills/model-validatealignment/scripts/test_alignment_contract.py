@@ -51,11 +51,10 @@ class ThreeLevelValidFixture(unittest.TestCase):
             "BND-CHILD-SW": DomainModelDoc("BND-CHILD-SW", {"E-002": "ServiceRequest", "E-003": "Technician"}),
             "BND-GRANDCHILD": DomainModelDoc("BND-GRANDCHILD", {"E-004": "TimeEntry"}),
         }
-        # No use-case model exercised in this fixture at the child/grandchild
-        # software boundaries would normally trigger INVALID_INPUT (missing
-        # applicable model) -- this fixture focuses on entity collision, so
-        # we supply trivial valid use-case models for the software boundaries.
+        # A use-case model is required for every boundary in scope, software
+        # or not. This test focuses on entity collision, so the models are trivial.
         use_case_models = {
+            "BND-ROOT": UseCaseModelDoc(boundary_ref=boundaries[0]),
             "BND-CHILD-SW": UseCaseModelDoc(boundary_ref=boundaries[1]),
             "BND-GRANDCHILD": UseCaseModelDoc(boundary_ref=boundaries[2]),
         }
@@ -188,7 +187,7 @@ class SoftwareBoundaryNoUIRequiredFixture(unittest.TestCase):
         report = validate_round(
             round_id="ROUND-FIXTURE-005",
             boundaries=boundaries,
-            domain_models={},
+            domain_models={"BND-BATCH-RECON": DomainModelDoc("BND-BATCH-RECON", {"E-020": "Transaction"})},
             use_case_models=use_case_models,
             ui_models=ui_models,
         )

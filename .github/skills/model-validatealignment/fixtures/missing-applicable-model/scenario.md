@@ -1,5 +1,7 @@
 # Fixture: Missing Applicable Model
 
+> The files described below exist for real under [`order-intake-boundary/`](order-intake-boundary/); `scripts/run_fixtures.py` validates that folder from disk. The excerpts here explain the scenario and may be abbreviated.
+
 **Scenario**: A software-typed boundary where the use-case model is absent entirely (never generated), while domain and process models exist.
 
 ## Boundary Main

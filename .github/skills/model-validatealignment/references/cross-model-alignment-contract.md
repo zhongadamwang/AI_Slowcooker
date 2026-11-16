@@ -2,8 +2,8 @@
 
 **Owning skill**: `model-validatealignment` (new, S39 — see Skill ID Ledger below)
 **Consumed by**: `usecase-generatemodel` (new, S32), `ui-generatemodel` (new, S40), the six existing `screen-*` skills (S33–S38), `domain-alignentities`, `model-integration`, `orgmodel-update`, `hierarchy-management`, `hierarchy-validation`, `diagram-generatecollaboration`, `edps-workflow-orchestrator`
-**Status**: Draft — T01 of PRJ-07 (Building Skills Iteration 5)
-**Version**: 1.0.0
+**Status**: Active — implemented by `scripts/validate_alignment.py`
+**Version**: 1.1.0
 **Created**: 2026-11-08
 
 ## Purpose and Scope
@@ -74,9 +74,12 @@ All four models (domain, process, use-case, UI) that need to agree on "what enti
   "actor_id": "string",
   "actor_name": "string",
   "boundary_id": "string (the boundary this actor interacts with, per Section 1.2)",
-  "actor_kind": "human | organization | external-system | internal-role"
+  "actor_kind": "human | organization | external-system | internal-role",
+  "interaction": "direct | automated"
 }
 ```
+
+`actor_kind` records what the actor is; `interaction` records how it engages the boundary — `direct` when a person performs the steps themselves, `automated` when no person is present (another system, a scheduled trigger). `ui-generatemodel` decides screen-worthiness from `interaction`, because an `internal-role` actor is usually a person.
 
 Actors are always defined **relative to a specific boundary** (per the confirmed decision: "Actors are relative to the boundary under analysis, not restricted to human actors or software-level users"). The same real-world person or organization may be a distinct `Actor Reference` at each boundary level they interact with — this is intentional, not a modeling error, because "actor" here means "role relative to this boundary," not a single global identity record.
 
@@ -127,8 +130,8 @@ Stored per-boundary, alongside that boundary's existing `domain-model.md`/`proce
       "use_case_id": "string (UC-[###], scoped per boundary — see 3.3)",
       "name": "string",
       "goal": "string",
-      "primary_actor_ref": "Actor Reference",
-      "boundary_ref": "System Boundary Reference (always the same as the model's own boundary_ref)",
+      "primary_actor_ref": "string (the actor_id of one entry in this model's actors)",
+      "boundary_ref": "string (the boundary_id of the model's own boundary_ref — always the same boundary)",
       "requirement_refs": ["string, ..."],
       "script_ref": "string (relative path to this use case's script file)"
     }
@@ -137,6 +140,8 @@ Stored per-boundary, alongside that boundary's existing `domain-model.md`/`proce
   "changelog": [{ "version": "string", "date": "string", "change": "string" }]
 }
 ```
+
+Inside a use-case model, a use case points at its actor and boundary by **ID**, because both are defined in full once at the top of the same file (`actors`, `boundary_ref`). The full reference objects of Section 1 are used where a reference crosses documents.
 
 ### 3.2 Use-Case Script (one file per use case, in `use-case-scripts/`)
 
@@ -195,10 +200,13 @@ Every round, on completion, produces an **Alignment Report**, written to that pr
   "round_id": "string",
   "boundary_scope": ["System Boundary Reference, ..."],
   "source_model_versions": {
-    "domain_model": "string (version or commit-like reference)",
-    "process_model": "string",
-    "use_case_model": "string",
-    "ui_model": "string | null (null if not applicable to any boundary in scope)"
+    "[boundary_id]": {
+      "boundary": "content hash of main.md",
+      "domain_model": "content hash of domain-model.md, or null if absent",
+      "process_model": "content hash of process.md, or null if absent",
+      "use_case_model": "content hash of use-case-model.json and its script files, or null if absent",
+      "ui_model": "content hash of ui-model.json, or null if absent"
+    }
   },
   "status": "PASS | NEEDS_CLARIFICATION | INVALID_INPUT",
   "findings": [
@@ -211,10 +219,14 @@ Every round, on completion, produces an **Alignment Report**, written to that pr
       "affected_models": ["domain | process | use-case | ui, ..."]
     }
   ],
-  "clarification_questions": ["string, ... (only present when status is NEEDS_CLARIFICATION)"],
+  "clarification_questions": ["string, ... (one per clarification-needed finding; empty otherwise)"],
   "generated_at": "ISO-8601"
 }
 ```
+
+Model versions are content hashes computed by the validator, one set per boundary in scope, so that any later edit to a model is detectable. In `boundary_scope`, `hierarchy_path` is the boundary folder's path as given to the validator (relative to the folder it was run from); the staleness check uses it to find the files again.
+
+Alongside the round reports, the validator maintains `artifacts/Analysis/alignment-status.json`: the latest round's ID, status, scope, and model versions. Round reports are append-only; this pointer is the one file that is overwritten, and it is what a completion gate or the orchestrator reads to learn the current status.
 
 ### 4.3 Status Semantics
 
@@ -226,7 +238,7 @@ Every round, on completion, produces an **Alignment Report**, written to that pr
 
 - A round's success (`PASS`) can **only** be set by `model-validatealignment`'s own validator actually running against the current model artifacts. No other skill, gate, or workflow archetype may mark a round as aligned.
 - **Solo-mode self-attestation does not apply to this check.** The existing `stakeholder_confirmation` gate-check type's solo/traditional severity resolution (`resolveCheckSeverity()` in `edps-workflow-orchestrator`) is explicitly **not reused here** — model inconsistency is a factual, checkable property of the artifacts themselves, not a stakeholder confirmation of satisfaction. A `rapid` archetype's generally more lenient gate severities, and a solo developer's self-attestation privilege elsewhere in the framework, **cannot convert an inconsistency into a successful alignment report.** This directly implements the Implementation Analysis's risk mitigation: "Keep model inconsistency checks mandatory and distinct from stakeholder-confirmation severity."
-- **Revision invalidates prior rounds.** If any model document within a round's `boundary_scope` is edited after that round's report was written, the prior round's `PASS` status is stale for that scope. A `resume` (orchestrator-level or manual) must check `source_model_versions` against the current artifacts before treating a prior round's `PASS` as still valid. A stale `PASS` is reported as stale, not silently trusted.
+- **Revision invalidates prior rounds.** If any model document within a round's `boundary_scope` is edited after that round's report was written, the prior round's `PASS` status is stale for that scope. A `resume` (orchestrator-level or manual) must check `source_model_versions` against the current artifacts before treating a prior round's `PASS` as still valid, by running `validate_alignment.py --check-stale <report.json>`. A stale `PASS` is reported as stale, not silently trusted.
 - **Clarification and revalidation.** When a round is `NEEDS_CLARIFICATION`, the workflow is: surface the clarification question(s) → record the human/self-attested (in solo mode, with the same role-play discipline as `requirements-sanitize`/`process-w5h`) answer → update the affected model document(s) → re-run validation → only then may the round transition to `PASS`. A round cannot skip directly from `NEEDS_CLARIFICATION` to `PASS` without an intervening re-validation against updated artifacts.
 
 ## 5. File and Folder Layout (Additive to Existing Conventions)
@@ -246,16 +258,17 @@ Every round, on completion, produces an **Alignment Report**, written to that pr
 └── ui-model.json                   ← existing per D-02
 
 [project folder]/artifacts/Analysis/
-└── alignment-report-[round-id].md  ← NEW, Section 4.2, one per round, never overwritten
+├── alignment-report-[round-id].md/.json  ← NEW, Section 4.2, one per round, never overwritten
+└── alignment-status.json                 ← NEW, latest round's status and model versions (overwritten each run)
 ```
 
 No new project-level artifact category is introduced; `alignment-report-*.md` lives in the existing `Analysis` category (same as `requirements.md`, `domain-concepts.md`, etc. — an analysis output, not source material, not a change record).
 
 ## 6. Compatibility Notes for `ui-generatemodel` (T03)
 
-`ui-generatemodel` produces the **same** `UIModel`/`UIModelEntry`/`Aggregation` JSON shape already defined in D-02 — this contract does not add new fields to that shape. Its only new behavior relative to the current manual process is: given a `software`-typed boundary's domain model, use-case model, and process model as inputs, it produces `ui-model.md`/`.json` automatically, closing the orchestrator's previously-documented "S33 uses S06 as an explicitly insufficient proxy prerequisite" gap. `screen-generateinventory` (S33)'s own precondition check continues to apply unchanged: it still verifies a UI Model actually exists and is non-empty before proceeding, regardless of whether that UI Model was produced manually or by `ui-generatemodel`.
+`ui-generatemodel` produces the **same** `UIModel`/`UIModelEntry`/`Aggregation` JSON shape already defined in D-02, with three additive, optional fields that no existing consumer reads: `generation_note` on the model, and `boundary_ref` and `source_use_case_refs` on each entry (defined in `ui-generatemodel`'s `SKILL.md`). No existing field is removed or restructured. Its only new behavior relative to the current manual process is: given a `software`-typed boundary's domain model, use-case model, and process model as inputs, it produces `ui-model.md`/`.json` automatically, closing the orchestrator's previously-documented "S33 uses S06 as an explicitly insufficient proxy prerequisite" gap. `screen-generateinventory` (S33)'s own precondition check continues to apply unchanged: it still verifies a UI Model actually exists and is non-empty before proceeding, regardless of whether that UI Model was produced manually or by `ui-generatemodel`.
 
-A `UIModelEntry`'s `domain_entity_refs` (existing field, D-02) must, under this contract, resolve to Scoped Entity References (Section 1.1) whose `scope` matches a `software`-typed boundary. `model-validatealignment` is what actually checks this; `ui-generatemodel` is expected to only ever produce compliant entries in the first place, not rely on the validator to catch its own mistakes after the fact.
+A `UIModelEntry`'s `domain_entity_refs` (existing field, D-02) must, under this contract, resolve to entities defined in the domain model of the `software`-typed boundary whose UI model contains the entry. An entry's `boundary_ref`, when present, must name that same boundary, and each `source_use_case_refs` entry must resolve in that boundary's use-case model. `model-validatealignment` is what actually checks this; `ui-generatemodel` is expected to only ever produce compliant entries in the first place, not rely on the validator to catch its own mistakes after the fact.
 
 ## 7. Compatibility Notes for the Six Existing Screen Skills (S33–S38)
 
@@ -271,7 +284,7 @@ Per Acceptance Criteria 2–3, this contract ships with worked fixtures validati
 - `fixtures/manifest-source-disagreement/` — a round report whose manifest claims an entity exists in a `domain-model.md` that does not actually contain it, demonstrating the validator actually opens and checks the referenced document rather than trusting the manifest at face value.
 - `fixtures/software-boundary-no-ui-required/` — a `software`-typed boundary with use cases and process activities but deliberately zero UIModelEntries, demonstrating R-011's "software boundaries do not automatically require a screen" is respected, not silently flagged as incomplete.
 
-Each fixture folder contains the full set of model documents for its scenario plus an `expected-report.json` the validator (T04) must reproduce exactly (`status` and `finding_id`s, at minimum) when implemented.
+Each fixture folder contains the boundary tree for its scenario as real files (`main.md`, `domain-model.md`, and the use-case and UI models the scenario calls for), a `scenario.md` explaining it, and an `expected-report.json`. `scripts/run_fixtures.py` loads each tree from disk, validates it, and compares status and each finding's ID and severity with the expected report.
 
 ## 9. Glossary Additions (extends `vocabulary.md`, does not redefine it)
 

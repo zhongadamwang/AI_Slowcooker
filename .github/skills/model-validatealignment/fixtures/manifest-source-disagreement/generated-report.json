@@ -3,20 +3,34 @@
   "boundary_scope": [
     {
       "boundary_id": "BND-BILLING",
-      "boundary_type": "software"
+      "boundary_name": "Billing Boundary",
+      "boundary_type": "software",
+      "hierarchy_level": 0,
+      "hierarchy_path": "billing-boundary",
+      "parent_boundary_id": null
     }
   ],
   "source_model_versions": {
-    "domain_model": "fixture-v1",
-    "process_model": "fixture-v1 (not exercised)",
-    "use_case_model": "fixture-v1",
-    "ui_model": null
+    "BND-BILLING": {
+      "boundary": "ae5295f4744dcffe",
+      "domain_model": "3326de7e58a85248",
+      "process_model": null,
+      "use_case_model": "60c95a45cb1d9469",
+      "ui_model": null
+    }
   },
   "status": "INVALID_INPUT",
   "findings": [
     {
       "finding_id": "F-001",
       "severity": "error",
+      "reference_a": {
+        "entity_id": "E-011",
+        "entity_name": "DiscountCode",
+        "scope": "billing-boundary",
+        "defined_in": "billing-boundary/domain-model.md"
+      },
+      "reference_b": null,
       "description": "Use case references entity E-011 (DiscountCode) claiming it is defined in billing-boundary/domain-model.md, but that document does not actually contain an entity with that ID.",
       "affected_models": [
         "domain",

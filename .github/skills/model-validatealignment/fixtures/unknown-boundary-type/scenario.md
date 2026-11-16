@@ -1,5 +1,7 @@
 # Fixture: Unknown Boundary Type
 
+> The files described below exist for real under [`unclassified-boundary/`](unclassified-boundary/); `scripts/run_fixtures.py` validates that folder from disk. The excerpts here explain the scenario and may be abbreviated.
+
 **Scenario**: A boundary whose `boundary_type` has not been explicitly declared, with a use case and a UIModelEntry attempted against it.
 
 ## Boundary Main (`main.md`, as it would exist in the project)

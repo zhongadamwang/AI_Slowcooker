@@ -48,13 +48,13 @@ This skill produces content; it does **not** self-certify alignment. `model-vali
   "boundary_ref": {
     "boundary_id": "string",
     "boundary_name": "string",
-    "boundary_type": "software | non-software | unknown",
+    "boundary_type": "software | non-software",
     "hierarchy_level": 0,
     "hierarchy_path": "string",
     "parent_boundary_id": "string | null"
   },
   "actors": [
-    { "actor_id": "A-001", "actor_name": "string", "boundary_id": "string", "actor_kind": "human | organization | external-system | internal-role" }
+    { "actor_id": "A-001", "actor_name": "string", "boundary_id": "string", "actor_kind": "human | organization | external-system | internal-role", "interaction": "direct | automated" }
   ],
   "use_cases": [
     {
@@ -74,6 +74,7 @@ This skill produces content; it does **not** self-certify alignment. `model-vali
 
 Field conventions (per contract Section 3.1/3.3):
 - `use_case_id`: `UC-[###]`, zero-padded 3-digit, **scoped per boundary** — not globally unique across the project. Scan this boundary's own existing `use-case-model.json` for the highest number, increment, verify uniqueness (same algorithm as `screen-generateinventory`'s `SCR-[###]` and `change-management`'s `generate_change_id()`).
+- `actor_kind` says **what the actor is**; `interaction` says **how it engages this boundary**. `direct` means a person performs the steps themselves (a customer, a coordinator, a technician — including an `internal-role` held by a person). `automated` means no person is present at the moment of interaction (another system, a scheduled trigger, a batch job). `ui-generatemodel` uses `interaction`, not `actor_kind`, to decide whether a use case can need a screen, so set it deliberately.
 - `primary_actor_ref`: singular — a use case has exactly one primary actor (secondary/supporting actors, if any, are documented in the script's Main Flow narrative, not modeled as additional structured references in v1).
 - `boundary_ref` (on each use case): always identical to the model's own `boundary_ref.boundary_id` — a use case never references a different boundary than the model it belongs to. (A use case's *script* may reference process activities or entities from the same boundary; it does not reach into a different boundary's use-case model.)
 
@@ -93,6 +94,7 @@ Field conventions (per contract Section 3.1/3.3):
 ## Actors
 ### [Actor Name] *(A-001)*
 **Kind**: [human | organization | external-system | internal-role]
+**Interaction**: [direct | automated]
 
 ## Use Cases
 
@@ -156,7 +158,7 @@ This mirrors `screen-generateinventory`'s own pre-condition discipline (stopping
 
 ### Step 1 — Identify actors relative to this boundary
 
-Read the boundary's `domain-model.md` and `collaboration.md` for candidate actors. An actor here is **whoever/whatever interacts with this boundary from outside it** — per the confirmed decision, this is explicitly **not** restricted to human users: an external system, another organization, a scheduled trigger, or an internal role performing work *within* a non-software boundary are all valid actors (see the `software-boundary-no-ui-required` fixture's "Nightly Scheduler" for a worked internal-role/non-human example).
+Read the boundary's `domain-model.md` and `collaboration.md` for candidate actors. An actor here is **whoever/whatever interacts with this boundary from outside it** — per the confirmed decision, this is explicitly **not** restricted to human users: an external system, another organization, a scheduled trigger, or an internal role performing work *within* a non-software boundary are all valid actors (see the `software-boundary-no-ui-required` fixture's "Nightly Scheduler" for a worked non-human example: `actor_kind: external-system`, `interaction: automated`). Record both `actor_kind` and `interaction` for every actor.
 
 Do not reuse a parent boundary's actor list wholesale — a parent's "Customer" actor and this (child) boundary's "Customer" actor are, per contract Section 1.3, **different Actor References** even if they're the same real-world person, because actor identity here is relative to the boundary. Define this boundary's own actors from scratch, informed by (not copied from) the parent.
 

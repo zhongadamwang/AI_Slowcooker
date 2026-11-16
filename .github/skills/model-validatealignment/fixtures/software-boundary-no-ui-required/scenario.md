@@ -1,5 +1,7 @@
 # Fixture: Software Boundary, No UI Required
 
+> The files described below exist for real under [`batch-recon-boundary/`](batch-recon-boundary/); `scripts/run_fixtures.py` validates that folder from disk. The excerpts here explain the scenario and may be abbreviated.
+
 **Scenario**: A `software`-typed boundary with real use cases and process activities, but deliberately **zero** UIModelEntries — demonstrating that R-011's "software boundaries do not automatically require a screen" is respected rather than silently flagged as incomplete.
 
 ## Boundary Main

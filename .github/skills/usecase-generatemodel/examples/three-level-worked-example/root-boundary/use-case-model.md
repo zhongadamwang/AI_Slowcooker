@@ -12,9 +12,11 @@
 
 ### Customer *(A-001)*
 **Kind**: human
+**Interaction**: direct
 
 ### Field Operations Coordinator *(A-002)*
 **Kind**: internal-role
+**Interaction**: direct
 
 ## Use Cases
 

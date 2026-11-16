@@ -12,6 +12,7 @@
 
 ### Technician *(A-001)*
 **Kind**: human
+**Interaction**: direct
 
 **Note (worked example)**: Again a deliberately distinct `actor_id` from the Child Software Boundary's "Technician" (A-002 there) — same real-world role, different Actor Reference, per contract Section 1.3.
 

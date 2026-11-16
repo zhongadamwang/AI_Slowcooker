@@ -1,5 +1,7 @@
 # Fixture: Manifest / Source Disagreement
 
+> The files described below exist for real under [`billing-boundary/`](billing-boundary/); `scripts/run_fixtures.py` validates that folder from disk. The excerpts here explain the scenario and may be abbreviated.
+
 **Scenario**: A round's alignment manifest (or a use-case/UI model's entity reference) claims an entity exists in a `domain-model.md` that does not actually contain it — testing that the validator actually opens and parses the referenced document rather than trusting a cached or asserted claim.
 
 ## Domain Model (actual, authoritative content)

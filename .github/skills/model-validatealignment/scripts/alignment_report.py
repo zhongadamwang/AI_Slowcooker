@@ -46,7 +46,14 @@ def report_to_json(
     return {
         "round_id": report.round_id,
         "boundary_scope": [
-            {"boundary_id": b.boundary_id, "boundary_type": b.boundary_type}
+            {
+                "boundary_id": b.boundary_id,
+                "boundary_name": b.boundary_name,
+                "boundary_type": b.boundary_type,
+                "hierarchy_level": b.hierarchy_level,
+                "hierarchy_path": b.hierarchy_path,
+                "parent_boundary_id": b.parent_boundary_id,
+            }
             for b in boundary_scope
         ],
         "source_model_versions": source_model_versions,
@@ -55,6 +62,8 @@ def report_to_json(
             {
                 "finding_id": f.finding_id,
                 "severity": f.severity,
+                "reference_a": f.reference_a,
+                "reference_b": f.reference_b,
                 "description": f.description,
                 "affected_models": f.affected_models,
             }
@@ -83,7 +92,11 @@ def report_to_markdown(report_json: dict) -> str:
         lines.append(f"- `{b['boundary_id']}` ({b['boundary_type']})")
     lines += ["", "## Source Model Versions", ""]
     for k, v in report_json["source_model_versions"].items():
-        lines.append(f"- **{k}**: {v}")
+        if isinstance(v, dict):
+            shown = ", ".join(f"{model}={version or 'absent'}" for model, version in v.items())
+            lines.append(f"- **{k}**: {shown}")
+        else:
+            lines.append(f"- **{k}**: {v}")
     lines += ["", "## Findings", ""]
     if not report_json["findings"]:
         lines.append("*(None.)*")
@@ -136,7 +149,29 @@ def write_report(
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path.write_text(json.dumps(report_json, indent=2) + "\n", encoding="utf-8")
     md_path.write_text(report_to_markdown(report_json), encoding="utf-8")
+    write_status(report_json, output_dir)
     return md_path, json_path
+
+
+def write_status(report_json: dict, output_dir: Path) -> Path:
+    """Writes alignment-status.json: a pointer to the most recent round's result.
+
+    Round reports are append-only, so a consumer that needs "the current
+    alignment status" (the S39 completion gate, the orchestrator) reads this
+    one file instead of guessing which report is the latest. It is the only
+    file here that is overwritten on every run.
+    """
+    status_path = output_dir / "alignment-status.json"
+    status = {
+        "latest_round_id": report_json["round_id"],
+        "status": report_json["status"],
+        "boundary_scope": [b["boundary_id"] for b in report_json["boundary_scope"]],
+        "source_model_versions": report_json["source_model_versions"],
+        "report_ref": f"alignment-report-{report_json['round_id']}.json",
+        "last_validated_at": report_json["generated_at"],
+    }
+    status_path.write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
+    return status_path
 
 
 # ---------------------------------------------------------------------------

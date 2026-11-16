@@ -105,7 +105,7 @@ class ReportRenderingTests(unittest.TestCase):
         report = validate_round(
             round_id="ROUND-SCHEMA-TEST",
             boundaries=boundaries,
-            domain_models={},
+            domain_models={"BND-X": DomainModelDoc("BND-X", {"E-001": "Thing"})},
             use_case_models={"BND-X": UseCaseModelDoc(boundary_ref=boundaries[0])},
             ui_models={},
         )

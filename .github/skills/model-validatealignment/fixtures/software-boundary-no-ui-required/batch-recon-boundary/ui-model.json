@@ -1,0 +1,18 @@
+{
+  "model_id": "UIM-BATCH-RECON",
+  "model_type": "base",
+  "derives_from": null,
+  "role_scope": null,
+  "source_domain_model": "domain-model.md",
+  "generation_note": "Boundary BND-BATCH-RECON is software-typed but its only actor is a scheduled trigger; no use case has a human-facing interaction, so zero screens are generated.",
+  "generated_at": "2026-11-08T00:00:00Z",
+  "changelog": [
+    {
+      "version": "1.0",
+      "date": "2026-11-08",
+      "change": "Initial generation -- no UI-worthy use cases"
+    }
+  ],
+  "entries": [],
+  "aggregations": []
+}

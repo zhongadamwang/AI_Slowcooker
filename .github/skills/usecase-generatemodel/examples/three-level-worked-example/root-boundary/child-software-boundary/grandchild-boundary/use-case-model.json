@@ -9,7 +9,7 @@
     "parent_boundary_id": "BND-CHILD-SW"
   },
   "actors": [
-    { "actor_id": "A-001", "actor_name": "Technician", "boundary_id": "BND-GRANDCHILD", "actor_kind": "human" }
+    { "actor_id": "A-001", "actor_name": "Technician", "boundary_id": "BND-GRANDCHILD", "actor_kind": "human", "interaction": "direct" }
   ],
   "use_cases": [
     {

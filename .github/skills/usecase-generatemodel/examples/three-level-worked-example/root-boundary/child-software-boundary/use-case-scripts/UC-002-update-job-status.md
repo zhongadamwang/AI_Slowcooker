@@ -18,7 +18,7 @@ Technician arrives on-site or completes a stage of the assigned work.
 ## Main Flow
 1. Technician opens their assigned ServiceRequest.
 2. Technician updates the status (e.g., en route, on-site, in progress, complete).
-3. The system records the status change with a timestamp, creating a TimeEntry (E-004, grandchild-boundary scope) if the status change represents a loggable time block.
+3. The system records the status change with a timestamp, and hands off to the time-tracking sub-module (Grandchild Boundary, a separate boundary with its own use-case model) if the status change represents a loggable time block.
 
 ## Postconditions
 - The ServiceRequest reflects the current status

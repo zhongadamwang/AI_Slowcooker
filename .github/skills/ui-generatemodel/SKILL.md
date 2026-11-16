@@ -38,6 +38,8 @@ This skill produces content; it does **not** self-certify alignment. `model-vali
 - `ui-model.md` — human-readable model (primary, exact existing D-02 Markdown shape)
 - `ui-model.json` — structured model (primary for downstream consumption by `screen-generateinventory`)
 
+The orchestrator only schedules this skill for `software` boundaries. If it is invoked on a `non-software` boundary anyway, it records non-applicability as described next; it is not required to run there.
+
 **Non-applicability is recorded, not silently absent.** If a boundary is `non-software`, or is `software` but its use-case model yields zero screens worth generating, this skill still writes a minimal `ui-model.json` with `entries: []` and a `generation_note` field (Section 2) explaining why — never simply omits the file, which would be indistinguishable from "not yet run" to a downstream consumer or validator.
 
 ### JSON Structure (`ui-model.json`) — Existing D-02 Shape, Unchanged, Plus Two Additive Fields
@@ -99,9 +101,11 @@ Load `use-case-model.json` for this boundary. If it does not exist: **stop** and
 
 ### Step 2 — Identify UI-worthy use cases
 
-Not every use case in a software boundary's model needs a screen. Per this task's Detailed Requirements and R-011's explicit note ("software boundaries do not automatically require a screen"), examine each use case's actor:
-- **Human actors** interacting directly with this boundary (not a system-to-system or scheduled-trigger actor) are the primary signal that a use case is UI-worthy.
-- **Internal-role/external-system actors** (e.g., the worked example's "Nightly Scheduler") are evidence the use case does **not** need a screen — their interactions are not rendered as UI.
+Not every use case in a software boundary's model needs a screen. Per this task's Detailed Requirements and R-011's explicit note ("software boundaries do not automatically require a screen"), examine each use case's primary actor and read its `interaction` field in `use-case-model.json`:
+- **`interaction: direct`** — a person performs the steps themselves, whatever their `actor_kind` (a customer, or an `internal-role` such as a coordinator or technician). This is the signal that a use case is UI-worthy.
+- **`interaction: automated`** — no person is present (another system, a scheduled trigger such as the fixture's "Nightly Scheduler"). The use case does **not** need a screen.
+
+Decide on `interaction`, never on `actor_kind` alone: an `internal-role` actor is usually a person using the system. If an actor has no `interaction` value (a model written before the field existed), read the use case's script to see whether a person performs the steps, and say which you concluded in the changelog.
 
 A boundary may legitimately have zero UI-worthy use cases despite being software-typed (the `software-boundary-no-ui-required` fixture, reused from T01). This is not an error or incompleteness; record it via `generation_note` per the Outputs section, and stop with `entries: []`.
 

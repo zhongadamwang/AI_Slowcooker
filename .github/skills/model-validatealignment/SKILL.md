@@ -1,87 +1,113 @@
 ---
 name: model-validatealignment
-description: Owns the single cross-model entity/system-boundary alignment contract shared by the use-case model, UI model, domain model, and process model. Validates alignment at the end of every modeling round, reports PASS, NEEDS_CLARIFICATION, or INVALID_INPUT with item-level evidence, and requests clarification for unresolved inconsistencies rather than treating them as aligned. This skill does not generate use-case or UI models itself — see usecase-generatemodel and ui-generatemodel.
+description: Validate that a boundary's domain, use-case, and UI models agree on the entities and system boundaries they reference, at the end of every modeling round. Runs a deterministic validator over the real boundary folders and reports PASS, NEEDS_CLARIFICATION, or INVALID_INPUT with item-level findings and clarification questions. Owns the shared cross-model alignment contract. Use after usecase-generatemodel or ui-generatemodel has run, after any model in a boundary was edited, when resuming a project to check whether an earlier PASS is stale, or when asked whether the models are aligned. Does not generate models itself.
 license: MIT
 metadata:
-  version: 0.1.0
-  last-updated: "2026-11-08"
+  version: 1.0.0
+  last-updated: "2026-11-15"
 ---
 
 # Model Validate Alignment
 
-Owns the shared cross-model alignment contract and the end-of-round validation that checks the domain, process, use-case, and UI models actually agree on the entities and system boundaries they jointly reference.
+Checks that the models of one or more boundaries are consistent with each other, by running a validator script over the boundary folders. A modeling round is only aligned when that script reports `PASS`; reading the models and concluding they look consistent is not a validation.
 
-## Status
-
-**T01 and T04 deliverables are both complete.** T01 defined and proved the shared contract (`references/cross-model-alignment-contract.md`) with a deterministic validator skeleton (`scripts/alignment_validator.py`) proven against five fixtures. T04 completed the real generation-time concerns T01 explicitly deferred: report rendering to Markdown/JSON per contract Section 4.2 (`scripts/alignment_report.py`), round/revision staleness tracking per contract Section 4.4 (`is_stale`/`resolve_round_for_resume`), and an end-to-end fixture runner (`scripts/run_fixtures.py`) that writes real `generated-report.md`/`.json` files for all five fixtures and confirms every one matches its `expected-report.json` status — not just in-memory unit assertions.
-
-## Intent
-
-Per the confirmed decisions in PRJ-07's `requirements.md`: entities and system boundaries are the shared alignment contract across UI, use-case, domain, and process models (R-008). Validation runs at the end of every modeling round (R-009). Unresolved inconsistencies are reported for clarification, never silently treated as aligned (R-010).
-
-This skill is the **single owner** of that validation — `usecase-generatemodel` and `ui-generatemodel` produce model content; they do not self-certify alignment. This mirrors `hierarchy-validation`'s own exclusive-ownership pattern for structural/cross-level checks (this skill does not duplicate or replace those checks — see Reuse, below).
-
-## The Shared Contract
-
-**Read in full**: [`references/cross-model-alignment-contract.md`](references/cross-model-alignment-contract.md)
-
-That document is authoritative for:
-- Shared reference shapes (Scoped Entity Reference, System Boundary Reference, Actor Reference) and their single-ownership rule
-- Boundary typing (`software` | `non-software` | `unknown`) — explicit, never inferred; UI applicability gating (R-011)
-- Use-case model/script schema that `usecase-generatemodel` must produce
-- The modeling-round contract: scope, round report schema, PASS/NEEDS_CLARIFICATION/INVALID_INPUT semantics, non-bypassable completion, revision invalidation, clarification/revalidation
-- File/folder layout additions (additive to existing conventions, not a competing layout)
-- Compatibility notes for `ui-generatemodel` and the six existing `screen-*` skills (S33–S38) — no schema changes required there
-
-## Reuse — What This Skill Does NOT Reimplement
-
-- **Hierarchy/file/link structural integrity**: owned exclusively by `hierarchy-validation` (HV/HX/HN rules). This skill's boundary references annotate the same hierarchy tree; it does not re-derive or duplicate structural checks.
-- **Diagram-level boundary stereotype classification and VR-1–VR-4 rules**: owned exclusively by `diagram-generatecollaboration`. This skill's `boundary_type` (software/non-software/unknown) is an independent axis from a diagram's `boundary`/`control`/`actor`/`entity` stereotype — see the contract's Section 1.2/2.1 for the precise, non-conflated relationship.
-- **UIModel/UIModelEntry/Aggregation schema**: owned by the existing D-02 domain model (PRJ-06). This skill validates references *into* that schema; it does not redefine it.
-- **Stakeholder-confirmation gate severity resolution**: explicitly **not** reused for alignment completion (contract Section 4.4). Model inconsistency is a factual, checkable property of the artifacts, independent of `collaboration_mode` or workflow archetype leniency.
+This skill owns the shared contract the modeling skills implement against: [`references/cross-model-alignment-contract.md`](references/cross-model-alignment-contract.md). Read it when you need the reference shapes, the boundary-typing rule, or the round lifecycle in full.
 
 ## Inputs
 
-- The boundary(ies) in scope for the current modeling round (a `boundary_scope` list, per contract Section 4.2)
-- The current content of each in-scope boundary's `domain-model.md`, `process.md`, `use-case-model.json`, and (where applicable) `ui-model.json`
-- The prior round's report, if any, for staleness checking (contract Section 4.4)
+- The boundary folders in the round's scope. A boundary folder holds `main.md` (with a `## System Boundary` section) and, alongside it, `domain-model.md`, `use-case-model.json` with its `use-case-scripts/`, and where applicable `ui-model.json`.
+- A round ID that has not been used before in this project (for example `ROUND-003`).
+- The project's `artifacts/Analysis/` folder, where reports are written.
+
+## Workflow
+
+Run every command from the repository root.
+
+### 1. Validate the round
+
+```bash
+python3 .github/skills/model-validatealignment/scripts/validate_alignment.py \
+    --round-id ROUND-003 \
+    --root "OrgDocument/orgModel/[NN] - [Process Name]" \
+    --output-dir "OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis"
+```
+
+`--root` validates every boundary at or below that folder. To validate specific boundaries only, pass `--scope <boundary folder>` once per boundary instead.
+
+The script writes, in the output folder:
+- `alignment-report-[round-id].md` and `.json` — the round report. Reports are never overwritten; the script refuses to reuse a round ID for a different result.
+- `alignment-status.json` — the latest round's status and the model versions it validated. The S39 completion gate reads this file.
+
+### 2. Act on the status
+
+| Status | Exit code | Meaning | What to do |
+|---|---|---|---|
+| `PASS` | 0 | Every check held | The round is aligned. Report it and continue |
+| `NEEDS_CLARIFICATION` | 1 | Something is genuinely undecided: an undeclared `boundary_type`, or a reference a generator marked `[UNRESOLVED` | Put the report's clarification questions to the user (in solo mode, answer them explicitly in the stated role). Record the answer in the owning document, then validate again under a new round ID |
+| `INVALID_INPUT` | 2 | A model is missing, unreadable, or contradicts another | Fix or regenerate the model each finding names, using the owning skill, then validate again under a new round ID |
+
+Never report a round as aligned on any status other than `PASS`, and never resolve a finding by editing the report. A round cannot move from `NEEDS_CLARIFICATION` to `PASS` without a new validator run against the updated files. This holds in every collaboration mode and workflow archetype: solo self-attestation and the `rapid` archetype do not apply to alignment.
+
+### 3. Check an earlier PASS before relying on it
+
+A `PASS` describes the files as they were when the round ran. Before treating an earlier round as still valid (on resume, or before starting the screen pipeline), run:
+
+```bash
+python3 .github/skills/model-validatealignment/scripts/validate_alignment.py \
+    --check-stale "OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/alignment-report-ROUND-003.json"
+```
+
+Exit code 0 means the report still holds. Exit code 3 means it is stale: either it was not `PASS`, or a model in its scope changed since. A stale round needs a fresh validation under a new round ID.
+
+## What the validator checks
+
+For each boundary in scope:
+
+| Check | Result when it fails |
+|---|---|
+| `main.md` declares `boundary_type` as `software` or `non-software` (an absent or `unknown` type is never defaulted) | `NEEDS_CLARIFICATION` |
+| `domain-model.md` and `use-case-model.json` exist and can be read | `INVALID_INPUT` |
+| The use-case model's own `boundary_ref` agrees with `main.md` | `INVALID_INPUT` |
+| Each use case's primary actor is defined in that model, its `boundary_ref` is this boundary, and its script file exists | `INVALID_INPUT` |
+| Every entity ID a script or use case cites (`E-###`) is defined in this boundary's `domain-model.md` | `INVALID_INPUT` |
+| No script in a non-software boundary has a `## UI References` section | `INVALID_INPUT` |
+| A non-software boundary's UI model has no entries | `INVALID_INPUT` |
+| Each UI model entry's `boundary_ref` is this boundary, its `domain_entity_refs` resolve in this boundary's domain model (by ID or name), and its `source_use_case_refs` resolve in this boundary's use-case model | `INVALID_INPUT` |
+| No reference carries an `[UNRESOLVED` marker | `NEEDS_CLARIFICATION` |
+
+Entity identity is `(boundary, entity_id)`. Two boundaries may both define `E-002`; that is not a conflict, and a reference is always resolved against the domain model of the boundary it appears in.
+
+A software boundary with an empty UI model, or with no `ui-model.json` yet, is not a finding: software boundaries do not automatically need screens, and whether `ui-generatemodel` has run is its own gate's concern.
+
+### What it does not check
+
+- **The process model.** `process.md` is versioned for staleness, but its content is not parsed; scripts' references to process activities are not resolved.
+- **Hierarchy structure, file and link integrity** (HV/HX/HN rules): owned by `hierarchy-validation`.
+- **Diagram boundary rules** (VR-1 to VR-4): owned by `diagram-generatecollaboration`. A participant's `boundary` stereotype and this skill's `boundary_type` are independent.
+- **Screens.** Whether each screen traces to a UI model entry is checked by the `screen-*` skills' gates.
+
+State these limits when reporting a `PASS`, if the user asks what was verified.
 
 ## Outputs
 
-- `artifacts/Analysis/alignment-report-[round-id].md` (and its JSON companion) — contract Section 4.2's schema, never overwriting a prior round's report
-- A `PASS` / `NEEDS_CLARIFICATION` / `INVALID_INPUT` status with item-level findings and, where applicable, specific clarification questions
+- `artifacts/Analysis/alignment-report-[round-id].md` / `.json` — schema in contract Section 4.2
+- `artifacts/Analysis/alignment-status.json` — latest round pointer
+- A short summary to the user: status, boundaries covered, each finding, and each clarification question
 
-## Quality Checks
+## Tests and fixtures
 
-- [ ] Every finding resolves against the *actual* referenced document content, not merely a well-formed reference shape (see the manifest-source-disagreement fixture)
-- [ ] `unknown` boundary type is never defaulted to `software` or `non-software` in any code path
-- [ ] A `software` boundary with zero UIModelEntries is never reported as a finding (see the software-boundary-no-ui-required fixture)
-- [ ] A round cannot be marked `PASS` without an actual validator run against current artifacts — no solo-mode or rapid-archetype bypass applies here
+`fixtures/` holds five boundary trees as real files, each with a `scenario.md` and an `expected-report.json`: `three-level-valid`, `unknown-boundary-type`, `missing-applicable-model`, `manifest-source-disagreement`, `software-boundary-no-ui-required`.
 
-## Fixtures and Proof
+```bash
+cd .github/skills/model-validatealignment/scripts
+python3 -m unittest test_alignment_contract test_alignment_report test_alignment_loader
+python3 run_fixtures.py     # validates each fixture from disk and compares with its expected report
+```
 
-See [`fixtures/`](fixtures/) for five worked scenarios (three-level-valid, unknown-boundary-type, missing-applicable-model, manifest-source-disagreement, software-boundary-no-ui-required), each with a `scenario.md` and an `expected-report.json`.
-
-- [`scripts/test_alignment_contract.py`](scripts/test_alignment_contract.py) (T01): 8 tests proving the core decision logic against hand-authored in-memory fixtures.
-- [`scripts/test_alignment_report.py`](scripts/test_alignment_report.py) (T04): 10 tests covering deterministic output, report rendering (JSON/Markdown), and revision/staleness invalidation.
-- [`scripts/run_fixtures.py`](scripts/run_fixtures.py) (T04): an executable runner that actually validates all five fixtures end-to-end and writes real `generated-report.md`/`.json` files into each fixture folder, then confirms the generated status matches `expected-report.json`.
-
-Run `python3 -m unittest test_alignment_contract test_alignment_report -v` (18 tests) and `python3 run_fixtures.py` from `scripts/` to reproduce — both pass as of this writing.
+Run both after changing any script here.
 
 ## Integration
 
-**Upstream**: `usecase-generatemodel` (use-case model/scripts), `ui-generatemodel` (UI model), `domain-extractconcepts`/`domain-alignentities` (domain model), `hierarchy-management` (boundary structure, hierarchy metadata)
+**Upstream**: `hierarchy-management` (boundary folders and the `## System Boundary` section), `domain-extractconcepts` / `domain-alignentities` (domain model), `usecase-generatemodel`, `ui-generatemodel`
 
-**Downstream**: `edps-workflow-orchestrator` (round-report persistence in project state, staleness checks on resume), the screen-generation pipeline (consumes a validated UI model, unchanged)
-
-**Typical pipeline** (per the Implementation Analysis's Workflow Integration):
-```
-Requirements + domain concepts
-  -> collaboration/hierarchy and boundary identification
-  -> scoped domain/process documents
-  -> usecase-generatemodel
-  -> ui-generatemodel (software boundary with UI requirements only)
-  -> model-validatealignment (end-of-round)
-  -> screen inventory -> layout -> mockup -> verified flow -> handoff/feedback
-  -> any model-affecting feedback starts a new round and revalidation
-```
+**Downstream**: `edps-workflow-orchestrator` (records each round in `modeling_rounds` and checks staleness on resume), `screen-generateinventory` and the rest of the screen pipeline (should start from a UI model whose round is `PASS` and not stale)

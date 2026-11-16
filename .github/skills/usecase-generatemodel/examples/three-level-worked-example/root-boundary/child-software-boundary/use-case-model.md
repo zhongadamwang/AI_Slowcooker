@@ -12,9 +12,11 @@
 
 ### Field Operations Coordinator *(A-001)*
 **Kind**: internal-role
+**Interaction**: direct
 
 ### Technician *(A-002)*
 **Kind**: human
+**Interaction**: direct
 
 **Note (worked example)**: "Field Operations Coordinator" also exists as an actor at the root boundary (A-002 there). These are deliberately **different Actor References** — same real-world role, but a distinct actor_id local to this boundary's own use-case model, per contract Section 1.3. This boundary's A-001 is not "the same" as root's A-002; they are independently defined.
 

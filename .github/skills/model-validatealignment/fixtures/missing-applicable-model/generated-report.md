@@ -9,10 +9,7 @@
 
 ## Source Model Versions
 
-- **domain_model**: fixture-v1
-- **process_model**: fixture-v1
-- **use_case_model**: MISSING
-- **ui_model**: MISSING
+- **BND-ORDER-INTAKE**: boundary=f8956efc18da5400, domain_model=42db6df714dae31e, process_model=482262d48bf3198a, use_case_model=absent, ui_model=absent
 
 ## Findings
 

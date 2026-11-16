@@ -3,20 +3,32 @@
   "boundary_scope": [
     {
       "boundary_id": "BND-ORDER-INTAKE",
-      "boundary_type": "software"
+      "boundary_name": "Order Intake Boundary",
+      "boundary_type": "software",
+      "hierarchy_level": 0,
+      "hierarchy_path": "order-intake-boundary",
+      "parent_boundary_id": null
     }
   ],
   "source_model_versions": {
-    "domain_model": "fixture-v1",
-    "process_model": "fixture-v1",
-    "use_case_model": "MISSING",
-    "ui_model": "MISSING"
+    "BND-ORDER-INTAKE": {
+      "boundary": "f8956efc18da5400",
+      "domain_model": "42db6df714dae31e",
+      "process_model": "482262d48bf3198a",
+      "use_case_model": null,
+      "ui_model": null
+    }
   },
   "status": "INVALID_INPUT",
   "findings": [
     {
       "finding_id": "F-001",
       "severity": "error",
+      "reference_a": {
+        "boundary_id": "BND-ORDER-INTAKE",
+        "boundary_type": "software"
+      },
+      "reference_b": null,
       "description": "use-case-model.json is required for boundary BND-ORDER-INTAKE (a software boundary in round scope) but does not exist. Reported as a missing applicable model, not silently treated as not-applicable.",
       "affected_models": [
         "use-case"

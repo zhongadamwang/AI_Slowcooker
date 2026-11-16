@@ -9,10 +9,7 @@
 
 ## Source Model Versions
 
-- **domain_model**: fixture-v1
-- **process_model**: fixture-v1
-- **use_case_model**: fixture-v1
-- **ui_model**: None
+- **BND-UNCLASSIFIED**: boundary=7ed2300a1329afda, domain_model=94bbeaecd2b8b30a, process_model=absent, use_case_model=e31ea792b34a107b, ui_model=absent
 
 ## Findings
 
@@ -22,7 +19,7 @@ Boundary BND-UNCLASSIFIED has no explicitly declared boundary_type. Dependent us
 
 ## Clarification Questions
 
-- Is BND-UNCLASSIFIED a software system with its own UI, or a non-software real-world boundary? This must be answered and recorded before any UIModelEntry may reference it.
+- Is BND-UNCLASSIFIED a software system with its own UI, or a non-software real-world boundary? This must be answered and recorded in its main.md System Boundary section before any UIModelEntry may reference it.
 
 ---
 **Round ID**: ROUND-FIXTURE-002

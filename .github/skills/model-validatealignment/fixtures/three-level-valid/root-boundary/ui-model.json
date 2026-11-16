@@ -1,0 +1,14 @@
+{
+  "model_id": "UIM-ROOT",
+  "model_type": "base",
+  "derives_from": null,
+  "role_scope": null,
+  "source_domain_model": "../../../model-validatealignment/fixtures/three-level-valid/root-boundary/domain-model.md",
+  "generation_note": "Boundary BND-ROOT is non-software (see main.md's System Boundary section). Per R-011, UI screens may only exist within explicitly software-typed boundaries. This model deliberately contains zero entries -- this is not an error or an incomplete run, it is the correct, required output for a non-software boundary.",
+  "generated_at": "2026-11-08T00:00:00Z",
+  "changelog": [
+    { "version": "1.0", "date": "2026-11-08", "change": "Initial generation -- confirmed non-software, zero entries" }
+  ],
+  "entries": [],
+  "aggregations": []
+}

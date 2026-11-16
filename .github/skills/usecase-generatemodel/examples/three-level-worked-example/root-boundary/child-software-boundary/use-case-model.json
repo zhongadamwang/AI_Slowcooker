@@ -9,8 +9,8 @@
     "parent_boundary_id": "BND-ROOT"
   },
   "actors": [
-    { "actor_id": "A-001", "actor_name": "Field Operations Coordinator", "boundary_id": "BND-CHILD-SW", "actor_kind": "internal-role" },
-    { "actor_id": "A-002", "actor_name": "Technician", "boundary_id": "BND-CHILD-SW", "actor_kind": "human" }
+    { "actor_id": "A-001", "actor_name": "Field Operations Coordinator", "boundary_id": "BND-CHILD-SW", "actor_kind": "internal-role", "interaction": "direct" },
+    { "actor_id": "A-002", "actor_name": "Technician", "boundary_id": "BND-CHILD-SW", "actor_kind": "human", "interaction": "direct" }
   ],
   "use_cases": [
     {

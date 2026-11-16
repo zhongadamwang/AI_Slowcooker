@@ -3,22 +3,51 @@
   "boundary_scope": [
     {
       "boundary_id": "BND-ROOT",
-      "boundary_type": "non-software"
+      "boundary_name": "Root Boundary",
+      "boundary_type": "non-software",
+      "hierarchy_level": 0,
+      "hierarchy_path": "root-boundary",
+      "parent_boundary_id": null
     },
     {
       "boundary_id": "BND-CHILD-SW",
-      "boundary_type": "software"
+      "boundary_name": "Child Software Boundary",
+      "boundary_type": "software",
+      "hierarchy_level": 1,
+      "hierarchy_path": "root-boundary/child-software-boundary",
+      "parent_boundary_id": "BND-ROOT"
     },
     {
       "boundary_id": "BND-GRANDCHILD",
-      "boundary_type": "software"
+      "boundary_name": "Grandchild Boundary",
+      "boundary_type": "software",
+      "hierarchy_level": 2,
+      "hierarchy_path": "root-boundary/child-software-boundary/grandchild-boundary",
+      "parent_boundary_id": "BND-CHILD-SW"
     }
   ],
   "source_model_versions": {
-    "domain_model": "fixture-v1",
-    "process_model": "fixture-v1 (not exercised by this fixture)",
-    "use_case_model": "fixture-v1 (not exercised by this fixture)",
-    "ui_model": null
+    "BND-ROOT": {
+      "boundary": "9d996edda00d8b71",
+      "domain_model": "6786714b64c330b9",
+      "process_model": null,
+      "use_case_model": "92eabb0b4194f58e",
+      "ui_model": "a1209e7de5b4d37a"
+    },
+    "BND-CHILD-SW": {
+      "boundary": "7364294233430163",
+      "domain_model": "6fa72a4b114804cf",
+      "process_model": null,
+      "use_case_model": "59db649ff380849f",
+      "ui_model": "27d4828d43244f45"
+    },
+    "BND-GRANDCHILD": {
+      "boundary": "15f0ae4a7bd55f6e",
+      "domain_model": "0a9f11a0cdfd13ed",
+      "process_model": null,
+      "use_case_model": "582174c87613db32",
+      "ui_model": "5baee59aa040cd38"
+    }
   },
   "status": "PASS",
   "findings": [],

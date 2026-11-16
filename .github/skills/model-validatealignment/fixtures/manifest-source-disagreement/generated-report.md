@@ -9,10 +9,7 @@
 
 ## Source Model Versions
 
-- **domain_model**: fixture-v1
-- **process_model**: fixture-v1 (not exercised)
-- **use_case_model**: fixture-v1
-- **ui_model**: None
+- **BND-BILLING**: boundary=ae5295f4744dcffe, domain_model=3326de7e58a85248, process_model=absent, use_case_model=60c95a45cb1d9469, ui_model=absent
 
 ## Findings
 
