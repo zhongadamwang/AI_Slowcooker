@@ -216,6 +216,25 @@ Path conventions used across the skills:
 - In a `SKILL.md`, project paths are written in full from the repository root: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json`.
 - In a `gate.json`, artifact paths are relative to the project root: `artifacts/Analysis/requirements.json`.
 
+## Completion Gates
+
+Each skill has a `gate.json` stating what its output must contain. Check a skill's output with the gate runner (from the repository root):
+
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py requirements-ingest \
+    --project "OrgDocument/projects/[NN] - [Project Name]"
+```
+
+Cross-model alignment has its own validator, which the `model-validatealignment` gate depends on:
+
+```bash
+python3 .github/skills/model-validatealignment/scripts/validate_alignment.py --round-id ROUND-001 \
+    --root "OrgDocument/orgModel/[NN] - [Process Name]" \
+    --output-dir "OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis"
+```
+
+See [`edps-workflow-orchestrator/references/gate-schema.md`](edps-workflow-orchestrator/references/gate-schema.md) for the gate format.
+
 ## Tips for Success 💡
 
 ### Effective Prompting
