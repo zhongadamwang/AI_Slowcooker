@@ -1,7 +1,10 @@
 ---
 name: domain-extractconcepts
-description: Extract domain-specific entities, concepts, terminology, and relationships from analyzed requirements. Identifies business domain elements and categorizes them by functional area to build foundations for domain modeling and conceptual understanding.
+description: Extract the domain entities (with attributes and operations), business concepts, terminology, and relationships from a project's requirements, grouped by domain area and traced to requirement IDs, written as domain-concepts.md and domain-concepts.json. Use after requirements-ingest when the user asks for a domain model, the entities or concepts in a set of requirements, a glossary, or a class diagram's raw material; and before domain-alignentities or diagram-generatecollaboration, which read domain-concepts.json.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-15"
 ---
 
 # Domain Extract Concepts
@@ -21,170 +24,24 @@ Systematically identify and extract domain entities, business concepts, terminol
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` - Structured domain data for programmatic use
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.md` - Human-readable domain documentation
 
-### JSON Structure (`domain-concepts.json`)
-```json
-{
-  "project_id": "string",
-  "extraction_metadata": {
-    "generated_at": "ISO8601",
-    "source_files": ["requirements.json", "goals.json"],
-    "total_concepts": "number",
-    "total_entities": "number",
-    "confidence_score": "0.0-1.0"
-  },
-  "domain_entities": [
-    {
-      "id": "ENT-001",
-      "name": "User",
-      "description": "System user who interacts with the application",
-      "attributes": [
-        {
-          "name": "user_id",
-          "type": "identifier",
-          "description": "Unique user identifier",
-          "visibility": "public"
-        },
-        {
-          "name": "role",
-          "type": "enumeration",
-          "description": "User access level",
-          "values": ["admin", "user", "guest"],
-          "visibility": "public"
-        }
-      ],
-      "operations": [
-        {
-          "name": "authenticate",
-          "description": "Verify user credentials",
-          "parameters": ["username", "password"],
-          "return_type": "boolean",
-          "visibility": "public"
-        },
-        {
-          "name": "updateProfile",
-          "description": "Modify user profile data",
-          "parameters": ["profile_data"],
-          "return_type": "void",
-          "visibility": "public"
-        }
-      ],
-      "domain_area": "Authentication",
-      "source_refs": ["R-001:section1", "R-003:section2"],
-      "confidence": "0.0-1.0"
-    }
-  ],
-  "business_concepts": [
-    {
-      "id": "CON-001",
-      "name": "Authentication",
-      "definition": "Process of verifying user identity",
-      "synonyms": ["login", "sign-in", "verification"],
-      "domain_area": "Security",
-      "source_refs": ["R-001:section1"],
-      "confidence": "0.0-1.0"
-    }
-  ],
-  "terminology": [
-    {
-      "term": "API",
-      "definition": "Application Programming Interface",
-      "context": "Interface for system interactions",
-      "domain_area": "Technical",
-      "source_refs": ["R-005:section3"]
-    }
-  ],
-  "relationships": [
-    {
-      "id": "REL-001",
-      "type": "association",
-      "source_entity": "User",
-      "target_entity": "Role",
-      "description": "User has assigned role",
-      "cardinality": "many-to-one",
-      "source_refs": ["R-002:section1"]
-    }
-  ],
-  "domain_areas": [
-    {
-      "name": "Authentication",
-      "description": "User identity verification and access control",
-      "entities": ["User", "Role", "Session"],
-      "concepts": ["Authentication", "Authorization"],
-      "key_processes": ["Login", "Logout", "Password Reset"]
-    }
-  ]
-}
-```
+### `domain-concepts.json` (top level)
 
-### Markdown Structure (`domain-concepts.md`)
-```markdown
-# Domain Concepts Analysis
+| Key | Content |
+|---|---|
+| `project_id`, `extraction_metadata` | `generated_at`, `source_files`, `total_concepts`, `total_entities`, `confidence_score` |
+| `domain_entities` | `id` (`ENT-001`), `name`, `description`, `attributes`, `operations`, `domain_area`, `source_refs`, `confidence` |
+| `business_concepts` | `id` (`CON-001`), `name`, `definition`, `synonyms`, `domain_area`, `source_refs`, `confidence` |
+| `terminology` | `term`, `definition`, `context`, `domain_area`, `source_refs` |
+| `relationships` | `id` (`REL-001`), `type`, `source_entity`, `target_entity`, `description`, `cardinality`, `source_refs` |
+| `domain_areas` | `name`, `description`, `entities`, `concepts`, `key_processes` |
 
-**Project**: [project_id]  
-**Generated**: [timestamp]  
-**Source**: requirements.json, goals.json  
-**Total Entities**: [count] | **Total Concepts**: [count]
+`source_refs` holds requirement IDs from `requirements.json`.
 
-## Domain Areas
+### `domain-concepts.md` (sections)
 
-### Authentication & Security
-**Key Entities**: User, Role, Session  
-**Core Concepts**: Authentication, Authorization, Access Control  
-**Primary Processes**: Login, Logout, Password Reset
+`## Domain Areas`, `## Entities` (one `### Name *(ENT-001)*` per entity), `## Business Concepts`, `## Terminology Glossary`, `## Entity Relationships`.
 
-### [Additional Domain Areas...]
-
-## Entities
-
-### User *(ENT-001)*
-**Domain Area**: Authentication  
-**Description**: System user who interacts with the application
-
-**Attributes**:
-- `user_id` (identifier): Unique user identifier [public]
-- `role` (enumeration): User access level [admin, user, guest] [public]
-- `email` (string): User contact information [public]
-
-**Operations**:
-- `authenticate(username, password)` → boolean: Verify user credentials [public]
-- `updateProfile(profile_data)` → void: Modify user profile data [public]
-- `validateSession()` → boolean: Check session validity [private]
-
-**Source References**: [R-001:section1], [R-003:section2]
-
-### [Additional Entities...]
-
-## Business Concepts
-
-### Authentication *(CON-001)*
-**Domain Area**: Security  
-**Definition**: Process of verifying user identity  
-**Synonyms**: login, sign-in, verification  
-**Source References**: [R-001:section1]
-
-### [Additional Concepts...]
-
-## Terminology Glossary
-
-| Term | Definition | Domain Area | Context |
-|------|------------|-------------|---------|
-| API | Application Programming Interface | Technical | Interface for system interactions |
-| OAuth | Open Authorization standard | Security | Third-party authentication protocol |
-
-## Entity Relationships
-
-### User ↔ Role *(REL-001)*
-**Type**: Association (many-to-one)  
-**Description**: User has assigned role  
-**Source**: [R-002:section1]
-
-### [Additional Relationships...]
-
----
-**Traceability**: Extracted from requirements [R-001, R-002, R-003...]  
-**Confidence Score**: 0.85/1.0  
-**Generated**: [timestamp]
-```
+The complete templates for both files are in [references/output-format.md](references/output-format.md).
 
 ## Core Extraction Process
 
@@ -275,29 +132,15 @@ Systematically identify and extract domain entities, business concepts, terminol
 
 For detailed extraction patterns and advanced analysis techniques, see [extraction-patterns.md](references/extraction-patterns.md).
 
-## Usage Pattern
-```
-1. Call after requirements-ingest skill completion
-2. Load requirements.json and optional goals.json
-3. Extract domain entities, concepts, terminology, and relationships
-4. Generate structured domain-concepts.json for programmatic use
-5. Create human-readable domain-concepts.md documentation
-6. Trigger diagram-generatecollaboration skill for visual domain modeling (optional)
-7. Feed results to domain-alignentities skill for organizational alignment
+Check the result against the gate:
+
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py domain-extractconcepts \
+    --project "OrgDocument/projects/[NN] - [Project Name]"
 ```
 
 ## Integration with Diagram Generation
-This skill can trigger automatic class diagram generation through integration with the diagram-generatecollaboration skill:
-
-### Diagram Integration Parameters
-```json
-{
-  "generate_class_diagram": true,
-  "update_domain_model": "orgModel/01-skill-dev/domain-model.md",
-  "diagram_style": "comprehensive|overview|focused",
-  "include_operations": true
-}
-```
+When the user also wants a class diagram, hand `domain-concepts.json` to `diagram-generatecollaboration` after this skill finishes:
 
 ### Class Diagram Generation Flow
 1. **Extract entities with operations** - Capture both static and behavioral aspects

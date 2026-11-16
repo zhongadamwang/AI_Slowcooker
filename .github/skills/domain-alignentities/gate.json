@@ -11,29 +11,37 @@
       "id": "alignment_analysis_exists",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should produce domain alignment analysis",
+      "description": "Both alignment files should exist",
       "artifacts": [
-        "artifacts/Analysis/domain-alignment.md"
+        "artifacts/Analysis/domain-alignment.md",
+        "artifacts/Analysis/domain-alignment.json"
       ],
-      "remediation": "Run domain-alignentities to map concepts to organizational standards"
+      "remediation": "Run domain-alignentities on domain-concepts.json"
+    },
+    {
+      "id": "alignment_structure",
+      "type": "json_schema",
+      "severity": "soft",
+      "description": "The alignment data should carry entity alignments and detected conflicts",
+      "file": "artifacts/Analysis/domain-alignment.json",
+      "required_fields": [
+        "entity_alignments",
+        "conflicts_detected"
+      ],
+      "remediation": "Write entity_alignments and conflicts_detected (empty when none were found)"
     },
     {
       "id": "mapping_documentation",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should document concept mappings",
+      "description": "The report should document alignments, conflicts, and recommendations",
       "file": "artifacts/Analysis/domain-alignment.md",
-      "must_contain": ["## Concept Mappings", "## Conflicts Identified", "## Alignment Recommendations"],
-      "remediation": "Complete mapping of new concepts to existing organizational entities"
-    },
-    {
-      "id": "standardization_guidance",
-      "type": "content_pattern",
-      "severity": "soft",
-      "description": "Should provide standardization guidance",
-      "file": "artifacts/Analysis/domain-alignment.md",
-      "must_contain": ["## Standardization Plan"],
-      "remediation": "Provide guidance for standardizing terminology across organization"
+      "must_contain": [
+        "## Entity Alignments",
+        "## Conflicts & Resolutions",
+        "## Recommendations"
+      ],
+      "remediation": "Follow the report template in references/output-format.md"
     }
   ],
   "quality_score_weight": 0.05,

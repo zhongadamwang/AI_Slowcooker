@@ -11,30 +11,63 @@
       "id": "merged_requirements_exist",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should produce merged requirements document",
+      "description": "The unified specification and merge trace should exist",
       "artifacts": [
-        "artifacts/Analysis/unified-requirements.md"
+        "artifacts/Analysis/unified-requirements.md",
+        "artifacts/Analysis/merge-analysis.json"
       ],
-      "remediation": "Run requirements-merge to consolidate source requirements"
+      "remediation": "Run requirements-merge on the source documents"
     },
     {
-      "id": "conflict_resolution",
+      "id": "conflict_log_exists",
+      "type": "artifact_existence",
+      "severity": "soft",
+      "description": "The conflict log should exist, even when no conflicts were found",
+      "artifacts": [
+        "artifacts/Analysis/merge-conflicts.md"
+      ],
+      "remediation": "Write merge-conflicts.md; state explicitly when there are no conflicts"
+    },
+    {
+      "id": "specification_structure",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should document any resolved conflicts",
+      "description": "The unified specification should present requirements by category and a traceability matrix",
       "file": "artifacts/Analysis/unified-requirements.md",
-      "must_contain": ["## Conflicts Resolved", "## Source Traceability"],
-      "remediation": "Document conflict resolution approach and source mappings"
+      "must_contain": [
+        "## Requirements by Category",
+        "## Traceability Matrix"
+      ],
+      "remediation": "Follow the template in references/output-format.md"
     },
     {
       "id": "source_traceability",
-      "type": "content_pattern",
+      "type": "json_schema",
       "severity": "soft",
-      "description": "Should maintain traceability to source documents",
-      "file": "artifacts/Analysis/unified-requirements.md",
-      "must_contain_pattern": "Source: [A-Za-z0-9_-]+\\.md",
-      "min_matches": 1,
-      "remediation": "Add source attribution for each merged requirement"
+      "description": "Every unified requirement should trace to at least one source",
+      "file": "artifacts/Analysis/merge-analysis.json",
+      "json_path": "$.unified_requirements[*]",
+      "required_fields": [
+        "id",
+        "text",
+        "source_traceability"
+      ],
+      "non_empty_fields": [
+        "source_traceability"
+      ],
+      "remediation": "Record source_traceability for every unified requirement"
+    },
+    {
+      "id": "conflicts_recorded",
+      "type": "json_schema",
+      "severity": "soft",
+      "description": "The merge trace should carry the conflicts list",
+      "file": "artifacts/Analysis/merge-analysis.json",
+      "required_fields": [
+        "unified_requirements",
+        "conflicts"
+      ],
+      "remediation": "Write the conflicts array (empty when none were found)"
     }
   ],
   "quality_score_weight": 0.06,

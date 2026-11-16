@@ -1,461 +1,123 @@
 ---
 name: process-w5h
-description: Analyzes requirements using the Who, What, When, Where, Why, How framework for comprehensive requirement analysis from multiple perspectives.
+description: Analyse a project's requirements along six dimensions (Who, What, When, Where, Why, How) to surface stakeholders and their roles, functional scope, timing, operating context, business rationale, and implementation approach, written as w5h-analysis.md and w5h-analysis.json. Use after requirements-ingest when the user asks who is involved or affected, wants a stakeholder analysis, wants the requirements examined from several perspectives, or needs gaps in the requirements exposed before domain modeling or planning.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-15"
 ---
 
 # Process W5H Analysis
 
-Transforms requirements into comprehensive W5H analysis (Who, What, When, Where, Why, How) providing stakeholder identification, functional analysis, timeline extraction, context understanding, purpose clarification, and implementation approach definition.
-
-## Intent
-
-Apply the W5H analytical framework to requirements to systematically extract: stakeholder roles and responsibilities (Who), functional scope (What), timeline and trigger conditions (When), operational context (Where), business rationale and success criteria (Why), and implementation approaches (How).
+Read the requirements six times, each time asking a different question. The value is as much in what a dimension cannot answer as in what it can: a requirements set that says nothing about *when* or *who decides* has a gap worth reporting.
 
 ## Inputs
 
-- **Requirements**: Raw requirements text, document, or `requirements.json`/`requirements.md` (from `requirements-ingest`)
-- **Project ID**: `project_id`
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (from `requirements-ingest`)
+- **Optional**: `goals.json` (from `goals-extract`), which informs Why
+- **Read automatically**: `collaboration_mode` in the project's `project-metadata.json` (`solo` or `traditional`; absent means `traditional`)
 
 ## Outputs
 
-- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.md` — W5H analysis report (primary, for downstream skills)
-- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.json` — Structured W5H data for machine processing
+Written to `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/`:
 
-## Core Function
+- `w5h-analysis.md` — the report
+- `w5h-analysis.json` — the same content for downstream skills
 
-**Input**: Requirements documents + project_id
-**Primary Output**: Markdown W5H analysis report matching specification format
-**Secondary Output**: JSON format with structured W5H elements for machine processing
-**Output Destination**: 
-- Markdown: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.md` (primary for downstream)
-- JSON: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/w5h-analysis.json` (machine processing)
-**Directory Structure**: Auto-created project folders with Analysis subfolder containing W5H analysis reports, stakeholder maps, and implementation guides
+### `w5h-analysis.json`
 
-## Usage
+The six dimension keys are fixed. The structure inside each follows what the requirements contain; the sub-keys below are the usual ones.
 
-**GitHub Copilot Integration (Recommended):**
-```markdown
-Use this skill directly in Copilot by providing requirements documents.
-Copilot will automatically analyze requirements using the W5H framework.
-
-Example prompt:
-"Use process-w5h skill to analyze this requirements document and extract Who, What, When, Where, Why, and How elements with stakeholder identification and implementation approaches."
+```json
+{
+  "project_id": "PRJ-07",
+  "generated_at": "ISO-8601",
+  "analysis_framework": "W5H",
+  "who":   { "primary_stakeholders": [], "secondary_stakeholders": [], "roles_responsibilities": [] },
+  "what":  { "functional_requirements": [], "non_functional_requirements": [], "scope": { "in_scope": [], "out_of_scope": [] } },
+  "when":  { "timeline": {}, "milestones": [] },
+  "where": { "environment": {}, "integration_points": {} },
+  "why":   { "business_drivers": {}, "success_metrics": {} },
+  "how":   { "technical_approach": {}, "implementation_phases": [], "risks": [] }
+}
 ```
 
-**Traditional Script Approach:**
-```python
-from process_w5h import W5HAnalyzer
-
-analyzer = W5HAnalyzer()
-result = analyzer.analyze_requirements(requirements_text, "MY-PROJECT")
-# Creates: 
-#   outputs/projects/MY-PROJECT/w5h-analysis.md (primary)
-#   outputs/projects/MY-PROJECT/w5h-analysis.json (secondary)
-```
-
-**Command Line:**
-```bash
-python process_w5h.py PROJECT-001 requirements.md
-# Saves to: outputs/projects/PROJECT-001/
-#   📄 w5h-analysis.md (Markdown - for downstream skills)
-#   📋 w5h-analysis.json (JSON - for machine processing)
-```
-
-## Output Schema
-
-**Primary Format (Markdown)** - W5H Analysis Report:
+### `w5h-analysis.md`
 
 ```markdown
 # W5H Requirements Analysis
 
-**Project**: PROJECT-001
-**Source**: requirements.md
-**Generated**: 2026-02-08T14:30:00Z
-**Analysis Framework**: Who, What, When, Where, Why, How
+**Project**: PRJ-07
+**Source**: requirements.json
+**Generated**: [timestamp]
 
-## WHO - Stakeholders and Roles
-
-### Primary Stakeholders
-- **End Users**: Software developers using evolutionary development practices
-- **Project Team**: Internal development team members
-- **Management**: Leadership overseeing development process improvement
-
-### Secondary Stakeholders
-- **Quality Assurance**: Testing teams validating new practices
-- **Operations**: Teams responsible for deployment and maintenance
-
-### Roles and Responsibilities
-| Role | Responsibilities | Authority Level |
-|------|-----------------|----------------|
-| Development Team Lead | Oversee skill implementation | Decision maker |
-| Team Members | Learn and apply new skills | Contributors |
-
-## WHAT - Functional and Non-Functional Requirements
-
-### Functional Requirements
-- **F1**: Define core competencies for evolutionary development
-- **F2**: Create learning pathways for skill development
-- **F3**: Implement adaptive planning methodologies
-
-### Non-Functional Requirements
-- **NF1**: Process must integrate with existing tooling
-- **NF2**: Training materials must be accessible to all team members
-- **NF3**: Implementation timeline must be flexible
-
-### System Boundaries
-- **In Scope**: Internal team skill development, process adaptation
-- **Out of Scope**: External vendor training, new tooling procurement
-
-## WHEN - Timeline and Milestones
-
-### Project Timeline
-- **Phase 1**: Skill framework documentation (Weeks 1-2)
-- **Phase 2**: Team capability assessment (Weeks 3-4)
-- **Phase 3**: Learning plan creation (Weeks 5-6)
-- **Phase 4**: Pilot implementation (Weeks 7-10)
-
-### Critical Milestones
-- **M1**: Framework completion - Week 2
-- **M2**: Assessment completion - Week 4
-- **M3**: Pilot launch - Week 7
-
-### Dependencies and Constraints
-- **Traditional mode**: Must complete stakeholder interviews before assessment
-- **Solo mode**: The developer role-plays each identified stakeholder perspective (per `collaboration_mode` — see `collaboration-mode-reference.md`, Iteration 4 artifacts) and documents inline which role lens was used for each assumption, rather than scheduling a separate interview
-- Pilot implementation depends on framework approval
-
-## WHERE - Context and Environment
-
-### Operational Environment
-- **Development Environment**: VS Code with existing toolchain
-- **Team Structure**: Cross-functional development teams
-- **Geographic Distribution**: Primarily local team with some remote members
-
-### System Integration Points
-- **Version Control**: Integration with current Git workflows
-- **CI/CD**: Compatibility with existing deployment pipelines
-- **Documentation**: Alignment with current documentation standards
-
-### Physical and Virtual Boundaries
-- **Team Workspace**: Hybrid office/remote environment
-- **Development Infrastructure**: Cloud-based development environment
-- **Communication Channels**: Existing team communication tools
-
-## WHY - Purpose and Business Rationale
-
-### Business Drivers
-- **Primary**: Improve development agility and responsiveness
-- **Secondary**: Enhance team capabilities and job satisfaction
-- **Strategic**: Position team for future evolutionary development challenges
-
-### Success Metrics
-- **Quantitative**: 25% reduction in feature delivery time
-- **Qualitative**: Improved team confidence in handling changing requirements
-- **Business**: Increased customer satisfaction with development responsiveness
-
-### Value Proposition
-- Enhanced ability to respond to changing market conditions
-- Improved team resilience and adaptability
-- Better alignment between development practices and business needs
-
-## HOW - Implementation Approach and Methods
-
-### Technical Approach
-- **Methodology**: Incremental skill development with regular feedback
-- **Framework**: Competency-based learning model
-- **Assessment**: 360-degree skill evaluation process
-
-### Implementation Strategy
-1. **Discovery Phase**: Research best practices and assess current state
-2. **Design Phase**: Create competency framework and learning paths
-3. **Development Phase**: Build training materials and assessment tools
-4. **Deployment Phase**: Roll out pilot program with selected team
-5. **Evaluation Phase**: Measure results and refine approach
-
-### Risk Mitigation
-- **Risk**: Team resistance to change
-  - **Mitigation**: Involve team in framework design, emphasize benefits
-- **Risk**: Time constraints
-  - **Mitigation**: Phase implementation, integrate with existing work
-
-### Quality Assurance
-- **Traditional mode**: Regular checkpoint reviews with stakeholders
-- **Solo mode**: Regular self-review checkpoints from each relevant role's perspective, logged as self-attestations (see `stakeholder_confirmation` gate checks); genuinely ambiguous or high-stakes items are still escalated to a real stakeholder rather than self-attested — see [Mode-Conditional Stakeholder Engagement](#mode-conditional-stakeholder-engagement) below
-- Continuous feedback collection from participants
-- Measurable success criteria at each phase
-
+## WHO — Stakeholders and Roles
+## WHAT — Functional and Non-Functional Requirements
+## WHEN — Timeline and Milestones
+## WHERE — Context and Environment
+## WHY — Purpose and Business Rationale
+## HOW — Implementation Approach and Methods
 ## Summary
-
-This W5H analysis provides a comprehensive view of the evolutionary development skill building project, ensuring all critical dimensions are considered in planning and implementation.
 ```
 
-**Secondary Format (JSON)** - For Machine Processing:
+Each of the six dimension sections is required, with its heading starting `## WHO`, `## WHAT`, and so on. The full layout of both files, with a worked example, is in [references/output-format.md](references/output-format.md).
 
-```json
-{
-  "project_id": "PROJECT-001",
-  "generated_at": "2026-02-08T14:30:00Z",
-  "analysis_framework": "W5H",
-  "who": {
-    "primary_stakeholders": [
-      {
-        "role": "End Users",
-        "description": "Software developers using evolutionary development practices",
-        "influence": "high",
-        "interest": "high"
-      }
-    ],
-    "secondary_stakeholders": [
-      {
-        "role": "Quality Assurance", 
-        "description": "Testing teams validating new practices",
-        "influence": "medium",
-        "interest": "medium"
-      }
-    ],
-    "roles_responsibilities": [
-      {
-        "role": "Development Team Lead",
-        "responsibilities": ["Oversee skill implementation"],
-        "authority_level": "Decision maker"
-      }
-    ]
-  },
-  "what": {
-    "functional_requirements": [
-      {
-        "id": "F1",
-        "description": "Define core competencies for evolutionary development",
-        "priority": "high",
-        "category": "core_functionality"
-      }
-    ],
-    "non_functional_requirements": [
-      {
-        "id": "NF1", 
-        "description": "Process must integrate with existing tooling",
-        "type": "integration_constraint",
-        "priority": "high"
-      }
-    ],
-    "scope": {
-      "in_scope": ["Internal team skill development", "process adaptation"],
-      "out_of_scope": ["External vendor training", "new tooling procurement"]
-    }
-  },
-  "when": {
-    "timeline": {
-      "total_duration": "10 weeks",
-      "phases": [
-        {
-          "name": "Phase 1",
-          "description": "Skill framework documentation",
-          "duration": "Weeks 1-2",
-          "deliverables": ["Framework document"]
-        }
-      ]
-    },
-    "milestones": [
-      {
-        "id": "M1",
-        "name": "Framework completion",
-        "target_date": "Week 2",
-        "dependencies": []
-      }
-    ]
-  },
-  "where": {
-    "environment": {
-      "development": "VS Code with existing toolchain",
-      "team_structure": "Cross-functional development teams",
-      "geographic": "Primarily local team with some remote members"
-    },
-    "integration_points": {
-      "version_control": "Integration with current Git workflows",
-      "cicd": "Compatibility with existing deployment pipelines",
-      "documentation": "Alignment with current documentation standards"
-    }
-  },
-  "why": {
-    "business_drivers": {
-      "primary": "Improve development agility and responsiveness",
-      "secondary": "Enhance team capabilities and job satisfaction",
-      "strategic": "Position team for future evolutionary development challenges"
-    },
-    "success_metrics": {
-      "quantitative": "25% reduction in feature delivery time",
-      "qualitative": "Improved team confidence in handling changing requirements",
-      "business": "Increased customer satisfaction with development responsiveness"
-    }
-  },
-  "how": {
-    "technical_approach": {
-      "methodology": "Incremental skill development with regular feedback",
-      "framework": "Competency-based learning model",
-      "assessment": "360-degree skill evaluation process"
-    },
-    "implementation_phases": [
-      {
-        "phase": "Discovery",
-        "description": "Research best practices and assess current state",
-        "activities": ["Stakeholder interviews", "Best practice research"]
-      }
-    ],
-    "risks": [
-      {
-        "risk": "Team resistance to change",
-        "probability": "medium",
-        "impact": "high",
-        "mitigation": "Involve team in framework design, emphasize benefits"
-      }
-    ]
-  }
-}
+## Workflow
+
+### 1. Analyse each dimension
+
+Cite requirement IDs (`R-xxx`) for what you record.
+
+| Dimension | Question | Look for |
+|---|---|---|
+| **Who** | Who is involved, and in what capacity? | Primary stakeholders (users, customers, decision makers); secondary stakeholders (support, operations, regulators, partners); each role's responsibilities and authority; influence and interest |
+| **What** | What must exist or happen? | Functional and non-functional requirements; business rules; explicit in-scope and out-of-scope statements |
+| **When** | What are the timing facts? | Deadlines, phases, milestones, sequencing dependencies, triggers and frequencies |
+| **Where** | In what context does this operate? | Organizational setting, systems it must integrate with, operating environment, physical or geographic boundaries |
+| **Why** | What justifies the work? | The problem being solved, business drivers, success measures, value to each stakeholder |
+| **How** | How will it be approached? | Method and approach stated or implied by the requirements, phases, risks with mitigations |
+
+### 2. Identify stakeholders by role
+
+Name roles ("Finance Approver"), never individuals. Record influence and interest as `high`, `medium`, or `low` where the requirements support a judgement.
+
+### 3. Report gaps, do not fill them
+
+When the requirements say nothing about a dimension, say so in that section ("The requirements state no deadline or sequencing constraint") and list it as an open item. Do not supply a plausible-looking timeline, stakeholder, budget, or risk that the requirements do not support. For How in particular, record the approach the requirements point to and mark your own suggestions as suggestions.
+
+### 4. Confirm the stakeholder analysis
+
+How the Who analysis gets confirmed depends on `collaboration_mode`; the output format is the same in both.
+
+- **`traditional`**: each identified role is confirmed by a real person in that role before the analysis is treated as settled. Record who confirmed what.
+- **`solo`**: take each role's perspective in turn and note inline, beside each stakeholder entry, which role lens you used and what you assumed on its behalf, for example: *"Assumed as End User: primary motivation is reducing manual data entry (R-014)."*
+
+Even in solo mode, go to a real stakeholder when:
+
+- a role's priorities are unclear from the requirements and guessing would change the Why or What analysis;
+- the role is a real external party whose authority you cannot stand in for (a compliance officer's reading of a regulation, a paying client's budget ceiling);
+- the decision is high-stakes: irreversible, costly to redo, or affecting a committed deadline.
+
+Record which items were escalated and why. The gate's `stakeholder_roles_confirmed` check looks for this confirmation in the project state (see `edps-workflow-orchestrator/references/gate-schema.md`). The collaboration modes are described in `OrgDocument/projects/05 - Building Skills Iteration 4/artifacts/Documentation/collaboration-mode-reference.md`.
+
+### 5. Write both files
+
+Write `w5h-analysis.json` and `w5h-analysis.md` with the same content, then check against the gate:
+
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py process-w5h \
+    --project "OrgDocument/projects/[NN] - [Project Name]"
 ```
 
-## GitHub Copilot Integration
+## Quality checks
 
-### Direct Usage in Copilot Chat
-Simply paste your requirements document and ask:
+- All six dimensions are present, each either answered from the requirements or reported as a gap.
+- Statements cite the requirements they rest on.
+- Stakeholders are roles, not named people.
+- Nothing in the analysis (dates, durations, metrics, stakeholders) was invented to make a dimension look complete.
 
-```
-@workspace Use the process-w5h skill to analyze this document:
+## Integration
 
-[PASTE YOUR REQUIREMENTS DOCUMENT HERE]
+**Upstream**: `requirements-ingest`, optionally `goals-extract`
 
-Project ID: MY-PROJECT-001
-
-Perform comprehensive W5H analysis extracting:
-- WHO: Stakeholders, roles, responsibilities
-- WHAT: Functional/non-functional requirements, scope
-- WHEN: Timeline, milestones, dependencies
-- WHERE: Context, environment, integration points
-- WHY: Business drivers, success metrics, value proposition
-- HOW: Implementation approach, methodology, risk mitigation
-
-Return structured analysis with both strategic and tactical insights.
-```
-
-### Copilot Prompt Template
-```
-Analyze requirements document using W5H framework methodology:
-
-1. WHO Analysis: Identify all stakeholders, map roles and responsibilities, determine authority levels
-2. WHAT Analysis: Extract functional and non-functional requirements, define system boundaries
-3. WHEN Analysis: Establish timeline, identify milestones, map dependencies
-4. WHERE Analysis: Define operational context, identify integration points, map environments
-5. WHY Analysis: Clarify business drivers, define success metrics, articulate value proposition
-6. HOW Analysis: Define implementation approach, identify methodology, plan risk mitigation
-
-Output comprehensive W5H analysis following JSON schema with strategic insights and tactical details.
-```
-
-**Advantages of Copilot Integration:**
-- ✅ **Comprehensive Analysis**: Ensures all W5H dimensions are thoroughly examined
-- ✅ **Stakeholder Clarity**: Clear identification of who is involved and their roles
-- ✅ **Strategic Alignment**: Links requirements to business objectives and success metrics
-- ✅ **Implementation Ready**: Provides actionable insights for project execution
-
-## W5H Analysis Framework
-
-### WHO Analysis Prompt
-```
-Identify stakeholders using this framework:
-
-- **Primary Stakeholders**: Direct users, customers, decision makers
-- **Secondary Stakeholders**: Influenced parties, support teams, vendors
-- **Internal Roles**: Team members, management, operations
-- **External Entities**: Customers, partners, regulators
-
-Map responsibilities, authority levels, and influence/interest matrix.
-```
-
-## Mode-Conditional Stakeholder Engagement
-
-This skill's WHO analysis always identifies stakeholders **by role**, never by individual person's name — that does not change between modes. What changes is how each identified role gets *confirmed* as accurate, per the project's `collaboration_mode` (see `collaboration-mode-reference.md`, Iteration 4 artifacts, and the `stakeholder_confirmation` gate check type from T03):
-
-- **`traditional` mode**: Schedule and complete real stakeholder interviews for each identified role before treating the WHO analysis as settled. A distinct person occupying each role signs off on the accuracy of their responsibilities and interests.
-- **`solo` mode**: The developer role-plays each identified stakeholder role in turn — End User, Business Owner, QA, etc. — and documents inline, next to each stakeholder entry, which role lens was used and what assumption was made on that role's behalf (e.g., *"Assumed as End User: primary motivation is reducing manual data entry, based on requirement R-014"*). This keeps the W5H analysis output format identical between modes; only the sourcing method differs.
-
-### When to Break Out of Solo Mode
-
-Even in `solo` mode, the developer is responsible for reaching out to a real stakeholder when:
-- A role's priorities or constraints are genuinely unclear from the available requirements, and guessing would materially change the WHY or WHAT analysis
-- A role represents a real external party with authority the developer cannot credibly substitute for (e.g., a compliance officer's regulatory interpretation, a paying client's budget ceiling) — see the "real external stakeholder" flag introduced in T05
-- A decision is high-stakes (irreversible, costly to redo, or affects a committed deadline) and self-attestation would leave meaningful risk undocumented
-
-When breaking out, document the real stakeholder's input the same way a `traditional`-mode confirmation would be recorded, and note in the W5H output which specific items were escalated and why.
-
-### WHAT Analysis Prompt
-```
-Categorize requirements using:
-
-- **Functional**: Core features, user actions, system behaviors
-- **Non-Functional**: Performance, security, usability, scalability
-- **Business Rules**: Logic, workflows, decision points
-- **Constraints**: Budget, technology, regulatory limitations
-- **Assumptions**: Dependencies, prerequisites, accepted facts
-
-Define clear scope boundaries (in/out of scope).
-```
-
-### WHEN Analysis Prompt
-```
-Extract temporal elements:
-
-- **Timeline**: Project phases, duration estimates
-- **Milestones**: Critical checkpoints, deliverables
-- **Dependencies**: Sequential requirements, blocking factors
-- **Deadlines**: Hard constraints, market windows
-- **Iterations**: Planned releases, feedback cycles
-
-Create realistic schedule with buffer time.
-```
-
-### WHERE Analysis Prompt
-```
-Define operational context:
-
-- **Physical Environment**: Hardware, infrastructure, locations
-- **System Environment**: Software, platforms, integrations
-- **Process Environment**: Workflows, methodologies, standards
-- **Organizational Environment**: Team structure, culture, policies
-
-Map integration points and environmental constraints.
-```
-
-### WHY Analysis Prompt
-```
-Clarify purpose and rationale:
-
-- **Business Drivers**: Market needs, strategic goals, competitive advantage
-- **Problem Statement**: Current pain points, inefficiencies, gaps
-- **Success Metrics**: Quantifiable measures, KPIs, ROI targets
-- **Value Proposition**: Benefits, outcomes, stakeholder value
-
-Ensure alignment between requirements and business objectives.
-```
-
-### HOW Analysis Prompt
-```
-Define implementation approach:
-
-- **Technical Approach**: Architecture, methodologies, frameworks
-- **Process Approach**: Project management, quality assurance, validation
-- **Resource Approach**: Team composition, skill requirements, budget
-- **Risk Management**: Identified risks, mitigation strategies, contingencies
-
-Provide actionable implementation roadmap.
-```
-
-## Processing Rules
-
-1. **Comprehensive Coverage**: All six W5H dimensions must be addressed
-2. **Stakeholder Focus**: Clear identification of who is involved and their interests
-3. **Business Alignment**: Strong connection between requirements and business objectives
-4. **Actionable Insights**: Analysis leads to concrete implementation guidance
-5. **Risk Awareness**: Identification of potential challenges and mitigation strategies
-6. **Dual Output**: Markdown (primary for downstream) + JSON (machine processing)
-7. **Traceability**: Clear links back to source requirements
-8. **Iterative Refinement**: Analysis can be updated as requirements evolve
+**Downstream**: `process-scopemin` (stakeholder context), `process-merge`, `plan-derivetasks`, `diagram-generatecollaboration` (actors)

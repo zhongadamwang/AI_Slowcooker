@@ -2,6 +2,9 @@
 name: requirements-sanitize
 description: Sanitize raw requirements documents before ingestion by removing or reclassifying non-business content. Filters out IT infrastructure details, software implementation specifics, and operational procedures that obscure business intent. Outputs a clean, business-focused requirements document ready for requirements-ingest. Use when the source document mixes business requirements with technical/operational/infrastructure perspectives and needs to be cleaned up first.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-15"
 ---
 
 # Requirements Sanitize
@@ -97,7 +100,7 @@ Write both generated files to the project analysis directory:
 
 Keep the original document in `artifacts/Source Materials/`; sanitized content and reports are derived analysis outputs, not source materials.
 
-If `project_id` is unknown, output inline and advise the user to save before proceeding.
+If the project folder is not known, output both documents inline and advise the user to save them before proceeding.
 
 ## Sanitization Heuristics
 
@@ -148,13 +151,13 @@ Sanitization mode: transform
 
 [PASTE RAW DOCUMENT HERE]
 
-Project ID: ORDER-MGMT-001
+Project: OrgDocument/projects/03 - Order Management
 ```
 
 ## Quality Checks
 
 Before handing off to `requirements-ingest`, verify:
-- [ ] Every retained statement is understandable by a non-technical business stakeholder. **Traditional mode**: validate this with an actual business stakeholder. **Solo mode**: the developer self-validates using the business-stakeholder lens (per `collaboration_mode` — see `collaboration-mode-reference.md`, Iteration 4 artifacts), and flags any statement they are not confident role-playing accurately for a later real-stakeholder check-in rather than guessing silently.
+- [ ] Every retained statement is understandable by a non-technical business stakeholder. **Traditional mode**: validate this with an actual business stakeholder. **Solo mode**: the developer self-validates using the business-stakeholder lens (per `collaboration_mode` in `project-metadata.json`; the modes are described in `OrgDocument/projects/05 - Building Skills Iteration 4/artifacts/Documentation/collaboration-mode-reference.md`), and flags any statement they are not confident role-playing accurately for a later real-stakeholder check-in rather than guessing silently.
 - [ ] No implementation technology names remain in the sanitized document (unless they are a business constraint, e.g., "must integrate with SAP")
 - [ ] All business actors are expressed as roles, not team names or job titles tied to a specific org chart
 - [ ] Transformed statements preserve the original intent — none have changed *what* the business needs

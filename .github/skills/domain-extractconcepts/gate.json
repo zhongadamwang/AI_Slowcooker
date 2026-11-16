@@ -1,7 +1,7 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S06",
-  "skill_name": "domain-extractconcepts", 
+  "skill_name": "domain-extractconcepts",
   "version": "1.0.0",
   "gate_type": "completion",
   "severity": "hard",
@@ -9,43 +9,75 @@
   "checks": [
     {
       "id": "domain_concepts_exist",
-      "type": "artifact_existence", 
+      "type": "artifact_existence",
       "severity": "hard",
-      "description": "Domain concepts file must exist",
+      "description": "Both domain concepts files must exist",
       "artifacts": [
-        "artifacts/Analysis/domain-concepts.json"
+        "artifacts/Analysis/domain-concepts.json",
+        "artifacts/Analysis/domain-concepts.md"
       ],
-      "remediation": "Run domain-extractconcepts skill to generate domain model"
+      "remediation": "Run domain-extractconcepts on requirements.json"
     },
     {
       "id": "entities_identified",
       "type": "json_schema",
-      "severity": "hard", 
-      "description": "Domain concepts must include entities and relationships",
+      "severity": "hard",
+      "description": "Domain concepts must include entities, business concepts, terminology, and relationships",
       "file": "artifacts/Analysis/domain-concepts.json",
-      "required_fields": ["entities", "relationships", "business_rules"],
-      "remediation": "Verify requirements contain sufficient domain information"
+      "required_fields": [
+        "domain_entities",
+        "business_concepts",
+        "terminology",
+        "relationships"
+      ],
+      "non_empty_fields": [
+        "domain_entities"
+      ],
+      "remediation": "Write all four sections; verify the requirements contain sufficient domain information"
+    },
+    {
+      "id": "entities_well_formed",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every entity must have an ID and a name",
+      "file": "artifacts/Analysis/domain-concepts.json",
+      "json_path": "$.domain_entities[*]",
+      "required_fields": [
+        "id",
+        "name"
+      ],
+      "remediation": "Give every entity an ENT-[###] id and a name"
     },
     {
       "id": "entity_count",
       "type": "threshold",
       "severity": "soft",
-      "description": "Should identify reasonable number of entities",
-      "file": "artifacts/Analysis/domain-concepts.json", 
-      "json_path": "$.entities.length",
+      "description": "A plausible number of entities should be identified",
+      "file": "artifacts/Analysis/domain-concepts.json",
+      "json_path": "$.domain_entities.length",
       "min_value": 2,
-      "max_value": 25,
-      "remediation": "Review domain scope - very few entities may indicate insufficient analysis"
+      "max_value": 60,
+      "remediation": "Very few entities may indicate insufficient analysis; very many may mean attributes or terms were recorded as entities"
     },
     {
       "id": "categorization_complete",
       "type": "field_completeness",
       "severity": "soft",
-      "description": "Entities should have category classifications",
+      "description": "Entities should be assigned to a domain area",
       "file": "artifacts/Analysis/domain-concepts.json",
-      "json_path": "$.entities[*].category",
+      "json_path": "$.domain_entities[*].domain_area",
       "min_percent_complete": 80,
-      "remediation": "Review entity categorizations for completeness"
+      "remediation": "Assign a domain_area to each entity"
+    },
+    {
+      "id": "entities_traceable",
+      "type": "field_completeness",
+      "severity": "soft",
+      "description": "Entities should cite the requirements they came from",
+      "file": "artifacts/Analysis/domain-concepts.json",
+      "json_path": "$.domain_entities[*].source_refs",
+      "min_percent_complete": 80,
+      "remediation": "Add source_refs with requirement IDs to each entity"
     }
   ],
   "quality_score_weight": 0.12,

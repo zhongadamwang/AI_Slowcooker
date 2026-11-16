@@ -3,7 +3,7 @@
   "skill_id": "S04",
   "skill_name": "process-w5h",
   "version": "1.1.0",
-  "gate_type": "completion", 
+  "gate_type": "completion",
   "severity": "hard",
   "description": "Validates W5H analysis has been completed comprehensively, including mode-aware stakeholder role confirmation",
   "checks": [
@@ -11,30 +11,53 @@
       "id": "w5h_analysis_exists",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "W5H analysis file must exist",
+      "description": "Both W5H analysis files must exist",
       "artifacts": [
-        "artifacts/Analysis/w5h-analysis.json"
+        "artifacts/Analysis/w5h-analysis.json",
+        "artifacts/Analysis/w5h-analysis.md"
       ],
-      "remediation": "Run process-w5h skill to analyze requirements comprehensively"
+      "remediation": "Run process-w5h on requirements.json"
     },
     {
       "id": "all_dimensions_covered",
       "type": "json_schema",
-      "severity": "hard", 
-      "description": "All W5H dimensions must be analyzed",
+      "severity": "hard",
+      "description": "All six W5H dimensions must be present in the JSON",
       "file": "artifacts/Analysis/w5h-analysis.json",
-      "required_fields": ["who", "what", "when", "where", "why", "how"],
-      "remediation": "Ensure comprehensive analysis covers all W5H dimensions"
+      "required_fields": [
+        "who",
+        "what",
+        "when",
+        "where",
+        "why",
+        "how"
+      ],
+      "remediation": "Add the missing dimension; where the requirements say nothing, record that gap instead of omitting the key"
     },
     {
-      "id": "sufficient_detail",
-      "type": "field_completeness",
+      "id": "report_has_all_dimensions",
+      "type": "content_pattern",
       "severity": "soft",
-      "description": "W5H analysis should have sufficient detail",
+      "description": "The report should have a section per dimension",
+      "file": "artifacts/Analysis/w5h-analysis.md",
+      "must_contain_pattern": "(?mi)^## (who|what|when|where|why|how)\\b",
+      "min_matches": 6,
+      "remediation": "Add a '## WHO', '## WHAT', '## WHEN', '## WHERE', '## WHY', and '## HOW' section"
+    },
+    {
+      "id": "stakeholders_identified",
+      "type": "json_schema",
+      "severity": "soft",
+      "description": "The WHO dimension should identify stakeholders",
       "file": "artifacts/Analysis/w5h-analysis.json",
-      "json_path": "$.*.details",
-      "min_percent_complete": 70,
-      "remediation": "Add more detail to W5H analysis dimensions"
+      "json_path": "$.who",
+      "required_fields": [
+        "primary_stakeholders"
+      ],
+      "non_empty_fields": [
+        "primary_stakeholders"
+      ],
+      "remediation": "Identify primary stakeholders by role, or record that the requirements name none"
     },
     {
       "id": "stakeholder_roles_confirmed",

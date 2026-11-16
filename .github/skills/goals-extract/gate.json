@@ -3,45 +3,73 @@
   "skill_id": "S03",
   "skill_name": "goals-extract",
   "version": "1.0.0",
-  "gate_type": "completion", 
+  "gate_type": "completion",
   "severity": "hard",
   "description": "Validates business goals and success criteria have been extracted",
   "checks": [
     {
-      "id": "goals_file_exists", 
+      "id": "goals_files_exist",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Goals analysis file must exist",
+      "description": "Both goals files must exist",
       "artifacts": [
-        "artifacts/Analysis/goals.json"
+        "artifacts/Analysis/goals.json",
+        "artifacts/Analysis/goals.md"
       ],
-      "remediation": "Run goals-extract skill on requirements to identify business goals"
+      "remediation": "Run goals-extract on requirements.json"
     },
     {
       "id": "goals_structure_valid",
       "type": "json_schema",
       "severity": "hard",
-      "description": "Goals file must have valid structure", 
+      "description": "goals.json must state the goal and carry all six content sections",
       "file": "artifacts/Analysis/goals.json",
-      "required_fields": ["business_goals", "success_criteria", "constraints", "assumptions"],
-      "remediation": "Verify requirements contain sufficient goal information"
+      "required_fields": [
+        "goal_statement",
+        "success_criteria",
+        "kpis",
+        "constraints",
+        "assumptions",
+        "open_questions"
+      ],
+      "non_empty_fields": [
+        "goal_statement",
+        "success_criteria"
+      ],
+      "remediation": "Write goal_statement and the success_criteria, kpis, constraints, assumptions, and open_questions arrays (empty where the requirements contain none)"
     },
     {
-      "id": "measurable_criteria",
+      "id": "success_criteria_traceable",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every success criterion must cite the requirement it came from",
+      "file": "artifacts/Analysis/goals.json",
+      "json_path": "$.success_criteria[*]",
+      "required_fields": [
+        "criteria",
+        "source_refs"
+      ],
+      "non_empty_fields": [
+        "source_refs"
+      ],
+      "remediation": "Add source_refs with requirement IDs to each success criterion; an untraceable criterion belongs in open_questions"
+    },
+    {
+      "id": "kpis_traceable",
       "type": "field_completeness",
       "severity": "soft",
-      "description": "Success criteria should be measurable",
+      "description": "KPIs should cite their source requirements",
       "file": "artifacts/Analysis/goals.json",
-      "json_path": "$.success_criteria[*].metric",
-      "min_percent_complete": 60,
-      "remediation": "Review success criteria to ensure they include measurable metrics"
+      "json_path": "$.kpis[*].source_refs",
+      "min_percent_complete": 100,
+      "remediation": "Add source_refs to each KPI"
     }
   ],
-  "quality_score_weight": 0.10,
+  "quality_score_weight": 0.1,
   "bypass_allowed": true,
   "workflow_archetypes": {
     "standard": "hard",
-    "rapid": "hard", 
+    "rapid": "hard",
     "compliance": "soft"
   }
 }

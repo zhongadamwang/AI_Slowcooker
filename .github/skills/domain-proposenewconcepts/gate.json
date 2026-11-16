@@ -11,20 +11,51 @@
       "id": "concept_proposals_exist",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should propose new domain concepts",
+      "description": "Both proposal files should exist",
       "artifacts": [
-        "artifacts/Analysis/domain-newconcepts.md"
+        "artifacts/Analysis/domain-newconcepts.md",
+        "artifacts/Analysis/domain-newconcepts.json"
       ],
-      "remediation": "Run domain-proposenewconcepts to identify conceptual gaps"
+      "remediation": "Run domain-proposenewconcepts on domain-alignment.json"
+    },
+    {
+      "id": "proposal_structure",
+      "type": "json_schema",
+      "severity": "soft",
+      "description": "The proposal data should carry the gap analysis and concept proposals",
+      "file": "artifacts/Analysis/domain-newconcepts.json",
+      "required_fields": [
+        "gap_analysis",
+        "concept_proposals"
+      ],
+      "remediation": "Write gap_analysis and concept_proposals (empty when no gaps were found)"
+    },
+    {
+      "id": "proposals_justified",
+      "type": "json_schema",
+      "severity": "soft",
+      "description": "Every concept proposal should name the gap it fills",
+      "file": "artifacts/Analysis/domain-newconcepts.json",
+      "json_path": "$.concept_proposals[*]",
+      "required_fields": [
+        "proposal_id",
+        "name",
+        "fills_gap"
+      ],
+      "remediation": "Set fills_gap on each proposal; a proposal with no gap behind it should be dropped"
     },
     {
       "id": "gap_analysis_complete",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should identify and address domain gaps",
+      "description": "The report should cover gaps, proposals, and impact",
       "file": "artifacts/Analysis/domain-newconcepts.md",
-      "must_contain": ["## Gap Analysis", "## Proposed Concepts", "## Impact Assessment"],
-      "remediation": "Complete gap analysis and propose concepts to address missing functionality"
+      "must_contain": [
+        "## Gap Analysis",
+        "## Concept Proposals",
+        "## Impact Analysis"
+      ],
+      "remediation": "Follow the report template in references/output-format.md"
     }
   ],
   "quality_score_weight": 0.05,

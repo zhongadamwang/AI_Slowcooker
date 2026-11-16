@@ -1,433 +1,112 @@
 ---
 name: process-scopemin
-description: Identifies minimum viable scope for requirements, helping prioritize essential features and define MVP boundaries. Analyzes requirements to classify core vs. optional features and produces scoped requirement sets for iterative development.
+description: Find the minimum viable scope in a requirements set by grouping requirements into features and classifying each as core, enhancement, or optional from its business value, dependencies, and complexity, then laying out a phased roadmap, written as scope-analysis.md and scope-analysis.json. Use when the user asks what the MVP is, what can be deferred or cut, how to phase delivery, or how to fit a requirements set to limited time or budget; and before plan-derivetasks, which reads the scope decision.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-15"
 ---
 
 # Process Scope Minimization
 
-Transforms comprehensive requirements into minimum viable product (MVP) scope by analyzing business value, dependencies, and implementation complexity to identify core features and establish iterative development boundaries.
-
-## Intent
-
-Identify the minimum viable product (MVP) scope from a comprehensive requirements set by classifying features as `core`, `enhancing`, or `optional` based on business value, inter-feature dependencies, and implementation complexity. Produces scoped requirement sets for iterative delivery planning.
+Decide what is the least that must be built for the product to be worth having, and put everything else in a later phase with a reason.
 
 ## Inputs
 
-- **Requirements**: Raw requirements text, document, or `requirements.json`/`requirements.md` (from `requirements-ingest`)
-- **Project ID**: `project_id`
-- **Optional**: `goals.json` from `goals-extract` — used to weight business-value scoring
+- **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (from `requirements-ingest`)
+- **Recommended**: `goals.json` (from `goals-extract`). Business value is judged against the stated goal; without it, say that value was judged from the requirements alone
+- **Optional**: `w5h-analysis.json` (stakeholders and constraints); any time, budget, or team limits the user states
 
 ## Outputs
 
-- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.md` — Scope analysis report with MVP recommendation (primary, for downstream skills)
-- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.json` — Structured scope classifications (machine processing)
+Written to `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/`:
 
-## Core Function
+- `scope-analysis.md` — the report and recommendation
+- `scope-analysis.json` — the same classification for downstream skills
 
-**Input**: Requirements documents + project_id + business context
-**Primary Output**: Markdown scope analysis report with MVP recommendations
-**Secondary Output**: JSON format with structured scope classifications for machine processing
-**Output Destination**: 
-- Markdown: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.md` (primary for downstream)
-- JSON: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/scope-analysis.json` (machine processing)
-**Directory Structure**: Auto-created project folders with Analysis subfolder containing scope analysis, feature prioritization matrices, and MVP roadmaps
+### `scope-analysis.json` (top level)
 
-## Usage
+| Key | Content |
+|---|---|
+| `metadata` | `project_id`, `source_file`, `generated_timestamp`, `analysis_method` |
+| `mvp_summary` | `definition`, counts of core / enhancement / optional features, `estimated_effort` |
+| `features` | One per feature: `id` (`FEAT-001`), `name`, `category` (`core`, `enhancement`, or `optional`), `business_value` (`score`, `justification`), `technical_complexity` (`score`, `implementation_notes`), `dependencies`, `user_impact`, `phase_assignment` |
+| `roadmap` | Feature IDs per phase: `phase0_foundation`, `phase1_mvp`, `phase2_enhancement`, `phase3_expansion` |
+| `scope_boundaries` | `in_scope`, `out_of_scope` |
+| `risks` | `id`, `priority`, `description`, `impact`, `mitigation` |
+| `success_criteria` | `mvp_launch`, `enhancement_phase` |
+| `traceability` | Per feature: `feature_id`, `source_requirements` (requirement IDs), `justification` |
 
-**GitHub Copilot Integration (Recommended):**
-```markdown
-Use this skill directly in Copilot by providing requirements documents.
-Copilot will automatically analyze requirements to identify minimum viable scope.
+### `scope-analysis.md` (sections)
 
-Example prompt:
-"Use process-scopemin skill to analyze these requirements and identify the minimum viable product scope, classifying features as core, enhancing, or optional based on business value and dependencies."
-```
+`## Executive Summary`, `## Core Features (MVP Essential)`, `## Enhancement Features (Post-MVP Phase 1)`, `## Optional Features (Future Consideration)`, `## Feature Prioritization Matrix`, `## MVP Roadmap`, `## Scope Boundaries`, `## Risk Assessment`, `## Success Criteria`, `## Recommendations`.
 
-**Traditional Script Approach:**
-```python
-from process_scopemin import ScopeMinimizer
+The complete templates for both files are in [references/output-format.md](references/output-format.md).
 
-minimizer = ScopeMinimizer()
-result = minimizer.analyze_scope(requirements_text, "MY-PROJECT")
-# Creates: 
-#   outputs/projects/MY-PROJECT/scope-analysis.md (primary)
-#   outputs/projects/MY-PROJECT/scope-analysis.json (secondary)
-```
+## Workflow
 
-**Command Line:**
+### 1. Group requirements into features
+
+A feature is a capability a user or the business would recognise ("order tracking"), usually backed by several requirements. Give each a `FEAT-###` ID and record which requirement IDs it covers. Every functional requirement belongs to some feature; note any that fit none.
+
+### 2. Assess each feature
+
+Score each `high`, `medium`, or `low`, with a one-line justification.
+
+| Dimension | High | Medium | Low |
+|---|---|---|---|
+| **Business value** | Directly serves the stated goal; a critical user workflow; what makes the product worth having | Improves efficiency or satisfaction; strengthens the offering | Convenience; an advanced or rare case; preparation for the future |
+| **Complexity** | New technology, difficult integration, significant unknowns | Standard implementation with known patterns | Well understood, little integration, low risk |
+
+Then map dependencies: which features need which others to exist first. Include business dependencies (a regulatory requirement, a partner integration) as well as technical ones.
+
+### 3. Classify
+
+- **Core**: the product does not solve its problem without it, or other core features depend on it.
+- **Enhancement**: clearly valuable and builds on the core, but the MVP is usable without it.
+- **Optional**: nice to have; low immediate value or speculative.
+
+Dependencies override value scores: a low-value feature that a core feature depends on is core. A high-value feature with heavy dependencies and high complexity is a candidate for the first enhancement phase, with the reason stated.
+
+### 4. Test the MVP boundary
+
+The core set is a valid MVP only if all of these hold. If one fails, move features until it does.
+
+- A user can complete at least one whole workflow from start to finish.
+- The product solves a complete problem, not a fragment of one.
+- It delivers enough value to validate the business goal.
+- It is a foundation the enhancement features can be added to without rework.
+
+Also check from the other side: is anything in core that could be removed without breaking those four? The point of the exercise is the smallest set that passes.
+
+### 5. Lay out the roadmap
+
+- **Phase 0 — Foundation**: infrastructure and groundwork the core features need
+- **Phase 1 — MVP**: the core features
+- **Phase 2 — Enhancement**: the first enhancement features
+- **Phase 3 — Expansion**: remaining enhancement and optional features
+
+State what is in and out of scope for the MVP explicitly. An out-of-scope list is as useful to stakeholders as the in-scope one.
+
+### 6. Write both files
+
+Write `scope-analysis.json` and `scope-analysis.md` with the same classification, then check against the gate:
+
 ```bash
-python process_scopemin.py PROJECT-001 requirements.md
-# Saves to: outputs/projects/PROJECT-001/
-#   📄 scope-analysis.md (Markdown - for downstream skills)
-#   📋 scope-analysis.json (JSON - for machine processing)
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py process-scopemin \
+    --project "OrgDocument/projects/[NN] - [Project Name]"
 ```
 
-## Output Schema
+## Quality checks
 
-**Primary Format (Markdown)** - Scope Analysis Report:
+- Every feature has a category, a value justification, a complexity assessment, and its source requirement IDs.
+- No core feature depends on a feature in a later phase.
+- The MVP passes the four boundary tests, and the report says how.
+- Effort estimates are given only as rough ranges and labelled as such; detailed estimation is `plan-estimateeffort`'s job.
+- The scope decision is a recommendation. In `traditional` collaboration mode it needs stakeholder approval before planning treats it as settled; record the approval status truthfully ("Pending" until someone has actually approved).
 
-```markdown
-# Minimum Viable Scope Analysis
+## Integration
 
-**Project**: PROJECT-001
-**Source**: requirements.md
-**Generated**: 2026-02-15T10:30:00Z
-**Analysis Method**: Business Value + Dependency + Complexity Assessment
+**Upstream**: `requirements-ingest`, `goals-extract`, optionally `process-w5h`
 
-## Executive Summary
-
-**MVP Definition**: [Brief description of the minimum viable product]
-**Core Features Count**: X features identified as essential
-**Enhancement Features**: Y features for post-MVP phases
-**Optional Features**: Z features for future consideration
-**Estimated MVP Effort**: [Time/resource estimate]
-
-## Core Features (MVP Essential)
-
-### Feature: [Feature Name]
-- **Business Value**: [High/Medium/Low] - [Justification]
-- **Technical Complexity**: [High/Medium/Low]
-- **Dependencies**: [List of prerequisite features]
-- **User Impact**: [Critical functionality description]
-- **Risk of Exclusion**: [What happens if not included in MVP]
-
-## Enhancement Features (Post-MVP Phase 1)
-
-### Feature: [Feature Name]
-- **Business Value**: [High/Medium/Low] - [Justification]
-- **Technical Complexity**: [High/Medium/Low]
-- **Dependencies**: [List of prerequisite features]
-- **Enhancement Rationale**: [Why this builds on MVP]
-- **Target Release**: [Suggested phase/timeline]
-
-## Optional Features (Future Consideration)
-
-### Feature: [Feature Name]
-- **Business Value**: [High/Medium/Low] - [Justification]
-- **Technical Complexity**: [High/Medium/Low]
-- **Nice-to-Have Rationale**: [Why this is optional]
-- **Potential ROI**: [Return on investment analysis]
-
-## Feature Prioritization Matrix
-
-| Feature | Business Value | Technical Complexity | Dependencies | MVP Category |
-|---------|----------------|---------------------|--------------|--------------|
-| [Name]  | [H/M/L]        | [H/M/L]            | [List/None]  | [Core/Enhance/Optional] |
-
-## MVP Roadmap
-
-### Phase 0 - Foundation
-- [Core infrastructure features]
-- [Essential service foundations]
-
-### Phase 1 - MVP Launch
-- [Minimum viable feature set]
-- [Core user workflows]
-
-### Phase 2 - Enhancement
-- [First enhancement features]
-- [User experience improvements]
-
-### Phase 3 - Expansion
-- [Advanced features consideration]
-- [Platform scaling capabilities]
-
-## Scope Boundaries
-
-### In Scope (MVP)
-- [Clearly defined included functionality]
-- [Core user journeys supported]
-- [Essential integrations]
-
-### Out of Scope (MVP)
-- [Explicitly excluded functionality]
-- [Deferred advanced features]
-- [Future integration considerations]
-
-## Risk Assessment
-
-### High Priority Risks
-- [Risks that could impact MVP viability]
-- [Mitigation strategies]
-
-### Medium Priority Risks
-- [Risks that could delay enhancement phases]
-- [Monitoring approaches]
-
-## Success Criteria
-
-### MVP Launch Success
-- [Measurable criteria for MVP success]
-- [User adoption metrics]
-- [Business value validation]
-
-### Enhancement Phase Success
-- [Criteria for proceeding to enhancement features]
-- [Performance and usage thresholds]
-
-## Recommendations
-
-### Immediate Actions
-1. [Priority development recommendations]
-2. [Resource allocation suggestions]
-3. [Risk mitigation priorities]
-
-### Future Considerations
-1. [Long-term strategic recommendations]
-2. [Technology evolution planning]
-3. [Market expansion opportunities]
-
----
-**Traceability**: Requirements tracked to original specifications
-**Review Date**: [Scheduled scope review date]
-**Stakeholder Approval**: [Pending/Approved status]
-```
-
-**Secondary Format (JSON)** - Machine Processing:
-
-```json
-{
-  "metadata": {
-    "project_id": "PROJECT-001",
-    "source_file": "requirements.md",
-    "generated_timestamp": "2026-02-15T10:30:00Z",
-    "analysis_method": "business_value_dependency_complexity",
-    "skill_version": "1.0.0"
-  },
-  "mvp_summary": {
-    "definition": "Brief MVP description",
-    "core_features_count": 5,
-    "enhancement_features_count": 8,
-    "optional_features_count": 12,
-    "estimated_effort": "3-4 months"
-  },
-  "features": [
-    {
-      "id": "FEAT-001",
-      "name": "Feature Name",
-      "category": "core|enhancement|optional",
-      "business_value": {
-        "score": "high|medium|low",
-        "justification": "Value proposition explanation"
-      },
-      "technical_complexity": {
-        "score": "high|medium|low",
-        "implementation_notes": "Technical considerations"
-      },
-      "dependencies": [
-        "FEAT-002", "FEAT-003"
-      ],
-      "user_impact": "Impact description",
-      "priority_score": 85,
-      "phase_assignment": "mvp|phase1|phase2|future"
-    }
-  ],
-  "roadmap": {
-    "phase0_foundation": ["FEAT-001", "FEAT-002"],
-    "phase1_mvp": ["FEAT-003", "FEAT-004"],
-    "phase2_enhancement": ["FEAT-005", "FEAT-006"],
-    "phase3_expansion": ["FEAT-007", "FEAT-008"]
-  },
-  "scope_boundaries": {
-    "in_scope": [
-      "Core functionality description",
-      "Essential user workflows"
-    ],
-    "out_of_scope": [
-      "Advanced features deferred",
-      "Future integrations"
-    ]
-  },
-  "risks": [
-    {
-      "id": "RISK-001",
-      "priority": "high|medium|low",
-      "description": "Risk description",
-      "impact": "Impact on scope",
-      "mitigation": "Mitigation strategy"
-    }
-  ],
-  "success_criteria": {
-    "mvp_launch": [
-      "User adoption target",
-      "Business value metric"
-    ],
-    "enhancement_phase": [
-      "Performance threshold",
-      "Feature usage metric"
-    ]
-  },
-  "traceability": [
-    {
-      "feature_id": "FEAT-001",
-      "source_requirements": ["REQ-001", "REQ-003"],
-      "justification": "Traceability explanation"
-    }
-  ]
-}
-```
-
-## Analysis Methodology
-
-### 1. Feature Classification Algorithm
-
-**Input Analysis**:
-- Parse requirements to identify distinct features and capabilities
-- Extract user stories, functional requirements, and business objectives
-- Identify stakeholder priorities and constraints
-
-**Classification Criteria**:
-- **Core Features**: Essential for basic product operation, high business value, fundamental user needs
-- **Enhancement Features**: Improves user experience, medium-high business value, builds on core functionality
-- **Optional Features**: Nice-to-have capabilities, lower immediate business value, represents future opportunities
-
-### 2. Business Value Assessment
-
-**Value Scoring Approach**:
-- **High Value**: Direct revenue impact, critical user workflow, competitive differentiation
-- **Medium Value**: Operational efficiency, user satisfaction improvement, market positioning
-- **Low Value**: Convenience features, advanced use cases, future market preparation
-
-**Assessment Factors**:
-- Revenue impact potential
-- User adoption likelihood
-- Competitive advantage creation
-- Operational cost reduction
-- Strategic market positioning
-
-### 3. Dependency Analysis
-
-**Dependency Types**:
-- **Technical Dependencies**: Infrastructure, APIs, data models, security frameworks
-- **Business Dependencies**: Regulatory requirements, partner integrations, compliance needs
-- **User Dependencies**: Workflow prerequisites, training requirements, adoption prerequisites
-
-**Dependency Impact**:
-- Features with many dependencies → Consider for later phases
-- Features that are dependencies for others → Prioritize for MVP
-- Circular dependencies → Resolve through architectural decisions
-
-### 4. Complexity Evaluation
-
-**Complexity Factors**:
-- **Technical Implementation**: Code complexity, integration requirements, testing needs
-- **Resource Requirements**: Development time, specialized skills, infrastructure needs
-- **Risk Profile**: Technical unknowns, external dependencies, change likelihood
-
-**Complexity Scoring**:
-- **High Complexity**: New technology, complex integrations, significant unknowns
-- **Medium Complexity**: Standard implementation, known patterns, manageable risks
-- **Low Complexity**: Well-understood technology, minimal integration, low risk
-
-### 5. MVP Boundary Definition
-
-**Boundary Criteria**:
-- Minimum set of features that provide standalone value
-- Complete user workflows from start to finish
-- Sufficient functionality to validate business hypothesis
-- Foundation for iterative enhancement
-
-**Boundary Validation**:
-- Can users accomplish core objectives?
-- Does the product solve a complete problem?
-- Is there sufficient value for market acceptance?
-- Can the product sustain itself while adding features?
-
-## Implementation Strategy
-
-### Phase-Based Development
-
-**Phase 0 - Foundation** (Pre-MVP):
-- Core infrastructure and architecture
-- Essential security and compliance frameworks
-- Basic data models and APIs
-- Development and deployment pipelines
-
-**Phase 1 - MVP Launch**:
-- Core feature implementation
-- Essential user workflows
-- Basic user interface and experience
-- Fundamental integrations
-
-**Phase 2 - Enhancement**:
-- User experience improvements
-- Additional workflows and capabilities
-- Performance optimizations
-- Extended integrations
-
-**Phase 3 - Expansion**:
-- Advanced features and capabilities
-- Platform scaling and optimization
-- New market segments and use cases
-- Innovation and differentiation features
-
-### Iterative Refinement Process
-
-**Continuous Scope Assessment**:
-- Regular review of feature priorities
-- Business value re-evaluation based on market feedback
-- Technical complexity updates based on implementation learning
-- User feedback integration for priority adjustment
-
-**Scope Change Management**:
-- Formal process for scope additions/modifications
-- Impact assessment for scope changes
-- Stakeholder approval workflow
-- Documentation and traceability maintenance
-
-## Integration Points
-
-**Upstream Skills**:
-- `requirements-ingest`: Source requirements for scope analysis
-- `goals-extract`: Business objectives inform prioritization
-- `process-w5h`: Stakeholder and context analysis influences scoping
-
-**Downstream Skills**:
-- `project-planning-tracking`: MVP roadmap feeds into project schedules
-- `diagram-generatecollaboration`: Scoped features inform system design
-- `change-management`: Scope changes trigger change management processes
-
-**Collaboration Skills**:
-- `domain-extractconcepts`: Domain model alignment with scope boundaries
-- `domain-alignentities`: Ensure scoped features align with domain architecture
-
-## Quality Assurance
-
-### Validation Checklist
-
-**Scope Completeness**:
-- [ ] All requirements categorized (core/enhancement/optional)
-- [ ] Business value justification provided for all features
-- [ ] Dependencies identified and analyzed
-- [ ] Technical complexity assessed
-
-**MVP Viability**:
-- [ ] Core features form coherent, complete product
-- [ ] User workflows are end-to-end functional
-- [ ] Business value is demonstrable and measurable
-- [ ] Technical implementation is feasible with available resources
-
-**Traceability Maintenance**:
-- [ ] All scope decisions traceable to source requirements
-- [ ] Feature classifications justified with business rationale
-- [ ] Priority decisions documented with supporting analysis
-- [ ] Scope boundaries clearly defined and communicated
-
-### Success Metrics
-
-**Process Effectiveness**:
-- Scope analysis completion time
-- Stakeholder approval rate for MVPs defined
-- Feature priority accuracy (validated post-implementation)
-- Sprint planning efficiency improvement
-
-**Business Impact**:
-- MVP time-to-market improvement
-- Development resource optimization
-- User satisfaction with phased delivery
-- Business value realization rate
-
----
-
-*This skill integrates with the broader requirements analysis and project planning ecosystem, providing focused scope minimization capabilities that enable efficient MVP development and iterative product enhancement.*
+**Downstream**: `plan-derivetasks` (tasks for the MVP scope), `project-planning-tracking`, `diagram-generatecollaboration` (which features to model first), `change-management` (later scope changes)

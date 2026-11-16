@@ -11,49 +11,94 @@
       "id": "artifacts_exist",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Required output artifacts must exist",
+      "description": "Both requirements files must exist",
       "artifacts": [
         "artifacts/Analysis/requirements.md",
         "artifacts/Analysis/requirements.json"
       ],
-      "remediation": "Re-run requirements-ingest skill to generate missing artifacts"
+      "remediation": "Run requirements-ingest on the source documents"
     },
     {
-      "id": "requirements_content",
-      "type": "file_content",
-      "severity": "hard", 
-      "description": "Requirements file must have substantive content",
-      "file": "artifacts/Analysis/requirements.md",
-      "min_lines": 10,
-      "must_contain": ["# Requirements", "## Functional Requirements", "## Non-Functional Requirements"],
-      "remediation": "Verify input requirements are complete and re-run ingestion"
-    },
-    {
-      "id": "json_structure", 
+      "id": "json_structure",
       "type": "json_schema",
       "severity": "hard",
-      "description": "Requirements JSON must have valid structure",
+      "description": "requirements.json must identify the project and carry a non-empty requirements list",
       "file": "artifacts/Analysis/requirements.json",
-      "required_fields": ["functional_requirements", "non_functional_requirements", "metadata"],
-      "remediation": "Check that requirements parsing completed successfully"
+      "required_fields": [
+        "project_id",
+        "requirements"
+      ],
+      "non_empty_fields": [
+        "requirements"
+      ],
+      "remediation": "Write project_id and the requirements array per the skill's JSON structure"
+    },
+    {
+      "id": "requirements_well_formed",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every requirement must have an ID, text, and at least one classification tag",
+      "file": "artifacts/Analysis/requirements.json",
+      "json_path": "$.requirements[*]",
+      "required_fields": [
+        "id",
+        "text",
+        "tags"
+      ],
+      "non_empty_fields": [
+        "tags"
+      ],
+      "remediation": "Give every requirement an id, text, and tags"
+    },
+    {
+      "id": "requirement_ids_valid",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Requirement IDs should follow R-[###] (existing projects that use another prefix, such as TC-, are not blocked)",
+      "file": "artifacts/Analysis/requirements.json",
+      "json_path": "$.requirements[*].id",
+      "must_contain_pattern": "^R-\\d{3,}[a-z]?$",
+      "remediation": "Number requirements R-001, R-002, ... in document order (a letter suffix such as R-309a is accepted for a requirement split after IDs were published)"
+    },
+    {
+      "id": "requirements_report_content",
+      "type": "file_content",
+      "severity": "hard",
+      "description": "requirements.md must contain the requirements table",
+      "file": "artifacts/Analysis/requirements.md",
+      "min_lines": 10,
+      "must_contain": [
+        "## Requirements"
+      ],
+      "remediation": "Write the report with a '## Requirements' section listing every requirement"
+    },
+    {
+      "id": "source_traceability",
+      "type": "field_completeness",
+      "severity": "soft",
+      "description": "Requirements should record where in the source they came from",
+      "file": "artifacts/Analysis/requirements.json",
+      "json_path": "$.requirements[*].source_file",
+      "min_percent_complete": 90,
+      "remediation": "Add source_file and location_hint so each requirement can be found in its source"
     },
     {
       "id": "requirement_count",
       "type": "threshold",
       "severity": "soft",
-      "description": "Should have reasonable number of requirements",
+      "description": "A plausible number of requirements should be extracted",
       "file": "artifacts/Analysis/requirements.json",
-      "json_path": "$.functional_requirements.length",
+      "json_path": "$.requirements.length",
       "min_value": 3,
-      "max_value": 50,
-      "remediation": "Review scope - very few or very many requirements may indicate scoping issues"
+      "max_value": 200,
+      "remediation": "Very few requirements suggests an incomplete read of the sources; very many suggests over-splitting or mixed-perspective content (consider requirements-sanitize)"
     }
   ],
   "quality_score_weight": 0.15,
   "bypass_allowed": false,
   "workflow_archetypes": {
     "standard": "hard",
-    "rapid": "hard", 
+    "rapid": "hard",
     "compliance": "soft"
   }
 }

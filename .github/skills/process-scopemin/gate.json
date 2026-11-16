@@ -8,32 +8,64 @@
   "description": "Validates minimum viable scope has been identified",
   "checks": [
     {
-      "id": "scoped_requirements_exist",
+      "id": "scope_analysis_exists",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should produce scoped requirements set",
+      "description": "Both scope analysis files should exist",
       "artifacts": [
-        "artifacts/Analysis/scope-analysis.md"
+        "artifacts/Analysis/scope-analysis.md",
+        "artifacts/Analysis/scope-analysis.json"
       ],
-      "remediation": "Run process-scopemin to identify MVP boundaries"
+      "remediation": "Run process-scopemin on requirements.json"
     },
     {
       "id": "core_vs_optional_classification",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should classify core vs optional features",
+      "description": "The report should present core, enhancement, and optional features and the scope boundary",
       "file": "artifacts/Analysis/scope-analysis.md",
-      "must_contain": ["## Core Features", "## Optional Features", "## MVP Boundary"],
-      "remediation": "Complete classification of essential vs. optional requirements"
+      "must_contain": [
+        "## Core Features",
+        "## Enhancement Features",
+        "## Optional Features",
+        "## Scope Boundaries"
+      ],
+      "remediation": "Follow the report template in references/output-format.md"
     },
     {
-      "id": "iterative_development_plan",
+      "id": "roadmap_present",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should provide iterative development guidance",
+      "description": "The report should lay out a phased roadmap",
       "file": "artifacts/Analysis/scope-analysis.md",
-      "must_contain": ["## Iteration Plan"],
-      "remediation": "Define iterative development sequence for scoped requirements"
+      "must_contain": [
+        "## MVP Roadmap"
+      ],
+      "remediation": "Add the '## MVP Roadmap' section"
+    },
+    {
+      "id": "features_classified",
+      "type": "json_schema",
+      "severity": "soft",
+      "description": "Every feature should have an ID, name, and category",
+      "file": "artifacts/Analysis/scope-analysis.json",
+      "json_path": "$.features[*]",
+      "required_fields": [
+        "id",
+        "name",
+        "category"
+      ],
+      "remediation": "Classify every feature as core, enhancement, or optional"
+    },
+    {
+      "id": "categories_valid",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Feature categories should be core, enhancement, or optional",
+      "file": "artifacts/Analysis/scope-analysis.json",
+      "json_path": "$.features[*].category",
+      "must_contain_pattern": "^(core|enhancement|optional)$",
+      "remediation": "Use exactly one of: core, enhancement, optional"
     }
   ],
   "quality_score_weight": 0.05,
