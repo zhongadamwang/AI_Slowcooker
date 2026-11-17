@@ -1,7 +1,10 @@
 ---
 name: project-status-reporting
-description: Generate comprehensive project status reports, executive dashboards, and stakeholder communications with automatic data aggregation from project documentation structure.
+description: Write a project status report for a chosen audience - executive dashboard, engineering detail, stakeholder briefing, or all three - from the project's own tracking data (task-tracking.md, task files, project-plan.md, schedule, change documents), stating completion, blockers, risks, schedule position, and what comes next, saved as a dated report in artifacts/Analysis. Use when the user asks for a status update, progress report, dashboard, or stakeholder summary for a project. Reports only what the project documents show.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-17"
 ---
 
 # Project Status Reporting
@@ -21,13 +24,20 @@ Aggregate status data from EDPS project documentation artifacts (task tracking, 
 
 ## Outputs
 
-- Formatted status report Markdown file appropriate for the requested audience
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/status-report-[YYYY-MM-DD].md` — the report for the requested audience. It starts with `**Report Type**: [executive | engineering | stakeholder | full]` and `**Data As Of**: [date the tracking data was read]`. Earlier reports are kept, not overwritten, so trends can be read across them
 - Console summary: overall completion percentage, count of blocked items, and upcoming milestones
 
 ## Core Function
 
 **Input**: Project data from document tree, tracking files, milestone status
 **Output**: Formatted reports, dashboards, presentations for various stakeholder audiences
+
+## Reporting Rules
+
+- Every figure comes from a project document; cite which one. Counts and percentages come from `tasks/task-tracking.md` and the task files, schedule position from `project-plan.md` and `artifacts/Analysis/project-schedule.json`, changes from `artifacts/Changes/`.
+- Budget, spend, satisfaction, velocity, and similar figures appear only when the user supplies them or a project document records them. Otherwise leave the line out or write "Not tracked"; never estimate them to fill a template slot.
+- Red, amber, and green ratings follow from the data (a critical-path task late, a blocker with no owner), and the report says why each rating was given.
+- Write the report; do not send or distribute it. Sharing it is the user's decision.
 
 ## Report Types
 
@@ -248,7 +258,7 @@ Project Portal: [Link if applicable]
 4. **Generate Narrative**: Create executive summary and key messages
 5. **Format Output**: Apply appropriate template for audience
 6. **Review & Validate**: Check accuracy and completeness
-7. **Distribute**: Send to stakeholder distribution lists
+7. **Hand over**: Give the user the report path; they decide who receives it
 
 ## Visual Dashboard Components
 

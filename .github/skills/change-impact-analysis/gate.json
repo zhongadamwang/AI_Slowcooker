@@ -11,32 +11,38 @@
       "id": "impact_report_exists",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Change impact report must exist",
+      "description": "Both change impact reports must exist",
       "artifacts": [
-        "artifacts/Testing/change-impact-report.md"
+        "artifacts/Testing/change-impact-report.md",
+        "artifacts/Testing/change-impact-report.json"
       ],
-      "remediation": "Run change-impact-analysis to assess change propagation"
+      "remediation": "Run change-impact-analysis on the proposed change"
     },
     {
-      "id": "hierarchy_impact_traced",
+      "id": "impact_traced",
       "type": "content_pattern",
       "severity": "hard",
-      "description": "Must trace impact across hierarchy levels",
+      "description": "The report must summarize the change and list the impact records",
       "file": "artifacts/Testing/change-impact-report.md",
-      "must_contain": ["## Impact Tree", "## Affected Artifacts", "## Priority Assessment"],
-      "remediation": "Complete hierarchy impact tracing for all affected levels"
+      "must_contain": [
+        "## Summary",
+        "## Impact Records"
+      ],
+      "remediation": "Follow the report layout in Step 6 of SKILL.md"
     },
     {
-      "id": "what_if_analysis",
+      "id": "action_plan_present",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should include what-if scenario analysis",
+      "description": "The report should give a recommended action plan",
       "file": "artifacts/Testing/change-impact-report.md",
-      "must_contain": ["## What-If Scenarios"],
-      "remediation": "Add what-if analysis for alternative change approaches"
+      "must_contain": [
+        "## Recommended Action Plan"
+      ],
+      "remediation": "Add the '## Recommended Action Plan' section"
     }
   ],
-  "quality_score_weight": 0.10,
+  "quality_score_weight": 0.1,
   "bypass_allowed": false,
   "workflow_archetypes": {
     "standard": "hard",

@@ -11,29 +11,32 @@
       "id": "change_document_exists",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Change document must be created",
+      "description": "At least one change document must exist",
       "artifacts": [
         "artifacts/Changes/*-CHG-*.md"
       ],
-      "remediation": "Run change-management to document tracked changes"
+      "remediation": "Run change-management on the conversation or request that describes the change"
     },
     {
       "id": "structured_format",
       "type": "content_pattern",
       "severity": "hard",
-      "description": "Must follow structured change format",
+      "description": "Change documents must carry a Change ID and an impact analysis",
       "file": "artifacts/Changes/*-CHG-*.md",
-      "must_contain": ["## Change ID", "## Impact Analysis", "## Approval Status"],
-      "remediation": "Ensure change document follows structured template"
+      "must_contain": [
+        "**Change ID**",
+        "## Impact Analysis"
+      ],
+      "remediation": "Follow the File Generation template in SKILL.md"
     },
     {
-      "id": "referencing_complete",
+      "id": "change_id_format",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should include automated referencing",
+      "description": "Change IDs should follow {TYPE}-CHG-{###}",
       "file": "artifacts/Changes/*-CHG-*.md",
-      "must_contain_pattern": "Reference: [A-Z]{3}\\-\\d{3}",
-      "remediation": "Add automated cross-references to related artifacts"
+      "must_contain_pattern": "\\*\\*Change ID\\*\\*:\\s*[A-Z]+-CHG-\\d{3}",
+      "remediation": "Use the ID pattern from Change ID Management, e.g. REQ-CHG-001"
     }
   ],
   "quality_score_weight": 0.09,
