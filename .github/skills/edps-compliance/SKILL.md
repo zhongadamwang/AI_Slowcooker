@@ -2,6 +2,9 @@
 name: edps-compliance
 description: Validate EDPS (Evolutionary Development Process System) methodology compliance across process hierarchies. Checks evolutionary decomposition patterns, boundary validation rules (VR-1 through VR-4), requirements traceability at each hierarchy level, change history metadata, and incremental model refinement adherence. Generates item-level pass/fail compliance reports in both JSON and Markdown formats. Use when a user wants to validate EDPS compliance, check hierarchy conformance, generate a compliance report, or get remediation suggestions for violations.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-16"
 ---
 
 # EDPS Compliance Checking
@@ -120,7 +123,7 @@ For each `collaboration.md` in scope:
    - If found but stale (report older than the diagram), proceed to sub-step 2 (re-invoke).
    - If not found, proceed to sub-step 2 (invoke).
 
-2. **Invoke `diagram-generatecollaboration` boundary-validation mode**: Run `diagram-generatecollaboration` with `--mode boundary-validation-only` targeting the `collaboration.md`. Capture the emitted `boundary_validation_report` block as `boundary-validation-report.json` in the same folder.
+2. **Have `diagram-generatecollaboration` validate the existing diagram**: Apply that skill's Boundary Validation section to the `collaboration.md` as it stands, without regenerating the diagram. It writes its `boundary_validation_report` block to `boundary-validation-report.json` in the same folder.
    - This step is **idempotent**: if a report already exists from a prior run in the same session, do not overwrite it — import it as-is.
    - If invocation fails (e.g., the file is malformed or the skill is unavailable), mark VR-1–VR-4 as `SKIPPED` with reason `delegation-failed` and continue to Step 3. Do not abort the full compliance check. Output console notice: `Group A (VR-1–VR-4): SKIPPED — delegation to diagram-generatecollaboration failed.`
 

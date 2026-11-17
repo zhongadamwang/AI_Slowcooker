@@ -22,18 +22,21 @@
       "id": "boundary_groupings_added",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should include boundary groupings",
+      "description": "Enhanced diagrams should group participants into box boundaries and record stereotypes",
       "file": "artifacts/Analysis/collaboration-diagrams-enhanced.md",
-      "must_contain": ["subgraph", "Boundary"],
+      "must_contain": [
+        "box ",
+        "%% Stereotypes:"
+      ],
       "remediation": "Apply boundary detection heuristics to create groupings"
     },
     {
       "id": "preservation_check",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should preserve existing traceability",
+      "description": "Requirement traceability links from the original diagrams should be preserved",
       "file": "artifacts/Analysis/collaboration-diagrams-enhanced.md",
-      "must_contain_pattern": "REQ-\\d{3}",
+      "must_contain_pattern": "R-\\d{3}",
       "min_matches": 1,
       "remediation": "Ensure all requirement links are preserved during migration"
     }

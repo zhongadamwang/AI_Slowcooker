@@ -2,7 +2,7 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S13",
   "skill_name": "edps-compliance",
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "gate_type": "completion",
   "severity": "hard",
   "description": "Validates EDPS methodology compliance across project artifacts",
@@ -11,45 +11,60 @@
       "id": "compliance_report_exists",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "EDPS compliance report must exist",
+      "description": "Both compliance reports must exist",
       "artifacts": [
         "artifacts/Testing/edps-compliance-report.md",
         "artifacts/Testing/edps-compliance-report.json"
       ],
-      "remediation": "Run edps-compliance skill to validate methodology adherence"
+      "remediation": "Run edps-compliance on the process hierarchy"
     },
     {
-      "id": "no_critical_failures",
-      "type": "json_query", 
-      "severity": "hard",
-      "description": "Must have no critical compliance failures",
-      "file": "artifacts/Testing/edps-compliance-report.json",
-      "json_path": "$.summary.critical_failures",
-      "max_value": 0,
-      "remediation": "Fix critical EDPS compliance violations before proceeding"
-    },
-    {
-      "id": "boundary_validation_passed",
+      "id": "no_error_failures",
       "type": "json_query",
       "severity": "hard",
-      "description": "Boundary validation rules must pass", 
+      "description": "No error-severity compliance rule may have failed",
       "file": "artifacts/Testing/edps-compliance-report.json",
-      "json_path": "$.checks.boundary_validation.VR_1.passed",
-      "expected_value": true,
-      "remediation": "Ensure boundary validation rules VR-1 through VR-4 are satisfied"
+      "json_path": "$.summary.failed_errors",
+      "max_value": 0,
+      "remediation": "Fix each failed ERROR rule listed in rule_results, then re-run edps-compliance"
     },
     {
-      "id": "overall_compliance_score", 
+      "id": "overall_status_compliant",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "The overall status must be COMPLIANT or MOSTLY_COMPLIANT",
+      "file": "artifacts/Testing/edps-compliance-report.json",
+      "json_path": "$.summary.overall_status",
+      "must_contain_pattern": "^(COMPLIANT|MOSTLY_COMPLIANT)$",
+      "remediation": "Resolve violations; a BLOCKED status means hierarchy-validation must pass first"
+    },
+    {
+      "id": "rule_results_recorded",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "The report must carry per-rule results",
+      "file": "artifacts/Testing/edps-compliance-report.json",
+      "required_fields": [
+        "summary",
+        "rule_results"
+      ],
+      "non_empty_fields": [
+        "rule_results"
+      ],
+      "remediation": "Write rule_results with one entry per rule checked"
+    },
+    {
+      "id": "overall_compliance_score",
       "type": "json_query",
       "severity": "soft",
-      "description": "Should have good overall compliance score",
+      "description": "The compliance score (0-100) should be at least 80",
       "file": "artifacts/Testing/edps-compliance-report.json",
       "json_path": "$.summary.compliance_score",
       "min_value": 80,
-      "remediation": "Review and address compliance warnings to improve score"
+      "remediation": "Address the remaining warnings to raise the score"
     }
   ],
-  "quality_score_weight": 0.20,
+  "quality_score_weight": 0.2,
   "bypass_allowed": false,
   "workflow_archetypes": {
     "standard": "hard",

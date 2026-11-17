@@ -8,13 +8,13 @@
   "description": "Validates process documentation has been auto-generated",
   "checks": [
     {
-      "id": "documentation_files_generated", 
+      "id": "documentation_files_generated",
       "type": "artifact_existence",
       "severity": "hard",
       "description": "Core documentation files must exist",
       "artifacts": [
         "{process}/main.md",
-        "{process}/process.md", 
+        "{process}/process.md",
         "{process}/collaboration.md",
         "{process}/domain-model.md"
       ],
@@ -23,32 +23,37 @@
     {
       "id": "no_stub_content",
       "type": "content_pattern",
-      "severity": "hard", 
-      "description": "Generated files must not contain stubs",
-      "file": "{process}/main.md",
-      "must_not_contain": ["[TO BE GENERATED - invoke documentation-automation]"],
+      "severity": "hard",
+      "description": "No Markdown file at this level may still contain the stub marker",
+      "file": "{process}/*.md",
+      "must_not_contain": [
+        "[TO BE GENERATED - invoke documentation-automation]"
+      ],
       "remediation": "Complete documentation generation process"
     },
     {
       "id": "mermaid_diagrams_valid",
       "type": "content_pattern",
       "severity": "hard",
-      "description": "Process and domain diagrams must be valid",
+      "description": "process.md must contain a Mermaid flowchart",
       "file": "{process}/process.md",
-      "must_contain": ["```mermaid", "flowchart", "graph"],
+      "must_contain": [
+        "```mermaid"
+      ],
+      "must_contain_pattern": "(?m)^\\s*(flowchart|graph)\\b",
       "remediation": "Ensure process diagrams are properly generated"
     },
     {
       "id": "navigation_links_present",
-      "type": "content_pattern", 
+      "type": "content_pattern",
       "severity": "soft",
-      "description": "Should have navigation breadcrumbs",
+      "description": "main.md should link to its related documents (and to its parent, below the root level)",
       "file": "{process}/main.md",
-      "must_contain_pattern": "\\[.*\\]\\(\\.\\.\/.*\\.md\\)",
+      "must_contain_pattern": "\\[[^\\]]+\\]\\([^)]+\\.md\\)",
       "remediation": "Add navigation links to parent and child processes"
     }
   ],
-  "quality_score_weight": 0.10,
+  "quality_score_weight": 0.1,
   "bypass_allowed": true,
   "workflow_archetypes": {
     "standard": "hard",

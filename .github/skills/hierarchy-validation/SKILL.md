@@ -95,7 +95,7 @@ For each parent `collaboration.md` that has one or more child sub-folders:
 #### HV-4 Check
 - Within each `box … end` block in the child `collaboration.md`:
   - Identify the participant that receives the **first inbound message** from the external actor.
-  - Check its `@{ "type": "..." }` annotation.
+  - Check its type in the diagram's `%% Stereotypes:` comment.
 - **FAIL** if the first recipient's type is not `boundary`.
 
 #### HV-5 Check

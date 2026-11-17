@@ -1,6 +1,6 @@
 {
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
-  "skill_id": "S10", 
+  "skill_id": "S10",
   "skill_name": "hierarchy-management",
   "version": "1.0.0",
   "gate_type": "completion",
@@ -12,14 +12,14 @@
       "type": "folder_structure",
       "severity": "hard",
       "description": "Boundary folders must exist for control participants",
-      "base_path": "{process}/",
+      "base_path": "{process}",
       "folder_pattern": "*-*Boundary/",
       "min_folders": 1,
       "remediation": "Ensure control-type participants exist in collaboration.md for decomposition"
     },
     {
       "id": "hierarchy_metadata_exists",
-      "type": "artifact_existence", 
+      "type": "artifact_existence",
       "severity": "hard",
       "description": "Hierarchy metadata must be created",
       "artifacts": [
@@ -30,12 +30,12 @@
     {
       "id": "boundary_files_complete",
       "type": "artifact_existence",
-      "severity": "hard", 
+      "severity": "hard",
       "description": "Each boundary folder must have required files",
       "artifacts": [
         "{process}/*Boundary/collaboration.md",
         "{process}/*Boundary/main.md",
-        "{process}/*Boundary/process.md", 
+        "{process}/*Boundary/process.md",
         "{process}/*Boundary/domain-model.md"
       ],
       "remediation": "Run documentation-automation after hierarchy decomposition"
@@ -44,9 +44,13 @@
       "id": "metadata_structure_valid",
       "type": "json_schema",
       "severity": "hard",
-      "description": "Hierarchy metadata must have valid structure",
-      "file": "{process}/hierarchy-metadata.json", 
-      "required_fields": ["hierarchy_tree", "level_mappings", "decomposition_history"],
+      "description": "Hierarchy metadata must carry the root process, the node map, and hierarchy statistics (see references/hierarchy-metadata-schema.md)",
+      "file": "{process}/hierarchy-metadata.json",
+      "required_fields": [
+        "root_process",
+        "nodes",
+        "hierarchy_statistics"
+      ],
       "remediation": "Check hierarchy-management completed successfully"
     },
     {
@@ -60,11 +64,11 @@
       "remediation": "Update navigation links in parent main.md to reference boundary folders"
     }
   ],
-  "quality_score_weight": 0.20,
+  "quality_score_weight": 0.2,
   "bypass_allowed": false,
   "workflow_archetypes": {
     "standard": "hard",
-    "rapid": "soft", 
+    "rapid": "soft",
     "compliance": "hard"
   }
 }

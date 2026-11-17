@@ -2,6 +2,9 @@
 name: documentation-automation
 description: Automate generation of process documentation at each hierarchy level following organizational standards. Auto-generates main.md (with hierarchy navigation and breadcrumb), process.md (level-appropriate activity diagram and description), collaboration.md (EDPS-compliant sequencing with box boundaries and participant stereotypes), and domain-model.md (entities scoped to the boundary). Use when a new process folder has been created (e.g., after hierarchy-management decomposition), when existing docs need to be regenerated from collaboration.md, or when a user asks to "document a process", "generate docs", "regenerate documentation", or "fill in the templates" for a hierarchy level.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-16"
 ---
 
 # Documentation Automation
@@ -115,7 +118,7 @@ Because `main.md` is also the directory index for this process folder, its Overv
 
 ## Navigation
 
-**Breadcrumb**: [build from root per breadcrumb rules in hierarchy-management §4 Breadcrumb Construction Rules]
+**Breadcrumb**: [build from root per the Breadcrumb Construction Rules in hierarchy-management's references/navigation.md]
 
 **Parent Process**: [[ParentProcessName]](../main.md)  <!-- omit for Level 0 -->
 
@@ -211,12 +214,12 @@ flowchart TD
 If `collaboration.md` does not yet exist (new sub-folder without a diagram), synthesize one from parent context:
 
 1. Identify the parent participant that was decomposed (the one whose `status` → `decomposed` in parent's `hierarchy-metadata.json`).
-2. Apply the **Level N+1 collaboration diagram template** from `hierarchy-management` §3 as the starting point.
+2. Apply the Level N+1 collaboration diagram template in [references/collaboration-template.md](references/collaboration-template.md) as the starting point.
 3. Apply EDPS validation rules (VR-1, VR-2, VR-3) before writing.
 
 If `collaboration.md` already exists, validate and annotate:
 
-1. Add missing `@{ "type": "..." }` annotations for any participant lacking a stereotype (infer from hierarchy-management §Participant Stereotype Inference).
+1. Add any participant missing from the diagram's `%% Stereotypes:` comment, inferring its type with the rules in `diagram-generatecollaboration`'s `references/stereotype-classification.md`. Declare participants as `participant [Alias] as "[Label]"`; never use the `@{ "type": ... }` form, which most Mermaid renderers reject.
 2. Add `%% BOUNDARY SUMMARY` comment block at the top of each `sequenceDiagram` block if absent:
    ```
    %% [B-N] [BoxName]
@@ -224,7 +227,7 @@ If `collaboration.md` already exists, validate and annotate:
    %%         Decomposable: [control aliases]
    %%         External actor: [actor alias]
    ```
-3. Ensure every `box` block uses the `box rgb(...) [Name]` syntax with level-appropriate color:
+3. Ensure every `box` block uses the `box rgb(...) "[Name]"` syntax (quoted label) with level-appropriate color:
    - Level 1: `rgb(235, 245, 255)` (light blue)
    - Level 2: `rgb(235, 255, 240)` (light green)
    - Level 3: `rgb(255, 248, 225)` (light amber)
