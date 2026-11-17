@@ -1,182 +1,158 @@
 ---
 name: ui-generatemodel
-description: Generate or revise a software-boundary UI Model (UIModel/UIModelEntry/Aggregation) from a boundary's domain, process, and use-case models, closing the existing manual-generation gap while preserving stable UME identities and the existing screen-pipeline contract. Produces UI Model content only for explicitly software-typed boundaries with actual UI requirements; records non-applicability explicitly elsewhere. Use when a software boundary's use-case model exists and a UI Model needs to be produced or refreshed from it.
+description: Generate or revise the UI Model (UIModel, UIModelEntry, Aggregation) of a software-typed boundary from its use-case and domain models, deciding which use cases need screens and which domain entities each screen concept aggregates, written as ui-model.md and ui-model.json beside the boundary's other models. Keeps existing UME IDs stable on revision and records an explained empty model where no UI applies. Use after usecase-generatemodel for a boundary declared software, when the user asks for a UI model or which screens a boundary needs, or when a boundary's use-case or domain model changed; and before screen-generateinventory, which reads ui-model.json.
 license: MIT
 metadata:
-  version: 0.1.0
-  last-updated: "2026-11-08"
+  version: 0.2.0
+  last-updated: "2026-11-17"
 ---
 
 # UI Generate Model
 
-Generate a software-boundary's UI Model (the existing `UIModel`/`UIModelEntry`/`Aggregation` structure, D-02) automatically from its domain, process, and use-case models — closing the manual-authoring gap the orchestrator previously documented ("S33 uses S06 as an explicitly insufficient proxy prerequisite").
+Produce a boundary's UI Model from evidence: its use cases say which actors need to see or enter something, and its domain model says which entities that involves. The UI Model is a modeling artifact that must stay aligned with the domain and use-case models, not a sketch of screens.
 
-## Intent
+The structure (`UIModel`, `UIModelEntry`, `Aggregation`) is defined in [`OrgDocument/orgModel/02 - UI Prototype Skill Development Process/domain-model.md`](../../../OrgDocument/orgModel/02%20-%20UI%20Prototype%20Skill%20Development%20Process/domain-model.md). This skill fills that structure; it adds three optional fields and changes nothing else.
 
-Per PRJ-07's confirmed decisions (R-002, R-005, R-008, R-011): the UI model is a modeling artifact within the design workflow, not merely a prototype output, and it must stay aligned with the domain, process, and use-case models at the same boundary. This skill is the actual producer that closes the gap `ui-prototyping-conventions.md` left as "may be authored manually" — it does not introduce a new UI schema.
-
-**This skill does not change what a UIModel/UIModelEntry/Aggregation *is***. Every field already defined in [`OrgDocument/orgModel/02 - UI Prototype Skill Development Process/domain-model.md`](../../../OrgDocument/orgModel/02%20-%20UI%20Prototype%20Skill%20Development%20Process/domain-model.md) (D-02) is produced exactly as-is. This skill only adds **how** that structure gets produced (automatically, from aligned inputs) and **two new optional fields** carrying boundary/use-case provenance (Section 2) — additive, never a breaking schema change, per T01 contract Section 6.
-
-## Shared Contract
-
-**Read in full before implementing against this skill**: [`../model-validatealignment/references/cross-model-alignment-contract.md`](../model-validatealignment/references/cross-model-alignment-contract.md) — Section 2 (boundary typing, UI applicability rule R-011), Section 6 (compatibility notes for this exact skill).
-
-This skill produces content; it does **not** self-certify alignment. `model-validatealignment` validates this skill's output for cross-model consistency at end of round (contract Section 4) — this skill's own job is to never *knowingly* produce non-compliant output in the first place (contract Section 6: "ui-generatemodel is expected to only ever produce compliant entries in the first place, not rely on the validator to catch its own mistakes after the fact").
+The shared rules for boundaries and references are in [`../model-validatealignment/references/cross-model-alignment-contract.md`](../model-validatealignment/references/cross-model-alignment-contract.md) (Section 2 for boundary typing and where UI may exist, Section 6 for this skill). `model-validatealignment` checks the result at the end of the modeling round, but produce only compliant entries; do not rely on the validator to catch them.
 
 ## Inputs
 
-- **Primary**: the target boundary's `main.md`, specifically its `## System Boundary` section's declared `boundary_type`. **Required** before this skill may run — see Workflow Step 0.
-- **Primary**: that boundary's `use-case-model.json` (from `usecase-generatemodel`, T02) — the main driver of what UI concepts might be needed. Development/testing of this skill may use T01's contract fixtures directly, ahead of a real T02 run, per this task's explicit note that T02 is a runtime input dependency, not an implementation-blocking prerequisite.
-- **Secondary**: that boundary's `domain-model.md` and `process.md` — supply the actual entities a `UIModelEntry` aggregates and any process-activity context informing aggregation groupings.
-- **Secondary**: the boundary's existing `ui-model.json`, if one already exists (for revision — see Step 4).
-
-> **Pre-condition**: Exactly like `usecase-generatemodel`'s own Step 0, this skill must stop and surface a clarification question if the target boundary's `boundary_type` is `unknown` or undeclared — **never** infer software status from the mere presence of a use-case model, a UI-sounding use case name, or any other indirect signal. Domain-concepts completion is explicitly **not** UI readiness (per this task's own Detailed Requirements) — a fully-modeled domain and process layer at a boundary says nothing about whether that boundary is software-typed.
+- **Required**: the boundary's `main.md`, for the `boundary_type` in its `## System Boundary` section
+- **Required**: the boundary's `use-case-model.json` and its `use-case-scripts/` (from `usecase-generatemodel`)
+- **Required**: the boundary's `domain-model.md`; `process.md` for context on grouping
+- **On revision**: the boundary's existing `ui-model.json`
 
 ## Outputs
 
-**Files Generated** (per D-02's existing storage convention, `orgModel/[NN] - [Process Name]/ui-model.md`/`.json` — this skill writes to the *boundary's own* process folder, which for a decomposed hierarchy is that boundary's specific sub-folder, not always the hierarchy root):
-- `ui-model.md` — human-readable model (primary, exact existing D-02 Markdown shape)
-- `ui-model.json` — structured model (primary for downstream consumption by `screen-generateinventory`)
+Written into the boundary's own folder (for a decomposed hierarchy, its sub-folder, not the hierarchy root):
 
-The orchestrator only schedules this skill for `software` boundaries. If it is invoked on a `non-software` boundary anyway, it records non-applicability as described next; it is not required to run there.
+- `ui-model.json` — read by `screen-generateinventory`
+- `ui-model.md` — the same model for people
 
-**Non-applicability is recorded, not silently absent.** If a boundary is `non-software`, or is `software` but its use-case model yields zero screens worth generating, this skill still writes a minimal `ui-model.json` with `entries: []` and a `generation_note` field (Section 2) explaining why — never simply omits the file, which would be indistinguishable from "not yet run" to a downstream consumer or validator.
+Always write both files, even when the model has no entries: an absent file is indistinguishable from "not run yet".
 
-### JSON Structure (`ui-model.json`) — Existing D-02 Shape, Unchanged, Plus Two Additive Fields
+### `ui-model.json`
 
 ```json
 {
-  "model_id": "string",
+  "model_id": "UIM-CHILD-SW",
   "model_type": "base",
   "derives_from": null,
   "role_scope": null,
-  "source_domain_model": "string (relative path)",
-  "generation_note": "string | null — NEW, additive (see below)",
+  "source_domain_model": "domain-model.md",
+  "generation_note": "string — only when entries is empty or a decision needs explaining",
   "generated_at": "ISO-8601",
-  "changelog": [{ "version": "string", "date": "string", "change": "string" }],
+  "changelog": [{ "version": "1.0", "date": "2026-11-08", "change": "Initial generation from use-case-model.json (UCM-CHILD-SW)" }],
   "entries": [
     {
       "entry_id": "UME-001",
-      "ui_concept_name": "string",
-      "domain_entity_refs": ["string, ..."],
-      "aggregation_description": "string",
-      "boundary_ref": "string — NEW, additive (see below)",
-      "source_use_case_refs": ["UC-xxx, ... — NEW, additive (see below)"]
+      "ui_concept_name": "Dispatch Queue",
+      "domain_entity_refs": ["E-002", "E-003"],
+      "aggregation_description": "What the entry brings together and which use case it supports",
+      "boundary_ref": "BND-CHILD-SW",
+      "source_use_case_refs": ["UC-001"]
     }
   ],
   "aggregations": [
-    { "aggregation_id": "string", "member_entities": ["string, ..."], "resulting_ui_concept": "string" }
+    { "aggregation_id": "AGG-001", "member_entities": ["E-002", "E-003"], "resulting_ui_concept": "UME-001" }
   ]
 }
 ```
 
-**New, additive fields** (never required by existing consumers, never removed from any entry the existing schema already had):
-- `generation_note` (model-level, optional): present **only** when `entries` is empty or the model required an explainable decision — e.g., `"Boundary BND-BATCH-RECON is software-typed but its use-case model (UCM-BATCH-RECON) has no human-facing interactions; zero screens generated, consistent with R-011's 'software boundaries do not automatically require a screen.'"` Omit entirely when not needed (a populated, unremarkable model does not need a note).
-- `boundary_ref` (per entry, required when this skill produced the entry): the `boundary_id` (contract Section 1.2) this entry's domain entities were aggregated from. This is what lets `model-validatealignment` check "does every `UIModelEntry`'s `domain_entity_refs` resolve to Scoped Entity References whose `scope` matches a software-typed boundary" (contract Section 6) without re-deriving it from scratch.
-- `source_use_case_refs` (per entry, optional): the `use_case_id`(s) (e.g., `UC-001`) whose steps motivated this entry's existence. Optional because a manually-authored legacy `ui-model.json` (predating this skill, or predating `usecase-generatemodel` even existing) correctly has no such provenance — this field's absence is not an error.
+The three fields this skill adds, which no existing consumer reads:
 
-A consumer (`screen-generateinventory`, any other existing tool) that only reads `entry_id`/`ui_concept_name`/`domain_entity_refs`/`aggregation_description` continues to work completely unchanged; these are additive annotations, never a replacement for or restructuring of the existing fields.
+| Field | Where | Rule |
+|---|---|---|
+| `generation_note` | model | Present when `entries` is empty or a decision needs explaining (why no screens, why a borderline use case got one). Omit otherwise |
+| `boundary_ref` | each entry | The `boundary_id` of this boundary. Required on every entry this skill writes |
+| `source_use_case_refs` | each entry | The use case IDs that motivated the entry. Write it on every entry you generate; it may be absent on a hand-written legacy entry |
 
-### Markdown Structure (`ui-model.md`)
+### `ui-model.md`
 
-Identical to D-02's existing shape (model_id, model_type, entries each with entry_id/ui_concept_name/domain_entity_refs/aggregation_description, changelog) — see T03 of PRJ-06's worked examples (`OrgDocument/projects/06 - Building UI Prototype skills/artifacts/UI Prototype/examples/*/`) for the established style this skill must match. The only addition is an optional inline boundary/use-case citation, following the same `*(Ref: ...)*` convention already used throughout the framework:
+Same content in the established Markdown style (see the worked example), with each entry's boundary and use cases cited inline:
 
 ```markdown
-### Order Summary *(UME-001)*
-**Aggregates**: Order, Customer, LineItem
-*(Boundary: BND-CHILD-SW; Ref: UC-001, UC-002)*
+### Dispatch Queue *(UME-001)*
+**Aggregates**: ServiceRequest (E-002), Technician (E-003)
+*(Boundary: BND-CHILD-SW; Ref: UC-001)*
 ```
+
+It must have a `## Changelog` section.
 
 ## Workflow
 
-### Step 0 — Verify the boundary is ready (identical discipline to `usecase-generatemodel`'s Step 0)
+### 0. Check the boundary type
 
-1. The target boundary's `main.md` must have an explicit `## System Boundary` section with a declared `boundary_type`. If `unknown` or absent: **stop**, surface the contract's clarification question (Section 2.1), do not generate anything, do not default either direction.
-2. If `boundary_type` is `non-software`: **stop** generation of a populated model. Per Section 4.2, still write a minimal `ui-model.json` with `entries: []` and a `generation_note` explaining the boundary is non-software (never produce a UI model with actual entries for a non-software boundary — this is R-011's hardest line, and this skill's single most important refusal).
-3. If `boundary_type` is `software`: proceed to Step 1. (Note: reaching Step 1 does **not** guarantee any entries get produced — see Step 3.)
+Read `boundary_type` from `main.md`'s `## System Boundary` section.
 
-### Step 1 — Read the boundary's use-case model
+- **Absent or `unknown`**: stop. Ask the user whether the boundary is software (a system with its own interface) or non-software (an organization, place, or manual process), and record the answer in `main.md`. Never infer it from the folder name, a participant stereotype, the existence of a use-case model, or a UI-sounding use case name.
+- **`non-software`**: UI may not exist here. The orchestrator does not schedule this skill for such boundaries; if invoked anyway, write a model with `entries: []` and a `generation_note` saying the boundary is non-software, and stop. Never write entries for a non-software boundary.
+- **`software`**: continue. Reaching step 1 does not mean any screens will be generated.
 
-Load `use-case-model.json` for this boundary. If it does not exist: **stop** and report a missing-applicable-model condition (contract Section 4.3's `INVALID_INPUT` semantics) — do **not** proceed to generate a UI model from the domain model alone, since without use cases this skill has no actor-goal evidence for what screens are actually needed (generating screens straight from domain entities, bypassing use-case evidence, is exactly the "UIModel is a modeling artifact, not merely a prototype output" anti-pattern R-002 exists to prevent).
+### 1. Load the use-case model
 
-### Step 2 — Identify UI-worthy use cases
+If `use-case-model.json` does not exist, stop and say so: run `usecase-generatemodel` first. Do not derive screens from the domain model alone; without use cases there is no evidence of what any actor needs to see.
 
-Not every use case in a software boundary's model needs a screen. Per this task's Detailed Requirements and R-011's explicit note ("software boundaries do not automatically require a screen"), examine each use case's primary actor and read its `interaction` field in `use-case-model.json`:
-- **`interaction: direct`** — a person performs the steps themselves, whatever their `actor_kind` (a customer, or an `internal-role` such as a coordinator or technician). This is the signal that a use case is UI-worthy.
-- **`interaction: automated`** — no person is present (another system, a scheduled trigger such as the fixture's "Nightly Scheduler"). The use case does **not** need a screen.
+### 2. Decide which use cases need UI
 
-Decide on `interaction`, never on `actor_kind` alone: an `internal-role` actor is usually a person using the system. If an actor has no `interaction` value (a model written before the field existed), read the use case's script to see whether a person performs the steps, and say which you concluded in the changelog.
+A software boundary does not automatically need screens. For each use case, look at its primary actor's `interaction` field:
 
-A boundary may legitimately have zero UI-worthy use cases despite being software-typed (the `software-boundary-no-ui-required` fixture, reused from T01). This is not an error or incompleteness; record it via `generation_note` per the Outputs section, and stop with `entries: []`.
+- **`direct`**: a person performs the steps themselves, whatever their `actor_kind` (a customer, or an `internal-role` such as a coordinator or technician). This use case is UI-worthy.
+- **`automated`**: no person is present (another system, a scheduled trigger). It does not need a screen.
 
-### Step 3 — Aggregate domain entities into UIModelEntries
+Decide on `interaction`, never on `actor_kind` alone: an `internal-role` actor is usually a person using the system. If an actor has no `interaction` value (a model written before the field existed), read the script to see whether a person performs the steps, and record your conclusion in the changelog.
 
-For each UI-worthy use case (or a coherent group of related use cases sharing an actor/goal), identify which domain entities its steps actually touch (per the use case's script Main Flow, which already references domain entities by their existing IDs — this skill does not invent new entity references, it reads the ones the script already cites). Group these into one `UIModelEntry` per coherent UI concept, exactly as `screen-generateinventory`'s own existing Step 1 guidance describes screens aggregating from UI Model entries — this skill performs the analogous aggregation one level up, from domain entities into UI Model entries, using use-case evidence as the organizing signal instead of ad hoc judgment.
+If no use case is UI-worthy, write `entries: []` with a `generation_note` explaining why. That is a correct, complete result, not a failure.
 
-Preserve the existing single-base-model rule (D-02 Business Rule 2): exactly one `base` UIModel per boundary. (Derived/role-scoped UIModels remain a Phase 3 concern, unchanged by this skill, per D-02's own existing scope boundary.)
+### 3. Aggregate entities into entries
 
-### Step 4 — Revision discipline: preserve stable `UME` identities
+For each UI-worthy use case, or a group of use cases that share an actor and goal, take the domain entities its script's Main Flow cites and group them into one `UIModelEntry` per coherent UI concept. Record each grouping as an `Aggregation`.
 
-On a re-run against an existing `ui-model.json` for this boundary (e.g., because the use-case model or domain model changed), **preserve every existing `entry_id` for a `UIModelEntry` that still corresponds to the same UI concept** — do not renumber. This directly implements D-02's existing Business Rule 3 ("Regenerate, Don't Flag": when inputs change, dependent entries are regenerated with changelog entries, not merely flagged stale) and this task's own "stable-ID revision" validation requirement. A `UIModelEntry` whose backing use case or domain entity reference no longer resolves is flagged in the changelog with its reference left visibly marked unresolved (same `[UNRESOLVED — see changelog]` convention as `usecase-generatemodel`'s own Step 5) — never silently deleted or silently re-pointed at a guessed replacement.
+- Use only entity IDs the scripts already cite, and confirm each one is defined in this boundary's `domain-model.md`. Do not add entities the use cases never touch, and never cite an entity from another boundary.
+- Keep exactly one `base` UIModel per boundary. Derived and role-scoped models are out of scope.
 
-### Step 5 — Write output, verify against the hard-constraints checklist
+### 4. Preserve identity on revision
 
-Write `ui-model.md`/`.json`. Before considering the task complete, verify:
-- [ ] Every entry's `boundary_ref` names an explicitly `software`-typed boundary (never `non-software` or `unknown`)
-- [ ] Every entry's `domain_entity_refs` actually appear in that boundary's `domain-model.md` (this skill resolves references against real content, same discipline as T01's manifest-source-disagreement fixture — it does not trust a use-case script's entity citation without checking)
-- [ ] Changelog present (D-02 Business Rule / existing R-610 requirement, unchanged)
-- [ ] No existing `screen-generateinventory`/`screen-*` consumer-facing field was removed or restructured
+When `ui-model.json` already exists:
 
-## Quality Checks
+- Keep every existing `entry_id` attached to the same UI concept. Never renumber; give new entries the next unused number.
+- Regenerate an entry whose inputs changed, and say what changed in the changelog.
+- If an entry's use case or entity no longer exists, do not delete it silently or re-point it at a guess. Leave the reference visibly marked, for example `"E-007 [UNRESOLVED — see changelog]"`, and explain in the changelog. `model-validatealignment` reports these markers as needing clarification.
 
-1. **Boundary readiness enforced**: this skill never produces a populated model for a `non-software` or `unknown`-typed boundary — verified by Step 0, not assumed.
-2. **Use-case-evidenced aggregation**: every `UIModelEntry` traces to at least one use case via `source_use_case_refs` (when this skill itself produced the entry — a pre-existing manually-authored entry predating this skill's adoption is exempt, per the field's documented optionality).
-3. **No forced UI generation**: a software boundary with zero UI-worthy use cases produces `entries: []` plus a `generation_note`, never a fabricated screen just to have *something* to show.
-4. **Stable identity across revisions**: re-running against an existing model does not change any `entry_id` for an entry that still applies; unresolved references are flagged, not silently dropped or guessed.
-5. **Existing screen pipeline compatibility**: `screen-generateinventory` (S33) can consume this skill's output with zero changes to its own logic — confirmed by the worked example (Section below) actually being readable by the existing field names it depends on (`entry_id`, `ui_concept_name`, `domain_entity_refs`).
+### 5. Write and check
 
-## Fixtures and Worked Example
+Write both files, then check:
 
-See [`examples/three-level-worked-example/`](examples/three-level-worked-example/) — reuses the exact same fixture boundaries as T01's `model-validatealignment` fixtures and T02's `usecase-generatemodel` worked example (`BND-ROOT` non-software, `BND-CHILD-SW` software, `BND-GRANDCHILD` software), for consistency across all of PRJ-07's deliverables:
-- `BND-ROOT` (non-software): `ui-model.json` with `entries: []` and a `generation_note` citing non-software status — demonstrates Step 0.2's refusal.
-- `BND-CHILD-SW` (software, human actors present): `ui-model.json` with 2 real `UIModelEntry` items, aggregated from the use cases T02 already produced for this same boundary — demonstrates Steps 1–3 end-to-end, consuming T02's actual output rather than a hypothetical one.
-- `BND-GRANDCHILD` (software, but its one use case's only actor is a direct human performing a narrow logging action): included as a worked illustration of a borderline case, with explicit reasoning in its `generation_note` for why it *does* warrant one small UIModelEntry rather than being treated as non-UI-worthy like the `software-boundary-no-ui-required` fixture's Nightly Scheduler case — the distinguishing factor (direct human actor vs. internal-role/system actor) is called out explicitly, not left for a reader to infer.
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py ui-generatemodel \
+    --project "OrgDocument/projects/[NN] - [Project Name]" --boundary <boundary folder>
+```
 
-## Migration Notes for Existing Model Consumers
+Then, at the end of the modeling round, run `model-validatealignment`.
 
-- **`screen-generateinventory` (S33)**: no change required. Its existing pre-condition check ("a UI Model must already exist for the project... nothing to generate a screen inventory from until the UI Model is in place") is satisfied identically whether the `ui-model.json` it reads was authored manually or produced by this skill. The two new additive fields (`boundary_ref`, `source_use_case_refs` on entries; `generation_note` on the model) are not read by S33 and do not need to be.
-- **Any manually-authored legacy `ui-model.json`** (e.g., PRJ-06's T03 toy-order-domain worked example, predating this skill): remains valid as-is. This skill's additive fields are optional; a legacy file's absence of `boundary_ref`/`source_use_case_refs`/`generation_note` is not a validation failure for that file — these fields only become expected going forward, for models this skill itself produces or revises.
-- **`model-validatealignment`**: uses the new `boundary_ref` field (when present) as a direct signal for its own R-011 check (contract Section 2.2), rather than needing to re-derive which boundary a `UIModelEntry`'s entities came from by cross-referencing `domain_entity_refs` against every boundary's `domain-model.md` manually. When `boundary_ref` is absent (a legacy entry), the validator falls back to that manual cross-reference — this skill's new field is an optimization/clarity aid for validation, not a new requirement the validator depends on exclusively.
+## Quality checks
+
+- No entries in a non-software or undeclared boundary.
+- Every entry carries `boundary_ref` and `source_use_case_refs`, and every `domain_entity_refs` value is defined in this boundary's domain model.
+- An empty model always has a `generation_note`; no screen was invented just to have something.
+- Existing `entry_id`s are unchanged for entries that still apply.
+- The D-02 fields (`entry_id`, `ui_concept_name`, `domain_entity_refs`, `aggregation_description`) are all present, so `screen-generateinventory` reads the model unchanged.
+
+## Worked example
+
+[`examples/three-level-worked-example/`](examples/three-level-worked-example/) uses the same three boundaries as `usecase-generatemodel`'s example and `model-validatealignment`'s `three-level-valid` fixture:
+
+- `BND-ROOT` (non-software): empty model with a `generation_note`, showing step 0.
+- `BND-CHILD-SW` (software): two entries built from that boundary's use cases.
+- `BND-GRANDCHILD` (software): one small entry for a technician logging time directly, with a `generation_note` explaining why this borderline case gets a screen.
+
+## Compatibility
+
+- **`screen-generateinventory`** reads `entry_id`, `ui_concept_name`, and `domain_entity_refs`, and works unchanged whether the model was written by hand or by this skill.
+- **Hand-written legacy models** (such as Project 06's toy order domain example) remain valid without the three added fields.
 
 ## Integration
 
-**Upstream**: `usecase-generatemodel` (use-case model — primary driver), `domain-extractconcepts`/`domain-alignentities` (domain model), `documentation-automation` (process model, contextual), `hierarchy-management` (boundary `main.md`/`boundary_type`)
+**Upstream**: `usecase-generatemodel` (use cases and actor interaction), `domain-extractconcepts` / `domain-alignentities` (domain model), `hierarchy-management` (boundary folder and `boundary_type`)
 
-**Downstream**: `screen-generateinventory` (S33, consumes `ui-model.json` exactly as before), `model-validatealignment` (validates this skill's output for cross-model alignment at end of round)
-
-**Typical pipeline** (per T01 contract's Workflow Integration):
-```
-Requirements + domain concepts
-  -> collaboration/hierarchy and boundary identification (incl. boundary_type declaration)
-  -> scoped domain/process documents
-  -> usecase-generatemodel
-  -> ui-generatemodel (software boundary with UI requirements only)   ← this skill
-  -> model-validatealignment (end-of-round)
-  -> screen inventory -> layout -> mockup -> verified flow -> handoff/feedback
-```
-
-## Example Prompt
-
-```
-Use the ui-generatemodel skill to generate the UI model for this software boundary.
-
-Boundary: [boundary_id, boundary_type, hierarchy_path]
-Use-case model: [paste use-case-model.json or reference its path]
-Domain model: [paste domain-model.md or reference its path]
-
-Produce a ui-model.md/.json using the existing UIModel/UIModelEntry/Aggregation
-structure, with every entry's domain_entity_refs resolved against the real
-domain model and every entry traced back to the use case(s) that motivated it.
-If this boundary has no UI-worthy use cases, produce an empty-entries model
-with a generation_note explaining why, not a fabricated screen.
-```
+**Downstream**: `screen-generateinventory`, `model-validatealignment`

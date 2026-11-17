@@ -1,10 +1,10 @@
 ---
 name: usecase-generatemodel
-description: Generate or revise boundary-scoped use-case models and detailed use-case scripts from requirements, domain/process/collaboration documents, and the shared cross-model alignment contract. Describes actor interactions with an identified system boundary at every applicable hierarchy level, including non-software boundaries. Use when modeling actor-boundary interactions, documenting detailed use-case scripts, or extending an existing use-case model across a new boundary level.
+description: Generate or revise the use-case model of one system boundary, software or not - its actors (defined relative to that boundary), its use cases each traced to requirements, and a detailed script per use case (trigger, preconditions, main flow, alternatives, postconditions) - written as use-case-model.md, use-case-model.json, and use-case-scripts/ beside the boundary's domain and process models. Use when modeling who interacts with a boundary and how, when the user asks for use cases or use-case scripts, after hierarchy-management has created a boundary and its boundary_type is declared, or when a boundary's domain or process model changed; and before ui-generatemodel, which reads it.
 license: MIT
 metadata:
-  version: 0.1.0
-  last-updated: "2026-11-08"
+  version: 0.2.0
+  last-updated: "2026-11-17"
 ---
 
 # Use Case Generate Model
@@ -13,7 +13,7 @@ Generate a boundary-scoped use-case model and its linked detailed scripts, from 
 
 ## Intent
 
-Per PRJ-07's confirmed decisions (R-003, R-004, R-007, R-008): produce a use-case model whose actors and use cases are always defined **relative to a specific system boundary** (never a human-only, software-only, or leaf-level restriction), with every use case backed by a linked, detailed script covering trigger, preconditions, ordered steps, applicable alternatives/exceptions, and postconditions.
+Produce a use-case model whose actors and use cases are always defined **relative to a specific system boundary** (never a human-only, software-only, or leaf-level restriction), with every use case backed by a linked, detailed script covering trigger, preconditions, ordered steps, applicable alternatives/exceptions, and postconditions.
 
 This skill is scoped **per boundary**, not per project — the same project's hierarchy may have a use-case model at its root boundary, another at a software child boundary, and another at a further-nested grandchild boundary, each independently generated/revised, each tracing its own actors and use cases back to that boundary alone.
 
@@ -196,7 +196,7 @@ On a re-run against an existing `use-case-model.json` (e.g., after the boundary'
 
 **Downstream**: `ui-generatemodel` (consumes a software boundary's use-case model as one input), `model-validatealignment` (validates this skill's output for cross-model alignment at end of round — this skill does not self-certify), `screen-generateinventory` indirectly (via `ui-generatemodel`'s output)
 
-**Typical pipeline** (per T01 contract's Workflow Integration):
+**Typical pipeline**:
 ```
 Requirements + domain concepts
   -> collaboration/hierarchy and boundary identification (incl. boundary_type declaration)
