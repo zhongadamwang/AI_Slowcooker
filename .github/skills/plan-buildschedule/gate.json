@@ -11,29 +11,34 @@
       "id": "schedule_exists",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should produce project schedule",
+      "description": "The schedule files should exist",
       "artifacts": [
-        "artifacts/Analysis/project-schedule.md"
+        "artifacts/Analysis/project-schedule.json",
+        "artifacts/Analysis/project-schedule.md",
+        "artifacts/Analysis/critical-path-analysis.md"
       ],
-      "remediation": "Run plan-buildschedule to generate project timeline"
+      "remediation": "Run plan-buildschedule on task-breakdown.json and effort-estimates.json"
     },
     {
       "id": "gantt_representation",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should include Gantt chart representation",
+      "description": "The schedule should include a Mermaid Gantt chart",
       "file": "artifacts/Analysis/project-schedule.md",
-      "must_contain": ["```mermaid", "gantt"],
-      "remediation": "Add Gantt diagram to visualize project timeline"
+      "must_contain": [
+        "```mermaid",
+        "gantt"
+      ],
+      "remediation": "Render the schedule as a mermaid gantt block"
     },
     {
-      "id": "critical_path_analysis",
+      "id": "critical_path_recorded",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should identify critical path",
+      "description": "The schedule should name its critical path",
       "file": "artifacts/Analysis/project-schedule.md",
-      "must_contain": ["## Critical Path", "## Dependencies"],
-      "remediation": "Complete critical path analysis and dependency mapping"
+      "must_contain_pattern": "(?i)critical path",
+      "remediation": "Record the critical path from the forward and backward pass"
     }
   ],
   "quality_score_weight": 0.06,

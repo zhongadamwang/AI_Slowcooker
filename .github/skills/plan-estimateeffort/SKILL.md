@@ -1,7 +1,10 @@
 ---
 name: plan-estimateeffort
-description: Provides effort estimates for development tasks using multiple estimation methods including PERT, complexity analysis, and risk factors. Generates estimates with confidence levels and rationale for structured project planning.
+description: Estimate the effort of each task in a task breakdown with three-point (PERT) estimates, complexity scoring, analogy to past work where data exists, and risk adjustment, then aggregate to a project total with a confidence interval - written as effort-estimates.md/.json and estimation-confidence.md, and into each task file's Estimated Effort field. Use after plan-derivetasks when the user asks how long the work will take, how big a project is, or how confident an estimate is; and before plan-buildschedule, which schedules from these estimates.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-17"
 ---
 
 # Plan.EstimateEffort Skill
@@ -21,110 +24,7 @@ Generate accurate effort estimates for development tasks using multiple estimati
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/effort-estimates.md` - Human-readable estimation report with rationale
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/estimation-confidence.md` - Confidence analysis and calibration info
 
-### JSON Structure (`effort-estimates.json`)
-```json
-{
-  "project_id": "string",
-  "generated_at": "ISO_timestamp",
-  "estimation_methods": ["PERT", "complexity-points", "analogies"],
-  "total_project_estimate": {
-    "optimistic_days": 0.0,
-    "most_likely_days": 0.0,
-    "pessimistic_days": 0.0,
-    "expected_days": 0.0,
-    "standard_deviation": 0.0,
-    "confidence_interval_80": {"min": 0.0, "max": 0.0},
-    "confidence_interval_95": {"min": 0.0, "max": 0.0}
-  },
-  "estimation_factors": {
-    "team_experience": "novice|intermediate|expert",
-    "technology_familiarity": "new|familiar|expert", 
-    "project_complexity": "simple|moderate|complex|very_complex",
-    "requirements_clarity": "clear|moderate|unclear",
-    "integration_complexity": "simple|moderate|complex"
-  },
-  "task_estimates": [
-    {
-      "task_id": "string",
-      "title": "string",
-      "category": "string",
-      "pert_estimate": {
-        "optimistic_days": 0.0,
-        "most_likely_days": 0.0,
-        "pessimistic_days": 0.0,
-        "expected_days": 0.0,
-        "variance": 0.0
-      },
-      "complexity_factors": {
-        "technical_complexity": "1-5_scale",
-        "business_logic_complexity": "1-5_scale",
-        "integration_complexity": "1-5_scale",
-        "uncertainty_factor": "1-5_scale",
-        "total_story_points": 0
-      },
-      "risk_factors": [
-        {
-          "risk": "string",
-          "impact": "low|medium|high",
-          "probability": "low|medium|high",
-          "effort_multiplier": 0.0
-        }
-      ],
-      "historical_analogies": [
-        {
-          "similar_task": "string",
-          "similarity_score": "0.0-1.0",
-          "actual_effort": 0.0,
-          "adjusted_estimate": 0.0
-        }
-      ],
-      "confidence_level": "0-100_percent",
-      "rationale": "string",
-      "estimation_notes": ["string_list"]
-    }
-  ],
-  "summary_statistics": {
-    "total_tasks": 0,
-    "tasks_by_category": {
-      "development": {"count": 0, "total_effort": 0.0},
-      "testing": {"count": 0, "total_effort": 0.0},
-      "design": {"count": 0, "total_effort": 0.0},
-      "documentation": {"count": 0, "total_effort": 0.0}
-    },
-    "critical_path_effort": 0.0,
-    "parallel_work_potential": 0.0
-  }
-}
-```
-
-### Markdown Structure (`effort-estimates.md`)
-```markdown
-# Project Effort Estimates
-
-## Executive Summary
-- **Total Expected Effort**: [expected_days] days
-- **Confidence Range (80%)**: [min_days] - [max_days] days  
-- **Critical Path**: [critical_path_days] days
-- **Estimation Approach**: PERT + Complexity + Risk Analysis
-
-## Estimation Context
-- **Team Experience**: [experience_level]
-- **Technology Stack**: [familiarity_level]
-- **Project Complexity**: [complexity_level]
-- **Requirements Certainty**: [clarity_level]
-
-## Task Estimates Detail
-[Individual task breakdown with rationale]
-
-## Risk Factors & Mitigation
-[Risk analysis affecting estimates]
-
-## Estimation Methodology
-[Documentation of estimation approach]
-
-## Confidence Analysis
-[Discussion of estimate reliability]
-```
+Each task estimate carries optimistic, most-likely, pessimistic, and expected days, variance, complexity scores, risk factors, a confidence level, and its rationale; the project total carries the same plus a confidence interval. The complete templates are in [references/output-format.md](references/output-format.md).
 
 ## Core Estimation Methods
 
@@ -153,7 +53,7 @@ Base Effort = Story Points * Team Velocity (days per point)
 ```
 
 ### 3. Historical Analogy Method
-Compare tasks to historical similar work:
+Use only when real data from earlier projects or the team's past work is available; never invent historical figures. Compare tasks to that work:
 - Identify analogous tasks from previous projects
 - Calculate similarity scores (0.0-1.0) based on:
   - Technology similarity
@@ -220,6 +120,17 @@ Confidence Levels:
 - 50-69%: Low confidence, significant uncertainties or high risks
 - <50%: Very low confidence, requires further analysis
 ```
+
+## Write and Check
+
+Write the three files, and set each task file's `**Estimated Effort**` to its expected estimate (for example `3.2 person-days (PERT)`). Then check:
+
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py plan-estimateeffort \
+    --project "OrgDocument/projects/[NN] - [Project Name]"
+```
+
+State the assumptions behind every estimate, and the team velocity used if any. An estimate made without team or historical data is labelled as such and given a wider interval.
 
 ## Quality Assurance
 

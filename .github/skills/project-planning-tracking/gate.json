@@ -11,21 +11,37 @@
       "id": "planning_documents_exist",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should create project planning documents",
+      "description": "The project plan and tracking document should exist",
       "artifacts": [
         "project-plan.md",
         "tasks/task-tracking.md"
       ],
-      "remediation": "Run project-planning-tracking to establish project structure"
+      "remediation": "Run project-planning-tracking after the plan-* skills"
     },
     {
-      "id": "milestone_tracking",
+      "id": "plan_structure",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should track project milestones",
+      "description": "The plan should state phases, schedule, and risks",
       "file": "project-plan.md",
-      "must_contain": ["## Milestones", "## Progress Tracking"],
-      "remediation": "Define and track project milestones with progress indicators"
+      "must_contain": [
+        "## Project Phases",
+        "## Schedule and Capacity",
+        "## Risk Management"
+      ],
+      "remediation": "Follow the project-plan.md template"
+    },
+    {
+      "id": "tracking_has_task_list",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "The tracking document should list every task with its status",
+      "file": "tasks/task-tracking.md",
+      "must_contain": [
+        "## Task List",
+        "**Last Updated**"
+      ],
+      "remediation": "Write the '## Task List' table with one row per task"
     }
   ],
   "quality_score_weight": 0.05,

@@ -8,44 +8,68 @@
   "description": "Validates tasks have been derived from requirements and goals",
   "checks": [
     {
-      "id": "tasks_folder_exists",
-      "type": "folder_structure", 
-      "severity": "hard",
-      "description": "Tasks folder must be populated",
-      "base_path": "tasks/",
-      "folder_pattern": "*",
-      "min_files": 3,
-      "file_extensions": [".md"],
-      "remediation": "Run plan-derivetasks to generate task files from requirements"
-    },
-    {
-      "id": "task_files_valid", 
-      "type": "content_pattern",
-      "severity": "hard",
-      "description": "Task files must have proper structure",
-      "file": "tasks/T*-*.md",
-      "must_contain": ["**Task ID**:", "**Priority**:", "**Effort**:", "## Acceptance Criteria"],
-      "remediation": "Ensure task template structure is followed"
-    },
-    {
-      "id": "task_tracking_exists",
+      "id": "task_breakdown_exists",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Task tracking file must exist",
+      "description": "Both task breakdown files and the tracking document's folder must exist",
       "artifacts": [
-        "tasks/task-tracking.md"
+        "artifacts/Analysis/task-breakdown.json",
+        "artifacts/Analysis/task-breakdown.md"
       ],
-      "remediation": "Generate task tracking summary file"
+      "remediation": "Run plan-derivetasks on requirements.json and goals.json"
+    },
+    {
+      "id": "tasks_well_formed",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every task must have an ID, title, acceptance criteria, and source requirements",
+      "file": "artifacts/Analysis/task-breakdown.json",
+      "json_path": "$.tasks[*]",
+      "required_fields": [
+        "task_id",
+        "title",
+        "acceptance_criteria",
+        "source_requirements"
+      ],
+      "non_empty_fields": [
+        "acceptance_criteria",
+        "source_requirements"
+      ],
+      "remediation": "Give each task testable acceptance criteria and the requirement IDs it covers"
+    },
+    {
+      "id": "task_files_exist",
+      "type": "file_count",
+      "severity": "hard",
+      "description": "There must be one task file per task",
+      "pattern": "tasks/T*-*.md",
+      "min_count": 1,
+      "remediation": "Write tasks/T##-[slug].md for each task"
+    },
+    {
+      "id": "task_files_follow_template",
+      "type": "content_pattern",
+      "severity": "hard",
+      "description": "Task files must follow the project's task template",
+      "file": "tasks/T*-*.md",
+      "must_contain": [
+        "**Task ID**",
+        "**Priority**",
+        "**Estimated Effort**",
+        "**Status**",
+        "## Acceptance Criteria"
+      ],
+      "remediation": "Use tasks/task-template.md: Task ID, Phase, Priority, Estimated Effort, Status fields and an Acceptance Criteria section"
     },
     {
       "id": "minimum_task_count",
       "type": "file_count",
       "severity": "soft",
-      "description": "Should have reasonable number of tasks", 
+      "description": "A plausible number of tasks should be derived",
       "pattern": "tasks/T*-*.md",
       "min_count": 3,
-      "max_count": 50,
-      "remediation": "Review scope - very few or many tasks may indicate scoping issues"
+      "max_count": 60,
+      "remediation": "Very few or very many tasks may indicate a sizing problem (aim for half a day to ten days each)"
     }
   ],
   "quality_score_weight": 0.12,
