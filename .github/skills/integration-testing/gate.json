@@ -11,38 +11,43 @@
       "id": "test_report_exists",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Integration test report must exist",
+      "description": "The integration test report must exist",
       "artifacts": [
-        "artifacts/Testing/integration-test-report.md"
+        "artifacts/Testing/integration-test-report.md",
+        "artifacts/Testing/integration-test-results.json"
       ],
-      "remediation": "Run integration-testing to validate skill workflows"
+      "remediation": "Run integration-testing/scripts/run_suite.py with --report-dir set to the project's artifacts/Testing"
     },
     {
-      "id": "all_tests_passed",
-      "type": "content_pattern", 
+      "id": "suite_passed",
+      "type": "json_query",
       "severity": "hard",
-      "description": "All integration tests must pass",
-      "file": "artifacts/Testing/integration-test-report.md",
-      "must_contain": ["✅"],
-      "must_not_contain": ["❌ FAILED", "⚠️ ERROR"],
-      "remediation": "Fix failing integration tests before completing workflow"
+      "description": "Every suite check must have passed",
+      "file": "artifacts/Testing/integration-test-results.json",
+      "json_path": "$.suite_passed",
+      "expected_value": true,
+      "remediation": "Fix each failed check listed in the report, then re-run the suite"
     },
     {
-      "id": "workflow_coverage_complete",
-      "type": "content_pattern",
+      "id": "project_gates_recorded",
+      "type": "json_schema",
       "severity": "soft",
-      "description": "Should test multiple workflow scenarios", 
-      "file": "artifacts/Testing/integration-test-report.md",
-      "must_contain_pattern": "Test-\\d+\\.\\d+:",
-      "min_matches": 3,
-      "remediation": "Expand integration testing to cover more workflow scenarios"
+      "description": "The report should include the project's gate results",
+      "file": "artifacts/Testing/integration-test-results.json",
+      "required_fields": [
+        "project_gates"
+      ],
+      "non_empty_fields": [
+        "project_gates"
+      ],
+      "remediation": "Run the suite with --project so the report covers this project's gates"
     }
   ],
   "quality_score_weight": 0.12,
   "bypass_allowed": true,
   "workflow_archetypes": {
     "standard": "hard",
-    "rapid": "soft", 
+    "rapid": "soft",
     "compliance": "hard"
   }
 }

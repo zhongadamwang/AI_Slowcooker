@@ -235,6 +235,12 @@ python3 .github/skills/model-validatealignment/scripts/validate_alignment.py --r
 
 See [`edps-workflow-orchestrator/references/gate-schema.md`](edps-workflow-orchestrator/references/gate-schema.md) for the gate format.
 
+To check the whole suite (structure, catalogue, gate lint, all tests, and fixtures) after changing any skill:
+
+```bash
+python3 .github/skills/integration-testing/scripts/run_suite.py
+```
+
 ## Tips for Success 💡
 
 ### Effective Prompting
