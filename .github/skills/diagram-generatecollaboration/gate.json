@@ -2,65 +2,98 @@
   "$schema": "https://edps.dev/schemas/gate/v1.0.0",
   "skill_id": "S09",
   "skill_name": "diagram-generatecollaboration",
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "gate_type": "completion",
   "severity": "hard",
-  "description": "Validates collaboration diagrams have been generated with proper EDPS structure",
+  "description": "Validates that collaboration diagrams were generated with valid-looking Mermaid, traceable metadata, and supported participant syntax",
   "checks": [
     {
-      "id": "collaboration_diagram_exists",
+      "id": "collaboration_diagrams_exist",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Collaboration diagram must exist",
+      "description": "Both collaboration diagram files must exist",
       "artifacts": [
-        "{process}/collaboration.md"
+        "artifacts/Analysis/collaboration-diagrams.md",
+        "artifacts/Analysis/collaboration-diagrams.json"
       ],
-      "remediation": "Run diagram-generatecollaboration to create sequence diagrams"
+      "remediation": "Run diagram-generatecollaboration on domain-concepts.json and requirements.json"
     },
     {
-      "id": "mermaid_syntax_valid",
+      "id": "mermaid_diagrams_present",
       "type": "content_pattern",
       "severity": "hard",
-      "description": "Must contain valid Mermaid sequence diagram",
-      "file": "{process}/collaboration.md", 
-      "must_contain": ["```mermaid", "sequenceDiagram"],
-      "must_not_contain": ["[TO BE GENERATED]"],
-      "remediation": "Verify diagram generation completed successfully"
+      "description": "The Markdown output must contain at least one Mermaid diagram and no stub marker",
+      "file": "artifacts/Analysis/collaboration-diagrams.md",
+      "must_contain": [
+        "```mermaid"
+      ],
+      "must_not_contain": [
+        "[TO BE GENERATED"
+      ],
+      "remediation": "Generate the diagrams; a file with no fenced mermaid block is not a diagram output"
     },
     {
-      "id": "participants_declared",
+      "id": "unsupported_participant_syntax_absent",
       "type": "content_pattern",
       "severity": "hard",
-      "description": "Must have participant declarations with EDPS stereotypes",
-      "file": "{process}/collaboration.md",
-      "must_contain_pattern": "participant\\s+\\w+@\\{\\s*\"type\":\\s*\"(actor|boundary|control|entity)\"",
-      "min_matches": 2,
-      "remediation": "Ensure domain concepts include sufficient participants for diagram generation"
+      "description": "Participants must not use the @{ ... } metadata form, which most Mermaid renderers reject",
+      "file": "artifacts/Analysis/collaboration-diagrams.md",
+      "must_not_contain_pattern": "participant\\s+\\w+@\\{",
+      "remediation": "Declare participants as 'participant Alias as \"Label\"' and record stereotypes in a '%% Stereotypes:' comment"
     },
     {
-      "id": "message_flows_exist", 
-      "type": "content_pattern",
+      "id": "diagram_metadata_valid",
+      "type": "json_schema",
       "severity": "hard",
-      "description": "Must have message flows between participants",
-      "file": "{process}/collaboration.md",
-      "must_contain_pattern": "\\w+\\s*-[->]\\w*>\\s*\\w+:",
-      "min_matches": 3,
-      "remediation": "Review requirements to ensure sufficient interaction detail for message flows"
+      "description": "The JSON output must carry a non-empty diagrams list",
+      "file": "artifacts/Analysis/collaboration-diagrams.json",
+      "required_fields": [
+        "diagrams"
+      ],
+      "non_empty_fields": [
+        "diagrams"
+      ],
+      "remediation": "Write the diagrams array per references/output-format.md"
     },
     {
-      "id": "boundary_compliance",
-      "type": "content_pattern", 
+      "id": "diagrams_well_formed",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "Every diagram must have an ID, title, and type",
+      "file": "artifacts/Analysis/collaboration-diagrams.json",
+      "json_path": "$.diagrams[*]",
+      "required_fields": [
+        "id",
+        "title",
+        "type"
+      ],
+      "remediation": "Give each diagram a D-[###] id, a title, and its Mermaid type"
+    },
+    {
+      "id": "diagrams_traceable",
+      "type": "field_completeness",
       "severity": "soft",
-      "description": "Should use boundary groupings for EDPS v2",
-      "file": "{process}/collaboration.md",
-      "must_contain": ["box"],
-      "remediation": "Consider using boundary groupings for better process organization"
+      "description": "Diagrams should cite the requirements they visualize",
+      "file": "artifacts/Analysis/collaboration-diagrams.json",
+      "json_path": "$.diagrams[*].source_requirements",
+      "min_percent_complete": 80,
+      "remediation": "Add source_requirements to each diagram"
+    },
+    {
+      "id": "message_flows_exist",
+      "type": "content_pattern",
+      "severity": "soft",
+      "description": "Interaction diagrams should contain message flows",
+      "file": "artifacts/Analysis/collaboration-diagrams.md",
+      "must_contain_pattern": "\\w+\\s*-[-)x>]*>+[+-]?\\s*\\w+\\s*:",
+      "min_matches": 3,
+      "remediation": "Add the interactions between participants; a sequence diagram with no messages shows nothing"
     }
   ],
   "quality_score_weight": 0.18,
   "bypass_allowed": true,
   "workflow_archetypes": {
-    "standard": "hard", 
+    "standard": "hard",
     "rapid": "hard",
     "compliance": "hard"
   }

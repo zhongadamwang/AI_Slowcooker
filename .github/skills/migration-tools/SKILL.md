@@ -72,7 +72,7 @@ Non-destructively upgrade pre-Project 3 flat `sequenceDiagram` EDPS collaboratio
 
 ### Step 2 — Participant Stereotype Inference
 
-Apply the same inference rules as `diagram-generatecollaboration` §Participant Stereotype Classification. Evaluate in order; use the **first matching rule**:
+Apply the same inference rules as `diagram-generatecollaboration` ([stereotype-classification.md](../diagram-generatecollaboration/references/stereotype-classification.md)). Evaluate in order; use the **first matching rule**:
 
 | Priority | Rule | Inferred type |
 |----------|------|---------------|
@@ -111,7 +111,7 @@ Apply in order:
 - Maximum 8 participants per boundary. If a candidate group exceeds 8, split by rule 2 (closed subgraph) first, then alphabetically.
 
 #### 3d. Box Color Assignment
-Use the palette from `diagram-generatecollaboration` §Box Syntax Generation:
+Use the palette from `diagram-generatecollaboration` ([box-syntax.md](../diagram-generatecollaboration/references/box-syntax.md)):
 
 | Boundary index | Color |
 |----------------|-------|
@@ -284,7 +284,7 @@ When `--mode apply`:
 
 | Skill | Relationship |
 |-------|-------------|
-| `diagram-generatecollaboration` | **Authoritative source** for stereotype inference rules and box syntax. Migration-tools delegates classification logic to this skill's §Participant Stereotype Classification and §Box Syntax Generation sections. |
+| `diagram-generatecollaboration` | **Authoritative source** for stereotype inference rules and box syntax. Migration-tools delegates classification logic to this skill's `references/stereotype-classification.md` and `references/box-syntax.md`. |
 | `hierarchy-management` | Run after migration to decompose any `control`-type participant in the enhanced diagram into a sub-process hierarchy. |
 | `documentation-automation` | Run after `hierarchy-management` to generate `main.md`, `process.md`, and fully annotated `collaboration.md` for each decomposed level. |
 | `edps-compliance` | Run after migration to validate the enhanced diagram against VR-1–VR-4 boundary rules. |
