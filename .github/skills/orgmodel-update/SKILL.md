@@ -1,7 +1,10 @@
 ---
 name: orgmodel-update
-description: Manage updates to organizational model documents and folder structures. Updates orgModel hierarchy including process documentation, domain models, collaboration diagrams, and test cases based on requirements processing results and domain analysis outputs.
+description: Apply accepted changes to the organization's model documents in OrgDocument/orgModel - process overviews, domain models with class diagrams, process flows, collaboration diagrams, vocabulary, and test case lists - from a project's domain analysis and the accepted plans of process-merge, model-integration, and process-findtopandupdate, without overwriting files documentation-automation owns, and record what changed in orgmodel-update-summary.md. The only skill that writes the orgModel from project analysis. Use when analysis or an accepted integration plan should now be reflected in the organizational model, or when the user asks to update the orgModel, vocabulary, or test case list.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-17"
 ---
 
 # OrgModel Update
@@ -11,9 +14,13 @@ Systematically manages updates to organizational model documents and folder stru
 ## Intent
 Maintain the orgModel hierarchy with systematic updates to process documentation, domain models, collaboration diagrams, and test cases. Ensures organizational models remain current with evolving requirements while preserving existing content structure and maintaining cross-reference integrity.
 
-### Use-Case and UI Model Index Awareness (PRJ-07 integration)
+### Use-Case and UI Model Index Awareness
 
 When a boundary folder this skill updates already has a `use-case-model.md`/`.json` (from `usecase-generatemodel`) and/or a `ui-model.md`/`.json` (from `ui-generatemodel`), this skill's updates to that folder's `main.md` must include them in its navigation/index content — alongside the existing `domain-model.md`/`process.md`/`collaboration.md`/`vocabulary.md`/`test-case-list.md` links — rather than silently omitting them because they predate this skill's own file set. This skill does **not** generate or modify `use-case-model.*`/`ui-model.*` content itself; it only ensures `main.md`'s navigation stays complete when those files exist. See [cross-model-alignment-contract.md](../model-validatealignment/references/cross-model-alignment-contract.md) Section 5 for the full additive file/folder layout these two new file types follow.
+
+## Sole Writer
+
+This is the only skill that writes organizational model documents from project analysis. `process-merge`, `model-integration`, and `process-findtopandupdate` produce plans; apply a plan only once it is accepted (in `traditional` collaboration mode by the process owner; in `solo` mode by the developer, stated explicitly), and say in the update summary which plan and which items were applied. The orgModel is under version control: commit each applied update so it can be reviewed and, if needed, reverted.
 
 ## Scope and Pipeline Position
 
@@ -21,7 +28,7 @@ When a boundary folder this skill updates already has a `use-case-model.md`/`.js
 
 **Primary inputs**: `domain-alignment.json` / `domain-concepts.json` from the project analysis phase.
 
-**Operates at**: The orgModel process folder level (e.g., `orgModel/01 - Skill Development Process/`). Does **not** recurse into per-hierarchy-node sub-folders created by `hierarchy-management`.
+**Operates at**: The orgModel process folder level (e.g., `OrgDocument/orgModel/01 - Skill Development Process/`). Does **not** recurse into per-hierarchy-node sub-folders created by `hierarchy-management`.
 
 ### Relative to `documentation-automation`
 
@@ -51,17 +58,18 @@ domain-alignentities   ├─→ orgmodel-update ─→ vocabulary.md, test-case
 - **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json` (from domain-alignentities skill)
 - **Tertiary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/collaboration-diagrams.json` (from diagram-generatecollaboration skill)
 - **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (for traceability)
-- **Existing**: `orgModel/[NN] - [Process Name]/` (existing organizational model content)
+- **Existing**: `OrgDocument/orgModel/[NN] - [Process Name]/` (existing organizational model content)
 - **Diagram Updates**: Class diagram updates triggered by domain alignment results
+- **Accepted plans** (when the integration skills ran): `process-integration-plan.md` (from `process-merge`), `model-integration.json` (from `model-integration`), `orgmodel-update-plan.md` (from `process-findtopandupdate`)
 
 ## Outputs
 **Files Updated/Generated:**
-- `orgModel/[NN] - [Process Name]/main.md` - Updated process overview with new elements
-- `orgModel/[NN] - [Process Name]/domain-model.md` - Updated domain model with aligned entities
-- `orgModel/[NN] - [Process Name]/process.md` - Updated process flow documentation  
-- `orgModel/[NN] - [Process Name]/collaboration.md` - Updated collaboration diagrams
-- `orgModel/[NN] - [Process Name]/vocabulary.md` - Updated terminology consistency mapping
-- `orgModel/[NN] - [Process Name]/test-case-list.md` - Updated test case master list
+- `OrgDocument/orgModel/[NN] - [Process Name]/main.md` - Updated process overview with new elements
+- `OrgDocument/orgModel/[NN] - [Process Name]/domain-model.md` - Updated domain model with aligned entities
+- `OrgDocument/orgModel/[NN] - [Process Name]/process.md` - Updated process flow documentation  
+- `OrgDocument/orgModel/[NN] - [Process Name]/collaboration.md` - Updated collaboration diagrams
+- `OrgDocument/orgModel/[NN] - [Process Name]/vocabulary.md` - Updated terminology consistency mapping
+- `OrgDocument/orgModel/[NN] - [Process Name]/test-case-list.md` - Updated test case master list
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/orgmodel-update-summary.md` - Change summary and validation report
 
 ### Update Summary Structure (`orgmodel-update-summary.md`)
@@ -76,7 +84,7 @@ domain-alignentities   ├─→ orgmodel-update ─→ vocabulary.md, test-case
 ## Changes Applied
 
 ### Structure Updates
-- [ ] Created new orgModel folder: `orgModel/[NN] - [Process Name]/`
+- [ ] Created new orgModel folder: `OrgDocument/orgModel/[NN] - [Process Name]/`
 - [ ] Updated existing structure with [N] new elements
 - [ ] Preserved [N] existing elements
 
@@ -122,178 +130,7 @@ orgModel/[NN] - [Process Name]/
 
 ### 2. Content Generation Patterns
 
-#### main.md Structure
-```markdown
-<!-- Identifier: I-[NN] -->
-
-# [NN] - [Process Name]
-
-## Purpose
-[Business purpose derived from requirements analysis]
-
-## Process Flow  
-See [process.md](process.md) for detailed activity diagram.
-
-## Collaborations
-See [collaboration.md](collaboration.md) for entity interactions.
-
-## Domain Model
-See [domain-model.md](domain-model.md) for actors and entities.
-
-## Sub-Processes
-[List nested processes identified from analysis]
-
-## Test Coverage
-See [test-case-list.md](test-case-list.md) for verification test cases.
-
-## Related Changes
-<!-- Traceability to source requirements and changes -->
-```
-
-#### domain-model.md Structure  
-```markdown
-<!-- Identifier: DM-[NN] -->
-
-# Domain Model: [Process Name]
-
-## Actors
-[Human and system actors from domain analysis]
-
-### [Actor Name]
-- **Type**: Human/System/External
-- **Responsibilities**: [key responsibilities]
-- **Interactions**: [primary entity interactions]
-
-## Key Entities
-[Business entities from domain concepts extraction]
-
-### [Entity Name] 
-- **Definition**: [entity definition]
-- **Attributes**: [key attributes]
-- **Relationships**: [entity relationships]
-- **Domain Area**: [functional area]
-
-## Systems and Components
-[Technical systems involved in process]
-
-### [System Name]
-- **Purpose**: [system role]
-- **Interfaces**: [external connections]
-- **Key Functions**: [primary capabilities]
-```
-
-#### process.md Structure
-```markdown
-<!-- Identifier: P-[NN] -->
-
-# Process: [Process Name]
-
-## Overview
-[Process purpose and scope]
-
-## Process Flow
-
-```mermaid
-flowchart TD
-    A[Start] --> B[Activity 1]
-    B --> C{Decision Point}
-    C -->|Yes| D[Activity 2]
-    C -->|No| E[Activity 3]
-    D --> F[End]
-    E --> F
-```
-
-## Activities
-
-### [Activity Name]
-- **Input**: [required inputs]
-- **Process**: [activity description]
-- **Output**: [produced outputs]
-- **Responsible**: [actor/role responsible]
-- **Validation**: [quality checks]
-
-## Decision Points
-[Critical decision points with criteria]
-
-## Exception Handling  
-[Error conditions and recovery procedures]
-```
-
-#### collaboration.md Structure
-```markdown
-<!-- Identifier: C-[NN] -->
-
-# Collaboration: [Process Name]
-
-## Entity Interactions
-
-```mermaid
-sequenceDiagram
-    participant A as Actor
-    participant S as System
-    participant D as Data Store
-    
-    A->>S: Request
-    S->>D: Query
-    D-->>S: Response
-    S-->>A: Result
-```
-
-## Interaction Patterns
-[Description of key interaction patterns]
-
-## Communication Channels
-[How entities communicate]
-
-## Data Flow
-[Information flow between entities]
-```
-
-#### vocabulary.md Structure
-```markdown
-<!-- Identifier: V-[NN] -->
-
-# Vocabulary: [Process Name]
-
-## Canonical Terms
-[Standardized terminology for the process]
-
-| Term | Definition | Aliases | Context |
-|------|------------|---------|---------|
-| [Term] | [Definition] | [Synonyms] | [Usage context] |
-
-## Domain Alignment
-[Mapping to enterprise domain models]
-
-## Consistency Rules
-[Guidelines for term usage across process]
-```
-
-#### test-case-list.md Structure
-```markdown
-<!-- Identifier: TCL-[NN] -->
-
-# Test Case List: [Process Name]
-
-## Test Coverage Overview
-[Summary of testing scope and approach]
-
-## Test Cases
-
-| TC ID | Test Category | Title | Priority | Source Requirement |
-|-------|---------------|-------|----------|-------------------|
-| tc-[NN]-001 | Functional | [Test title] | High | R-[ID] |
-
-## Test Categories
-- **Functional**: Core process functionality
-- **Integration**: Cross-entity interactions  
-- **Exception**: Error handling and recovery
-- **Performance**: Process efficiency measures
-- **Compliance**: Regulatory/standards adherence
-
-## Validation Criteria
-[Process success criteria for testing]
-```
+The templates for `main.md`, `domain-model.md`, `process.md`, `collaboration.md`, `vocabulary.md`, and `test-case-list.md` are in [references/document-templates.md](references/document-templates.md). Follow them when creating a document; when updating one, change only the sections the update concerns.
 
 ### 3. Content Update Logic
 
@@ -398,7 +235,7 @@ classDiagram
 
 1. For each target orgModel folder, search for `hierarchy-metadata.json` in:
    - The folder itself
-   - Up to 3 ancestor levels within `orgModel/` (e.g., `../`, `../../`, `../../../`)
+   - Up to 3 ancestor levels within `OrgDocument/orgModel/` (e.g., `../`, `../../`, `../../../`)
 2. **If `hierarchy-metadata.json` IS found** → folder is EDPS-hierarchy-managed:
    - **Do NOT generate** `main.md`, `process.md`, `collaboration.md`, or `domain-model.md` directly.
    - Instead, write all proposed additions (new domain entities, aligned concepts, process notes) to `[folder]/pending-orgmodel-updates.md` using the format below.
@@ -412,7 +249,7 @@ classDiagram
 ```markdown
 # Pending OrgModel Updates
 
-**Folder**: `orgModel/[NN] - [Process Name]/`
+**Folder**: `OrgDocument/orgModel/[NN] - [Process Name]/`
 **Generated**: [ISO8601 timestamp]
 **Source Analysis**: [path to domain-concepts.json and/or domain-alignment.json used as input]
 **Guard Triggered By**: `hierarchy-metadata.json` found at `[path]`
@@ -503,3 +340,10 @@ classDiagram
 **Integration**: GitHub Copilot, VS Code environment, EDPS skill framework, Mermaid class diagram generation
 **Maintenance**: Update templates based on organizational model evolution
 **Diagram Support**: Automatic class diagram generation and synchronization with textual domain models
+
+## Completion Gate
+
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py orgmodel-update \
+    --project "OrgDocument/projects/[NN] - [Project Name]"
+```

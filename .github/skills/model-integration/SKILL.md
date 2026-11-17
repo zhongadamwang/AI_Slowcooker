@@ -1,7 +1,10 @@
 ---
 name: model-integration
-description: Systematically integrate new domain models and processes into existing organizational model structures using EDP methodology for minimal disruption integration, conflict resolution, and model coherence maintenance across multiple organizational processes.
+description: Plan how a project's new and aligned domain concepts integrate into the organization's existing domain models: integration points, entity-mapping conflicts and their resolution, the least disruptive integration strategy, coherence checks across affected processes, and stakeholder impact, written as model-integration.md/.json, integration-impact-assessment.md, and integration-validation.json. Use after domain-alignentities (and domain-proposenewconcepts, if run) when new domain concepts must be merged into OrgDocument/orgModel, or when the user asks what integrating them would affect. Produces a plan for orgmodel-update to apply; it does not edit the orgModel.
 license: MIT
+metadata:
+  version: 1.1.0
+  last-updated: "2026-11-17"
 ---
 
 # Model Integration
@@ -9,182 +12,35 @@ license: MIT
 Systematically combine new domain models and processes into existing organizational model structures while maintaining coherence and minimizing disruption through sophisticated conflict resolution and progressive integration strategies.
 
 ## Intent
-Implement comprehensive model integration that analyzes integration points, resolves entity mapping conflicts, maintains model coherence, and supports progressive deployment with rollback capabilities. Follows EDP methodology principles for minimal disruption while ensuring cross-process consistency and stakeholder impact analysis.
+Implement comprehensive model integration that analyzes integration points, resolves entity mapping conflicts, maintains model coherence, and plans a progressive integration that `orgmodel-update` applies. Follows EDP methodology principles for minimal disruption while ensuring cross-process consistency and stakeholder impact analysis.
 
-### Boundary and Use-Case/UI Model Awareness (PRJ-07 integration)
+### Boundary and Use-Case/UI Model Awareness
 
 When target models include boundary-decomposed hierarchies with use-case and/or UI models (per `usecase-generatemodel`/`ui-generatemodel`, PRJ-07), integration points touching entities that a use case or `UIModelEntry` already references must preserve those references rather than silently breaking them. Specifically: if this skill's `entity_integration` renames, merges, or specializes an entity that appears in a boundary's `use-case-model.json` (`referenced_entities`, via its scripts' Main Flow entity citations) or `ui-model.json` (`domain_entity_refs`), the integration plan must flag those as **affected use cases/UI entries requiring a fresh modeling round** (see [cross-model-alignment-contract.md](../model-validatealignment/references/cross-model-alignment-contract.md) Section 4.1) — not merely as a stakeholder-impact note. This is additive to the existing `integration_points`/`conflict_resolutions` schema: add an optional `affected_use_case_refs`/`affected_ui_model_refs` array to an integration point when applicable; omit entirely when a boundary has no use-case/UI model yet (most integrations, especially early in a project, will have nothing to flag here).
+
+## Role: Plans Only
+
+This skill **plans**; it does not edit `OrgDocument/orgModel/`. Its outputs say what should change and why. `orgmodel-update` is the only skill that writes organizational model documents, and it applies a plan only after the plan is accepted (in `traditional` collaboration mode by the process owner; in `solo` mode by the developer, stated explicitly).
+
+Do not keep backups or rollback data: the orgModel is under version control, so a plan names the files and sections to change, and undoing an applied change is a revert of that commit. Never record a change, validation, or approval in the plan as done when it has not happened.
 
 ## Inputs
 - **Primary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-alignment.json` (from domain-alignentities skill)
 - **Secondary**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-newconcepts.json` (from domain-proposenewconcepts skill)
 - **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/domain-concepts.json` (source concepts)
 - **Context**: `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json` (for impact traceability)
-- **Existing**: `orgModel/**/*domain-model.md` (target organizational models)
-- **Existing**: `orgModel/**/*process.md` (existing process flows)
-- **Existing**: `orgModel/**/*vocabulary.md` (organizational terminology)
+- **Existing**: `OrgDocument/orgModel/**/*domain-model.md` (target organizational models)
+- **Existing**: `OrgDocument/orgModel/**/*process.md` (existing process flows)
+- **Existing**: `OrgDocument/orgModel/**/*vocabulary.md` (organizational terminology)
 
 ## Outputs
 **Files Generated:**
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/model-integration.json` - Structured integration plan and results
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/model-integration.md` - Human-readable integration report
 - `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/integration-impact-assessment.md` - Stakeholder impact analysis
-- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/integration-validation.json` - Validation results and rollback data
+- `OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/integration-validation.json` - Planned coherence checks and their expected results
 
-### JSON Structure (`model-integration.json`)
-```json
-{
-  "project_id": "string",
-  "integration_metadata": {
-    "generated_at": "ISO8601",
-    "source_alignment": "domain-alignment.json",
-    "source_newconcepts": "domain-newconcepts.json",
-    "target_models": ["orgModel/01-skill-dev/domain-model.md"],
-    "integration_strategy": "additive|replacement|merge|hybrid",
-    "edp_compliance": "boolean",
-    "total_integrations": "number",
-    "conflict_resolution_count": "number",
-    "rollback_capability": "boolean"
-  },
-  "integration_plan": {
-    "phases": [
-      {
-        "phase_id": "P1",
-        "phase_name": "Entity Integration",
-        "sequence": 1,
-        "strategy": "additive",
-        "estimated_impact": "low|medium|high",
-        "rollback_points": ["after_entity_mapping", "after_validation"],
-        "dependencies": ["terminology_alignment"]
-      }
-    ],
-    "integration_points": [
-      {
-        "integration_id": "IP-001",
-        "type": "entity_integration|process_integration|terminology_integration|relationship_integration",
-        "source": {
-          "entity": "User Authentication",
-          "source_file": "domain-concepts.json",
-          "requirements_trace": ["REQ-001", "REQ-005"]
-        },
-        "target": {
-          "model": "orgModel/01-skill-dev/domain-model.md",
-          "section": "Security.Authentication",
-          "existing_entities": ["Team Member", "Access Control"]
-        },
-        "integration_strategy": {
-          "approach": "merge_with_existing",
-          "conflict_resolution": "rename_and_specialize",
-          "minimal_disruption": "extend_existing_hierarchy",
-          "validation_checkpoints": ["entity_consistency", "relationship_integrity"]
-        }
-      }
-    ],
-    "conflict_resolutions": [
-      {
-        "conflict_id": "CR-001",
-        "type": "entity_naming|relationship_mismatch|process_overlap|terminology_conflict",
-        "description": "User vs Team Member entity naming conflict",
-        "source_entity": "User",
-        "target_entity": "Team Member",
-        "resolution_strategy": {
-          "approach": "create_specialization",
-          "new_hierarchy": "Team Member > Authenticated User > External User",
-          "impact": "extends_existing_model",
-          "validation": "backward_compatibility_maintained"
-        },
-        "stakeholder_impact": {
-          "affected_processes": ["authentication", "user_management"],
-          "communication_required": ["developers", "business_analysts"],
-          "training_impact": "minimal"
-        }
-      }
-    ]
-  },
-  "integration_results": {
-    "successful_integrations": [
-      {
-        "integration_id": "IP-001",
-        "target_file": "orgModel/01-skill-dev/domain-model.md",
-        "changes_applied": {
-          "entities_added": ["Authenticated User"],
-          "relationships_modified": ["Team Member -> has -> Authentication Profile"],
-          "sections_updated": ["Security.Authentication"]
-        },
-        "validation_status": "passed",
-        "rollback_data": "backup_reference_id"
-      }
-    ],
-    "failed_integrations": [
-      {
-        "integration_id": "IP-005",
-        "failure_reason": "circular_dependency_detected",
-        "error_details": "Process A requires Process B which depends on Process A",
-        "recommended_action": "redesign_process_flow",
-        "rollback_performed": "true"
-      }
-    ],
-    "model_coherence_check": {
-      "consistency_score": "0.0-1.0",
-      "validation_results": [
-        {
-          "check_type": "entity_consistency",
-          "status": "passed|warning|failed",
-          "issues": ["duplicate_entity_definitions"],
-          "recommendations": ["consolidate_duplicate_entities"]
-        }
-      ]
-    }
-  }
-}
-```
-
-### Integration Report Structure (`model-integration.md`)
-```markdown
-# Model Integration Report
-
-**Project**: [Project Name]  
-**Generated**: [ISO8601 timestamp]  
-**Integration Strategy**: [additive|replacement|merge|hybrid]  
-**EDP Compliance**: [Yes|No]  
-**Overall Status**: [Success|Partial|Failed]
-
-## Executive Summary
-[High-level summary of integration approach, results, and impact]
-
-## Integration Strategy
-- **Approach**: [Strategy explanation]
-- **Minimal Disruption Principles**: [How EDP methodology applied]
-- **Rollback Capability**: [Available rollback points]
-- **Progressive Integration**: [Phased deployment approach]
-
-## Integration Results
-
-### Successful Integrations
-| Integration ID | Type | Target Model | Changes Applied | Impact |
-|----------------|------|--------------|-----------------|--------|
-| IP-001 | Entity | orgModel/01-skill-dev/domain-model.md | Added Authenticated User | Low |
-
-### Conflict Resolutions
-| Conflict ID | Type | Resolution | Stakeholder Impact |
-|-------------|------|------------|-------------------|
-| CR-001 | Entity Naming | Create Specialization | Minimal - extends existing |
-
-### Model Coherence Validation
-- **Consistency Score**: [0.0-1.0]
-- **Critical Issues**: [Number]
-- **Warnings**: [Number]
-- **Recommendations**: [Number]
-
-## Stakeholder Impact Analysis
-[Summary of impacts by stakeholder group with communication requirements]
-
-## Next Steps
-- [ ] Review integration results with stakeholders
-- [ ] Validate updated models in target environment
-- [ ] Schedule training for affected processes
-- [ ] Plan next integration phase
-```
+The complete JSON and Markdown templates are in [references/output-format.md](references/output-format.md).
 
 ## Core Functions
 
@@ -218,7 +74,6 @@ for each aligned_entity in domain_alignment:
 - Preserve existing functionality during integration
 - Maintain backward compatibility where possible
 - Implement staged deployment with validation checkpoints
-- Provide clear rollback paths at each stage
 
 ### 3. Progressive Integration Support
 
@@ -230,7 +85,6 @@ for each aligned_entity in domain_alignment:
 
 **Staged Deployment**
 - Integration checkpoints with validation gates
-- Rollback capability at each stage
 - Stakeholder approval workflow
 - Automated validation testing
 
@@ -289,19 +143,6 @@ analyze_integration_complexity()
 6. Assess stakeholder impact
 ```
 
-### Validation and Rollback
-```
-for each integration_point:
-    apply_changes()
-    validate_consistency()
-    if validation_failed:
-        execute_rollback()
-        log_failure_reason()
-    else:
-        commit_changes()
-        update_integration_log()
-```
-
 ## Integration Patterns
 
 ### Entity Integration Pattern
@@ -340,7 +181,6 @@ for each integration_point:
 - **Circular Dependencies**: Detect and report dependency cycles
 - **Conflicting Requirements**: Document irreconcilable conflicts
 - **Model Inconsistencies**: Validate structural integrity
-- **Rollback Failures**: Maintain recovery mechanisms
 
 ### Validation Failures
 - **Entity Conflicts**: Resolve naming and definitional conflicts
@@ -351,14 +191,20 @@ for each integration_point:
 ## Dependencies
 - **domain-alignentities**: Entity mapping and conflict identification
 - **domain-proposenewconcepts**: Gap analysis and new concept definitions
-- **orgmodel-update**: Target model update execution
+- **orgmodel-update**: Applies the accepted integration plan (the only writer to the orgModel)
 - **change-management**: Integration tracking and approval workflow
-- **model-validatealignment** *(PRJ-07, conditional)*: when a boundary has a use-case/UI model, this skill's entity-integration plan should flag affected `use_case_id`/`entry_id` references per the Boundary and Use-Case/UI Model Awareness section above, so a fresh alignment round can be triggered rather than silently invalidating those references
+- **model-validatealignment** *(conditional)*: when a boundary has a use-case/UI model, this skill's entity-integration plan should flag affected `use_case_id`/`entry_id` references per the Boundary and Use-Case/UI Model Awareness section above, so a fresh alignment round can be triggered rather than silently invalidating those references
 
 ## Success Criteria
-- All integration points successfully processed
+- Every integration point has a planned resolution
 - Model coherence validation passes
 - Stakeholder impact assessment complete
-- Rollback capability tested and available
 - EDP methodology compliance verified
 - Progressive integration milestones achieved
+
+## Completion Gate
+
+```bash
+python3 .github/skills/edps-workflow-orchestrator/scripts/run_gate.py model-integration \
+    --project "OrgDocument/projects/[NN] - [Project Name]"
+```

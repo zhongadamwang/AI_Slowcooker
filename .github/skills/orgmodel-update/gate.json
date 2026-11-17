@@ -8,32 +8,25 @@
   "description": "Validates organizational model updates have been applied",
   "checks": [
     {
-      "id": "update_log_exists",
+      "id": "update_summary_exists",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should document organizational model changes",
+      "description": "The update summary should record what was changed",
       "artifacts": [
         "artifacts/Analysis/orgmodel-update-summary.md"
       ],
-      "remediation": "Run orgmodel-update to sync organizational model changes"
+      "remediation": "Write orgmodel-update-summary.md listing each document changed and the plan items applied"
     },
     {
-      "id": "coherence_maintained",
+      "id": "changes_recorded",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should verify model coherence",
+      "description": "The summary should list the changes applied",
       "file": "artifacts/Analysis/orgmodel-update-summary.md",
-      "must_contain": ["✅ Coherence Check", "Updated Documents:"],
-      "remediation": "Verify organizational model coherence after updates"
-    },
-    {
-      "id": "integration_impact",
-      "type": "content_pattern",
-      "severity": "soft",
-      "description": "Should assess impact on existing processes",
-      "file": "artifacts/Analysis/orgmodel-update-summary.md",
-      "must_contain_pattern": "Impact Analysis:",
-      "remediation": "Document integration impact of organizational model changes"
+      "must_contain": [
+        "## Changes Applied"
+      ],
+      "remediation": "Add the '## Changes Applied' section"
     }
   ],
   "quality_score_weight": 0.05,

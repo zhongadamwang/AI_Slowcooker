@@ -11,29 +11,37 @@
       "id": "updated_requirements_exist",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should produce updated top-level requirements",
+      "description": "The top-requirements proposal and orgModel update plan should exist",
       "artifacts": [
-        "artifacts/Analysis/top-requirements-update.md"
+        "artifacts/Analysis/top-requirements-update.md",
+        "artifacts/Analysis/top-requirements-update.json",
+        "artifacts/Analysis/orgmodel-update-plan.md"
       ],
-      "remediation": "Run process-findtopandupdate to identify and update top requirements"
+      "remediation": "Run process-findtopandupdate"
     },
     {
-      "id": "hierarchy_consistency",
-      "type": "content_pattern",
+      "id": "proposal_structure",
+      "type": "json_schema",
       "severity": "soft",
-      "description": "Should maintain consistency across hierarchy levels",
-      "file": "artifacts/Analysis/top-requirements-update.md",
-      "must_contain": ["## Hierarchy Consistency Check", "## Updated Requirements"],
-      "remediation": "Verify changes maintain consistency between high-level and detailed requirements"
+      "description": "The proposal should carry the hierarchy analysis and orgModel coordination",
+      "file": "artifacts/Analysis/top-requirements-update.json",
+      "required_fields": [
+        "hierarchy_analysis",
+        "orgmodel_coordination"
+      ],
+      "remediation": "Write hierarchy_analysis and orgmodel_coordination per references/output-format.md"
     },
     {
-      "id": "orgmodel_coherence",
+      "id": "report_sections",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should preserve organizational model coherence",
+      "description": "The report should list the proposed requirement updates and the affected orgModel documents",
       "file": "artifacts/Analysis/top-requirements-update.md",
-      "must_contain": ["✅ OrgModel Coherence"],
-      "remediation": "Ensure updates maintain organizational model coherence"
+      "must_contain": [
+        "## Updated Requirements",
+        "## OrgModel Coordination"
+      ],
+      "remediation": "Follow the report layout in SKILL.md"
     }
   ],
   "quality_score_weight": 0.06,

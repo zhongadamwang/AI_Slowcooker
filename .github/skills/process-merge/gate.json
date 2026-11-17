@@ -11,29 +11,34 @@
       "id": "merge_analysis_exists",
       "type": "artifact_existence",
       "severity": "soft",
-      "description": "Should produce process merge analysis",
+      "description": "The process merge analysis and plan should exist",
       "artifacts": [
-        "artifacts/Analysis/process-merge.md"
+        "artifacts/Analysis/process-merge.md",
+        "artifacts/Analysis/process-merge.json",
+        "artifacts/Analysis/process-integration-plan.md"
       ],
-      "remediation": "Run process-merge to analyze integration approaches"
+      "remediation": "Run process-merge on the project's domain analysis"
     },
     {
-      "id": "overlap_analysis",
-      "type": "content_pattern",
+      "id": "merge_structure",
+      "type": "json_schema",
       "severity": "soft",
-      "description": "Should identify minimum overlap requirements",
-      "file": "artifacts/Analysis/process-merge.md",
-      "must_contain": ["## Overlap Analysis", "## Integration Strategy"],
-      "remediation": "Document minimum sub-process overlap identification"
+      "description": "The merge analysis should carry the overlap analysis and the integration plan",
+      "file": "artifacts/Analysis/process-merge.json",
+      "required_fields": [
+        "overlap_analysis",
+        "integration_plan"
+      ],
+      "remediation": "Write overlap_analysis and integration_plan per references/output-format.md"
     },
     {
-      "id": "coherence_maintained",
+      "id": "overlap_documented",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should verify model coherence is maintained",
+      "description": "The report should present the overlap analysis",
       "file": "artifacts/Analysis/process-merge.md",
-      "must_contain": ["✅ Model Coherence Check"],
-      "remediation": "Validate that merged models maintain EDP coherence"
+      "must_contain_pattern": "(?im)^## .*overlap",
+      "remediation": "Add the overlap analysis section to process-merge.md"
     }
   ],
   "quality_score_weight": 0.07,
