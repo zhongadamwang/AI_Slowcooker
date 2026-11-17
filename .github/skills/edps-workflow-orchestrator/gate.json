@@ -11,29 +11,51 @@
       "id": "workflow_state_exists",
       "type": "artifact_existence",
       "severity": "hard",
-      "description": "Should maintain workflow state tracking",
+      "description": "The project state file must exist",
       "artifacts": [
         "project-state.json"
       ],
-      "remediation": "Run edps-workflow-orchestrator to initialize or update workflow state"
+      "remediation": "Run 'orchestrate start' to create project-state.json"
     },
     {
-      "id": "dag_prerequisites_validated",
+      "id": "state_structure",
+      "type": "json_schema",
+      "severity": "hard",
+      "description": "The state must record the archetype and the skill states",
+      "file": "project-state.json",
+      "required_fields": [
+        "project_id",
+        "archetype",
+        "skills"
+      ],
+      "non_empty_fields": [
+        "skills"
+      ],
+      "remediation": "Write project-state.json per the Project State Schema"
+    },
+    {
+      "id": "archetype_valid",
       "type": "content_pattern",
       "severity": "hard",
-      "description": "Should validate DAG prerequisite dependencies",
+      "description": "The archetype must be standard, rapid, or compliance",
       "file": "project-state.json",
-      "must_contain": ["\"prerequisitesValidated\": true"],
-      "remediation": "Ensure all workflow prerequisite dependencies are satisfied"
+      "json_path": "$.archetype",
+      "must_contain_pattern": "^(standard|rapid|compliance)$",
+      "remediation": "Set archetype to one of the three named archetypes"
     },
     {
-      "id": "archetype_workflow_complete",
-      "type": "content_pattern",
+      "id": "history_recorded",
+      "type": "json_schema",
       "severity": "soft",
-      "description": "Should complete workflow archetype execution",
+      "description": "The state should keep a history of workflow events",
       "file": "project-state.json",
-      "must_contain": ["workflowArchetype"],
-      "remediation": "Complete execution of selected workflow archetype (standard/rapid/compliance)"
+      "required_fields": [
+        "history"
+      ],
+      "non_empty_fields": [
+        "history"
+      ],
+      "remediation": "Append an entry to history after every step"
     }
   ],
   "quality_score_weight": 0.15,

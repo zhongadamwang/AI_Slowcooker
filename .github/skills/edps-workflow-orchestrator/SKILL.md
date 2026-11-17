@@ -1,10 +1,10 @@
 ---
 name: edps-workflow-orchestrator
-description: Central coordinator for complete EDPS methodology workflows. Manages the full lifecycle from requirements ingestion through final documentation, enforces skill sequencing via a DAG prerequisite engine, maintains persistent project state across Copilot sessions, emits completion events consumed by skill-completion-gates (T08), and resolves stakeholder_confirmation gate severity from the project's collaboration_mode (solo vs. traditional). Supports three workflow archetypes — standard, rapid, and compliance-focused — plus the Design & Visualization phase, including boundary-scoped use-case/UI modeling (S32, S40) and non-bypassable cross-model alignment validation (S39).
+description: Run an EDPS workflow end to end across sessions - choose the standard, rapid, or compliance archetype, resolve which skills are available or blocked from the skill catalogue's prerequisites, run each skill's completion gate before marking it complete, track modeling rounds and their alignment status, and keep progress in project-state.json so work resumes where it stopped. Holds the Skill Catalogue (skill IDs S00-S41 and prerequisites). Use when the user wants to start, continue, or resume a full EDPS project workflow, asks for progress or the next step across a project, wants a skill skipped or marked complete, or needs the prerequisite order of skills.
 license: MIT
 metadata:
-  version: 1.4.0
-  last-updated: "2026-11-15"
+  version: 2.0.0
+  last-updated: "2026-11-17"
 ---
 
 # EDPS Workflow Orchestrator
@@ -13,14 +13,14 @@ The central coordination hub for end-to-end EDPS methodology execution. Sits abo
 
 ## Intent
 
-Orchestrate complete EDPS methodology workflows by:
-1. Selecting the appropriate **workflow archetype** for the project goal
-2. Building a **DAG** of skill prerequisites and resolving available next steps
-3. Maintaining a **project state object** (serializable JSON) that persists across Copilot session breaks
-4. Emitting **completion events** after each skill execution so that `skill-completion-gates` can validate output quality before the next step proceeds
-5. Reporting **workflow progress** with clear completed / available / blocked status for all workflow nodes
+Run a multi-skill EDPS workflow to completion across sessions:
+1. Select the **workflow archetype** for the project goal
+2. Resolve which skills are **available**, **blocked**, or done from the prerequisite graph (the Skill Catalogue below)
+3. Keep a **project state file** (`project-state.json`) so work can resume in a later session
+4. Run each skill's **completion gate** with `scripts/run_gate.py` before marking it complete
+5. Report **progress** with completed / available / blocked status
 
-This skill does not replace `edps-skill-navigator`; it layers above it. The navigator handles NLP and single-skill routing; the orchestrator handles multi-skill lifecycle management and state.
+For a one-off "which skill should I use?" question, `edps-skill-navigator` answers from the same catalogue without keeping state.
 
 ## Inputs
 
@@ -29,16 +29,14 @@ This skill does not replace `edps-skill-navigator`; it layers above it. The navi
 - **Project state** *(for `resume` only)*: Serialized JSON string from a prior session's `project-state.json`
 - **Project context** *(optional)*: Current project folder path for auto-detection of completed artifacts
 - **Skip justification** *(for `skip` only)*: Required free-text justification logged to project state
-- **project-metadata.json** *(implicit, read automatically)*: The orchestrator reads `collaboration_mode` from the current project's `project-metadata.json` before every gate evaluation (see [Skill Completion Gates](#skill-completion-gates-t08-integration)). Absence of the field is treated as `traditional`, never inferred as `solo` (see T01/T02).
+- **project-metadata.json** *(implicit, read automatically)*: The orchestrator reads `collaboration_mode` from the current project's `project-metadata.json` before every gate evaluation (see [Skill Completion Gates](#skill-completion-gates)). Absence of the field is treated as `traditional`, never inferred as `solo` (see T01/T02).
 
 ## Outputs
 
-- **Workflow plan**: Ordered skill sequence with dependency graph visualization
-- **Available steps**: Skills currently unblocked and ready to execute
-- **Progress dashboard**: Visual completion report (see [Progress Visualization](#progress-visualization))
-- **project-state.json**: Updated serialized project state after each step
-- **Completion events**: Structured JSON events emitted after each skill execution (consumed by `skill-completion-gates`)
-- **Next-step prompt**: Ready-to-use Copilot prompt for the immediate next skill
+- **project-state.json** in the project root: skill states, skip audit, confirmations, modeling rounds, and a history of what happened (updated after every step)
+- **Workflow plan**: ordered skill sequence for the archetype
+- **Progress dashboard**: see [Progress Visualization](#progress-visualization)
+- **Next step**: the next available skill(s), with the prompt to run each
 
 ---
 
@@ -259,7 +257,7 @@ The orchestrator maintains a directed acyclic graph where each node is a skill a
 |-------|-----------|
 | `available` | All prerequisite skills are in `completed` state |
 | `blocked` | One or more prerequisites are not yet `completed` |
-| `completed` | Skill has been executed and its completion event was emitted |
+| `completed` | Skill has been executed and its completion gate allowed progression |
 | `skipped` | Explicitly bypassed with recorded justification |
 | `optional` | Marked optional in archetype; not on critical path |
 
@@ -314,7 +312,7 @@ The project state object is the single source of truth for where a project stand
   "workflow_version": "1.0.0",
   "created": "ISO-8601",
   "last_updated": "ISO-8601",
-  "session_id": "uuid — changes each Copilot session",
+  "session_id": "string — identifies the working session that last updated the state",
   "overall_progress": {
     "total_skills": 0,
     "completed": 0,
@@ -343,16 +341,23 @@ The project state object is the single source of truth for where a project stand
       "session_id": "uuid"
     }
   ],
-  "completion_events": [
+  "history": [
     {
-      "event_id": "uuid",
-      "event_type": "skill_completed | skill_skipped | skill_failed",
-      "skill_id": "S01",
-      "skill_name": "requirements-ingest",
       "timestamp": "ISO-8601",
-      "output_artifacts": ["artifacts/Analysis/requirements.md"],
-      "gate_check_requested": true,
-      "gate_result": "pending | pass | fail | bypassed"
+      "event": "skill_completed | skill_skipped | skill_failed | gate_failed | round_validated | workflow_started | workflow_complete",
+      "skill_id": "S01",
+      "gate_status": "passed | passed_with_warnings | failed | incomplete | bypassed | null",
+      "outputs": ["artifacts/Analysis/requirements.md"],
+      "note": "string"
+    }
+  ],
+  "confirmations": [
+    {
+      "role": "Primary Stakeholder",
+      "confirmation_statement": "string — from the gate check",
+      "confirmed_by": "self-attestation | <real stakeholder name>",
+      "collaboration_mode": "solo | traditional",
+      "timestamp": "ISO-8601"
     }
   ],
   "workflow_metadata": {
@@ -393,46 +398,16 @@ The project state object is the single source of truth for where a project stand
 
 ---
 
-## Completion Events
+## History Log
 
-After each skill execution completes, the orchestrator emits a structured completion event. These events are the primary interface consumed by `skill-completion-gates` (T08).
-
-### Event format
+Record what happens in the `history` array of `project-state.json`, one entry per event, so the state file is also the project's audit trail:
 
 ```json
-{
-  "event_id": "uuid-v4",
-  "event_type": "skill_completed",
-  "schema_version": "1.0.0",
-  "skill_id": "S01",
-  "skill_name": "requirements-ingest",
-  "project_id": "PRJ-04",
-  "timestamp": "2026-03-16T10:30:00Z",
-  "session_id": "uuid",
-  "output_artifacts": [
-    "OrgDocument/projects/04 - Building Skills Iteration 3/artifacts/Analysis/requirements.md"
-  ],
-  "self_reported_status": "success | partial | failed",
-  "gate_check_requested": true,
-  "gate_config": {
-    "gate_file": ".github/skills/requirements-ingest/gate.json",
-    "severity": "hard"
-  }
-}
+{ "timestamp": "2026-03-16T10:30:00Z", "event": "skill_completed", "skill_id": "S01",
+  "gate_status": "passed_with_warnings", "outputs": ["artifacts/Analysis/requirements.md"], "note": "" }
 ```
 
-### Event types
-
-| Event Type | Emitted When |
-|-----------|-------------|
-| `skill_started` | User begins a skill (optional — emitted when orchestrator tracks in-progress state) |
-| `skill_completed` | Skill execution finished and output artifacts are available |
-| `skill_skipped` | Skill bypassed with explicit justification |
-| `skill_failed` | Skill execution reported an error |
-| `gate_pass` | `skill-completion-gates` validated the skill output (T08 emits this back) |
-| `gate_fail` | `skill-completion-gates` found missing/invalid output (T08 emits this back) |
-| `workflow_phase_complete` | All skills in a workflow phase reached `completed` or `skipped` state |
-| `workflow_complete` | All skills in the archetype reached terminal state |
+Events: `workflow_started`, `skill_completed`, `skill_skipped`, `skill_failed`, `gate_failed`, `round_validated`, `workflow_complete`.
 
 ---
 
@@ -489,7 +464,7 @@ requirements-ingest [S01] ✅
 
 ---
 
-## Skill Completion Gates (T08 Integration)
+## Skill Completion Gates
 
 The orchestrator integrates with skill completion gates to validate output quality before marking skills as completed and advancing the workflow. This ensures EDPS methodology standards are met at each step.
 
@@ -551,7 +526,7 @@ The gate check types, path scopes, `applies_when` conditions, and the quality sc
 
 ## Quick Commands
 
-All commands are invoked by addressing `edps-workflow-orchestrator` in a Copilot prompt.
+Commands are requests to this skill in the conversation (for example "orchestrate status").
 
 ### `orchestrate start [archetype]`
 **Purpose**: Begin a new workflow for the current project.  
@@ -631,63 +606,7 @@ Continue with completion? (Y/n) y
 
 ## Integration with edps-skill-navigator
 
-The orchestrator and navigator operate in a layered architecture:
-
-```
-User (natural language)
-        ↓
-edps-skill-navigator        ← NLP, intent classification, single-skill routing
-        ↓
-edps-workflow-orchestrator  ← multi-skill lifecycle, DAG, project state
-        ↓
-Individual EDPS Skills      ← requirements-ingest, domain-extractconcepts, etc.
-```
-
-**Invocation patterns**:
-- If the user asks for a *single skill* ("ingest my requirements") → navigator routes directly to that skill
-- If the user asks for a *workflow or project goal* ("start my EDPS project", "what should I do next?") → navigator delegates to orchestrator
-- The orchestrator can invoke the navigator's NLP engine for prompt classification (see T09 integration)
-
-**Discovery**: The orchestrator is registered in the navigator's skill catalogue as:
-```
-Orchestration:
-└── edps-workflow-orchestrator   # End-to-end EDPS workflow lifecycle management
-```
-
-Natural language triggers that route to the orchestrator:
-- "start my workflow / project / EDPS lifecycle"
-- "what should I do next?"
-- "show me my progress"
-- "resume my workflow"
-- "orchestrate [anything]"
-- "run the full EDPS workflow"
-- "skip [skill name]"
-
----
-
-## Integration with skill-completion-gates (T08)
-
-After the orchestrator emits a `skill_completed` event, `skill-completion-gates` (T08) reads the event and runs the gate schema for that skill. The gate response is written back into the project state:
-
-```
-Orchestrator emits:  skill_completed event  →  skill-completion-gates evaluates gate.json
-skill-completion-gates emits:  gate_pass | gate_fail  →  Orchestrator updates project-state.json
-```
-
-**On `gate_fail` (hard gate)**:  
-- Next skill in the DAG is marked `blocked_by_gate`
-- Dashboard shows: `⛔ gate-blocked: domain-alignentities — requirements-ingest gate failed`
-- Orchestrator surfaces gate failure details and remediation steps
-
-**On `gate_fail` (soft gate)**:  
-- Warning is logged to `project-state.json`
-- Next skill remains `available`
-- Dashboard shows: `⚠️ gate-warn: goals-extract — optional field 'assumptions' is empty`
-
-**Gate bypass flow** (when user overrides a hard gate):
-1. User invokes `orchestrate skip S01 --justification "..."` with `--force`
-2. Orchestrator records bypass in `skip_audit` with session ID and timestamp
-3. Gate state is set to `bypassed` — entry is tamper-evident within project state JSON
+Both skills read the same Skill Catalogue. The navigator answers single requests ("which skill turns notes into a schedule?") and hands a long or multi-session path to this skill; this skill runs and tracks the whole workflow.
 
 ---
 
@@ -703,38 +622,19 @@ skill-completion-gates emits:  gate_pass | gate_fail  →  Orchestrator updates 
 
 ---
 
-## Performance Characteristics
-
-| Operation | Target Latency |
-|-----------|---------------|
-| Workflow plan generation (≤ 15 skills) | < 3 seconds |
-| DAG resolution (full catalogue) | < 1 second |
-| Project state serialization | < 500ms |
-| State restore on resume | < 2 seconds |
-| Progress dashboard render | < 500ms |
-| `project-state.json` maximum size | 500 KB |
-
----
-
 ## Best Practices
 
 1. **Always start with `orchestrate start`** — even if you plan to do only one skill. The state object enables resumption and compliance reporting.
-2. **Use `orchestrate next`** instead of guessing — it accounts for your current state and surfaces critical-path skills first.
+2. **Use `orchestrate next`** instead of guessing — it accounts for the current state and surfaces critical-path skills first.
 3. **Never skip hard-gated skills without a justification** — gate bypasses without justification violate EDPS compliance requirements.
 4. **Commit `project-state.json`** to version control — it acts as a project audit trail alongside the artifacts.
-5. **For parallel skills**, invoke both in the same Copilot session step — the orchestrator tracks them independently.
+5. **For parallel skills**, run them in either order; the state tracks each independently.
 6. **Use `compliance` archetype for existing projects** — it runs only the validation and compliance slice of the workflow, avoiding re-execution of analysis already done.
 
 ---
 
-**Version**: 1.2.0  
-**Created**: 2026-03-16  
-**Compatibility**: EDPS v2.x (hierarchical boundary format), GitHub Copilot  
-**Depends on**: `edps-skill-navigator` v1.2.0 (T06 enhanced)  
-**Consumed by**: `skill-completion-gates` (T08), `enhanced-prompt-recognition` (T09)  
-**Maintainer**: EDPS Development Team
-
 **Version History**:
+- **2.0.0** (2026-11-17): Removed descriptions of components that do not exist (a separate `skill-completion-gates` consumer of emitted events, an NLP engine, latency targets); events are a history log in `project-state.json`; gate evaluation is by `scripts/run_gate.py`.
 - **1.4.0** (2026-11-15): Gate evaluation is now executable — `scripts/run_gate.py` evaluates any skill's `gate.json` against real files and `--lint` validates the gate definitions; the JavaScript pseudo-code that previously stood in for it is removed and the gate schema is documented in `references/gate-schema.md`. Round validation and staleness checks now name `model-validatealignment`'s `validate_alignment.py`.
 - **1.3.1** (2026-11-15): Review fixes — removed the code fence that wrapped this file (its frontmatter did not parse); moved `version`/`last-updated` under `metadata`; added catalogue rows for `edps-workflow-orchestrator` (S31) and `skill-creator` (S41) and aligned every `gate.json` `skill_id` with this catalogue; retired the numbered category labels (S1–S10) in favour of category names; removed hard-coded skill counts.
 - **1.3.0** (2026-11-08): PRJ-07/T06 — Removed the standalone "S11 — UI Prototyping" category; S33–S38 are now catalogued as members of **S5 — Design & Visualization**, no skill IDs renumbered. Registered `usecase-generatemodel` (S32, filling the one existing catalogue gap), `model-validatealignment` (S39), and `ui-generatemodel` (S40). Replaced the former S06-only UI-Model-readiness proxy with a real prerequisite: S33 now requires S40's completion. Added the `modeling_rounds` project-state field and round/revision staleness-checking on `orchestrate resume`. Documented that alignment-round (S39) completion is non-bypassable across `collaboration_mode` and workflow archetype — its gate checks are never `stakeholder_confirmation` type, so `resolveCheckSeverity()` cannot soften them.

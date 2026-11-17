@@ -228,7 +228,7 @@ Phase 6 — Model:    model-integration → orgmodel-update
 Phase 7 — Plan:     plan-derivetasks → plan-estimateeffort → plan-buildschedule
 Phase 8 — Validate: hierarchy-validation → edps-compliance ‖ integration-testing → project-status-reporting
 
-(‖ = parallel steps; see workflow-templates.json for full parallel opportunity map)
+(‖ = parallel steps; the orchestrator's Skill Catalogue gives every prerequisite)
 
 Project: [PROJECT-NAME] ([PROJECT-ID])
 [Input requirements document]
