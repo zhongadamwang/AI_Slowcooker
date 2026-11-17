@@ -21,7 +21,7 @@ Skills are grouped by category below. `S`-numbers (S00–S41) are **skill IDs**,
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `project-document-management` | Initialize project folder structure | Project details | Project folder tree | → `requirements-ingest` |
-| `project-planning-tracking` | Create project plans and track milestones | Project scope | project-plan.md, task-tracking.md | → Execution |
+| `project-planning-tracking` | Assemble the project plan from the plan-* outputs and keep task tracking current | task-breakdown, effort-estimates, project-schedule | project-plan.md, task-tracking.md | → `project-status-reporting` |
 | `project-status-reporting` | Generate status dashboards and reports | Project artifacts | Status reports | → Stakeholder review |
 
 ### Requirements Processing
@@ -86,7 +86,7 @@ Skills are grouped by category below. `S`-numbers (S00–S41) are **skill IDs**,
 |-------|---------|-------|---------|-----------|
 | `hierarchy-validation` | Validate hierarchy structural integrity — 14 rules across cross-level consistency, cross-reference integrity, naming/structure (authoritative structural source) | hierarchy-metadata.json + orgModel folders | hierarchy-validation-report.json/md | → `edps-compliance` |
 | `edps-compliance` | Score EDPS methodology compliance — 11 rules (VR-1–4 delegated to `diagram-generatecollaboration`; HR-2/6 native; EP-1–4 native); gates on `hierarchy-validation` PASS | boundary_validation_report.json, hierarchy-validation-report.json | edps-compliance-report.json/md (0–100 score) | → `integration-testing` |
-| `integration-testing` | Validate end-to-end workflows across all skills | All skill artifacts | test-reports.json/md | → Production |
+| `integration-testing` | Run the suite's executable checks (structure, catalogue, gate lint, tests, fixtures) and a project's gates | Skills folder, optional project | integration-test-report.md/json | → Fix failures |
 
 ### External Integration
 | Skill | Purpose | Input | Output | Next Step |
@@ -98,7 +98,7 @@ Skills are grouped by category below. `S`-numbers (S00–S41) are **skill IDs**,
 | Skill | Purpose | Input | Output | Next Step |
 |-------|---------|-------|---------|-----------|
 | `edps-workflow-orchestrator` | Coordinate end-to-end workflows: skill sequencing (DAG prerequisites), project state, completion gates, modeling rounds | Workflow archetype or resume request | Workflow plan, project state, gate results | → Execute next available skill |
-| `edps-skill-navigator` | Intelligently orchestrate all EDPS skills from natural language requests | Natural language intent | Skill execution plan, workflow guidance | → Execute recommended skills |
+| `edps-skill-navigator` | Recommend which skills to run, in order, from what the project already has | A goal or request | Recommended skill path | → Recommended skill or the orchestrator |
 | `skill-creator` | Scaffold new EDPS-compliant skills following SKILL.md standard | Skill requirements | New SKILL.md + reference docs | → Implement skill |
 
 ## Common Workflows
@@ -132,7 +132,7 @@ Project ID: CPR-2024
 @workspace Help me scope this project for MVP delivery:
 
 1. Use process-scopemin skill to identify core vs optional features
-2. Use project-planning-tracking skill to create a delivery timeline
+2. Use plan-derivetasks, plan-estimateeffort and plan-buildschedule to create a delivery timeline
 3. Generate initial task breakdown
 
 Project: Customer Portal Redesign (CPR-2024)

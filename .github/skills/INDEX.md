@@ -69,7 +69,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 
 **Key patterns**:
 - Project setup: `project-document-management`
-- Planning: `project-planning-tracking`
+- Planning: `plan-derivetasks` → `plan-estimateeffort` → `plan-buildschedule`; tracking: `project-planning-tracking`
 - Scope management: `process-scopemin`
 - Change control: `change-management`
 - Status reporting: `project-status-reporting`
@@ -144,7 +144,7 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
 | **project-document-management** | Initialize project structure | [Individual skill docs](project-document-management/SKILL.md) |
-| **project-planning-tracking** | Create plans and track progress | [Individual skill docs](project-planning-tracking/SKILL.md) |
+| **project-planning-tracking** | Assemble the project plan and keep task tracking current | [Individual skill docs](project-planning-tracking/SKILL.md) |
 | **project-status-reporting** | Generate status reports | [Individual skill docs](project-status-reporting/SKILL.md) |
 | **plan-derivetasks** | Convert requirements into actionable development tasks | [Individual skill docs](plan-derivetasks/SKILL.md) |
 | **plan-estimateeffort** | Generate effort estimates using multiple methodologies | [Individual skill docs](plan-estimateeffort/SKILL.md) |
@@ -162,9 +162,9 @@ Complete navigation guide for EDPS (Evolutionary Development Process System) ski
 | Skill | Purpose | Documentation |
 |-------|---------|---------------|
 | **edps-workflow-orchestrator** | Coordinate end-to-end workflows: skill sequencing, project state, completion gates, modeling rounds | [Individual skill docs](edps-workflow-orchestrator/SKILL.md) |
-| **edps-skill-navigator** | Navigate and orchestrate skills | [Individual skill docs](edps-skill-navigator/SKILL.md) |
+| **edps-skill-navigator** | Recommend which skills to run next for a request | [Individual skill docs](edps-skill-navigator/SKILL.md) |
 | **skill-creator** | Create new EDPS skills | [Individual skill docs](skill-creator/SKILL.md) |
-| **integration-testing** | Comprehensive testing and validation of all EDPS skills | [Individual skill docs](integration-testing/SKILL.md) |
+| **integration-testing** | Run the suite's executable checks and a project's gates | [Individual skill docs](integration-testing/SKILL.md) |
 | **orgmodel-update** | Update organizational model documents and folder structures | [Individual skill docs](orgmodel-update/SKILL.md) |
 
 ---
@@ -187,7 +187,7 @@ Project: [PROJECT-NAME] ([PROJECT-ID])
 @workspace Define MVP scope:
 1. Use process-w5h → stakeholder analysis
 2. Use process-scopemin → feature prioritization
-3. Use project-planning-tracking → MVP timeline
+3. Use plan-derivetasks → plan-buildschedule → MVP timeline
 
 Business constraints: [timeline/budget/resources]
 Input: OrgDocument/projects/[NN] - [Project Name]/artifacts/Analysis/requirements.json
