@@ -8,32 +8,22 @@
   "description": "Validates GitHub issue has been created or updated from task markdown",
   "checks": [
     {
-      "id": "sync_log_exists",
-      "type": "artifact_existence",
+      "id": "task_files_exist",
+      "type": "file_count",
       "severity": "soft",
-      "description": "Should log GitHub sync operations",
-      "artifacts": [
-        "artifacts/Integration/github-sync-log.md"
-      ],
-      "remediation": "Run github-issue-create-update to sync task to GitHub"
+      "description": "The project should have task files to publish",
+      "pattern": "tasks/T*.md",
+      "min_count": 1,
+      "remediation": "Run plan-derivetasks first"
     },
     {
-      "id": "issue_created_or_updated",
+      "id": "issue_reference_recorded",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should confirm GitHub issue operation",
-      "file": "artifacts/Integration/github-sync-log.md",
-      "must_contain_pattern": "Issue #\\d+ (created|updated)",
-      "remediation": "Verify GitHub authentication and issue creation/update"
-    },
-    {
-      "id": "field_mapping_complete",
-      "type": "content_pattern",
-      "severity": "soft",
-      "description": "Should map all task fields to issue",
-      "file": "artifacts/Integration/github-sync-log.md",
-      "must_contain": ["Field Mapping:", "Sync Status:"],
-      "remediation": "Ensure complete field mapping from task to GitHub issue"
+      "description": "Every task file should link to its GitHub Issue",
+      "file": "tasks/T*.md",
+      "must_contain_pattern": "\\*\\*GitHub Issue:\\*\\*\\s*#?\\d+",
+      "remediation": "Run create_update_issues.py --project for the project; it writes '**GitHub Issue:** #N' into each task file it publishes"
     }
   ],
   "quality_score_weight": 0.04,

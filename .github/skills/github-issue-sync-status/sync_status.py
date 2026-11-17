@@ -29,6 +29,37 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
 
+
+# Task files come in two formats: the project task template
+# ("**Status**: In Progress") and the older GitHub-issue format
+# ("**State:** in-progress"). Both are read; the file's own format is kept on write.
+STATUS_TO_STATE = {
+    "not started": "ready", "ready": "ready", "open": "ready",
+    "in progress": "in-progress", "in-progress": "in-progress", "review": "in-progress",
+    "blocked": "blocked",
+    "completed": "completed", "complete": "completed", "done": "completed", "closed": "completed",
+    "cancelled": "cancelled", "canceled": "cancelled",
+}
+STATE_TO_STATUS = {"ready": "Not Started", "in-progress": "In Progress", "blocked": "Blocked",
+                   "completed": "Completed", "cancelled": "Cancelled"}
+
+
+def read_field(content: str, name: str) -> Optional[str]:
+    """Value of a bold metadata field in either '**Name:**' or '**Name**:' form."""
+    match = re.search(r'\*\*' + re.escape(name) + r'(?::\*\*|\*\*:)[ \t]*(.+)', content)
+    return match.group(1).strip() if match else None
+
+
+def normalize_state(value: Optional[str], default: str) -> str:
+    """Map a State or Status value (any case, emoji allowed) to ready/in-progress/blocked/completed/cancelled."""
+    if not value:
+        return default
+    text = re.sub(r'[^a-z -]', '', value.lower()).strip()
+    for key in sorted(STATUS_TO_STATE, key=len, reverse=True):
+        if text.startswith(key):
+            return STATUS_TO_STATE[key]
+    return default
+
 class SyncConfig:
     """Self-contained sync configuration with embedded defaults."""
     
@@ -138,8 +169,8 @@ class GitHubStatusSyncer:
             content = f.read()
         
         # Extract current state
-        state_match = re.search(r'\*\*State:\*\*\s*(\w+)', content)
-        current_state = state_match.group(1).lower() if state_match else "ready"
+        uses_status_field = read_field(content, "State") is None and read_field(content, "Status") is not None
+        current_state = normalize_state(read_field(content, "State") or read_field(content, "Status"), "ready")
         
         # Extract GitHub issue number
         github_issue_match = re.search(r'\*\*GitHub Issue:\*\*\s*#?(\d+)', content)
@@ -152,6 +183,7 @@ class GitHubStatusSyncer:
         return {
             'file_path': file_path,
             'current_state': current_state,
+            'uses_status_field': uses_status_field,
             'github_issue_number': github_issue_number,
             'last_synced': last_synced,
             'original_content': content
@@ -207,24 +239,22 @@ class GitHubStatusSyncer:
             return True
         
         try:
-            # Update state
-            content = re.sub(
-                r'\*\*State:\*\*\s*\w+',
-                f'**State:** {new_state}',
-                content
-            )
+            # Update state, in the file's own format
+            if task_data.get('uses_status_field'):
+                content = re.sub(r'(\*\*Status\*\*:)[ \t]*[^\n]*', lambda m: f"{m.group(1)} {STATE_TO_STATUS.get(new_state, new_state)}", content, count=1)
+                state_line_pattern, completed_pattern, completed_label = r'(\*\*Status\*\*:[^\n]*\n)', r'\*\*Completed\*\*:', "**Completed**:"
+            else:
+                content = re.sub(r'\*\*State:\*\*\s*[\w-]+', f'**State:** {new_state}', content, count=1)
+                state_line_pattern, completed_pattern, completed_label = r'(\*\*State:\*\*[^\n]*\n)', r'\*\*Completed Date:\*\*', "**Completed Date:**"
             
             # Add completion date if transitioning to completed
             if new_state == "completed" and self.config.add_completion_date:
                 completion_date = datetime.now().strftime('%Y-%m-%d')
-                # Check if completion date already exists
-                if not re.search(r'\*\*Completed Date:\*\*', content):
-                    # Find a good place to insert completion date (after State)
-                    state_line_match = re.search(r'(\*\*State:\*\*[^\n]*\n)', content)
+                if not re.search(completed_pattern, content):
+                    state_line_match = re.search(state_line_pattern, content)
                     if state_line_match:
                         insert_pos = state_line_match.end()
-                        completion_line = f"**Completed Date:** {completion_date}\n"
-                        content = content[:insert_pos] + completion_line + content[insert_pos:]
+                        content = content[:insert_pos] + f"{completed_label} {completion_date}\n" + content[insert_pos:]
             
             # Update last synced timestamp
             sync_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

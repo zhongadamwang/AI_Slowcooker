@@ -8,32 +8,22 @@
   "description": "Validates local task status has been synced from GitHub issue",
   "checks": [
     {
-      "id": "status_sync_log_exists",
-      "type": "artifact_existence",
-      "severity": "soft",
-      "description": "Should log status sync operations",
-      "artifacts": [
-        "artifacts/Integration/status-sync-log.md"
-      ],
-      "remediation": "Run github-issue-sync-status to update local task from GitHub"
-    },
-    {
-      "id": "conflict_resolution",
+      "id": "issue_reference_recorded",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should handle sync conflicts appropriately",
-      "file": "artifacts/Integration/status-sync-log.md",
-      "must_contain": ["Conflict Resolution:", "Sync Status:"],
-      "remediation": "Resolve conflicts between local and GitHub issue state"
+      "description": "Task files must be linked to issues before they can be synced",
+      "file": "tasks/T*.md",
+      "must_contain_pattern": "\\*\\*GitHub Issue:\\*\\*\\s*#?\\d+",
+      "remediation": "Run github-issue-create-update first"
     },
     {
-      "id": "metadata_preserved",
+      "id": "status_field_present",
       "type": "content_pattern",
       "severity": "soft",
-      "description": "Should preserve local file format and metadata",
-      "file": "artifacts/Integration/status-sync-log.md",
-      "must_contain": ["✅ Local Format Preserved"],
-      "remediation": "Ensure local task file format and metadata are maintained"
+      "description": "Every task file should carry a status field the sync can update",
+      "file": "tasks/T*.md",
+      "must_contain_pattern": "\\*\\*(Status\\*\\*:|State:\\*\\*)",
+      "remediation": "Use the task template's '**Status**:' field (or the older '**State:**')"
     }
   ],
   "quality_score_weight": 0.04,

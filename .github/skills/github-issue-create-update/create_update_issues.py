@@ -31,6 +31,37 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 
+
+# Task files come in two formats: the project task template
+# ("**Status**: In Progress") and the older GitHub-issue format
+# ("**State:** in-progress"). Both are read; the file's own format is kept on write.
+STATUS_TO_STATE = {
+    "not started": "ready", "ready": "ready", "open": "ready",
+    "in progress": "in-progress", "in-progress": "in-progress", "review": "in-progress",
+    "blocked": "blocked",
+    "completed": "completed", "complete": "completed", "done": "completed", "closed": "completed",
+    "cancelled": "cancelled", "canceled": "cancelled",
+}
+STATE_TO_STATUS = {"ready": "Not Started", "in-progress": "In Progress", "blocked": "Blocked",
+                   "completed": "Completed", "cancelled": "Cancelled"}
+
+
+def read_field(content: str, name: str) -> Optional[str]:
+    """Value of a bold metadata field in either '**Name:**' or '**Name**:' form."""
+    match = re.search(r'\*\*' + re.escape(name) + r'(?::\*\*|\*\*:)[ \t]*(.+)', content)
+    return match.group(1).strip() if match else None
+
+
+def normalize_state(value: Optional[str], default: str) -> str:
+    """Map a State or Status value (any case, emoji allowed) to ready/in-progress/blocked/completed/cancelled."""
+    if not value:
+        return default
+    text = re.sub(r'[^a-z -]', '', value.lower()).strip()
+    for key in sorted(STATUS_TO_STATE, key=len, reverse=True):
+        if text.startswith(key):
+            return STATUS_TO_STATE[key]
+    return default
+
 class GitHubConfig:
     """Self-contained configuration with embedded defaults."""
     
@@ -49,6 +80,7 @@ class GitHubConfig:
         # Field mapping defaults
         self.state_mapping = {
             "ready": "open",
+            "blocked": "open",
             "in-progress": "open", 
             "completed": "closed",
             "cancelled": "closed"
@@ -157,22 +189,20 @@ class GitHubIssueCreator:
         existing_issue = int(github_issue_match.group(1)) if github_issue_match else None
         
         # Extract state from content (if present)
-        state_match = re.search(r'\*\*State:\*\*\s*(\w+)', content)
-        state = state_match.group(1).lower() if state_match else "open"
+        state = normalize_state(read_field(content, "State") or read_field(content, "Status"), "ready")
         
         # Map task state to GitHub state using embedded mapping
         github_state = self.config.state_mapping.get(state, "open")
         
         # Extract labels from content
-        labels_match = re.search(r'\*\*Labels:\*\*\s*(.+)', content)
-        labels = []
-        if labels_match:
-            labels = [label.strip() for label in labels_match.group(1).split(',')]
+        labels_value = read_field(content, "Labels")
+        labels = [label.strip() for label in labels_value.split(',')] if labels_value else []
         
         # Add priority label if present
-        priority_match = re.search(r'\*\*Priority:\*\*\s*(\w+)', content)
-        if priority_match:
-            priority = priority_match.group(1)
+        priority_value = read_field(content, "Priority")
+        if priority_value:
+            # Template priorities look like "P0-Critical"; map P0/P1 to High, P2 to Medium, P3 to Low.
+            priority = {"P0": "High", "P1": "High", "P2": "Medium", "P3": "Low"}.get(priority_value[:2].upper(), priority_value.split()[0].strip('-'))
             if priority in self.config.priority_labels:
                 labels.append(self.config.priority_labels[priority]["name"])
         
@@ -184,9 +214,9 @@ class GitHubIssueCreator:
         
         # Extract assignees
         assignees = []
-        assignees_match = re.search(r'\*\*Assignees:\*\*\s*(.+)', content)
-        if assignees_match:
-            assignees = [a.strip() for a in assignees_match.group(1).split(',')]
+        assignees_value = read_field(content, "Assignees") or read_field(content, "Assigned")
+        if assignees_value and not assignees_value.lower().startswith(("unassigned", "[", "tbd")):
+            assignees = [a.strip() for a in assignees_value.split(',')]
         elif self.config.default_assignee:
             assignees = [self.config.default_assignee]
         
